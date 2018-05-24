@@ -10,4 +10,4 @@ install:
 before_script:
   - mysql -e 'create database test;' -u root
 script:
-  - python manage.py testp --settings=phishtray.settings-test
+  - python manage.py test --settings=phishtray.settings-test
