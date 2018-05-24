@@ -3,7 +3,7 @@ from django import forms
 
 from django.contrib import admin
 
-from .models import Exercise
+from .models import Exercise, ExerciseKey
 
 
 class ExerciseAdminForm(forms.ModelForm):
@@ -16,8 +16,9 @@ class ExerciseAdminForm(forms.ModelForm):
 
 class ExerciseAdmin(admin.ModelAdmin):
     form = ExerciseAdminForm
-    list_display = ('title', 'link', 'description', 'length_minutes')
+    list_display = ('id', 'title', 'link', 'description', 'length_minutes')
     list_filter = ['id']
 
 
 admin.site.register(Exercise, ExerciseAdmin)
+admin.site.register(ExerciseKey)
