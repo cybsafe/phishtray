@@ -10,7 +10,6 @@ from utils import helpers
 
 
 def index(request, link):
-    # latest_question_list = Question.objects.order_by('-pub_date')[:5]
     e_id = helpers.hasher.decode(link)
     exercise = get_object_or_404(Exercise, pk=e_id[0])
     context = {'exercise': exercise}
@@ -18,7 +17,6 @@ def index(request, link):
 
 
 def profile(request, link):
-    # latest_question_list = Question.objects.order_by('-pub_date')[:5]
     e_id = helpers.hasher.decode(link)
     exercise = get_object_or_404(Exercise, pk=e_id[0])
     profile_keys = exercise.exercisekey_set.all()
@@ -45,7 +43,6 @@ def profile(request, link):
 
 
 def start(request, link, p_id):
-    # latest_question_list = Question.objects.order_by('-pub_date')[:5]
     e_id = helpers.hasher.decode(link)
     exercise = get_object_or_404(Exercise, pk=e_id[0])
     context = {'exercise': exercise, 'exercise_keys': exercise.exercisekey_set.all()}
