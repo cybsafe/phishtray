@@ -1,14 +1,13 @@
-language: python # => 1
-    python: # => 2
-      - "2.6"
-      - "2.7"
-    services: # => 3
+language: python
+    python:
+      - "3.6"
+    services:
       - mysql
-    env: # => 4
+    env:
       -DJANGO=2.0.5 DB=mysql
-    install: # => 5
+    install
       - pip install -r requirements.txt
-    before_script: # => 6
+    before_script:
       - mysql -e 'create database test;' -u root
-    script: # => 7
+    script:
       - python manage.py test
