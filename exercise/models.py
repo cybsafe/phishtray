@@ -14,6 +14,14 @@ EXERCISE_KEY_TYPES = (
     (KEY_TYPE_TEXT, 'text'),
 )
 
+EXERCISE_EMAIL_PHISH = 0
+EXERCISE_EMAIL_REGULAR = 1
+
+EXERCISE_EMAIL_TYPES = (
+    (EXERCISE_EMAIL_PHISH, 'phishing'),
+    (EXERCISE_EMAIL_REGULAR, 'regular'),
+)
+
 
 class Exercise(models.Model):
 
@@ -31,25 +39,13 @@ class Exercise(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, blank=True)
 
-    profile_definition_json = models.TextField(null=True, blank=True)
-
-    @property
-    def profile_definition(self):
-        """Returns profile object decoded from json."""
-        if not self.review_json:
-            return None
-        return json.loads(self.review_json)
-
-    def set_profile_definition(self, profile):
-        """Stores the dict as json in a field"""
-        self.profile_json = json.dumps(profile)
-
     @property
     def link(self):
         return helpers.hasher.encode(self.id)
 
 
 class ExerciseKey(models.Model):
+
     def __str__(self):
         return self.key
 
@@ -66,3 +62,60 @@ class ExerciseKey(models.Model):
     @property
     def html5_type(self):
         return EXERCISE_KEY_TYPES[self.type][1]
+
+
+class ExerciseAttachment(models.Model):
+
+    def __str__(self):
+        return self.filename
+
+    id = models.AutoField(primary_key=True)
+
+    filename = models.CharField(max_length=250, blank=True, null=True)
+
+    created_date = models.DateTimeField(auto_now_add=True, blank=True)
+    modified_date = models.DateTimeField(auto_now=True, blank=True)
+
+
+class ExerciseEmailReply(models.Model):
+
+    def __str__(self):
+        return self.content
+
+    id = models.AutoField(primary_key=True)
+
+    content = models.TextField(null=True, blank=True)
+
+
+class ExerciseEmail(models.Model):
+
+    def __str__(self):
+        return self.subject
+
+    id = models.AutoField(primary_key=True)
+
+    subject = models.CharField(max_length=250, blank=True, null=True)
+    email_from_email = models.CharField(max_length=250, blank=True, null=True)
+    email_from_name = models.CharField(max_length=250, blank=True, null=True)
+    type = models.IntegerField(choices=EXERCISE_EMAIL_TYPES)
+    content = models.TextField(null=True, blank=True)
+
+    attachments = models.ManyToManyField(ExerciseAttachment)
+    replies = models.ManyToManyField(ExerciseEmailReply)
+
+
+class ExerciseWebPages(models.Model):
+
+    def __str__(self):
+        return self.subject
+
+    id = models.AutoField(primary_key=True)
+
+    subject = models.CharField(max_length=250, blank=True, null=True)
+    email_from_email = models.CharField(max_length=250, blank=True, null=True)
+    email_from_name = models.CharField(max_length=250, blank=True, null=True)
+    type = models.IntegerField(choices=EXERCISE_EMAIL_TYPES)
+    content = models.TextField(null=True, blank=True)
+
+    attachments = models.ManyToManyField(ExerciseAttachment)
+    replies = models.ManyToManyField(ExerciseEmailReply)
