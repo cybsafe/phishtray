@@ -3,7 +3,7 @@ from django import forms
 
 from django.contrib import admin
 
-from .models import Exercise, ExerciseKey, ExerciseEmail, ExerciseAttachment, ExerciseEmailReply
+from .models import Exercise, ExerciseKey, ExerciseEmail, ExerciseAttachment, ExerciseEmailReply, ExerciseURL
 
 
 class ExerciseAdminForm(forms.ModelForm):
@@ -25,3 +25,4 @@ admin.site.register(ExerciseKey)
 admin.site.register(ExerciseEmail)
 admin.site.register(ExerciseEmailReply)
 admin.site.register(ExerciseAttachment)
+admin.site.register(ExerciseURL)

@@ -17,9 +17,10 @@ EXERCISE_KEY_TYPES = (
 EXERCISE_EMAIL_PHISH = 0
 EXERCISE_EMAIL_REGULAR = 1
 
-EXERCISE_EMAIL_TYPES = (
+EXERCISE_PHISH_TYPES = (
     (EXERCISE_EMAIL_PHISH, 'phishing'),
     (EXERCISE_EMAIL_REGULAR, 'regular'),
+    (EXERCISE_EMAIL_REGULAR, 'etray'),
 )
 
 
@@ -97,7 +98,7 @@ class ExerciseEmail(models.Model):
     subject = models.CharField(max_length=250, blank=True, null=True)
     email_from_email = models.CharField(max_length=250, blank=True, null=True)
     email_from_name = models.CharField(max_length=250, blank=True, null=True)
-    type = models.IntegerField(choices=EXERCISE_EMAIL_TYPES)
+    type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 
     attachments = models.ManyToManyField(ExerciseAttachment)
@@ -112,10 +113,21 @@ class ExerciseWebPages(models.Model):
     id = models.AutoField(primary_key=True)
 
     subject = models.CharField(max_length=250, blank=True, null=True)
-    email_from_email = models.CharField(max_length=250, blank=True, null=True)
-    email_from_name = models.CharField(max_length=250, blank=True, null=True)
-    type = models.IntegerField(choices=EXERCISE_EMAIL_TYPES)
+    url = models.CharField(max_length=250, blank=True, null=True)
+    type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 
-    attachments = models.ManyToManyField(ExerciseAttachment)
-    replies = models.ManyToManyField(ExerciseEmailReply)
+
+class ExerciseURL(models.Model):
+
+    def __str__(self):
+        return self.subject
+
+    id = models.AutoField(primary_key=True)
+
+    subject = models.CharField(max_length=250, blank=True, null=True)
+    actual_url = models.CharField(max_length=250, blank=True, null=True)
+    real_url = models.CharField(max_length=250, blank=True, null=True)
+    type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
+
+    web_page = models.ForeignKey(ExerciseWebPages, on_delete=models.CASCADE)

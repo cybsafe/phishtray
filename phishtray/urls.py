@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 
+admin.site.site_header = 'Phishtray Administration'
+
 urlpatterns = [
     path('exercise/', include('exercise.urls', namespace="exercise")),
     path('admin/', admin.site.urls),
