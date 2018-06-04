@@ -7,6 +7,7 @@ from django.urls import reverse
 from exercise.models import Exercise
 from participant.models import Participant, ParticipantProfile
 from utils import helpers
+from rest_framework import serializers, viewsets
 
 
 def index(request, link):
@@ -47,3 +48,15 @@ def start(request, link, p_id):
     exercise = get_object_or_404(Exercise, pk=e_id[0])
     context = {'exercise': exercise, 'exercise_keys': exercise.exercisekey_set.all()}
     return render(request, 'start.html', context)
+
+
+class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Exercise
+        fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes',
+                  'created_date', 'modified_date')
+
+
+class ExerciseViewSet(viewsets.ModelViewSet):
+    queryset = Exercise.objects.all()
+    serializer_class = ExerciseSerializer
