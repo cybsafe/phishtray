@@ -43,7 +43,7 @@ class Exercise(models.Model):
     @property
     def link(self):
         return helpers.hasher.encode(self.id)
-
+ 
 
 class ExerciseKey(models.Model):
 
