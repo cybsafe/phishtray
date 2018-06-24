@@ -28,9 +28,6 @@ export default class Header extends Component {
           flexDirection: 'row',
           height: 80,
           borderBottom: '1px solid #e6e6e6',
-          position: 'fixed',
-          width: '100%',
-          zIndex: 100,
           backgroundColor: '#fff',
         })}
       >

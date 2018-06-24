@@ -11,7 +11,6 @@ const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
   minHeight: '100%',
-  marginTop: '80px',
 });
 
 const EmailList = styled('div')({

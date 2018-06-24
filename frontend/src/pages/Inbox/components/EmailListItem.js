@@ -5,10 +5,12 @@ import styled, { css } from 'react-emotion';
 const Container = styled('div')(
   {
     padding: '30px',
-    paddingLeft: '20px',
+    paddingLeft: '14px',
+    borderLeft: '6px solid transparent',
   },
   props => ({
     backgroundColor: props.isSelected ? '#1C8BF4' : 'inherit',
+    borderLeftColor: props.isSelected ? '#f4c760' : 'transparent',
   })
 );
 
