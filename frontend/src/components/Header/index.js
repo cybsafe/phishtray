@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 const SectionHeader = styled('div')({
   display: 'flex',
   flex: 0,
-  flexBasis: 400,
+  flexBasis: 320,
   borderTopRightRadius: '5px',
   alignItems: 'center',
   justifyContent: 'center',
@@ -33,7 +33,6 @@ export default class Header extends Component {
         <Switch>
           <Route
             path="/inbox"
-            exact={true}
             render={() => (
               <SectionHeader className={css({ backgroundColor: '#1C8BF4' })}>
                 <HeaderText>Inbox</HeaderText>

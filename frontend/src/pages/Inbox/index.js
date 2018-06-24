@@ -1,18 +1,43 @@
-import React, { PureComponent } from 'react';
-import { Route, Link } from 'react-router-dom';
+import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
+import styled from 'react-emotion';
 
-const Email = () => (
-  <div />
-);
+import { getAllEmails } from '../../data/emails';
 
-export default class Inbox extends PureComponent {
+import EmailDetail from './components/EmailDetail';
+import EmailListItem from './components/EmailListItem';
+
+const Container = styled('div')({
+  display: 'flex',
+  flexDirection: 'row',
+  minHeight: '100%',
+});
+
+const EmailList = styled('div')({
+  flex: 0,
+  flexBasis: 320,
+  backgroundColor: '#1B87EC',
+  minHeight: '100%',
+});
+
+const EmailContainer = styled('div')({
+  flex: 1,
+});
+
+export default class Inbox extends Component {
   render() {
     const { match } = this.props;
+    const emails = getAllEmails();
+
     return (
-      <div>
-        <h2>Inbox</h2>
-        <Route path={`${match.url}/:emailId`} component={Email} />
-      </div>
+      <Container>
+        <EmailList>
+          {emails.map(email => <EmailListItem key={email.id} email={email} />)}
+        </EmailList>
+        <EmailContainer>
+          <Route path={`${match.url}/:emailId`} component={EmailDetail} />
+        </EmailContainer>
+      </Container>
     );
   }
 }
