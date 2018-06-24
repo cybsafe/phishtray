@@ -49,36 +49,31 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <Container>
-          <Sidebar>
-            <div
-              className={css({
-                height: 80,
-                width: '100%',
-                backgroundColor: '#1D1B1C',
-              })}
-            />
-            <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
-              Inbox
-            </SidebarLink>
-            <SidebarLink to="/accounts">Accounts</SidebarLink>
-            <SidebarLink to="/contacts">Contacts</SidebarLink>
-            <SidebarLink to="/web">Web</SidebarLink>
-            <SidebarLink to="/files">Files</SidebarLink>
-          </Sidebar>
+        <div className={css({ height: '100%', minHeight: '100%' })}>
+          <Header />
+          <Container>
+            <Sidebar>
+              <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
+                Inbox
+              </SidebarLink>
+              <SidebarLink to="/accounts">Accounts</SidebarLink>
+              <SidebarLink to="/contacts">Contacts</SidebarLink>
+              <SidebarLink to="/web">Web</SidebarLink>
+              <SidebarLink to="/files">Files</SidebarLink>
+            </Sidebar>
 
-          <div className={css({ flex: 1 })}>
-            <Header />
-            <Switch>
-              <Route path="/inbox" component={Inbox} />
-              <Route
-                exact
-                path="/"
-                render={() => <Redirect from="/" to="/inbox" />}
-              />
-            </Switch>
-          </div>
-        </Container>
+            <div className={css({ flex: 1 })}>
+              <Switch>
+                <Route path="/inbox" component={Inbox} />
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Redirect from="/" to="/inbox" />}
+                />
+              </Switch>
+            </div>
+          </Container>
+        </div>
       </BrowserRouter>
     );
   }

@@ -31,6 +31,13 @@ export default class Header extends Component {
           backgroundColor: '#fff',
         })}
       >
+        <div
+          className={css({
+            height: 80,
+            width: 160,
+            backgroundColor: '#1D1B1C',
+          })}
+        />
         <Switch>
           <Route
             path="/inbox"
