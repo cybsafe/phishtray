@@ -17,9 +17,7 @@ const EMAILS = [
     },
     id: '6e42899c-b868-4fa6-af3c-5a6bdf2ef66f',
     timestamp: '2018-02-20:15:31.000Z',
-    body: `
-      Hello Ana,
-    `,
+    body: 'Hello Ana',
   },
   {
     subject: 'URGENT: Processed payments',
@@ -28,9 +26,7 @@ const EMAILS = [
     },
     id: '5bdebcf9-7911-4757-befd-d2bc86f0ffdb',
     timestamp: '2018-02-20:15:31.000Z',
-    body: `
-      Hello Ana,
-    `,
+    body: 'Hello Ana',
   },
   {
     subject: 'Cool pic',
@@ -40,9 +36,7 @@ const EMAILS = [
     },
     id: '261ef797-4b88-4c60-94db-7e4ab31682e8',
     timestamp: '2018-02-20:15:31.000Z',
-    body: `
-      Hello Ana,
-    `,
+    body: 'Check this out! Maybe we could use it for a flyer ;)',
   },
   {
     subject: 'Refund participant',
@@ -51,9 +45,7 @@ const EMAILS = [
     },
     id: '54476574-cc91-4e9a-b366-424b0aaed34d',
     timestamp: '2018-02-20:15:31.000Z',
-    body: `
-      Hello Ana,
-    `,
+    body: 'Hello Ana',
   },
   {
     subject: 'Suspicious Activity',
@@ -62,9 +54,7 @@ const EMAILS = [
     },
     id: 'ec705f8a-9492-4ab4-8768-f979bbdba760',
     timestamp: '2018-02-20:15:31.000Z',
-    body: `
-      Hello Ana,
-    `,
+    body: 'Hello Ana',
   },
 ];
 
