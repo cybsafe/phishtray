@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react';
-import { BrowserRouter, Route, Redirect, Link } from 'react-router-dom';
+import React, { Component } from 'react';
+import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 
 import Inbox from './pages/Inbox';
+import Header from './components/Header';
 
 const Container = styled('div')({
   display: 'flex',
@@ -12,6 +13,7 @@ const Container = styled('div')({
 
 const Sidebar = styled('div')({
   flex: 0,
+  flexBasis: '180px',
   height: '100%',
   background: '#161415',
 });
@@ -30,11 +32,11 @@ const StyledLink = styled(Link)(
   })
 );
 
-function SidebarLink({ to, children }) {
+function SidebarLink({ to, children, ...rest }) {
   return (
     <Route path={to}>
       {({ match }) => (
-        <StyledLink to={to} isMatch={!!match}>
+        <StyledLink to={to} isMatch={!!match} {...rest}>
           {children}
         </StyledLink>
       )}
@@ -42,7 +44,7 @@ function SidebarLink({ to, children }) {
   );
 }
 
-class App extends PureComponent {
+class App extends Component {
   render() {
     return (
       <BrowserRouter>
@@ -65,8 +67,15 @@ class App extends PureComponent {
           </Sidebar>
 
           <div className={css({ flex: 1 })}>
-            <Redirect from="/" to="/inbox" />
-            <Route path="/inbox" component={Inbox} />
+            <Header />
+            <Switch>
+              <Route path="/inbox" component={Inbox} />
+              <Route
+                exact
+                path="/"
+                render={() => <Redirect from="/" to="/inbox" />}
+              />
+            </Switch>
           </div>
         </Container>
       </BrowserRouter>
