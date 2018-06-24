@@ -8,12 +8,13 @@ import Header from './components/Header';
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
-  height: '100vh',
+  minHeight: '100%',
+  height: '100%',
 });
 
 const Sidebar = styled('div')({
   flex: 0,
-  flexBasis: '180px',
+  flexBasis: '160px',
   height: '100%',
   background: '#161415',
 });
@@ -21,7 +22,7 @@ const Sidebar = styled('div')({
 const StyledLink = styled(Link)(
   {
     display: 'block',
-    padding: '20px 40px',
+    padding: '20px 30px',
     textDecoration: 'none',
     letterSpacing: '1.5px',
     fontSize: 18,
@@ -66,7 +67,7 @@ class App extends Component {
             <SidebarLink to="/files">Files</SidebarLink>
           </Sidebar>
 
-          <div className={css({ flex: 1 })}>
+          <div className={css({ flex: 1, overflowY: 'scroll' })}>
             <Header />
             <Switch>
               <Route path="/inbox" component={Inbox} />

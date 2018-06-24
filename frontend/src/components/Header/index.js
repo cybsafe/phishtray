@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 const SectionHeader = styled('div')({
   display: 'flex',
   flex: 0,
-  flexBasis: 320,
+  flexBasis: 280,
   borderTopRightRadius: '5px',
   alignItems: 'center',
   justifyContent: 'center',
@@ -28,6 +28,10 @@ export default class Header extends Component {
           flexDirection: 'row',
           height: 80,
           borderBottom: '1px solid #e6e6e6',
+          position: 'fixed',
+          width: '100%',
+          zIndex: 100,
+          backgroundColor: '#fff',
         })}
       >
         <Switch>

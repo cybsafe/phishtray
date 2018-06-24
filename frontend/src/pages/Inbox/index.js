@@ -11,11 +11,12 @@ const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
   minHeight: '100%',
+  marginTop: '80px',
 });
 
 const EmailList = styled('div')({
   flex: 0,
-  flexBasis: 320,
+  flexBasis: 280,
   backgroundColor: '#1B87EC',
   minHeight: '100%',
 });

@@ -3,21 +3,17 @@ const EMAILS = [
     subject: 'Welcome on board!',
     from: {
       name: 'Arther Ardent',
+      photoUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
     },
     id: 'fa59b235-184f-40ba-aae7-daaf48689d22',
     timestamp: '2018-02-20:15:31.000Z',
-    body: `
-      Hello Ana,
-
-      Thank you for helping out with the conference organisation. Great to have you on board!
-
-      We are currently...
-    `,
+    body: `Hello Ana,\n\nThank you for helping out with the conference organisation. Great to have you on board!\n\nWe are currently...`,
   },
   {
     subject: 'Welcome drinks',
     from: {
       name: 'Peter Pollard',
+      photoUrl: 'https://randomuser.me/api/portraits/men/79.jpg',
     },
     id: '6e42899c-b868-4fa6-af3c-5a6bdf2ef66f',
     timestamp: '2018-02-20:15:31.000Z',
@@ -40,6 +36,7 @@ const EMAILS = [
     subject: 'Cool pic',
     from: {
       name: 'Danielle Day',
+      photoUrl: 'https://randomuser.me/api/portraits/women/67.jpg',
     },
     id: '261ef797-4b88-4c60-94db-7e4ab31682e8',
     timestamp: '2018-02-20:15:31.000Z',
