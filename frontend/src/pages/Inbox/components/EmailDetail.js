@@ -14,6 +14,8 @@ const ActionLink = styled('a')({
   letterSpacing: '1.1px',
 });
 
+const FromLink = styled('a')({ fontWeight: 'bold' });
+
 const BodyContainer = styled('div')({
   marginTop: 40,
   color: '#666',
@@ -71,24 +73,22 @@ function EmailInfo({ email }) {
           <Tooltip
             showIcon={false}
             triggerText={`From: ${email.from.name} ${String.fromCharCode(
-              11015
+              8744
             )}`}
           >
-            <p>
-              <img
-                className={css({
-                  width: 70,
-                  height: 70,
-                  borderRadius: '50%',
-                  marginRight: 20,
-                })}
-                src={email.from.photoUrl}
-              />
-              <h2> {email.from.name} </h2>
-
-              <h4 className="bx--tooltip__label">
-                {email.from.role ? email.from.role : ''}
-              </h4>
+            <img
+              className={css({
+                width: 70,
+                height: 70,
+                borderRadius: '50%',
+                marginRight: 20,
+              })}
+              src={email.from.photoUrl}
+            />
+            <h2>{email.from.name}</h2>
+            <br />
+            <p className="bx--tooltip__label">
+              {email.from.role ? email.from.role : ''}
             </p>
             <br />
             <p className={css({ color: '#B8B8B8' })}>
