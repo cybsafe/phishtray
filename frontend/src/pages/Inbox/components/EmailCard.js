@@ -32,6 +32,7 @@ const EmailCard = (props: Props) => (
         marginRight: 20,
       })}
       src={props.photoUrl}
+      alt=""
     />
     <h2>{props.name}</h2>
     <br />

@@ -54,6 +54,7 @@ function EmailInfo({ email }) {
         <img
           className={css({ width: 60, height: 60, borderRadius: '50%' })}
           src={email.from.photoUrl}
+          alt=""
         />
       </div>
       <div
