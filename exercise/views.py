@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 
-# Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
-from exercise.models import Exercise, ExerciseEmail
+from exercise.models import Exercise, ExerciseEmail, ExerciseEmailReply
 from participant.models import Participant, ParticipantProfile
 from utils import helpers
 from rest_framework import serializers, viewsets
+from exercise.serializer import *
 
 
 def index(request, link):
@@ -50,23 +50,10 @@ def start(request, link, p_id):
     return render(request, 'start.html', context)
 
 
-class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Exercise
-        fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes',
-                  'created_date', 'modified_date')
-
-
 class ExerciseViewSet(viewsets.ModelViewSet):
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
 
-
-class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ExerciseEmail
-        # fields = ('id', 'subject', 'email_from_email', 'email_from_name', 'type', 'content','attachments', 'replies')
-        fields = ('id', 'subject', 'email_from_email', 'email_from_name', 'type', 'content')
 
 class ExerciseEmailViewSet(viewsets.ModelViewSet):
     queryset = ExerciseEmail.objects.all()
