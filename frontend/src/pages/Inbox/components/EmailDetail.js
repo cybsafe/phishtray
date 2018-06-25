@@ -51,10 +51,19 @@ function EmailInfo({ email }) {
       })}
     >
       <div className={css({ flex: 0, flexBasis: '60px' })}>
-        <img
-          className={css({ width: 60, height: 60, borderRadius: '50%' })}
-          src={email.from.photoUrl}
-          alt=""
+        <EmailCard
+          name={email.from.name}
+          photoUrl={email.from.photoUrl}
+          role={email.from.role}
+          email={email.from.email}
+          triggerText={
+            <img
+              className={css({ width: 60, height: 60, borderRadius: '50%' })}
+              src={email.from.photoUrl}
+              alt=""
+            />
+          }
+          direction="right"
         />
       </div>
       <div
@@ -80,6 +89,17 @@ function EmailInfo({ email }) {
             photoUrl={email.from.photoUrl}
             role={email.from.role}
             email={email.from.email}
+            triggerText={
+              <a
+                className={css({
+                  textDecoration: 'underline',
+                  display: 'inline-block',
+                })}
+              >
+                {email.from.name ? email.from.name + ' ' : ' '}
+                {String.fromCharCode(8744)}
+              </a>
+            }
           />
         </div>
         <div
@@ -95,6 +115,17 @@ function EmailInfo({ email }) {
             name={'You'}
             photoUrl={'https://randomuser.me/api/portraits/women/83.jpg'}
             email={'you@yourcompany.com'}
+            triggerText={
+              <a
+                className={css({
+                  textDecoration: 'underline',
+                  display: 'inline-block',
+                })}
+              >
+                {'You '}
+                {String.fromCharCode(8744)}
+              </a>
+            }
           />
         </div>
       </div>

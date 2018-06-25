@@ -8,21 +8,15 @@ type Props = {
   photoUrl?: string,
   role?: string,
   email?: string,
+  triggerText?: string,
+  direction?: string,
 };
 
 const EmailCard = (props: Props) => (
   <Tooltip
     showIcon={false}
-    triggerText={
-      <a
-        className={css({
-          textDecoration: 'underline',
-          display: 'inline-block',
-        })}
-      >
-        {props.name ? props.name : ''} {String.fromCharCode(8744)}
-      </a>
-    }
+    triggerText={props.triggerText}
+    direction={props.direction ? props.direction : 'bottom'}
   >
     <img
       className={css({
@@ -34,7 +28,7 @@ const EmailCard = (props: Props) => (
       src={props.photoUrl}
       alt=""
     />
-    <h2>{props.name}</h2>
+    <h2>{props.name ? props.name : ''}</h2>
     <br />
     <p className="bx--tooltip__label">{props.role ? props.role : ''}</p>
     <br />
