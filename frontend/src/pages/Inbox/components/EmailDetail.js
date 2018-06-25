@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
 import format from 'date-fns/format';
 import Markdown from 'react-remarkable';
+import { Tooltip } from 'carbon-components-react';
 
 import { getEmail } from '../../../data/emails';
 
@@ -67,7 +68,31 @@ function EmailInfo({ email }) {
         <div
           className={css({ marginBottom: 10, color: '#B8B8B8', fontSize: 18 })}
         >
-          From: <a href="#">{email.from.name}</a>
+          <Tooltip
+            clickToOpen
+            showIcon={true}
+            triggerText={`From: ${email.from.name} ${String.fromCharCode(
+              11015
+            )}`}
+          >
+            <p>
+              <img
+                className={css({
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  marginRight: 20,
+                })}
+                src={email.from.photoUrl}
+              />
+              <h2> {email.from.name} </h2>
+
+              <h4 className="bx--tooltip__label">
+                {email.from.role ? email.from.role : ''}
+              </h4>
+            </p>
+            <p>{email.from.email ? `E: ${email.from.email}` : ''}</p>
+          </Tooltip>
         </div>
         <div className={css({ color: '#B8B8B8', fontSize: 18 })}>
           To: <a href="#">You</a>
