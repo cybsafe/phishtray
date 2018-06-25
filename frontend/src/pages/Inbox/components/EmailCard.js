@@ -20,7 +20,7 @@ const EmailCard = (props: Props) => (
           display: 'inline-block',
         })}
       >
-        {props.name} {String.fromCharCode(8744)}
+        {props.name ? props.name : ''} {String.fromCharCode(8744)}
       </a>
     }
   >
