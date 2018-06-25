@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
 import format from 'date-fns/format';
 import Markdown from 'react-remarkable';
-import { Tooltip } from 'carbon-components-react';
 
+import EmailCard from './EmailCard';
 import { getEmail } from '../../../data/emails';
 
 const ActionLink = styled('a')({
@@ -13,8 +13,6 @@ const ActionLink = styled('a')({
   fontWeight: 'bold',
   letterSpacing: '1.1px',
 });
-
-const FromLink = styled('a')({ fontWeight: 'bold' });
 
 const BodyContainer = styled('div')({
   marginTop: 40,
@@ -68,36 +66,35 @@ function EmailInfo({ email }) {
         })}
       >
         <div
-          className={css({ marginBottom: 10, color: '#B8B8B8', fontSize: 18 })}
+          className={css({
+            color: '#B8B8B8',
+            fontSize: 18,
+            display: 'flex',
+            flexDirection: 'row',
+          })}
         >
-          <Tooltip
-            showIcon={false}
-            triggerText={`From: ${email.from.name} ${String.fromCharCode(
-              8744
-            )}`}
-          >
-            <img
-              className={css({
-                width: 70,
-                height: 70,
-                borderRadius: '50%',
-                marginRight: 20,
-              })}
-              src={email.from.photoUrl}
-            />
-            <h2>{email.from.name}</h2>
-            <br />
-            <p className="bx--tooltip__label">
-              {email.from.role ? email.from.role : ''}
-            </p>
-            <br />
-            <p className={css({ color: '#B8B8B8' })}>
-              {email.from.email ? `E: ${email.from.email}` : ''}
-            </p>
-          </Tooltip>
+          <p>From: </p>
+          <EmailCard
+            name={email.from.name}
+            photoUrl={email.from.photoUrl}
+            role={email.from.role}
+            email={email.from.email}
+          />
         </div>
-        <div className={css({ color: '#B8B8B8', fontSize: 18 })}>
-          To: <a href="#">You</a>
+        <div
+          className={css({
+            color: '#B8B8B8',
+            fontSize: 18,
+            display: 'flex',
+            flexDirection: 'row',
+          })}
+        >
+          <p>To: </p>
+          <EmailCard
+            name={'You'}
+            photoUrl={'https://randomuser.me/api/portraits/women/83.jpg'}
+            email={'you@yourcompany.com'}
+          />
         </div>
       </div>
       <div
