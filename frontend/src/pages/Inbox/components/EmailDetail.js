@@ -69,8 +69,7 @@ function EmailInfo({ email }) {
           className={css({ marginBottom: 10, color: '#B8B8B8', fontSize: 18 })}
         >
           <Tooltip
-            clickToOpen
-            showIcon={true}
+            showIcon={false}
             triggerText={`From: ${email.from.name} ${String.fromCharCode(
               11015
             )}`}
@@ -78,8 +77,8 @@ function EmailInfo({ email }) {
             <p>
               <img
                 className={css({
-                  width: 60,
-                  height: 60,
+                  width: 70,
+                  height: 70,
                   borderRadius: '50%',
                   marginRight: 20,
                 })}
@@ -91,7 +90,10 @@ function EmailInfo({ email }) {
                 {email.from.role ? email.from.role : ''}
               </h4>
             </p>
-            <p>{email.from.email ? `E: ${email.from.email}` : ''}</p>
+            <br />
+            <p className={css({ color: '#B8B8B8' })}>
+              {email.from.email ? `E: ${email.from.email}` : ''}
+            </p>
           </Tooltip>
         </div>
         <div className={css({ color: '#B8B8B8', fontSize: 18 })}>
