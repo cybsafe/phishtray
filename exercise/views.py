@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
-from exercise.models import Exercise
+from exercise.models import Exercise, ExerciseEmail
 from participant.models import Participant, ParticipantProfile
 from utils import helpers
 from rest_framework import serializers, viewsets
@@ -60,3 +60,15 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
 class ExerciseViewSet(viewsets.ModelViewSet):
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
+
+
+class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ExerciseEmail
+        # fields = ('id', 'subject', 'email_from_email', 'email_from_name', 'type', 'content','attachments', 'replies')
+        fields = ('id', 'subject', 'email_from_email', 'email_from_name', 'type', 'content')
+
+class ExerciseEmailViewSet(viewsets.ModelViewSet):
+    queryset = ExerciseEmail.objects.all()
+    serializer_class = ExerciseEmailSerializer
+
