@@ -24,15 +24,32 @@ const EmailContainer = styled('div')({
   flex: 1,
 });
 
-export default class Inbox extends Component {
+class Inbox extends Component {
+  state = {
+    emails: getAllEmails(),
+  };
+
+  emailRead = emailId => {
+    const updatedEmails = this.state.emails.map(
+      email => (emailId === email.id ? (email.read = true) : email)
+    );
+
+    this.setState({ updatedEmails });
+  };
+
   render() {
     const { match } = this.props;
-    const emails = getAllEmails();
 
     return (
       <Container>
         <EmailList>
-          {emails.map(email => <EmailListItem key={email.id} email={email} />)}
+          {this.state.emails.map(email => (
+            <EmailListItem
+              key={email.id}
+              email={email}
+              emailRead={this.emailRead}
+            />
+          ))}
         </EmailList>
         <EmailContainer>
           <Route path={`${match.url}/:emailId`} component={EmailDetail} />
@@ -41,3 +58,5 @@ export default class Inbox extends Component {
     );
   }
 }
+
+export default Inbox;
