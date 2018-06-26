@@ -98,7 +98,7 @@ class ExerciseEmail(models.Model):
     subject = models.CharField(max_length=250, blank=True, null=True)
     from_address = models.CharField(max_length=250, blank=True, null=True)
     from_name = models.CharField(max_length=250, blank=True, null=True)
-    type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
+    phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 
     attachments = models.ManyToManyField(ExerciseAttachment)

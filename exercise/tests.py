@@ -90,6 +90,7 @@ class ExerciseEmailTests(TestCase):
         self.assertEqual(json_data[1]['subject'], 'test email from unit test case-2')
         self.assertEqual(json_data[1]['from_address'], 'test2@cybsafe.com')
         self.assertEqual(json_data[1]['from_name'], 'Cybsafe Admin-2')
+        self.assertEqual(json_data[1]['phish_type'], 1)
         self.assertEqual(json_data[1]['replies'][0]['id'], 1)
         self.assertEqual(json_data[1]['replies'][0]['content'], 'cybsafe-client@cybsafe.com')
         self.assertEqual(json_data[1]['attachments'][0]['id'], 1)
@@ -100,6 +101,7 @@ class ExerciseEmailTests(TestCase):
         self.assertEqual(json_data['subject'], 'test email from unit test case')
         self.assertEqual(json_data['from_address'], 'test@cybsafe.com')
         self.assertEqual(json_data['from_name'], 'Cybsafe Admin')
+        self.assertEqual(json_data['phish_type'], 0)
         self.assertEqual(json_data['replies'][0]['id'], 1)
         self.assertEqual(json_data['replies'][0]['content'], 'cybsafe-client@cybsafe.com')
         self.assertEqual(json_data['attachments'][0]['id'], 1)
@@ -121,7 +123,7 @@ class ExerciseEmailTests(TestCase):
             subject='test email from unit test case',
             from_address='test@cybsafe.com',
             from_name='Cybsafe Admin',
-            type=0,
+            phish_type=0,
             content="Hello world",
         )
         email1.save()
@@ -132,7 +134,7 @@ class ExerciseEmailTests(TestCase):
             subject='test email from unit test case-2',
             from_address='test2@cybsafe.com',
             from_name='Cybsafe Admin-2',
-            type=0,
+            phish_type=1,
             content="Hello world-2")
         email2.save()
         email2.replies.add(replies)
