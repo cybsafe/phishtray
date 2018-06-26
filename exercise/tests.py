@@ -76,17 +76,64 @@ class ExerciseEmailTests(TestCase):
         response = self.client.get('/exercise/emails/1/')
         self.assertEqual(response.status_code, 200)
         json_data = json.loads(response.content)
+        self.assertEmail1(json_data)
+
+    def test_emails_list(self):
+        self.create_emails()
+
+        response = self.client.get('/exercise/emails/list/')
+        self.assertEqual(response.status_code, 200)
+        json_data = json.loads(response.content)
+        self.assertEmail1(json_data[0])
+
+        self.assertEqual(json_data[1]['id'], 2)
+        self.assertEqual(json_data[1]['subject'], 'test email from unit test case-2')
+        self.assertEqual(json_data[1]['from_address'], 'test2@cybsafe.com')
+        self.assertEqual(json_data[1]['from_name'], 'Cybsafe Admin-2')
+        self.assertEqual(json_data[1]['replies'][0]['id'], 1)
+        self.assertEqual(json_data[1]['replies'][0]['content'], 'cybsafe-client@cybsafe.com')
+        self.assertEqual(json_data[1]['attachments'][0]['id'], 1)
+        self.assertEqual(json_data[1]['attachments'][0]['filename'], 'location of file name')
+
+    def assertEmail1(self, json_data):
         self.assertEqual(json_data['id'], 1)
         self.assertEqual(json_data['subject'], 'test email from unit test case')
         self.assertEqual(json_data['from_address'], 'test@cybsafe.com')
         self.assertEqual(json_data['from_name'], 'Cybsafe Admin')
+        self.assertEqual(json_data['replies'][0]['id'], 1)
+        self.assertEqual(json_data['replies'][0]['content'], 'cybsafe-client@cybsafe.com')
+        self.assertEqual(json_data['attachments'][0]['id'], 1)
+        self.assertEqual(json_data['attachments'][0]['filename'], 'location of file name')
 
     def create_emails(self):
+        replies = ExerciseEmailReply(
+            id=1,
+            content='cybsafe-client@cybsafe.com'
+        )
+        replies.save()
+        attachment = ExerciseAttachment(
+            id = 1,
+            filename ='location of file name'
+        )
+        attachment.save()
         email1 = ExerciseEmail(
             id=1,
             subject='test email from unit test case',
             from_address='test@cybsafe.com',
             from_name='Cybsafe Admin',
             type=0,
-            content="Hello world")
+            content="Hello world",
+        )
         email1.save()
+        email1.replies.add(replies)
+        email1.attachments.add(attachment)
+        email2 = ExerciseEmail(
+            id=2,
+            subject='test email from unit test case-2',
+            from_address='test2@cybsafe.com',
+            from_name='Cybsafe Admin-2',
+            type=0,
+            content="Hello world-2")
+        email2.save()
+        email2.replies.add(replies)
+        email2.attachments.add(attachment)
