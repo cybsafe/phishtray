@@ -77,18 +77,16 @@ class ExerciseEmailTests(TestCase):
         self.assertEqual(response.status_code, 200)
         json_data = json.loads(response.content)
         self.assertEqual(json_data['id'], 1)
-        self.assertEqual(json_data['title'], 'first exercise')
-        self.assertEqual(json_data['description'], 'test desc')
-        self.assertEqual(json_data['length_minutes'], 10)
-        self.assertIsNotNone(json_data['created_date'])
-        self.assertIsNotNone(json_data['modified_date'])
+        self.assertEqual(json_data['subject'], 'test email from unit test case')
+        self.assertEqual(json_data['from_address'], 'test@cybsafe.com')
+        self.assertEqual(json_data['from_name'], 'Cybsafe Admin')
 
     def create_emails(self):
         email1 = ExerciseEmail(
             id=1,
             subject='test email from unit test case',
-            email_from_email='test@cybsafe.com',
-            email_from_name ='Cybsafe Admin',
-            type = 0,
-            content = "Hello world")
+            from_address='test@cybsafe.com',
+            from_name='Cybsafe Admin',
+            type=0,
+            content="Hello world")
         email1.save()

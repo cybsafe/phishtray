@@ -20,7 +20,7 @@ class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ExerciseEmail
-        fields = ('id', 'subject', 'email_from_email', 'email_from_name', 'type', 'content','attachments', 'replies')
+        fields = ('id', 'subject', 'from_address', 'from_name', 'type', 'content','attachments', 'replies')
 
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):

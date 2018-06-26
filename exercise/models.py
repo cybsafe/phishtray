@@ -96,8 +96,8 @@ class ExerciseEmail(models.Model):
     id = models.AutoField(primary_key=True)
 
     subject = models.CharField(max_length=250, blank=True, null=True)
-    email_from_email = models.CharField(max_length=250, blank=True, null=True)
-    email_from_name = models.CharField(max_length=250, blank=True, null=True)
+    from_address = models.CharField(max_length=250, blank=True, null=True)
+    from_name = models.CharField(max_length=250, blank=True, null=True)
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 
