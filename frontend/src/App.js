@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 
 import Inbox from './pages/Inbox';
+import Accounts from './pages/Accounts';
 import Header from './components/Header';
 
 const Container = styled('div')({
@@ -65,6 +66,7 @@ class App extends Component {
             <div className={css({ flex: 1 })}>
               <Switch>
                 <Route path="/inbox" component={Inbox} />
+                <Route path="/accounts" component={Accounts} />
                 <Route
                   exact
                   path="/"
