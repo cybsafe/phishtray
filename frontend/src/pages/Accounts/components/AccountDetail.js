@@ -14,12 +14,9 @@ const ActionLink = styled('a')({
 });
 
 const BodyContainer = styled('div')({
-  marginTop: 40,
-  color: '#666',
-  '& p': {
-    marginBottom: 20,
-    fontSize: 20,
-  },
+  maxWidth: 880,
+  margin: '0 auto',
+  padding: '0 40px',
 });
 
 const Spacer = styled('div')({
@@ -57,13 +54,7 @@ export default class Account extends Component {
     const account = getAccount(id);
 
     return (
-      <div
-        className={css({
-          maxWidth: 880,
-          margin: '0 auto',
-          padding: '0 40px',
-        })}
-      >
+      <BodyContainer>
         <h3
           className={css({
             marginTop: 40,
@@ -80,7 +71,7 @@ export default class Account extends Component {
           {account.data.map(account => <AccountInfo account={account} />)}
         </section>
 
-      </div>
+      </BodyContainer>
     );
   }
 }
