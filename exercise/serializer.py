@@ -5,7 +5,7 @@ from exercise.models import *
 class ExerciseEmailReplySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ExerciseEmailReply
-        fields = ('id', 'content')
+        fields = ('id', 'reply_type', 'message')
 
 
 class ExerciseAttachmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -20,7 +20,7 @@ class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ExerciseEmail
-        fields = ('id', 'subject', 'from_address', 'from_name', 'phish_type', 'content','attachments', 'replies')
+        fields = ('id', 'subject', 'from_address', 'from_name', 'to_address', 'to_name', 'phish_type', 'content','attachments', 'replies')
 
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):

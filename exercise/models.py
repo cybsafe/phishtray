@@ -23,6 +23,11 @@ EXERCISE_PHISH_TYPES = (
     (EXERCISE_EMAIL_REGULAR, 'etray'),
 )
 
+EXERCISE_REPLY_TYPE = (
+    (0, 'reply'),
+    (1, 'forward')
+)
+
 
 class Exercise(models.Model):
 
@@ -85,7 +90,9 @@ class ExerciseEmailReply(models.Model):
 
     id = models.AutoField(primary_key=True)
 
-    content = models.TextField(null=True, blank=True)
+    reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
+
+    message = models.TextField(null=True, blank=True)
 
 
 class ExerciseEmail(models.Model):
@@ -98,6 +105,8 @@ class ExerciseEmail(models.Model):
     subject = models.CharField(max_length=250, blank=True, null=True)
     from_address = models.CharField(max_length=250, blank=True, null=True)
     from_name = models.CharField(max_length=250, blank=True, null=True)
+    to_address = models.CharField(max_length=250, blank=True, null=True)
+    to_name = models.CharField(max_length=250, blank=True, null=True)
     phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 

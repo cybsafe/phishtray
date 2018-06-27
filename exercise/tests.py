@@ -90,9 +90,12 @@ class ExerciseEmailTests(TestCase):
         self.assertEqual(json_data[1]['subject'], 'test email from unit test case-2')
         self.assertEqual(json_data[1]['from_address'], 'test2@cybsafe.com')
         self.assertEqual(json_data[1]['from_name'], 'Cybsafe Admin-2')
+        self.assertEqual(json_data[1]['to_address'], 'sendTo2@cybsafe.com')
+        self.assertEqual(json_data[1]['to_name'], 'Cybsafe Admin-2')
         self.assertEqual(json_data[1]['phish_type'], 1)
         self.assertEqual(json_data[1]['replies'][0]['id'], 1)
-        self.assertEqual(json_data[1]['replies'][0]['content'], 'cybsafe-client@cybsafe.com')
+        self.assertEqual(json_data[1]['replies'][0]['reply_type'], 1)
+        self.assertEqual(json_data[1]['replies'][0]['message'], 'I have received your email-1')
         self.assertEqual(json_data[1]['attachments'][0]['id'], 1)
         self.assertEqual(json_data[1]['attachments'][0]['filename'], 'location of file name')
 
@@ -101,16 +104,22 @@ class ExerciseEmailTests(TestCase):
         self.assertEqual(json_data['subject'], 'test email from unit test case')
         self.assertEqual(json_data['from_address'], 'test@cybsafe.com')
         self.assertEqual(json_data['from_name'], 'Cybsafe Admin')
+        self.assertEqual(json_data['to_address'], 'sendTo1@cybsafe.com')
+        self.assertEqual(json_data['to_name'], 'Cybsafe Admin-1')
         self.assertEqual(json_data['phish_type'], 0)
         self.assertEqual(json_data['replies'][0]['id'], 1)
-        self.assertEqual(json_data['replies'][0]['content'], 'cybsafe-client@cybsafe.com')
+        self.assertEqual(json_data['replies'][0]['reply_type'], 1)
+        self.assertEqual(json_data['replies'][0]['message'], 'I have received your email-1')
         self.assertEqual(json_data['attachments'][0]['id'], 1)
         self.assertEqual(json_data['attachments'][0]['filename'], 'location of file name')
 
-    def create_emails(self):
+    @staticmethod
+    def create_emails():
         replies = ExerciseEmailReply(
             id=1,
-            content='cybsafe-client@cybsafe.com'
+            reply_type=1,
+            message='I have received your email-1'
+
         )
         replies.save()
         attachment = ExerciseAttachment(
@@ -123,6 +132,8 @@ class ExerciseEmailTests(TestCase):
             subject='test email from unit test case',
             from_address='test@cybsafe.com',
             from_name='Cybsafe Admin',
+            to_address='sendTo1@cybsafe.com',
+            to_name='Cybsafe Admin-1',
             phish_type=0,
             content="Hello world",
         )
@@ -134,6 +145,8 @@ class ExerciseEmailTests(TestCase):
             subject='test email from unit test case-2',
             from_address='test2@cybsafe.com',
             from_name='Cybsafe Admin-2',
+            to_address='sendTo2@cybsafe.com',
+            to_name='Cybsafe Admin-2',
             phish_type=1,
             content="Hello world-2")
         email2.save()
