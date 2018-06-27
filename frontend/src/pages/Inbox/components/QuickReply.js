@@ -4,7 +4,6 @@ import Button from './../../../components/Button/ReplyButton';
 
 type Props = {
   replies: Array<*>,
-  emailReply?: () => void,
 };
 
 const QuickReply = (props: Props) =>
@@ -14,11 +13,7 @@ const QuickReply = (props: Props) =>
       reply.id &&
       reply.type &&
       reply.message && (
-        <Button
-          key={reply.id}
-          content={reply.type}
-          sendReply={props.emailReply}
-        />
+        <Button key={reply.id} content={reply.type} email={reply.message} />
       )
   );
 

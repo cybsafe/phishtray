@@ -49,7 +49,13 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <div className={css({ height: '100%', minHeight: '100%' })}>
+        <div
+          className={css({
+            height: '100%',
+            minHeight: '100%',
+            overflow: 'hidden',
+          })}
+        >
           <Header />
           <Container>
             <Sidebar>
@@ -62,7 +68,7 @@ class App extends Component {
               <SidebarLink to="/files">Files</SidebarLink>
             </Sidebar>
 
-            <div className={css({ flex: 1 })}>
+            <div className={css({ flex: 1, overflow: 'auto' })}>
               <Switch>
                 <Route path="/inbox" component={Inbox} />
                 <Route
