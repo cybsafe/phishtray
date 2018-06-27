@@ -5,6 +5,7 @@ import { Button as CarbonButton } from 'carbon-components-react';
 
 export type Props = {
   content: string,
+  sendReply: () => {},
 };
 
 const ReplyButton = styled(CarbonButton)`
@@ -23,6 +24,8 @@ const ReplyButton = styled(CarbonButton)`
   }
 `;
 
-const Button = (props: Props) => <ReplyButton>{props.content}</ReplyButton>;
+const Button = (props: Props) => (
+  <ReplyButton onClick={props.sendReply}>{props.content}</ReplyButton>
+);
 
 export default Button;
