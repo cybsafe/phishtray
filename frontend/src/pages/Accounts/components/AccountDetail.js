@@ -31,7 +31,6 @@ function AccountInfo({ credentials }) {
 
 export default class Account extends Component {
   render() {
-    console.log(this.props);
     const { match } = this.props;
     const {
       params: { id },
