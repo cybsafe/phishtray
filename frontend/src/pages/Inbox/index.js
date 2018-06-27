@@ -6,6 +6,7 @@ import { getAllEmails } from '../../data/emails';
 
 import EmailDetail from './components/EmailDetail';
 import EmailListItem from './components/EmailListItem';
+import QuickReply from './components/QuickReply';
 
 const Container = styled('div')({
   display: 'flex',

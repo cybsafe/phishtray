@@ -4,6 +4,7 @@ import format from 'date-fns/format';
 import Markdown from 'react-remarkable';
 
 import { getEmail } from '../../../data/emails';
+import QuickReply from './QuickReply';
 
 const ActionLink = styled('a')({
   marginRight: 20,
@@ -119,6 +120,7 @@ export default class Email extends Component {
         </h3>
 
         <Markdown source={email.body} container={BodyContainer} />
+        {email.replies && <QuickReply replies={email.replies} />}
       </div>
     );
   }

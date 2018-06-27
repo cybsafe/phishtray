@@ -27,6 +27,10 @@ const EMAILS = [
     id: '5bdebcf9-7911-4757-befd-d2bc86f0ffdb',
     timestamp: '2018-02-20:15:31.000Z',
     body: 'Hello Ana',
+    replies: [
+      { id: 5, type: 'reply', message: "I'm really sorry that can't be done" },
+      { id: 6, type: 'forward', message: 'hey you should see this' },
+    ],
   },
   {
     subject: 'Cool pic',
