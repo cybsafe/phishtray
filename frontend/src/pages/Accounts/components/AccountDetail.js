@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
-import format from 'date-fns/format';
-import Markdown from 'react-remarkable';
 
 import { getAccount } from '../../../data/accounts';
-
-const ActionLink = styled('a')({
-  marginRight: 20,
-  textDecoration: 'none',
-  color: '#B8B8B8',
-  fontWeight: 'bold',
-  letterSpacing: '1.1px',
-});
 
 const BodyContainer = styled('div')({
   maxWidth: 880,
@@ -28,20 +18,14 @@ const Spacer = styled('div')({
   },
 });
 
-function AccountInfo({ account }) {
+function AccountInfo({ credentials }) {
   return (
-    <div
-      class="bx--structured-list-row"
-    >
-      <div class="bx--structured-list-td bx--structured-list-content--nowrap">
-        {account.key}
+    <div className="bx--structured-list-row">
+      <div className="bx--structured-list-td bx--structured-list-content--nowrap">
+        {credentials.key}
       </div>
-      <div class="bx--structured-list-td">
-        {account.value}
-      </div>
-
-  </div>
-
+      <div className="bx--structured-list-td">{credentials.value}</div>
+    </div>
   );
 }
 
@@ -66,11 +50,12 @@ export default class Account extends Component {
           {account.name}
         </h3>
 
-        <Spacer/>
-        <section class="bx--structured-list">
-          {account.data.map(account => <AccountInfo account={account} />)}
+        <Spacer />
+        <section className="bx--structured-list">
+          {account.data.map(credentials => (
+            <AccountInfo key={credentials.id} credentials={credentials} />
+          ))}
         </section>
-
       </BodyContainer>
     );
   }
