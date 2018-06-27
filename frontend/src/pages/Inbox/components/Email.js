@@ -3,8 +3,11 @@ import styled, { css } from 'react-emotion';
 import format from 'date-fns/format';
 import Markdown from 'react-remarkable';
 
-import { getEmail } from '../../../data/emails';
 import QuickReply from './QuickReply';
+
+type Props = {
+  email: Object,
+};
 
 const ActionLink = styled('a')({
   marginRight: 20,
@@ -89,14 +92,8 @@ function EmailInfo({ email }) {
   );
 }
 
-export default class Email extends Component {
+export default class Email extends Component<Props> {
   render() {
-    const { match } = this.props;
-    const {
-      params: { emailId },
-    } = match;
-    const email = getEmail(emailId);
-
     return (
       <div
         className={css({
@@ -106,7 +103,7 @@ export default class Email extends Component {
         })}
       >
         <EmailActions />
-        <EmailInfo email={email} />
+        <EmailInfo email={this.props.email} />
 
         <h3
           className={css({
@@ -116,11 +113,16 @@ export default class Email extends Component {
             letterSpacing: '1.2px',
           })}
         >
-          {email.subject}
+          {this.props.email.subject}
         </h3>
 
-        <Markdown source={email.body} container={BodyContainer} />
-        {email.replies && <QuickReply replies={email.replies} />}
+        <Markdown source={this.props.email.body} container={BodyContainer} />
+        {this.props.email.replies && (
+          <QuickReply
+            key={this.props.email.id}
+            replies={this.props.email.replies}
+          />
+        )}
       </div>
     );
   }

@@ -4,7 +4,7 @@ import styled from 'react-emotion';
 
 import { getAllEmails } from '../../data/emails';
 
-import EmailDetail from './components/EmailDetail';
+import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
 
 const Container = styled('div')({
@@ -35,7 +35,7 @@ export default class Inbox extends Component {
           {emails.map(email => <EmailListItem key={email.id} email={email} />)}
         </EmailList>
         <EmailContainer>
-          <Route path={`${match.url}/:emailId`} component={EmailDetail} />
+          <Route path={`${match.url}/:emailId`} component={EmailChain} />
         </EmailContainer>
       </Container>
     );
