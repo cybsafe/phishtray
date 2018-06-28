@@ -52,8 +52,10 @@ class ExerciseRestTests(TestCase):
         self.assertEqual(json_data['length_minutes'], 10)
         self.assertIsNotNone(json_data['created_date'])
         self.assertIsNotNone(json_data['modified_date'])
+        ExerciseEmailTests.assertFirstEmail(self, json_data['emails'][0])
 
-    def create_exercise(self):
+    @staticmethod
+    def create_exercise():
         exercise = Exercise(
             id=1,
             title='first exercise',
@@ -61,6 +63,32 @@ class ExerciseRestTests(TestCase):
             length_minutes=10
         )
         exercise.save()
+        replies = ExerciseEmailReply(
+            id=1,
+            reply_type=1,
+            message='I have received your email-1'
+
+        )
+        replies.save()
+        attachment = ExerciseAttachment(
+            id = 1,
+            filename ='location of file name'
+        )
+        attachment.save()
+        email1 = ExerciseEmail(
+            id=1,
+            subject='test email from unit test case',
+            from_address='test@cybsafe.com',
+            from_name='Cybsafe Admin',
+            to_address='sendTo1@cybsafe.com',
+            to_name='Cybsafe Admin-1',
+            phish_type=0,
+            content="Hello world",
+        )
+        email1.save()
+        email1.replies.add(replies)
+        email1.attachments.add(attachment)
+        exercise.emails.add(email1)
 
 
 class ExerciseEmailTests(TestCase):
@@ -76,7 +104,7 @@ class ExerciseEmailTests(TestCase):
         response = self.client.get('/exercise/emails/1/')
         self.assertEqual(response.status_code, 200)
         json_data = json.loads(response.content)
-        self.assertEmail1(json_data)
+        self.assertFirstEmail(self, json_data)
 
     def test_emails_list(self):
         self.create_emails()
@@ -84,7 +112,7 @@ class ExerciseEmailTests(TestCase):
         response = self.client.get('/exercise/emails/list/')
         self.assertEqual(response.status_code, 200)
         json_data = json.loads(response.content)
-        self.assertEmail1(json_data[0])
+        self.assertFirstEmail(self, json_data[0])
 
         self.assertEqual(json_data[1]['id'], 2)
         self.assertEqual(json_data[1]['subject'], 'test email from unit test case-2')
@@ -99,7 +127,8 @@ class ExerciseEmailTests(TestCase):
         self.assertEqual(json_data[1]['attachments'][0]['id'], 1)
         self.assertEqual(json_data[1]['attachments'][0]['filename'], 'location of file name')
 
-    def assertEmail1(self, json_data):
+    @staticmethod
+    def assertFirstEmail(self, json_data):
         self.assertEqual(json_data['id'], 1)
         self.assertEqual(json_data['subject'], 'test email from unit test case')
         self.assertEqual(json_data['from_address'], 'test@cybsafe.com')
