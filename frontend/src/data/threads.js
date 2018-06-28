@@ -3,6 +3,7 @@ const THREADS = [
     id: '0',
     subject: 'Welcome on board!',
     from: 'Arther Ardent',
+    read: 'false',
     emails: [
       {
         subject: 'Welcome on board!',
@@ -22,6 +23,7 @@ const THREADS = [
     id: '1',
     subject: 'Welcome drink',
     from: 'Peter Pollard',
+    read: 'false',
     emails: [
       {
         subject: 'Welcome drinks',
@@ -88,6 +90,7 @@ const THREADS = [
     id: '2',
     subject: 'URGENT: Processed payments',
     from: 'Bea Bright',
+    read: 'false',
     emails: [
       {
         subject: 'URGENT: Processed payments',
@@ -119,6 +122,7 @@ const THREADS = [
     id: '3',
     subject: 'Cool pic',
     from: 'Danielle Day',
+    read: 'false',
     emails: [
       {
         subject: 'Cool pic',
@@ -137,6 +141,7 @@ const THREADS = [
     id: '4',
     subject: 'Refund participant',
     from: 'Geoff Dave',
+    read: 'false',
     emails: [
       {
         subject: 'Refund participant',
@@ -154,6 +159,7 @@ const THREADS = [
     id: '5',
     subject: 'Suspicious Activity',
     from: 'MoneyTransfer',
+    read: 'false',
     emails: [
       {
         subject: 'Suspicious Activity',
