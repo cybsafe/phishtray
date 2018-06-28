@@ -19,6 +19,14 @@ const ActionLink = styled('a')({
   letterSpacing: '1.1px',
 });
 
+const EmailField = styled('div')({
+  color: '#B8B8B8',
+  fontSize: 18,
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+});
+
 const BodyContainer = styled('div')({
   marginTop: 40,
   color: '#666',
@@ -80,15 +88,7 @@ function EmailInfo({ email }) {
           marginTop: 10,
         })}
       >
-        <div
-          className={css({
-            color: '#B8B8B8',
-            fontSize: 18,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          })}
-        >
+        <EmailField>
           <p>From: </p>
           <EmailCard
             name={email.from.name}
@@ -107,16 +107,8 @@ function EmailInfo({ email }) {
               </a>
             }
           />
-        </div>
-        <div
-          className={css({
-            color: '#B8B8B8',
-            fontSize: 18,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          })}
-        >
+        </EmailField>
+        <EmailField>
           <p>To: </p>
           <EmailCard
             name={'You'}
@@ -134,7 +126,7 @@ function EmailInfo({ email }) {
               </a>
             }
           />
-        </div>
+        </EmailField>
       </div>
       <div
         className={css({
