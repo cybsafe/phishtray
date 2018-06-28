@@ -14,11 +14,11 @@ const Cell = styled('td')(
   })
 );
 
-export default function FileListItem({ file, isOdd, files, handleDelete }) {
+export default function FileListItem({ file, isOdd, files, deleteFileHandler, displayFileModalHandler }) {
   const checkboxId = `checkbox-file-${file.id}`;
   return (
     <tr>
-      <Cell isOdd={isOdd} className={css({ paddingLeft: 20 })}>
+      <Cell isOdd={isOdd} className={css({ paddingLeft: 20 })} onClick={() => displayFileModalHandler(file.fileUrl)}>
         <Checkbox
           defaultChecked={false}
           indeterminate={true}
@@ -31,7 +31,7 @@ export default function FileListItem({ file, isOdd, files, handleDelete }) {
       <Cell isOdd={isOdd}>{file.dateCreated}</Cell>
       <Cell isOdd={isOdd}>
         <a
-          onClick={() => handleDelete(file.id)}
+          onClick={() => deleteFileHandler(file.id)}
           className={css({
             fontSize: 16,
             fontWeight: 400,

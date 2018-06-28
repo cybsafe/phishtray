@@ -55,6 +55,14 @@ export default class Header extends Component {
               </SectionHeader>
             )}
           />
+          <Route
+            path="/files"
+            render={() => (
+              <SectionHeader className={css({ backgroundColor: '#1C8BF4' })}>
+                <HeaderText>Files</HeaderText>
+              </SectionHeader>
+            )}
+          />
         </Switch>
       </div>
     );

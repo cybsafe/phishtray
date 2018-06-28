@@ -5,6 +5,7 @@ import { remove } from 'lodash';
 import { getAllFiles } from '../../data/files';
 
 import FileListItem from './components/FileListItem';
+import FileModal from './components/FileModal';
 
 const columns = [
   {
@@ -65,25 +66,68 @@ function TableHead() {
 export default class FileManager extends Component {
   constructor() {
     super();
-    this.state = { files: getAllFiles() };
-    this.handleDelete = this.handleDelete.bind(this);
+    this.state = {
+      files: getAllFiles(),
+      modal: {
+        isOpen: false,
+        fileUrl: null,
+      },
+    };
+    this.deleteFileHandler = this.deleteFileHandler.bind(this);
+    this.displayFileModalHandler = this.displayFileModalHandler.bind(this);
+    this.hideFileModalHandler = this.hideFileModalHandler.bind(this);
   }
 
-  handleDelete(fileId) {
+  deleteFileHandler(fileId) {
+    // NEED TO HIDE MODAL IF IT"S THERE
     const files = this.state.files;
     const updatedFiles = remove(files, file => file.id !== fileId);
     this.setState({ files: updatedFiles });
+    this.setState(prevState => ({
+      files: updatedFiles,
+      modal: prevState.modal,
+    }));
+  }
+
+  displayFileModalHandler(fileUrl) {
+    this.setState(prevState => ({
+      files: prevState.files,
+      modal: {
+        isOpen: true,
+        fileUrl,
+      },
+    }));
+  }
+
+  hideFileModalHandler() {
+    this.setState(prevState => ({
+      files: prevState.files,
+      modal: {
+        isOpen: false,
+        fileUrl: null,
+      },
+    }));
   }
 
   render() {
     return (
-      <Container>
+      <Container id="File-container">
+        {this.state.modal.isOpen && <FileModal fileUrl={this.state.modal.fileUrl} hideFileModalHandler={this.hideFileModalHandler} />}
         <Table>
           <TableHead />
           <tbody>
             {this.state.files.map((file, index) => {
               const isOdd = (index + 1) % 2;
-              return <FileListItem key={file.id} file={file} isOdd={isOdd} files={this.state.files} handleDelete={this.handleDelete}/>;
+              return (
+                <FileListItem
+                  key={file.id}
+                  file={file}
+                  isOdd={isOdd}
+                  files={this.state.files}
+                  deleteFileHandler={this.deleteFileHandler}
+                  displayFileModalHandler={this.displayFileModalHandler}
+                />
+              );
             })}
           </tbody>
         </Table>

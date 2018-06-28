@@ -71,8 +71,6 @@ class App extends Component {
                   path="/"
                   render={() => <Redirect from="/" to="/inbox" />}
                 />
-              </Switch>
-              <Switch>
                 <Route path="/files" component={FileManager} />
                 <Route
                   exact
