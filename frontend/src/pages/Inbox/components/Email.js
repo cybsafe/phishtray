@@ -19,6 +19,22 @@ const ActionLink = styled('a')({
   letterSpacing: '1.1px',
 });
 
+function AttachmentLink({ attachment }) {
+  return (
+    <a
+      href="#"
+      className={css({
+        marginRight: 20,
+        textDecoration: 'none',
+        color: '#B8B8B8',
+        letterSpacing: '1.1px',
+      })}
+    >
+      > {attachment.filename}
+    </a>
+  );
+}
+
 const EmailField = styled('div')({
   color: '#B8B8B8',
   fontSize: 18,
@@ -50,6 +66,38 @@ function EmailActions() {
       <ActionLink href="#">Forward</ActionLink>
       <ActionLink href="#">Delete</ActionLink>
       <ActionLink href="#">Report</ActionLink>
+    </div>
+  );
+}
+
+function EmailAttachments({ attachments }) {
+  return (
+    <div
+      className={css({
+        display: 'flex',
+        flexDirection: 'column',
+        marginTop: '50px',
+      })}
+    >
+      <hr
+        className={css({
+          width: '100%',
+          color: '#eee',
+        })}
+      />
+      <h6>Attachments</h6>
+      <div
+        className={css({
+          display: 'flex',
+          flexDirection: 'row',
+          marginTop: '20px',
+          marginBottom: '20px',
+        })}
+      >
+        {attachments.map(attachment => (
+          <AttachmentLink key={attachment.id} attachment={attachment} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -168,6 +216,9 @@ export default class Email extends Component<Props> {
         </h3>
 
         <Markdown source={this.props.email.body} container={BodyContainer} />
+        {this.props.email.attachments && (
+          <EmailAttachments attachments={this.props.email.attachments} />
+        )}
         {this.props.email.replies && (
           <QuickReply replies={this.props.email.replies} />
         )}
