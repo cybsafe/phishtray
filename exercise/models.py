@@ -85,7 +85,7 @@ class Exercise(models.Model):
     afterword = models.TextField(null=True, blank=True)
 
     length_minutes = models.IntegerField()
-    emails = models.ManyToManyField(ExerciseEmail)
+    emails = models.ManyToManyField(ExerciseEmail, blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, blank=True)
