@@ -86,6 +86,7 @@ function EmailInfo({ email }) {
             fontSize: 18,
             display: 'flex',
             flexDirection: 'row',
+            alignItems: 'center',
           })}
         >
           <p>From: </p>
@@ -113,6 +114,7 @@ function EmailInfo({ email }) {
             fontSize: 18,
             display: 'flex',
             flexDirection: 'row',
+            alignItems: 'center',
           })}
         >
           <p>To: </p>
