@@ -98,6 +98,12 @@ const THREADS = [
         id: '5bdebcf9-7911-4757-befd-d2bc86f0ffdb',
         timestamp: '2018-02-20:15:31.000Z',
         body: 'Hello Ana',
+        attachments: [
+          {
+            id: 124,
+            filename: 'Trustme.exe',
+          },
+        ],
         replies: [
           {
             id: 5,
@@ -158,6 +164,12 @@ const THREADS = [
         id: 'ec705f8a-9492-4ab4-8768-f979bbdba760',
         timestamp: '2018-02-20:15:31.000Z',
         body: 'Hello Ana',
+        attachments: [
+          {
+            id: 124,
+            filename: 'innocent_jpeg.exe',
+          },
+        ],
       },
     ],
   },
