@@ -69,8 +69,8 @@ class ExerciseEmail(models.Model):
     phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 
-    attachments = models.ManyToManyField(ExerciseAttachment)
-    replies = models.ManyToManyField(ExerciseEmailReply)
+    attachments = models.ManyToManyField(ExerciseAttachment, blank=True)
+    replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
 
 
 class Exercise(models.Model):
@@ -93,7 +93,7 @@ class Exercise(models.Model):
     @property
     def link(self):
         return helpers.hasher.encode(self.id)
- 
+
 
 class ExerciseKey(models.Model):
 
