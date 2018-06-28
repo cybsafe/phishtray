@@ -5,7 +5,7 @@ import { Checkbox } from 'carbon-components-react';
 const Cell = styled('td')(
   {
     fontSize: 20,
-    fontWeight: 600,
+    fontWeight: 400,
     color: '#8897a2',
   },
   props => ({
@@ -14,16 +14,25 @@ const Cell = styled('td')(
   })
 );
 
-export default function FileListItem({ file, isOdd, files, deleteFileHandler, displayFileModalHandler }) {
+export default function FileListItem({
+  file,
+  isOdd,
+  deleteFileHandler,
+  displayFileModalHandler,
+}) {
   const checkboxId = `checkbox-file-${file.id}`;
   return (
     <tr>
-      <Cell isOdd={isOdd} className={css({ paddingLeft: 20 })} onClick={() => displayFileModalHandler(file.fileUrl)}>
+      <Cell
+        isOdd={isOdd}
+        className={css({ paddingLeft: 20 })}
+        onClick={() => displayFileModalHandler(file.fileUrl)}
+      >
         <Checkbox
           defaultChecked={false}
           indeterminate={true}
           id={checkboxId}
-          className={css({ fontSize: 20, fontWeight: 600 })}
+          className={css({ fontSize: 20, fontWeight: 500, color: '#8897a2' })}
           labelText={file.fileName}
         />
       </Cell>
@@ -31,7 +40,7 @@ export default function FileListItem({ file, isOdd, files, deleteFileHandler, di
       <Cell isOdd={isOdd}>{file.dateCreated}</Cell>
       <Cell isOdd={isOdd}>
         <a
-          onClick={() => deleteFileHandler(file.id)}
+          onClick={() => deleteFileHandler(file)}
           className={css({
             fontSize: 16,
             fontWeight: 400,

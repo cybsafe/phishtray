@@ -1,6 +1,5 @@
 import React from 'react';
-import { css } from 'react-emotion';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 
 const ImageContainer = styled('div')({
   position: 'absolute',

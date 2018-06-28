@@ -78,15 +78,20 @@ export default class FileManager extends Component {
     this.hideFileModalHandler = this.hideFileModalHandler.bind(this);
   }
 
-  deleteFileHandler(fileId) {
-    // NEED TO HIDE MODAL IF IT"S THERE
+  deleteFileHandler(fileToDelete) {
     const files = this.state.files;
-    const updatedFiles = remove(files, file => file.id !== fileId);
-    this.setState({ files: updatedFiles });
-    this.setState(prevState => ({
+    const updatedFiles = remove(files, file => file.id !== fileToDelete.id);
+    let modal = this.state.modal;
+    if (modal.isOpen && modal.fileUrl === fileToDelete.fileUrl) {
+      modal = {
+        isOpen: false,
+        fileUrl: null,
+      };
+    }
+    this.setState({
       files: updatedFiles,
-      modal: prevState.modal,
-    }));
+      modal,
+    });
   }
 
   displayFileModalHandler(fileUrl) {
@@ -111,8 +116,13 @@ export default class FileManager extends Component {
 
   render() {
     return (
-      <Container id="File-container">
-        {this.state.modal.isOpen && <FileModal fileUrl={this.state.modal.fileUrl} hideFileModalHandler={this.hideFileModalHandler} />}
+      <Container>
+        {this.state.modal.isOpen && (
+          <FileModal
+            fileUrl={this.state.modal.fileUrl}
+            hideFileModalHandler={this.hideFileModalHandler}
+          />
+        )}
         <Table>
           <TableHead />
           <tbody>
@@ -123,7 +133,6 @@ export default class FileManager extends Component {
                   key={file.id}
                   file={file}
                   isOdd={isOdd}
-                  files={this.state.files}
                   deleteFileHandler={this.deleteFileHandler}
                   displayFileModalHandler={this.displayFileModalHandler}
                 />
