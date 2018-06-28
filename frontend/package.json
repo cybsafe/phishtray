@@ -8,6 +8,7 @@
     "carbon-icons": "^7.0.7",
     "date-fns": "^1.29.0",
     "emotion": "^9.2.4",
+    "lodash": "^4.17.10",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-emotion": "^9.2.4",

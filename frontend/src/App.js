@@ -5,6 +5,7 @@ import styled, { css } from 'react-emotion';
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
 import Header from './components/Header';
+import FileManager from './pages/file-manager';
 
 const Container = styled('div')({
   display: 'flex',
@@ -77,6 +78,12 @@ class App extends Component {
                   exact
                   path="/"
                   render={() => <Redirect from="/" to="/inbox" />}
+                />
+                <Route path="/files" component={FileManager} />
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Redirect from="/" to="/files" />}
                 />
               </Switch>
             </div>
