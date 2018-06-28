@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'react-emotion';
 
-import { getAllEmails } from '../../data/emails';
+import { getAllEmails } from '../../data/threads';
 
-import EmailDetail from './components/EmailDetail';
+import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
 
 const Container = styled('div')({
@@ -26,11 +26,11 @@ const EmailContainer = styled('div')({
 
 class Inbox extends Component {
   state = {
-    emails: getAllEmails(),
+    threads: getAllEmails(),
   };
 
   emailRead = emailId => {
-    const updatedEmails = this.state.emails.map(
+    const updatedEmails = this.state.threads.map(
       email => (emailId === email.id ? (email.read = true) : email)
     );
 
@@ -43,16 +43,16 @@ class Inbox extends Component {
     return (
       <Container>
         <EmailList>
-          {this.state.emails.map(email => (
+          {this.state.threads.map(thread => (
             <EmailListItem
-              key={email.id}
-              email={email}
+              key={thread.id}
+              thread={thread}
               emailRead={this.emailRead}
             />
           ))}
         </EmailList>
         <EmailContainer>
-          <Route path={`${match.url}/:emailId`} component={EmailDetail} />
+          <Route path={`${match.url}/:emailId`} component={EmailChain} />
         </EmailContainer>
       </Container>
     );

@@ -23,6 +23,55 @@ EXERCISE_PHISH_TYPES = (
     (EXERCISE_EMAIL_REGULAR, 'etray'),
 )
 
+EXERCISE_REPLY_TYPE = (
+    (0, 'reply'),
+    (1, 'forward')
+)
+
+
+class ExerciseAttachment(models.Model):
+
+    def __str__(self):
+        return self.filename
+
+    id = models.AutoField(primary_key=True)
+
+    filename = models.CharField(max_length=250, blank=True, null=True)
+
+    created_date = models.DateTimeField(auto_now_add=True, blank=True)
+    modified_date = models.DateTimeField(auto_now=True, blank=True)
+
+
+class ExerciseEmailReply(models.Model):
+
+    def __str__(self):
+        return self.message
+
+    id = models.AutoField(primary_key=True)
+
+    reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
+
+    message = models.TextField(null=True, blank=True)
+
+
+class ExerciseEmail(models.Model):
+
+    def __str__(self):
+        return self.subject
+
+    id = models.AutoField(primary_key=True)
+
+    subject = models.CharField(max_length=250, blank=True, null=True)
+    from_address = models.CharField(max_length=250, blank=True, null=True)
+    from_name = models.CharField(max_length=250, blank=True, null=True)
+    to_address = models.CharField(max_length=250, blank=True, null=True)
+    to_name = models.CharField(max_length=250, blank=True, null=True)
+    phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
+    content = models.TextField(null=True, blank=True)
+
+    attachments = models.ManyToManyField(ExerciseAttachment)
+    replies = models.ManyToManyField(ExerciseEmailReply)
+
 
 class Exercise(models.Model):
 
@@ -36,6 +85,7 @@ class Exercise(models.Model):
     afterword = models.TextField(null=True, blank=True)
 
     length_minutes = models.IntegerField()
+    emails = models.ManyToManyField(ExerciseEmail)
 
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, blank=True)
@@ -63,46 +113,6 @@ class ExerciseKey(models.Model):
     @property
     def html5_type(self):
         return EXERCISE_KEY_TYPES[self.type][1]
-
-
-class ExerciseAttachment(models.Model):
-
-    def __str__(self):
-        return self.filename
-
-    id = models.AutoField(primary_key=True)
-
-    filename = models.CharField(max_length=250, blank=True, null=True)
-
-    created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    modified_date = models.DateTimeField(auto_now=True, blank=True)
-
-
-class ExerciseEmailReply(models.Model):
-
-    def __str__(self):
-        return self.content
-
-    id = models.AutoField(primary_key=True)
-
-    content = models.TextField(null=True, blank=True)
-
-
-class ExerciseEmail(models.Model):
-
-    def __str__(self):
-        return self.subject
-
-    id = models.AutoField(primary_key=True)
-
-    subject = models.CharField(max_length=250, blank=True, null=True)
-    email_from_email = models.CharField(max_length=250, blank=True, null=True)
-    email_from_name = models.CharField(max_length=250, blank=True, null=True)
-    type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
-    content = models.TextField(null=True, blank=True)
-
-    attachments = models.ManyToManyField(ExerciseAttachment)
-    replies = models.ManyToManyField(ExerciseEmailReply)
 
 
 class ExerciseWebPages(models.Model):
