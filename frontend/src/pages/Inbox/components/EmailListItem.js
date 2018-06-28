@@ -12,18 +12,6 @@ const Container = styled('div')(
     backgroundColor: props.isSelected ? '#1C8BF4' : 'inherit',
     borderLeftColor: props.isSelected ? '#f4c760' : 'transparent',
     fontWeight: props.isRead === true ? 'normal' : 'bold',
-
-    '&::before': {
-      fontSize: 9,
-      fontWeight: 'lighter',
-      paddingLeft: 2,
-      paddingRight: 2,
-      content: props.isRead === true ? `''` : `'!'`,
-      visibility: props.isRead === true ? 'hidden' : 'visible',
-      backgroundColor: 'red',
-      borderRadius: 20,
-      color: 'white',
-    },
   })
 );
 
