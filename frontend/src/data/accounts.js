@@ -5,12 +5,12 @@ const ACCOUNTS = [
     data: [
       {
         id: '2',
-        key: 'Username',
+        label: 'Username',
         value: 'biggeoff@gmail.com',
       },
       {
         id: '3',
-        key: 'Password',
+        label: 'Password',
         value: 'someSeriouslySecure3Password',
       },
     ],
@@ -21,12 +21,12 @@ const ACCOUNTS = [
     data: [
       {
         id: '1',
-        key: 'Username',
+        label: 'Username',
         value: 'biggeoff@gmail.com',
       },
       {
         id: '4',
-        key: 'Password',
+        label: 'Password',
         value: 'someSeriouslySecure3Password',
       },
     ],
@@ -37,17 +37,17 @@ const ACCOUNTS = [
     data: [
       {
         id: '6',
-        key: 'PIN',
+        label: 'PIN',
         value: '1234',
       },
       {
         id: '7',
-        key: 'Username',
+        label: 'Username',
         value: 'bg5678',
       },
       {
         id: '9',
-        key: 'Password',
+        label: 'Password',
         value: 'someSeriouslySecure3Password',
       },
     ],

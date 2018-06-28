@@ -9,20 +9,13 @@ const BodyContainer = styled('div')({
   padding: '0 40px',
 });
 
-const Spacer = styled('div')({
-  marginTop: 40,
-  color: '#666',
-  '& p': {
-    marginBottom: 20,
-    fontSize: 20,
-  },
-});
+const Spacer = styled('div')({ height: 40 });
 
 function AccountInfo({ credentials }) {
   return (
     <div className="bx--structured-list-row">
       <div className="bx--structured-list-td bx--structured-list-content--nowrap">
-        {credentials.key}
+        {credentials.label}
       </div>
       <div className="bx--structured-list-td">{credentials.value}</div>
     </div>
