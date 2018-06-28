@@ -45,7 +45,7 @@ export default function EmailListItem({ email }) {
             >
               {email.subject}
             </Text>
-            <Text isSelected={!!match}>{email.from.name}</Text>
+            <Text isSelected={!!match}>{email.from}</Text>
           </Container>
         </Link>
       )}
