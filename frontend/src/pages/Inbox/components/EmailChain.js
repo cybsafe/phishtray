@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { css } from 'react-emotion';
 
 import { getThread } from '../../../data/threads';
 import Email from './Email';
@@ -10,6 +11,15 @@ export default class EmailChain extends Component {
       params: { emailId },
     } = match;
     const thread = getThread(emailId);
-    return thread.emails.map(email => <Email key={email.id} email={email} />);
+    return thread.emails.map(email => (
+      <Fragment key={email.id}>
+        <Email email={email} />
+        <hr
+          className={css({
+            width: '100%',
+          })}
+        />
+      </Fragment>
+    ));
   }
 }

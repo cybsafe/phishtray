@@ -4,6 +4,7 @@ import styled from 'react-emotion';
 import { Button as CarbonButton } from 'carbon-components-react';
 
 export type Props = {
+  type: string,
   content: string,
 };
 
