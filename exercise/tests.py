@@ -53,7 +53,8 @@ class ExerciseRestTests(TestCase):
         self.assertIsNotNone(json_data['created_date'])
         self.assertIsNotNone(json_data['modified_date'])
 
-    def create_exercise(self):
+    @staticmethod
+    def create_exercise():
         exercise = Exercise(
             id=1,
             title='first exercise',
