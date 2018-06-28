@@ -3,6 +3,8 @@ import styled, { css } from 'react-emotion';
 import format from 'date-fns/format';
 import Markdown from 'react-remarkable';
 
+import EmailCard from './EmailCard';
+
 import QuickReply from './QuickReply';
 
 type Props = {
@@ -54,9 +56,19 @@ function EmailInfo({ email }) {
       })}
     >
       <div className={css({ flex: 0, flexBasis: '60px' })}>
-        <img
-          className={css({ width: 60, height: 60, borderRadius: '50%' })}
-          src={email.from.photoUrl}
+        <EmailCard
+          name={email.from.name}
+          photoUrl={email.from.photoUrl}
+          role={email.from.role}
+          email={email.from.email}
+          triggerText={
+            <img
+              className={css({ width: 60, height: 60, borderRadius: '50%' })}
+              src={email.from.photoUrl}
+              alt=""
+            />
+          }
+          direction="right"
         />
       </div>
       <div
@@ -69,12 +81,57 @@ function EmailInfo({ email }) {
         })}
       >
         <div
-          className={css({ marginBottom: 10, color: '#B8B8B8', fontSize: 18 })}
+          className={css({
+            color: '#B8B8B8',
+            fontSize: 18,
+            display: 'flex',
+            flexDirection: 'row',
+          })}
         >
-          From: <a href="#">{email.from.name}</a>
+          <p>From: </p>
+          <EmailCard
+            name={email.from.name}
+            photoUrl={email.from.photoUrl}
+            role={email.from.role}
+            email={email.from.email}
+            triggerText={
+              <a
+                className={css({
+                  textDecoration: 'underline',
+                  display: 'inline-block',
+                })}
+              >
+                {email.from.name ? email.from.name + ' ' : ' '}
+                {String.fromCharCode(8744)}
+              </a>
+            }
+          />
         </div>
-        <div className={css({ color: '#B8B8B8', fontSize: 18 })}>
-          To: <a href="#">You</a>
+        <div
+          className={css({
+            color: '#B8B8B8',
+            fontSize: 18,
+            display: 'flex',
+            flexDirection: 'row',
+          })}
+        >
+          <p>To: </p>
+          <EmailCard
+            name={'You'}
+            photoUrl={'https://randomuser.me/api/portraits/women/83.jpg'}
+            email={'you@yourcompany.com'}
+            triggerText={
+              <a
+                className={css({
+                  textDecoration: 'underline',
+                  display: 'inline-block',
+                })}
+              >
+                {'You '}
+                {String.fromCharCode(8744)}
+              </a>
+            }
+          />
         </div>
       </div>
       <div
