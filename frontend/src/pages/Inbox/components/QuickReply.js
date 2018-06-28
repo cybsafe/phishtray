@@ -8,7 +8,7 @@ type Props = {
 
 const QuickReply = (props: Props) =>
   props.replies.map(reply => (
-    <Button key={reply.id} content={reply.type} email={reply.message} />
+    <Button key={reply.id} type={reply.type} content={reply.message} />
   ));
 
 export default QuickReply;
