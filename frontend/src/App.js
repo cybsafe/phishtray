@@ -69,7 +69,7 @@ class App extends Component {
               <SidebarLink to="/files">Files</SidebarLink>
             </Sidebar>
 
-            <div className={css({ flex: 1, overflow: 'auto' })}>
+            <div className={css({ flex: 1 })}>
               <Switch>
                 <Route path="/inbox" component={Inbox} />
                 <Route path="/accounts" component={Accounts} />

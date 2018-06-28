@@ -10,7 +10,7 @@ import EmailListItem from './components/EmailListItem';
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
-  minHeight: '100%',
+  height: '100%',
 });
 
 const EmailList = styled('div')({
@@ -22,6 +22,8 @@ const EmailList = styled('div')({
 
 const EmailContainer = styled('div')({
   flex: 1,
+  overflow: 'auto',
+  paddingBottom: 80,
 });
 
 export default class Inbox extends Component {

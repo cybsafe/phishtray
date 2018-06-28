@@ -73,6 +73,14 @@ const THREADS = [
         id: '6e42899c-3868-7fa6-af3c-5a6bdf2ef66f',
         timestamp: '2018-02-20:15:31.000Z',
         body: 'Hello Peter',
+        replies: [
+          {
+            id: 5,
+            type: 'reply',
+            message: 'Hello Peter',
+          },
+          { id: 6, type: 'forward', message: 'NOT HELLO PETER' },
+        ],
       },
     ],
   },
