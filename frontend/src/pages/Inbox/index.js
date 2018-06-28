@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'react-emotion';
 
-import { getAllEmails } from '../../data/threads';
+import { getAllEmails, getThread } from '../../data/threads';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
@@ -29,6 +29,7 @@ const EmailContainer = styled('div')({
 class Inbox extends Component {
   state = {
     threads: getAllEmails(),
+    thread: getThread(this.props.location.pathname.substring(7)),
   };
 
   emailRead = emailId => {
@@ -37,6 +38,21 @@ class Inbox extends Component {
     );
 
     this.setState({ updatedEmails });
+  };
+
+  emailRender = () => {
+    this.setState({
+      thread: getThread(this.props.location.pathname.substring(7)),
+    }),
+      this.emailReRender;
+  };
+
+  emailAdd = email => {
+    const thread = { ...this.state.thread };
+    const addedEmail = [...this.state.thread.emails, email];
+    thread.emails = addedEmail;
+
+    this.setState({ thread: thread });
   };
 
   render() {
@@ -50,11 +66,22 @@ class Inbox extends Component {
               key={thread.id}
               thread={thread}
               emailRead={this.emailRead}
+              emailRender={this.emailRender}
             />
           ))}
         </EmailList>
         <EmailContainer>
-          <Route path={`${match.url}/:emailId`} component={EmailChain} />
+          <Route
+            path={`${match.url}/:emailId`}
+            render={() => {
+              return (
+                <EmailChain
+                  thread={this.state.thread}
+                  emailAdd={this.emailAdd}
+                />
+              );
+            }}
+          />
         </EmailContainer>
       </Container>
     );
