@@ -1,4 +1,4 @@
-const EMAILS = [
+const THREADS = [
   {
     id: '0',
     subject: 'Welcome on board!',
@@ -149,13 +149,13 @@ const EMAILS = [
 ];
 
 export function getThread(id) {
-  return EMAILS.find(thread => thread.id === id);
+  return THREADS.find(thread => thread.id === id);
 }
 
 export function getEmail(id) {
-  return EMAILS.find(email => email.id === id);
+  return THREADS.find(email => email.id === id);
 }
 
 export function getAllEmails() {
-  return EMAILS;
+  return THREADS;
 }

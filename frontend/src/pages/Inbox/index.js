@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'react-emotion';
 
-import { getAllEmails } from '../../data/emails';
+import { getAllEmails } from '../../data/threads';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';

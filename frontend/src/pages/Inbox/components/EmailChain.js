@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { getThread } from '../../../data/emails';
+import { getThread } from '../../../data/threads';
 import Email from './Email';
 
 export default class EmailChain extends Component {

@@ -118,10 +118,7 @@ export default class Email extends Component<Props> {
 
         <Markdown source={this.props.email.body} container={BodyContainer} />
         {this.props.email.replies && (
-          <QuickReply
-            key={this.props.email.id}
-            replies={this.props.email.replies}
-          />
+          <QuickReply replies={this.props.email.replies} />
         )}
       </div>
     );
