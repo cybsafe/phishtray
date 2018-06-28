@@ -11,7 +11,19 @@ const Container = styled('div')(
   props => ({
     backgroundColor: props.isSelected ? '#1C8BF4' : 'inherit',
     borderLeftColor: props.isSelected ? '#f4c760' : 'transparent',
-    fontSize: props.isRead === true ? '12pt' : '20pt',
+    fontWeight: props.isRead === true ? 'normal' : 'bold',
+
+    '&::before': {
+      fontSize: 9,
+      fontWeight: 'lighter',
+      paddingLeft: 2,
+      paddingRight: 2,
+      content: props.isRead === true ? `''` : `'!'`,
+      visibility: props.isRead === true ? 'hidden' : 'visible',
+      backgroundColor: 'red',
+      borderRadius: 20,
+      color: 'white',
+    },
   })
 );
 
@@ -23,11 +35,7 @@ const Text = styled('div')(
   },
 
   props => ({
-    fontWeight: props.isSelected ? 'bold' : 'normal',
     opacity: props.isSelected ? 1 : 0.7,
-    '&::after': {
-      content: props.isRead === true ? `''` : `'🤔'`,
-    },
   })
 );
 
