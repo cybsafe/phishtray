@@ -1,6 +1,6 @@
 const ACCOUNTS = [
   {
-    name: 'PayPal',
+    name: 'PayFriend',
     id: 'fa59b235-184f-40ba-aae7-daaf48689d22',
     data: [
       {
@@ -16,7 +16,7 @@ const ACCOUNTS = [
     ],
   },
   {
-    name: 'PayDayve',
+    name: 'FaceContacts',
     id: 'fa59b235-284f-40ba-aae7-dtf48689d22',
     data: [
       {
