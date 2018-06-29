@@ -11,7 +11,6 @@ const Container = styled('div')(
   props => ({
     backgroundColor: props.isSelected ? '#1C8BF4' : 'inherit',
     borderLeftColor: props.isSelected ? '#f4c760' : 'transparent',
-    fontWeight: props.isRead === true ? 'normal' : 'bold',
   })
 );
 
@@ -21,29 +20,22 @@ const Text = styled('div')(
     letterSpacing: '1.2px',
     textDecoration: 'none',
   },
-
   props => ({
+    fontWeight: props.isSelected ? 'bold' : 'normal',
     opacity: props.isSelected ? 1 : 0.7,
   })
 );
 
-export default function EmailListItem({ thread, emailRead, emailRender }) {
-  const handleClick = () => {
-    emailRead(thread.id);
-    emailRender(thread.id);
-  };
-
+export default function EmailListItem({ email }) {
   return (
-    <Route path={`/inbox/${thread.id}`}>
+    <Route path={`/inbox/${email.id}`}>
       {({ match }) => (
         <Link
-          onClick={handleClick}
-          to={`/inbox/${thread.id}`}
+          to={`/inbox/${email.id}`}
           className={css({ textDecoration: 'none', display: 'block' })}
         >
-          <Container isSelected={!!match} isRead={thread.read}>
+          <Container isSelected={!!match}>
             <Text
-              isRead={thread.read}
               isSelected={!!match}
               className={css({
                 fontSize: 18,
@@ -51,11 +43,9 @@ export default function EmailListItem({ thread, emailRead, emailRender }) {
                 marginBottom: 10,
               })}
             >
-              {thread.subject}
+              {email.subject}
             </Text>
-            <Text isSelected={!!match} isRead={thread.read}>
-              {thread.from}
-            </Text>
+            <Text isSelected={!!match}>{email.from}</Text>
           </Container>
         </Link>
       )}
