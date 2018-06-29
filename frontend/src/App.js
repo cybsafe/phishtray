@@ -3,7 +3,9 @@ import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 
 import Inbox from './pages/Inbox';
+import Accounts from './pages/Accounts';
 import Header from './components/Header';
+import FileManager from './pages/file-manager';
 
 const Container = styled('div')({
   display: 'flex',
@@ -49,7 +51,13 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <div className={css({ height: '100%', minHeight: '100%' })}>
+        <div
+          className={css({
+            height: '100%',
+            minHeight: '100%',
+            overflow: 'hidden',
+          })}
+        >
           <Header />
           <Container>
             <Sidebar>
@@ -65,10 +73,17 @@ class App extends Component {
             <div className={css({ flex: 1 })}>
               <Switch>
                 <Route path="/inbox" component={Inbox} />
+                <Route path="/accounts" component={Accounts} />
                 <Route
                   exact
                   path="/"
                   render={() => <Redirect from="/" to="/inbox" />}
+                />
+                <Route path="/files" component={FileManager} />
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Redirect from="/" to="/files" />}
                 />
               </Switch>
             </div>

@@ -26,12 +26,12 @@ const Text = styled('div')(
   })
 );
 
-export default function EmailListItem({ email }) {
+export default function AccountListItem({ account }) {
   return (
-    <Route path={`/inbox/${email.id}`}>
+    <Route path={`/accounts/${account.id}`}>
       {({ match }) => (
         <Link
-          to={`/inbox/${email.id}`}
+          to={`/accounts/${account.id}`}
           className={css({ textDecoration: 'none', display: 'block' })}
         >
           <Container isSelected={!!match}>
@@ -43,9 +43,8 @@ export default function EmailListItem({ email }) {
                 marginBottom: 10,
               })}
             >
-              {email.subject}
+              {account.name}
             </Text>
-            <Text isSelected={!!match}>{email.from}</Text>
           </Container>
         </Link>
       )}
