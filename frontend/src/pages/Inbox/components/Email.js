@@ -9,7 +9,6 @@ import QuickReply from './QuickReply';
 
 type Props = {
   email: Object,
-  emailAdd?: () => any,
 };
 
 const ActionLink = styled('a')({
@@ -221,11 +220,7 @@ export default class Email extends Component<Props> {
           <EmailAttachments attachments={this.props.email.attachments} />
         )}
         {this.props.email.replies && (
-          <QuickReply
-            replies={this.props.email.replies}
-            emailAdd={this.props.emailAdd}
-            subject={this.props.email.subject}
-          />
+          <QuickReply replies={this.props.email.replies} />
         )}
       </div>
     );
