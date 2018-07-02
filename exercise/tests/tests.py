@@ -113,19 +113,23 @@ class ExerciseEmailTests(TestCase):
         self.assertEqual(response.status_code, 200)
         json_data = json.loads(response.content)
         self.assertFirstEmail(self, json_data[0])
+        self.assertSecondEmail(self, json_data[1])
 
-        self.assertEqual(json_data[1]['id'], 2)
-        self.assertEqual(json_data[1]['subject'], 'test email from unit test case-2')
-        self.assertEqual(json_data[1]['from_address'], 'test2@cybsafe.com')
-        self.assertEqual(json_data[1]['from_name'], 'Cybsafe Admin-2')
-        self.assertEqual(json_data[1]['to_address'], 'sendTo2@cybsafe.com')
-        self.assertEqual(json_data[1]['to_name'], 'Cybsafe Admin-2')
-        self.assertEqual(json_data[1]['phish_type'], 1)
-        self.assertEqual(json_data[1]['replies'][0]['id'], 1)
-        self.assertEqual(json_data[1]['replies'][0]['reply_type'], 1)
-        self.assertEqual(json_data[1]['replies'][0]['message'], 'I have received your email-1')
-        self.assertEqual(json_data[1]['attachments'][0]['id'], 1)
-        self.assertEqual(json_data[1]['attachments'][0]['filename'], 'location of file name')
+    @staticmethod
+    def assertSecondEmail(self, json_data):
+        self.assertEqual(json_data['id'], 2)
+        self.assertEqual(json_data['subject'], 'test email from unit test case-2')
+        self.assertEqual(json_data['from_address'], 'test2@cybsafe.com')
+        self.assertEqual(json_data['from_name'], 'Cybsafe Admin-2')
+        self.assertEqual(json_data['to_address'], 'sendTo2@cybsafe.com')
+        self.assertEqual(json_data['to_name'], 'Cybsafe Admin-2')
+        self.assertEqual(json_data['phish_type'], 1)
+        self.assertEqual(json_data['replies'][0]['id'], 1)
+        self.assertEqual(json_data['replies'][0]['reply_type'], 1)
+        self.assertEqual(json_data['replies'][0]['message'], 'I have received your email-1')
+        self.assertEqual(json_data['attachments'][0]['id'], 1)
+        self.assertEqual(json_data['attachments'][0]['filename'], 'location of file name')
+
 
     @staticmethod
     def assertFirstEmail(self, json_data):
