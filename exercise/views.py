@@ -57,5 +57,6 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 
 class ExerciseEmailViewSet(viewsets.ModelViewSet):
     queryset = ExerciseEmail.objects.all()
-    serializer_class = ExerciseEmailSerializer
+    serializer_class = EmailDetailsSerializer
+    # serializer_class = EmailDetailsSerializer
 

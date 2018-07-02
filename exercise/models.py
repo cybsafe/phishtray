@@ -71,7 +71,7 @@ class ExerciseEmail(models.Model):
 
     attachments = models.ManyToManyField(ExerciseAttachment)
     replies = models.ManyToManyField(ExerciseEmailReply)
-    belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Exercise(models.Model):
