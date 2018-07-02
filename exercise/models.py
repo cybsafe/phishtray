@@ -69,8 +69,8 @@ class ExerciseEmail(models.Model):
     phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 
-    attachments = models.ManyToManyField(ExerciseAttachment)
-    replies = models.ManyToManyField(ExerciseEmailReply)
+    attachments = models.ManyToManyField(ExerciseAttachment, blank=True)
+    replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
     belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
 
@@ -86,7 +86,7 @@ class Exercise(models.Model):
     afterword = models.TextField(null=True, blank=True)
 
     length_minutes = models.IntegerField()
-    emails = models.ManyToManyField(ExerciseEmail)
+    emails = models.ManyToManyField(ExerciseEmail, blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, blank=True)
@@ -94,7 +94,7 @@ class Exercise(models.Model):
     @property
     def link(self):
         return helpers.hasher.encode(self.id)
- 
+
 
 class ExerciseKey(models.Model):
 

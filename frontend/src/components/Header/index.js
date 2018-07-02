@@ -50,8 +50,16 @@ export default class Header extends Component {
           <Route
             path="/accounts"
             render={() => (
-              <SectionHeader className={css({ backgroundColor: '#1C8BF4' })}>
+              <SectionHeader className={css({ backgroundColor: '#1969B8' })}>
                 <HeaderText>Accounts</HeaderText>
+              </SectionHeader>
+            )}
+          />
+          <Route
+            path="/files"
+            render={() => (
+              <SectionHeader className={css({ backgroundColor: '#1C8BF4' })}>
+                <HeaderText>Files</HeaderText>
               </SectionHeader>
             )}
           />

@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'react-emotion';
 
-import { getAllEmails } from '../../data/emails';
+import { getAllEmails } from '../../data/threads';
 
-import EmailDetail from './components/EmailDetail';
+import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
 
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
-  minHeight: '100%',
+  height: '100%',
 });
 
 const EmailList = styled('div')({
@@ -22,6 +22,8 @@ const EmailList = styled('div')({
 
 const EmailContainer = styled('div')({
   flex: 1,
+  overflow: 'auto',
+  paddingBottom: 80,
 });
 
 export default class Inbox extends Component {
@@ -35,7 +37,7 @@ export default class Inbox extends Component {
           {emails.map(email => <EmailListItem key={email.id} email={email} />)}
         </EmailList>
         <EmailContainer>
-          <Route path={`${match.url}/:emailId`} component={EmailDetail} />
+          <Route path={`${match.url}/:emailId`} component={EmailChain} />
         </EmailContainer>
       </Container>
     );
