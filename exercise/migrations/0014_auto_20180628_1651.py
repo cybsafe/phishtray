@@ -20,4 +20,9 @@ class Migration(migrations.Migration):
             name='replies',
             field=models.ManyToManyField(blank=True, to='exercise.ExerciseEmailReply'),
         ),
+        migrations.AddField(
+            model_name='exerciseemail',
+            name='belongs_to',
+            field=models.ForeignKey(null=True, blank=True, on_delete=models.deletion.CASCADE, to='exercise.ExerciseEmail'),
+        ),
     ]

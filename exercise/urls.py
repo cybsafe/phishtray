@@ -2,7 +2,7 @@ from django.urls import path
 
 from . import views
 
-from .views import ExerciseViewSet, ExerciseEmailViewSet
+from .views import *
 
 from rest_framework import routers
 from django.conf.urls import url, include
@@ -34,4 +34,8 @@ urlpatterns = [
     # exercise emails urls
     url('^emails/list/$',emails_list, name= 'emails_list'),
     url('^emails/(?P<pk>[0-9]+)/$',emails_detail, name= 'emails_detail'),
+
+    # emails in Thread style
+    url('^thread/(?P<pk>[0-9]+)/$', ExerciseEmailThreadViewSet.as_view({'get': 'retrieve'}), name='exercise-thread'),
+
 ]

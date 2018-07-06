@@ -59,3 +59,10 @@ class ExerciseEmailViewSet(viewsets.ModelViewSet):
     queryset = ExerciseEmail.objects.all()
     serializer_class = ExerciseEmailSerializer
 
+
+class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
+    """
+    This view retrieves emails in thread style
+    """
+    queryset = ExerciseEmail.objects.all()
+    serializer_class = EmailDetailsSerializer
