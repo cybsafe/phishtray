@@ -74,16 +74,11 @@ class App extends Component {
               <Switch>
                 <Route path="/inbox" component={Inbox} />
                 <Route path="/accounts" component={Accounts} />
-                <Route
-                  exact
-                  path="/"
-                  render={() => <Redirect from="/" to="/inbox" />}
-                />
                 <Route path="/files" component={FileManager} />
                 <Route
                   exact
                   path="/"
-                  render={() => <Redirect from="/" to="/files" />}
+                  render={() => <Redirect from="/" to="/inbox" />}
                 />
               </Switch>
             </div>

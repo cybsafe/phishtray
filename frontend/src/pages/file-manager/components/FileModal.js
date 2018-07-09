@@ -34,7 +34,7 @@ export default function FileModal({ fileUrl, hideFileModalHandler }) {
           color: '#5596e6',
           cursor: 'pointer',
         })}
-        onClick={() => hideFileModalHandler()}
+        onClick={hideFileModalHandler}
       >
         Close
       </a>
