@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
 import { Checkbox } from 'carbon-components-react';
+import format from 'date-fns/format';
 
 const Cell = styled('td')(
   {
@@ -37,7 +38,7 @@ export default function FileListItem({
         />
       </Cell>
       <Cell isOdd={isOdd}>{file.description}</Cell>
-      <Cell isOdd={isOdd}>{file.dateCreated}</Cell>
+      <Cell isOdd={isOdd}>{format(file.dateCreated, 'DD/MM/YYYY')}</Cell>
       <Cell isOdd={isOdd}>
         <a
           onClick={() => deleteFileHandler(file)}
