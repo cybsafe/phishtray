@@ -120,18 +120,14 @@ export default class FileManager extends Component {
         <Table>
           <TableHead />
           <tbody>
-            {this.state.files.map((file, index) => {
-              const isOdd = (index + 1) % 2;
-              return (
-                <FileListItem
-                  key={file.id}
-                  file={file}
-                  isOdd={isOdd}
-                  deleteFileHandler={this.deleteFileHandler}
-                  displayFileModalHandler={this.displayFileModalHandler}
-                />
-              );
-            })}
+            {this.state.files.map(file => (
+              <FileListItem
+                key={file.id}
+                file={file}
+                deleteFileHandler={this.deleteFileHandler}
+                displayFileModalHandler={this.displayFileModalHandler}
+              />
+            ))}
           </tbody>
         </Table>
       </Container>
