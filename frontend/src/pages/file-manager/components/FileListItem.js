@@ -1,30 +1,34 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
 import { Checkbox } from 'carbon-components-react';
+import format from 'date-fns/format';
 
-const Cell = styled('td')(
-  {
-    fontSize: 20,
-    fontWeight: 400,
-    color: '#8897a2',
+const Row = styled('tr')({
+  '&:nth-child(even) td': {
+    backgroundColor: '#f4f7fb',
   },
-  props => ({
-    padding: props.isOdd ? '26px 0 34px' : '0 0 8px',
-    backgroundColor: props.isOdd ? '#ffffff' : '#f4f7fb',
-  })
-);
+});
+
+const Cell = styled('td')({
+  fontSize: 20,
+  fontWeight: 400,
+  color: '#8897a2',
+  padding: '22px 0',
+  verticalAlign: 'middle',
+  '& .bx--form-item.bx--checkbox-wrapper': {
+    marginTop: 0,
+  },
+});
 
 export default function FileListItem({
   file,
-  isOdd,
   deleteFileHandler,
   displayFileModalHandler,
 }) {
   const checkboxId = `checkbox-file-${file.id}`;
   return (
-    <tr>
+    <Row>
       <Cell
-        isOdd={isOdd}
         className={css({ paddingLeft: 20 })}
         onClick={() => displayFileModalHandler(file.fileUrl)}
       >
@@ -36,9 +40,9 @@ export default function FileListItem({
           labelText={file.fileName}
         />
       </Cell>
-      <Cell isOdd={isOdd}>{file.description}</Cell>
-      <Cell isOdd={isOdd}>{file.dateCreated}</Cell>
-      <Cell isOdd={isOdd}>
+      <Cell>{file.description}</Cell>
+      <Cell>{format(file.dateCreated, 'DD/MM/YYYY')}</Cell>
+      <Cell>
         <a
           onClick={() => deleteFileHandler(file)}
           className={css({
@@ -52,6 +56,6 @@ export default function FileListItem({
           Delete
         </a>
       </Cell>
-    </tr>
+    </Row>
   );
 }

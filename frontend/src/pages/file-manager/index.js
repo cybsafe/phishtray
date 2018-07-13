@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
-import { remove } from 'lodash';
 
 import { getAllFiles } from '../../data/files';
 
@@ -73,14 +72,11 @@ export default class FileManager extends Component {
         fileUrl: null,
       },
     };
-    this.deleteFileHandler = this.deleteFileHandler.bind(this);
-    this.displayFileModalHandler = this.displayFileModalHandler.bind(this);
-    this.hideFileModalHandler = this.hideFileModalHandler.bind(this);
   }
 
-  deleteFileHandler(fileToDelete) {
+  deleteFileHandler = fileToDelete => {
     const files = this.state.files;
-    const updatedFiles = remove(files, file => file.id !== fileToDelete.id);
+    const updatedFiles = files.filter(file => file.id !== fileToDelete.id);
     let modal = this.state.modal;
     if (modal.isOpen && modal.fileUrl === fileToDelete.fileUrl) {
       modal = {
@@ -92,27 +88,25 @@ export default class FileManager extends Component {
       files: updatedFiles,
       modal,
     });
-  }
+  };
 
-  displayFileModalHandler(fileUrl) {
-    this.setState(prevState => ({
-      files: prevState.files,
+  displayFileModalHandler = fileUrl => {
+    this.setState({
       modal: {
         isOpen: true,
         fileUrl,
       },
-    }));
-  }
+    });
+  };
 
-  hideFileModalHandler() {
-    this.setState(prevState => ({
-      files: prevState.files,
+  hideFileModalHandler = () => {
+    this.setState({
       modal: {
         isOpen: false,
         fileUrl: null,
       },
-    }));
-  }
+    });
+  };
 
   render() {
     return (
@@ -126,18 +120,14 @@ export default class FileManager extends Component {
         <Table>
           <TableHead />
           <tbody>
-            {this.state.files.map((file, index) => {
-              const isOdd = (index + 1) % 2;
-              return (
-                <FileListItem
-                  key={file.id}
-                  file={file}
-                  isOdd={isOdd}
-                  deleteFileHandler={this.deleteFileHandler}
-                  displayFileModalHandler={this.displayFileModalHandler}
-                />
-              );
-            })}
+            {this.state.files.map(file => (
+              <FileListItem
+                key={file.id}
+                file={file}
+                deleteFileHandler={this.deleteFileHandler}
+                displayFileModalHandler={this.displayFileModalHandler}
+              />
+            ))}
           </tbody>
         </Table>
       </Container>
