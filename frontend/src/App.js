@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
-import styled, { css } from 'react-emotion';
+import styled, { css, cx } from 'react-emotion';
 import { Provider } from 'react-redux';
 
 import configureStore from './redux';
@@ -24,18 +24,22 @@ const Sidebar = styled('div')({
   background: '#161415',
 });
 
-const StyledLink = styled(Link)(
-  {
-    display: 'block',
-    padding: '20px 30px',
-    textDecoration: 'none',
-    letterSpacing: '1.5px',
-    fontSize: 18,
-  },
-  props => ({
-    fontWeight: props.isMatch ? 'bold' : 'normal',
-    color: props.isMatch ? '#FFF' : '#C1C1C1',
-  })
+const StyledLink = ({ isMatch, className, ...rest }) => (
+  <Link
+    className={cx([
+      css({
+        display: 'block',
+        padding: '20px 30px',
+        textDecoration: 'none',
+        letterSpacing: '1.5px',
+        fontSize: 18,
+        fontWeight: isMatch ? 'bold' : 'normal',
+        color: isMatch ? '#FFF' : '#C1C1C1',
+      }),
+      className,
+    ])}
+    {...rest}
+  />
 );
 
 function SidebarLink({ to, children, ...rest }) {
