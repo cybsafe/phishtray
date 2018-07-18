@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
+import { InlineLoading } from 'carbon-components-react';
 
-import { getThreads, loadThreads } from '../../reducers/inbox';
+import {
+  getThreads,
+  getLastRefreshed,
+  loadThreads,
+} from '../../reducers/inbox';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
@@ -27,29 +32,27 @@ const EmailContainer = styled('div')({
   paddingBottom: 80,
 });
 
-const LoadingSpinner = () => <div>Loading</div>;
-
 export class Inbox extends Component {
-  state = {
-    loading: true,
-  };
-
   async componentDidMount() {
     await this.props.loadThreads();
-    this.setState({
-      loading: false,
-    });
   }
 
   render() {
-    const { match, threads } = this.props;
-    const { loading } = this.state;
+    const { match, threads, isLoaded } = this.props;
 
-    if (loading) {
+    if (!isLoaded) {
       return (
         <Container>
           <EmailList>
-            <LoadingSpinner />
+            <InlineLoading
+              className={css({
+                color: '#fff',
+                justifyContent: 'center',
+                marginTop: '20%',
+                '& svg': { stroke: '#fff !important' },
+              })}
+              description="Loading"
+            />
           </EmailList>
           <EmailContainer />
         </Container>
@@ -73,7 +76,8 @@ export class Inbox extends Component {
 
 export default connect(
   state => ({
-    threads: getThreads(state.inbox),
+    threads: getThreads(state),
+    isLoaded: getLastRefreshed(state) !== null,
   }),
   { loadThreads }
 )(Inbox);

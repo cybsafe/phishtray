@@ -18,14 +18,20 @@ type Thread = {
 };
 
 type State = {
+  lastRefreshed: ?Date,
   threads: [Thread],
 };
 
-export default function reducer(state: State = {}, action = {}) {
+const INITIAL_STATE = {
+  lastRefreshed: null,
+};
+
+export default function reducer(state: State = INITIAL_STATE, action = {}) {
   switch (action.type) {
     case 'inbox/LOAD_THREADS': {
       return {
         ...state,
+        lastRefreshed: new Date(),
         threads: action.payload,
       };
     }
@@ -50,9 +56,13 @@ export function loadThreads() {
 
 // Selectors
 export function getThreads(state) {
-  return state.threads;
+  return state.inbox.threads;
 }
 
 export function getThread(id) {
-  return state => state.threads.find(thread => thread.id === id);
+  return state => state.inbox.threads.find(thread => thread.id === id);
+}
+
+export function getLastRefreshed(state) {
+  return state.inbox.lastRefreshed;
 }

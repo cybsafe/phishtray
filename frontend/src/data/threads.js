@@ -144,7 +144,8 @@ const THREADS = [
         },
         id: '54476574-cc91-4e9a-b366-424b0aaed34d',
         timestamp: '2018-02-20:15:31.000Z',
-        body: '# Good afternoon,\n\nWe recently received a request to process a refund request on your account. Before we deposit the money, HBSC require confirmation from you.\n\n \n\n [Please click here to release your money](/#)',
+        body:
+          '# Good afternoon,\n\nWe recently received a request to process a refund request on your account. Before we deposit the money, HBSC require confirmation from you.\n\n \n\n [Please click here to release your money](/#)',
       },
     ],
   },
@@ -161,7 +162,8 @@ const THREADS = [
         },
         id: 'ec705f8a-9492-4ab4-8768-f979bbdba760',
         timestamp: '2018-02-20:15:31.000Z',
-        body: 'Hello there!, we have evidence of suspicious activity on your account, please see the records below',
+        body:
+          'Hello there!, we have evidence of suspicious activity on your account, please see the records below',
         attachments: [
           {
             id: 124,

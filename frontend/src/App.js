@@ -59,7 +59,7 @@ class App extends Component {
     super();
 
     // TODO
-    this.store = configureStore({});
+    this.store = configureStore();
   }
 
   render() {

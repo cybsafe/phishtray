@@ -1,16 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
+import { connect } from 'react-redux';
 
-import { getThread } from '../../../data/threads';
+import { getThread } from '../../../reducers/inbox';
+
 import Email from './Email';
 
-export default class EmailChain extends Component {
+export class EmailChain extends Component {
   render() {
-    const { match } = this.props;
-    const {
-      params: { emailId },
-    } = match;
-    const thread = getThread(emailId);
+    const { thread } = this.props;
     return thread.emails.map(email => (
       <Fragment key={email.id}>
         <Email email={email} />
@@ -23,3 +21,7 @@ export default class EmailChain extends Component {
     ));
   }
 }
+
+export default connect((state, props) => ({
+  thread: getThread(props.match.params.emailId)(state),
+}))(EmailChain);
