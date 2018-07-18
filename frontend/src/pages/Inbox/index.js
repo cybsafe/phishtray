@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'react-emotion';
+import { connect } from 'react-redux';
 
-import { getAllEmails } from '../../data/threads';
+import { getThreads, loadThreads } from '../../reducers/inbox';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
@@ -26,15 +27,41 @@ const EmailContainer = styled('div')({
   paddingBottom: 80,
 });
 
-export default class Inbox extends Component {
+const LoadingSpinner = () => <div>Loading</div>;
+
+export class Inbox extends Component {
+  state = {
+    loading: true,
+  };
+
+  async componentDidMount() {
+    await this.props.loadThreads();
+    this.setState({
+      loading: false,
+    });
+  }
+
   render() {
-    const { match } = this.props;
-    const emails = getAllEmails();
+    const { match, threads } = this.props;
+    const { loading } = this.state;
+
+    if (loading) {
+      return (
+        <Container>
+          <EmailList>
+            <LoadingSpinner />
+          </EmailList>
+          <EmailContainer />
+        </Container>
+      );
+    }
 
     return (
       <Container>
         <EmailList>
-          {emails.map(email => <EmailListItem key={email.id} email={email} />)}
+          {threads.map(thread => (
+            <EmailListItem key={thread.id} email={thread} />
+          ))}
         </EmailList>
         <EmailContainer>
           <Route path={`${match.url}/:emailId`} component={EmailChain} />
@@ -43,3 +70,10 @@ export default class Inbox extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    threads: getThreads(state.inbox),
+  }),
+  { loadThreads }
+)(Inbox);
