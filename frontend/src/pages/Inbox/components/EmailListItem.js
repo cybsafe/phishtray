@@ -21,8 +21,8 @@ const Text = styled('div')(
     textDecoration: 'none',
   },
   props => ({
-    fontWeight: props.isSelected ? 'bold' : 'normal',
-    opacity: props.isSelected ? 1 : 0.7,
+    fontWeight: !props.isRead ? 'bold' : 'normal',
+    opacity: !props.isRead ? 1 : 0.7,
   })
 );
 
@@ -36,7 +36,7 @@ export default function EmailListItem({ email }) {
         >
           <Container isSelected={!!match}>
             <Text
-              isSelected={!!match}
+              isRead={email.isRead}
               className={css({
                 fontSize: 18,
                 lineHeight: '21px',
@@ -45,7 +45,7 @@ export default function EmailListItem({ email }) {
             >
               {email.subject}
             </Text>
-            <Text isSelected={!!match}>{email.from}</Text>
+            <Text isRead={email.isRead}>{email.from}</Text>
           </Container>
         </Link>
       )}
