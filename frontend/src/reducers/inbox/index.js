@@ -1,5 +1,6 @@
 // @flow
 import { createSelector } from 'reselect';
+import produce from 'immer';
 
 import { getAllEmails } from '../../data/threads';
 
@@ -36,6 +37,13 @@ export default function reducer(state: State = INITIAL_STATE, action = {}) {
         threads: action.payload,
       };
     }
+    case 'inbox/MARK_THREAD_AS_READ': {
+      return produce(state, draft => {
+        const { threadId } = action.payload;
+        const thread = draft.threads.find(thread => thread.id === threadId);
+        thread.isRead = true;
+      });
+    }
     default: {
       return state;
     }
@@ -52,6 +60,15 @@ export function loadThreads() {
       type: 'inbox/LOAD_THREADS',
       payload: threads,
     });
+  };
+}
+
+export function markThreadAsRead(threadId) {
+  return {
+    type: 'inbox/MARK_THREAD_AS_READ',
+    payload: {
+      threadId,
+    },
   };
 }
 
