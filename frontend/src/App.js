@@ -4,6 +4,7 @@ import styled, { css, cx } from 'react-emotion';
 import { Provider } from 'react-redux';
 
 import configureStore from './redux';
+import { tickTimer } from './reducers/exercise';
 
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
@@ -60,6 +61,16 @@ class App extends Component {
 
     // TODO
     this.store = configureStore();
+  }
+
+  componentDidMount() {
+    this._exerciseTick = setInterval(() => {
+      this.store.dispatch(tickTimer(5));
+    }, 5 * 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._exerciseTick);
   }
 
   render() {

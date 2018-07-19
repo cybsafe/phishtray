@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 import produce from 'immer';
 
 import { getAllEmails } from '../../data/threads';
+import { getExerciseTimer } from '../exercise';
 
 type Email = {
   id: string,
@@ -16,6 +17,7 @@ type Thread = {
   id: string,
   subject: string,
   from: string, // TODO
+  revealTime: number,
   emails: [Email],
 };
 
@@ -26,6 +28,7 @@ type State = {
 
 const INITIAL_STATE = {
   lastRefreshed: null,
+  threads: [],
 };
 
 export default function reducer(state: State = INITIAL_STATE, action = {}) {
@@ -37,6 +40,7 @@ export default function reducer(state: State = INITIAL_STATE, action = {}) {
         threads: action.payload,
       };
     }
+
     case 'inbox/MARK_THREAD_AS_READ': {
       return produce(state, draft => {
         const { threadId } = action.payload;
@@ -44,6 +48,7 @@ export default function reducer(state: State = INITIAL_STATE, action = {}) {
         thread.isRead = true;
       });
     }
+
     default: {
       return state;
     }
@@ -74,11 +79,18 @@ export function markThreadAsRead(threadId) {
 
 // Selectors
 const inboxSelector = state => state.inbox;
-export const getThreads = createSelector(inboxSelector, inbox => inbox.threads);
+export const getThreads = createSelector(
+  [inboxSelector, getExerciseTimer],
+  (inbox, exerciseTimer) =>
+    inbox.threads.filter(thread => thread.revealTime <= exerciseTimer)
+);
 
 export const getThread = createSelector(
-  [inboxSelector, (_, props) => props.threadId],
-  (inbox, threadId) => inbox.threads.find(thread => thread.id === threadId)
+  [inboxSelector, (_, props) => props.threadId, getExerciseTimer],
+  (inbox, threadId, exerciseTimer) =>
+    inbox.threads.find(
+      thread => thread.id === threadId && thread.revealTime <= exerciseTimer
+    )
 );
 
 export const getLastRefreshed = createSelector(

@@ -3,6 +3,7 @@ const THREADS = [
     id: '0',
     subject: 'Welcome on board!',
     from: 'Arther Ardent',
+    revealTime: 5, // reveal after 5 seconds
     emails: [
       {
         subject: 'Welcome on board!',
@@ -22,6 +23,7 @@ const THREADS = [
     id: '1',
     subject: 'Caution with emails',
     from: 'Peter Pollard',
+    revealTime: 0,
     emails: [
       {
         subject: 'Caution with emails',
@@ -75,6 +77,7 @@ const THREADS = [
     id: '2',
     subject: 'URGENT: Processed payments',
     from: 'Bea Bright',
+    revealTime: 0,
     emails: [
       {
         subject: 'URGENT: Processed payments',
@@ -111,6 +114,7 @@ const THREADS = [
     id: '3',
     subject: 'Cool pic',
     from: 'Danielle Day',
+    revealTime: 0,
     emails: [
       {
         subject: 'Cool pic',
@@ -135,6 +139,7 @@ const THREADS = [
     id: '4',
     subject: 'Refund Request',
     from: '[HBSC] Geoff Dave',
+    revealTime: 0,
     emails: [
       {
         subject: 'Refund Request',
@@ -153,6 +158,7 @@ const THREADS = [
     id: '5',
     subject: 'Suspicious Activity',
     from: 'PayFriend',
+    revealTime: 0,
     emails: [
       {
         subject: 'Suspicious Activity',
