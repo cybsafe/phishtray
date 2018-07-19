@@ -1,4 +1,5 @@
 // @flow
+import { createSelector } from 'reselect';
 
 import { getAllEmails } from '../../data/threads';
 
@@ -55,14 +56,15 @@ export function loadThreads() {
 }
 
 // Selectors
-export function getThreads(state) {
-  return state.inbox.threads;
-}
+const inboxSelector = state => state.inbox;
+export const getThreads = createSelector(inboxSelector, inbox => inbox.threads);
 
-export function getThread(id) {
-  return state => state.inbox.threads.find(thread => thread.id === id);
-}
+export const getThread = createSelector(
+  [inboxSelector, (_, props) => props.threadId],
+  (inbox, threadId) => inbox.threads.find(thread => thread.id === threadId)
+);
 
-export function getLastRefreshed(state) {
-  return state.inbox.lastRefreshed;
-}
+export const getLastRefreshed = createSelector(
+  inboxSelector,
+  inbox => inbox.lastRefreshed
+);

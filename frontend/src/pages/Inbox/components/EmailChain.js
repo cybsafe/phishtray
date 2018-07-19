@@ -23,5 +23,5 @@ export class EmailChain extends Component {
 }
 
 export default connect((state, props) => ({
-  thread: getThread(props.match.params.emailId)(state),
+  thread: getThread(state, { threadId: props.match.params.emailId }),
 }))(EmailChain);
