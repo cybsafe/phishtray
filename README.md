@@ -2,6 +2,10 @@
 
 [![Build Status](https://travis-ci.com/cybsafe/phishtray.svg?branch=master)](https://travis-ci.com/cybsafe/phishtray)
 
+# Install
+
+Prereq - docker & docker compose. https://docs.docker.com/install/
+
 ```
 
 $ docker-compose up -d --build
