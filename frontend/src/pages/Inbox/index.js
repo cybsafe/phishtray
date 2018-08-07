@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
+import { connect } from 'react-redux';
+import { InlineLoading } from 'carbon-components-react';
 
-import { getAllEmails } from '../../data/threads';
+import {
+  getThreads,
+  getLastRefreshed,
+  loadThreads,
+} from '../../reducers/inbox';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
@@ -26,15 +32,39 @@ const EmailContainer = styled('div')({
   paddingBottom: 80,
 });
 
-export default class Inbox extends Component {
+export class Inbox extends Component {
+  async componentDidMount() {
+    await this.props.loadThreads();
+  }
+
   render() {
-    const { match } = this.props;
-    const emails = getAllEmails();
+    const { match, threads, isLoaded } = this.props;
+
+    if (!isLoaded) {
+      return (
+        <Container>
+          <EmailList>
+            <InlineLoading
+              className={css({
+                color: '#fff',
+                justifyContent: 'center',
+                marginTop: '20%',
+                '& svg': { stroke: '#fff !important' },
+              })}
+              description="Loading"
+            />
+          </EmailList>
+          <EmailContainer />
+        </Container>
+      );
+    }
 
     return (
       <Container>
         <EmailList>
-          {emails.map(email => <EmailListItem key={email.id} email={email} />)}
+          {threads.map(thread => (
+            <EmailListItem key={thread.id} email={thread} />
+          ))}
         </EmailList>
         <EmailContainer>
           <Route path={`${match.url}/:emailId`} component={EmailChain} />
@@ -43,3 +73,11 @@ export default class Inbox extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    threads: getThreads(state),
+    isLoaded: getLastRefreshed(state) !== null,
+  }),
+  { loadThreads }
+)(Inbox);

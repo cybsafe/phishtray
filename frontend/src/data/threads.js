@@ -3,6 +3,7 @@ const THREADS = [
     id: '0',
     subject: 'Welcome on board!',
     from: 'Arther Ardent',
+    revealTime: 5, // reveal after 5 seconds
     emails: [
       {
         subject: 'Welcome on board!',
@@ -22,6 +23,7 @@ const THREADS = [
     id: '1',
     subject: 'Caution with emails',
     from: 'Peter Pollard',
+    revealTime: 0,
     emails: [
       {
         subject: 'Caution with emails',
@@ -75,6 +77,7 @@ const THREADS = [
     id: '2',
     subject: 'URGENT: Processed payments',
     from: 'Bea Bright',
+    revealTime: 0,
     emails: [
       {
         subject: 'URGENT: Processed payments',
@@ -111,6 +114,7 @@ const THREADS = [
     id: '3',
     subject: 'Cool pic',
     from: 'Danielle Day',
+    revealTime: 0,
     emails: [
       {
         subject: 'Cool pic',
@@ -135,6 +139,7 @@ const THREADS = [
     id: '4',
     subject: 'Refund Request',
     from: '[HBSC] Geoff Dave',
+    revealTime: 0,
     emails: [
       {
         subject: 'Refund Request',
@@ -144,7 +149,8 @@ const THREADS = [
         },
         id: '54476574-cc91-4e9a-b366-424b0aaed34d',
         timestamp: '2018-02-20:15:31.000Z',
-        body: '# Good afternoon,\n\nWe recently received a request to process a refund request on your account. Before we deposit the money, HBSC require confirmation from you.\n\n \n\n [Please click here to release your money](/#)',
+        body:
+          '# Good afternoon,\n\nWe recently received a request to process a refund request on your account. Before we deposit the money, HBSC require confirmation from you.\n\n \n\n [Please click here to release your money](/#)',
       },
     ],
   },
@@ -152,6 +158,7 @@ const THREADS = [
     id: '5',
     subject: 'Suspicious Activity',
     from: 'PayFriend',
+    revealTime: 0,
     emails: [
       {
         subject: 'Suspicious Activity',
@@ -161,7 +168,8 @@ const THREADS = [
         },
         id: 'ec705f8a-9492-4ab4-8768-f979bbdba760',
         timestamp: '2018-02-20:15:31.000Z',
-        body: 'Hello there!, we have evidence of suspicious activity on your account, please see the records below',
+        body:
+          'Hello there!, we have evidence of suspicious activity on your account, please see the records below',
         attachments: [
           {
             id: 124,
