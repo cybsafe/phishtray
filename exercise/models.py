@@ -86,7 +86,8 @@ class Exercise(models.Model):
     afterword = models.TextField(null=True, blank=True)
 
     length_minutes = models.IntegerField()
-    emails = models.ManyToManyField(ExerciseEmail, blank=True)
+    emails = models.ManyToManyField(ExerciseEmail,blank=True, related_name='temporary_name')
+    emails2 = models.ManyToManyField(ExerciseEmail, through='ExerciseEmailsThrough', blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, blank=True)
@@ -94,6 +95,14 @@ class Exercise(models.Model):
     @property
     def link(self):
         return helpers.hasher.encode(self.id)
+
+class ExerciseEmailsThrough(models.Model):
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+    exerciseemail = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE)
+    reveal_time = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    class Meta:
+        unique_together = (('exercise', 'exerciseemail'),)
 
 
 class ExerciseKey(models.Model):
