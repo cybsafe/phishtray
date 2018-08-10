@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^', include(router.urls)),
 
     # exercise urls
+    #Albert Defler (raydeal) - detail is not needed, it should be like emails_detail url
     url('^detail/(?P<pk>[0-9]+)/$', exercise_detail, name='exercise-detail'),
     url('^list/$', exercise_list, name='exercise-list'),
 

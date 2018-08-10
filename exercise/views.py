@@ -12,6 +12,7 @@ from exercise.serializer import *
 
 def index(request, link):
     e_id = helpers.hasher.decode(link)
+    #Albert Defler (raydeal) - IndexError at /exercise/list/ tuple index out of range
     exercise = get_object_or_404(Exercise, pk=e_id[0])
     context = {'exercise': exercise}
     return render(request, 'index.html', context)
