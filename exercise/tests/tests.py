@@ -55,6 +55,23 @@ class ExerciseRestTests(TestCase):
         self.assertIsNotNone(json_data['modified_date'])
         EmailAssertHelper.assert_first_email(self,json_data['emails'][0])
 
+    #ADefler(raydeal)
+    def test_exercise_detail_by_id(self):
+        self.create_exercise()
+
+        response = self.client.get('/exercise/detail/1/')
+        self.assertEqual(response.status_code, 200)
+        json_data = response.json()
+        self.assertEqual(json_data['id'], 1)
+        self.assertEqual(json_data['title'], 'first exercise')
+        self.assertEqual(json_data['description'], 'test desc')
+        self.assertEqual(json_data['length_minutes'], 10)
+        self.assertIsNotNone(json_data['created_date'])
+        self.assertIsNotNone(json_data['modified_date'])
+        first_email = json_data['emails'][0]
+        EmailAssertHelper.assert_first_email(self,first_email)
+        self.assertIn('reveal_time',first_email)
+
     @staticmethod
     def create_exercise():
         exercise = Exercise(
