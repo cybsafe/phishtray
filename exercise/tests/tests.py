@@ -106,7 +106,10 @@ class ExerciseRestTests(TestCase):
         email1.save()
         email1.replies.add(replies)
         email1.attachments.add(attachment)
-        exercise.emails.add(email1)
+        #exercise.emails.add(email1)
+        exercise_emails_through = ExerciseEmailsThrough(exercise = exercise,
+                                                        exerciseemail = email1)
+        exercise_emails_through.save()
 
 
 class ExerciseEmailTests(TestCase):
