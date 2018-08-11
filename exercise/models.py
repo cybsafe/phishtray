@@ -1,8 +1,11 @@
 from django.db import models
+from django.utils.functional import cached_property
 
 from utils import helpers
 import django.utils
 import json
+import math
+from random import Random
 import uuid
 
 
@@ -56,6 +59,11 @@ class ExerciseEmailReply(models.Model):
 
 class ExerciseEmail(models.Model):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.reveal_time = None
+
     def __str__(self):
         return self.subject
 
@@ -94,6 +102,21 @@ class Exercise(models.Model):
     @property
     def link(self):
         return helpers.hasher.encode(self.id)
+
+    @cached_property
+    def contextualized_emails(self):
+        random = Random(self.id)
+        emails = self.emails.all()
+        email_amount = len(emails)
+        immediately_available = random.sample(range(email_amount), math.ceil(email_amount / 10))
+
+        for i, email in enumerate(emails):
+            if i in immediately_available:
+                email.reveal_time = 0
+            else:
+                email.reveal_time = random.randint(1, self.length_minutes * 60)
+
+            yield email
 
 
 class ExerciseKey(models.Model):

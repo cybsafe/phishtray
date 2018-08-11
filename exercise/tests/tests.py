@@ -3,6 +3,7 @@ from django.urls import reverse
 
 from exercise.models import *
 from exercise.tests.helpers.assert_emal_response import *
+from participant.models import Participant
 
 import json
 
@@ -14,6 +15,49 @@ class ExerciseModelTests(TestCase):
         """
         exercise = Exercise(id=1)
         self.assertEqual(exercise.link, "WLE")
+
+    def test_contextualized_emails_immediately_available_amount(self):
+        """
+        tests that the 10% of the emails have the reveal time set to 0
+        """
+        emails = [ExerciseEmail.objects.create(phish_type=EXERCISE_EMAIL_PHISH) for _ in range(10)]
+        exercise = Exercise.objects.create(length_minutes=10)
+
+        exercise.emails.add(*emails)
+
+        contextualized_emails = list(exercise.contextualized_emails)
+        immediately_available_emails = [email for email in contextualized_emails if email.reveal_time == 0]
+
+        # 10% of the emails should be immediately available
+        self.assertEqual(len(contextualized_emails), 10)
+        self.assertEqual(len(immediately_available_emails), 1)
+
+    def test_contextualized_emails_reveal_time_consistency(self):
+        """
+        tests that the reveal time is consistent for the same email in the same exercise for every participant
+        """
+        emails = [ExerciseEmail.objects.create(phish_type=EXERCISE_EMAIL_PHISH) for _ in range(10)]
+        exercise1 = Exercise.objects.create(length_minutes=10)
+        exercise2 = Exercise.objects.create(length_minutes=15)
+        participant1 = Participant.objects.create(exercise=exercise1)
+        participant2 = Participant.objects.create(exercise=exercise1)
+
+        exercise1.emails.add(*emails)
+        exercise2.emails.add(*emails)
+
+        # The same email has a different reveal time for different exercises
+        email1_exercise1 = next(exercise1.contextualized_emails)
+        email1_exercise2 = next(exercise2.contextualized_emails)
+        self.assertEquals(email1_exercise1, email1_exercise2)
+        self.assertNotEqual(email1_exercise1.reveal_time, email1_exercise2.reveal_time)
+
+        # The same email has the same reveal time for the same exercise for every participant
+        self.assertEqual(participant1.exercise, participant2.exercise)
+        participant1_emails = sorted(participant1.exercise.contextualized_emails, key=lambda e: e.id)
+        participant2_emails = sorted(participant2.exercise.contextualized_emails, key=lambda e: e.id)
+        for email1, email2 in zip(participant1_emails, participant2_emails):
+            self.assertEqual(email1, email2)
+            self.assertEqual(email1.reveal_time, email2.reveal_time)
 
 
 class ExerciseViewTests(TestCase):
