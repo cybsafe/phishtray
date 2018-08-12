@@ -95,6 +95,9 @@ class Exercise(models.Model):
     def link(self):
         return helpers.hasher.encode(self.id)
 
+    def generate_reveal_time(self):
+        raise NotImplementedError
+
 class ExerciseEmailsThrough(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     exerciseemail = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE)
