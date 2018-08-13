@@ -4,6 +4,7 @@ from utils import helpers
 import django.utils
 import json
 import uuid
+from random import sample, randint
 
 
 KEY_TYPE_INTEGER = 0
@@ -27,6 +28,12 @@ EXERCISE_REPLY_TYPE = (
     (0, 'reply'),
     (1, 'forward')
 )
+
+def get_sample_reveal_time_zero_indexes(population,sample_size):
+    sample_list = sample(range(population),sample_size)
+    #we need list from max to min indexes, because we use pop
+    sample_list = sorted(sample_list, reverse=True)
+    return sample_list
 
 
 class ExerciseAttachment(models.Model):
@@ -96,7 +103,21 @@ class Exercise(models.Model):
         return helpers.hasher.encode(self.id)
 
     def generate_reveal_time(self):
-        raise NotImplementedError
+        exercise_emails_ids = list(ExerciseEmailsThrough.objects.values_list('id',flat=True) \
+                            .filter(exercise=self))
+
+        emails_number = len(exercise_emails_ids)
+        reveal_time_zero_indexes = get_sample_reveal_time_zero_indexes(emails_number,emails_number//10)
+
+        for i in reveal_time_zero_indexes:
+            exercise_emails_id = exercise_emails_ids.pop(i)
+            ExerciseEmailsThrough.objects.filter(pk=exercise_emails_id) \
+                                .update(reveal_time=0)
+        
+        for id in exercise_emails_ids:
+            rand_reveal_time = randint(1,self.length_minutes * 60)
+            ExerciseEmailsThrough.objects.filter(pk=id) \
+                                .update(reveal_time=rand_reveal_time)
 
 class ExerciseEmailsThrough(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)

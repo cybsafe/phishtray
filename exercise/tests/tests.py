@@ -3,11 +3,13 @@ from django.urls import reverse
 
 from exercise.models import *
 from exercise.tests.helpers.assert_emal_response import *
+from participant.models import Participant
 
 import json
 
 from .helpers.prepare_data import create_exercise_3_emails \
-                                , create_exercise_20_emails
+                                , create_exercise_20_emails \
+                                , create_two_exercises_20_emails
 
 class ExerciseModelTests(TestCase):
 
@@ -119,13 +121,14 @@ class ExerciseRestTests(TestCase):
         participant_1 = Participant.objects.create(exercise=exercise)
         participant_2 = Participant.objects.create(exercise=exercise)
 
-        participant_1_emails = sorted(participant_1.exercise.emails, key=lambda email: email.id)
-        participant_2_emails = sorted(participant_2.exercise.emails, key=lambda email: email.id)
+        participant_1_emails = sorted(participant_1.exercise.emails.all(), key=lambda email: email.id)
+        participant_2_emails = sorted(participant_2.exercise.emails.all(), key=lambda email: email.id)
 
         for pe_1, pe_2 in zip(participant_1_emails,participant_2_emails):
             self.assertEqual(pe_1.id,pe_2.id)
-            self.assertEqual(pe_1.reveal_time, pe_2.reveal_time)
-
+            reveal_time_1 = ExerciseEmailsThrough.objects.get(exercise = participant_1.exercise, exerciseemail=pe_1)
+            reveal_time_2 = ExerciseEmailsThrough.objects.get(exercise = participant_2.exercise, exerciseemail=pe_2)
+            self.assertEqual(reveal_time_1,reveal_time_2)
 
     def test_reveal_time_differ_for_exercises(self):
         '''test if reveal_time is different for the same emails
@@ -134,11 +137,13 @@ class ExerciseRestTests(TestCase):
            same reveal_time.
         '''
         exercises = create_two_exercises_20_emails()
-        e_1_emails = sorted(exercises[0].emails, key=lambda email: email.id)
-        e_2_emails = sorted(exercises[1].emails, key=lambda email: email.id)
+        e_1_emails = sorted(exercises[0].emails.all(), key=lambda email: email.id)
+        e_2_emails = sorted(exercises[1].emails.all(), key=lambda email: email.id)
         for email_exercise_1, email_exercise_2 in zip(e_1_emails,e_2_emails):
             self.assertEqual(email_exercise_1.id,email_exercise_2.id)
-            self.assertNotEqual(email_exercise_1.reveal_time, email_exercise_2.reveal_time)
+            reveal_time_1 = ExerciseEmailsThrough.objects.get(exercise = exercises[0], exerciseemail=email_exercise_1)
+            reveal_time_2 = ExerciseEmailsThrough.objects.get(exercise = exercises[1], exerciseemail=email_exercise_2)
+            self.assertNotEqual(reveal_time_1, reveal_time_2)
 
 
     @staticmethod
