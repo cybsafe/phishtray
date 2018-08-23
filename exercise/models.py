@@ -1,9 +1,8 @@
 from django.db import models
 
+from picklefield.fields import PickledObjectField
+from random import randint
 from utils import helpers
-import django.utils
-import json
-import uuid
 
 
 KEY_TYPE_INTEGER = 0
@@ -87,6 +86,7 @@ class Exercise(models.Model):
 
     length_minutes = models.IntegerField()
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
+    email_reveal_times = PickledObjectField(null=True)
 
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, blank=True)
@@ -94,6 +94,51 @@ class Exercise(models.Model):
     @property
     def link(self):
         return helpers.hasher.encode(self.id)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            super(Exercise, self).save(*args, **kwargs)
+        else:
+            # Set reveal time for emails in this exercise
+            # Only set this if this wasn't generated before!
+            # TODO: (TCKT-1234) introduce a field to record state for an exercise e.g.: "live"
+            # reveal_times could be regenerated until the exercise get to a certain state
+            if not self.email_reveal_times:
+                self.set_email_reveal_times()
+            super(Exercise, self).save(*args, **kwargs)
+
+    def set_email_reveal_times(self):
+        # generate email reveal times - these are unique per exercise and are stored in seconds
+        # TODO: (TCKT-1235) minimum amount of emails that should have reveal_time 0
+        # in case the 10% of emails is less than 1 email
+        reveal_times = []
+
+        emails = self.emails.all()
+        if not emails:
+            return
+
+        for email in emails:
+            reveal_times.append(
+                {
+                    'email_id': email.id,
+                    'reveal_time':  randint(0, self.length_minutes * 60)
+                }
+            )
+
+        # Make 10% of emails appear in inbox at the beginning of exercise
+        received_emails_count = int(emails.count() * 0.1)
+        if received_emails_count >= 1:
+            updated_reveal_times = []
+
+            while received_emails_count:
+                received_email = reveal_times.pop(randint(0, len(reveal_times)-1))
+                received_email['reveal_time'] = 0
+                updated_reveal_times.append(received_email)
+                received_emails_count -= 1
+
+            reveal_times += updated_reveal_times
+
+        self.email_reveal_times = reveal_times
 
 
 class ExerciseKey(models.Model):

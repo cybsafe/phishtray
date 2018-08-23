@@ -37,7 +37,7 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ExerciseEmail
         fields = ('id', 'subject', 'from_address', 'from_name', 'to_address', 'to_name', 'phish_type',
-                  'content','attachments', 'replies')
+                  'content', 'attachments', 'replies')
 
     def to_representation(self, obj):
         data = EmailCoverSerializer().to_representation(obj)
@@ -61,8 +61,12 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     emails = ExerciseEmailSerializer(many=True)
+    email_reveal_times = serializers.SerializerMethodField()
 
     class Meta:
         model = Exercise
         fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes', 'emails',
-                  'created_date', 'modified_date')
+                  'email_reveal_times', 'created_date', 'modified_date')
+
+    def get_email_reveal_times(self, obj):
+        return obj.email_reveal_times
