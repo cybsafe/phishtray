@@ -22,7 +22,7 @@ const BrowserHeaderButton = styled('div')({
   cursor: 'pointer',
 });
 
-function BrowserHeader({ url, isSecure }) {
+function BrowserHeader({ onClose, url, isSecure }) {
   return (
     <div
       className={css({
@@ -45,7 +45,10 @@ function BrowserHeader({ url, isSecure }) {
           marginRight: 10,
         })}
       >
-        <BrowserHeaderButton className={css({ backgroundColor: '#f44' })} />
+        <BrowserHeaderButton
+          onClick={onClose}
+          className={css({ backgroundColor: '#f44' })}
+        />
         <BrowserHeaderButton className={css({ backgroundColor: '#fb5' })} />
         <BrowserHeaderButton className={css({ backgroundColor: '#9b3' })} />
       </div>
@@ -68,7 +71,7 @@ function BrowserHeader({ url, isSecure }) {
 
 export default class WebBrowser extends Component {
   render() {
-    const { websiteId } = this.props;
+    const { onClose, websiteId } = this.props;
     const website = websites[websiteId];
 
     if (!website) {
@@ -83,7 +86,11 @@ export default class WebBrowser extends Component {
 
     return (
       <BrowserChrome>
-        <BrowserHeader isSecure={website.isSecure} url={website.url} />
+        <BrowserHeader
+          onClose={onClose}
+          isSecure={website.isSecure}
+          url={website.url}
+        />
         <ContentComponent />
       </BrowserChrome>
     );

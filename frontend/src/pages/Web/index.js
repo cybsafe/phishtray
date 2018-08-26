@@ -46,6 +46,10 @@ class Web extends Component {
     };
   };
 
+  handleBrowserClose = () => {
+    this.setState({ displayWebBrowser: false, websiteId: null });
+  };
+
   render() {
     const { displayWebBrowser, websiteId } = this.state;
 
@@ -63,7 +67,9 @@ class Web extends Component {
           <WebsiteIcon className={css({ backgroundColor: '#e84118' })} />
           <WebsiteTitle>Bank</WebsiteTitle>
         </LinkContainer>
-        {displayWebBrowser ? <WebBrowser websiteId={websiteId} /> : null}
+        {displayWebBrowser ? (
+          <WebBrowser websiteId={websiteId} onClose={this.handleBrowserClose} />
+        ) : null}
       </Container>
     );
   }
