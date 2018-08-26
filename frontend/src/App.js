@@ -10,6 +10,7 @@ import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
+import Web from './pages/Web';
 
 const Container = styled('div')({
   display: 'flex',
@@ -101,6 +102,7 @@ class App extends Component {
                   <Route path="/inbox" component={Inbox} />
                   <Route path="/accounts" component={Accounts} />
                   <Route path="/files" component={FileManager} />
+                  <Route path="/web" component={Web} />
                   <Route
                     exact
                     path="/"
