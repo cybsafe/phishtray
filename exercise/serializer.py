@@ -66,3 +66,9 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
         model = Exercise
         fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes', 'emails',
                   'created_date', 'modified_date')
+
+
+class ExerciseActionSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ExerciseAction
+        fields = ('id', 'milliseconds', 'action_type', 'associations')

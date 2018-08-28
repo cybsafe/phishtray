@@ -28,6 +28,10 @@ EXERCISE_REPLY_TYPE = (
     (1, 'forward')
 )
 
+EXERCISE_ACTION_TYPES = (
+    (0, 'email_reply'),
+)
+
 
 class ExerciseAttachment(models.Model):
 
@@ -142,3 +146,16 @@ class ExerciseURL(models.Model):
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
 
     web_page = models.ForeignKey(ExerciseWebPages, on_delete=models.CASCADE)
+
+
+class ExerciseAction(models.Model):
+
+    def __str__(self):
+        return self.name
+
+    id = models.AutoField(primary_key=True)
+
+    name = models.CharField(default=str(id), max_length=250, blank=True, null=True)
+    milliseconds = models.IntegerField()
+    action_type = models.IntegerField(choices=EXERCISE_ACTION_TYPES)
+    associations = models.ManyToManyField(ExerciseEmail)

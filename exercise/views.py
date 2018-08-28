@@ -66,3 +66,11 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
     """
     queryset = ExerciseEmail.objects.all()
     serializer_class = EmailDetailsSerializer
+
+
+class ExerciseActionViewSet(viewsets.ModelViewSet):
+    """
+    This view accepts posts for the exercise
+    """
+    queryset = ExerciseAction.objects.all()
+    serializer_class = ExerciseActionSerializer
