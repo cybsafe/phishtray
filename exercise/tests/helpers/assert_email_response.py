@@ -34,6 +34,3 @@ class EmailAssertHelper:
         self.assertEqual(json_data['replies'][0]['message'], 'I have received your email-1')
         self.assertEqual(json_data['attachments'][0]['id'], 1)
         self.assertEqual(json_data['attachments'][0]['filename'], 'location of file name')
-
-
-

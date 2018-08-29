@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from exercise.models import *
-from exercise.tests.helpers.assert_emal_response import *
+from exercise.tests.helpers.assert_email_response import *
 
 class ExerciseEmailThreadTests(TestCase):
 
