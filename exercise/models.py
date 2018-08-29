@@ -166,6 +166,7 @@ class ExerciseAction(models.Model):
     id = models.AutoField(primary_key=True)
 
     action = models.IntegerField(choices=EXERCISE_ACTION_TYPES)
+    milliseconds = models.IntegerField()
 
     email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE)
     reply = models.ForeignKey(ExerciseEmailReply, on_delete=models.CASCADE, null=True, blank=True)

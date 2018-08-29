@@ -128,6 +128,7 @@ def store_action(request):
         return JsonResponse({'message': 'Json validation error', 'status': False}, status=500)
 
     try:
+        milliseconds = content['milliseconds']
         action_type = content['action']['type']
         associations = content['action']['associations']
         exercise_email_id = associations['exerciseEmail']
@@ -147,6 +148,7 @@ def store_action(request):
 
         exercise_action = ExerciseAction(
             action = action,
+            milliseconds = milliseconds,
             email = exercise_email,
             reply = exercise_email_reply,
             attachment = exercise_attachment,

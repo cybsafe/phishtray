@@ -38,6 +38,7 @@ class EmailAssertHelper:
     @staticmethod
     def assert_email_action(self, json_data, instance):
         self.assertEqual(json_data['action']['type'], instance.get_action_display())
+        self.assertEqual(json_data['milliseconds'], instance.milliseconds)
         self.assertEqual(json_data['action']['associations']['exerciseEmail'], instance.email.id)
         if instance.get_action_display() == 'email_reply':
             self.assertEqual(json_data['action']['associations']['exerciseEmailReply'], instance.reply.id)
