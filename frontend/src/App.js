@@ -9,7 +9,7 @@ import { tickTimer } from './reducers/exercise';
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
 import Header from './components/Header';
-import FileManager from './pages/file-manager';
+import FileManager from './pages/FileManager';
 
 const Container = styled('div')({
   display: 'flex',
