@@ -25,7 +25,15 @@ EXERCISE_PHISH_TYPES = (
 
 EXERCISE_REPLY_TYPE = (
     (0, 'reply'),
-    (1, 'forward')
+    (1, 'forward'),
+)
+
+EXERCISE_REPLY_ACTION = 0
+EXERCISE_ATTACHMENT_ACTION = 1
+
+EXERCISE_ACTION_TYPES = (
+    (EXERCISE_REPLY_ACTION, 'email_reply'),
+    (EXERCISE_ATTACHMENT_ACTION, 'email_attachment_open'),
 )
 
 
@@ -52,6 +60,9 @@ class ExerciseEmailReply(models.Model):
     reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
 
     message = models.TextField(null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Exercise email replies'
 
 
 class ExerciseEmail(models.Model):
@@ -128,6 +139,9 @@ class ExerciseWebPages(models.Model):
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = 'Exercise web pages'
+
 
 class ExerciseURL(models.Model):
 
@@ -142,3 +156,23 @@ class ExerciseURL(models.Model):
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
 
     web_page = models.ForeignKey(ExerciseWebPages, on_delete=models.CASCADE)
+
+
+class ExerciseAction(models.Model):
+
+    def __str__(self):
+        return '{} - {}'.format(self.email, self.get_action_display())
+
+    id = models.AutoField(primary_key=True)
+
+    action = models.IntegerField(choices=EXERCISE_ACTION_TYPES)
+    milliseconds = models.IntegerField()
+
+    email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE)
+    reply = models.ForeignKey(ExerciseEmailReply, on_delete=models.CASCADE, null=True, blank=True)
+    attachment = models.ForeignKey(ExerciseAttachment, on_delete=models.CASCADE, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if (not self.reply and not self.attachment) or (self.reply and self.attachment):
+            raise ValueError('Only one reply or attachment need to be populated')
+        super().save(*args, **kwargs)

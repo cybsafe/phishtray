@@ -3,7 +3,7 @@ version: '2'
 services:
   web:
     build: .
-    command: python3 manage.py runserver 0.0.0.0:8001
+    command: python3 manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     volumes:

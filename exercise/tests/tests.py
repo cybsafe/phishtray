@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from exercise.models import *
-from exercise.tests.helpers.assert_emal_response import *
+from exercise.tests.helpers.assert_email_response import *
 
 import json
 

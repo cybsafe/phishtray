@@ -38,4 +38,6 @@ urlpatterns = [
     # emails in Thread style
     url('^thread/(?P<pk>[0-9]+)/$', ExerciseEmailThreadViewSet.as_view({'get': 'retrieve'}), name='exercise-thread'),
 
+    # actions
+    url('^1/action/$', store_action, name='exercise-store-action'),
 ]
