@@ -58,11 +58,30 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
                 belongs_to = None
         return emails
 
+class ExerciseEmailsThroughSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField(source='exerciseemail.id')
+    subject = serializers.ReadOnlyField(source='exerciseemail.subject')
+    from_address = serializers.ReadOnlyField(source='exerciseemail.from_address')
+    from_name = serializers.ReadOnlyField(source='exerciseemail.from_name')
+    to_address = serializers.ReadOnlyField(source='exerciseemail.to_address')
+    to_name = serializers.ReadOnlyField(source='exerciseemail.to_name')
+    phish_type = serializers.ReadOnlyField(source='exerciseemail.phish_type')
+    content = serializers.ReadOnlyField(source='exerciseemail.content')
+
+    replies = ExerciseEmailReplySerializer(source='exerciseemail.replies', many=True, read_only=True)
+    attachments = ExerciseAttachmentSerializer(source='exerciseemail.attachments', many=True, read_only=True)
+
+    class Meta:
+        model = ExerciseEmailsThrough
+        fields = ('id', 'subject', 'from_address', 'from_name', 'to_address', 'to_name', 'phish_type',
+                  'content','reveal_time','attachments', 'replies',)
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
-    emails = ExerciseEmailSerializer(many=True)
+    #emails = ExerciseEmailSerializer(many=True)
+    emails = ExerciseEmailsThroughSerializer(source='exerciseemailsthrough_set', many=True)
 
     class Meta:
         model = Exercise
         fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes', 'emails',
                   'created_date', 'modified_date')
+
