@@ -24,6 +24,13 @@ class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
                   'content','attachments', 'replies')
 
 
+class ExerciseContextualizedEmailSerializer(ExerciseEmailSerializer):
+    reveal_time = serializers.ReadOnlyField()
+
+    class Meta(ExerciseEmailSerializer.Meta):
+        fields = list(ExerciseEmailSerializer.Meta.fields) + ['reveal_time']
+
+
 class EmailCoverSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ExerciseEmail
@@ -60,7 +67,7 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
-    emails = ExerciseEmailSerializer(many=True)
+    emails = ExerciseContextualizedEmailSerializer(source='contextualized_emails', many=True)
 
     class Meta:
         model = Exercise
