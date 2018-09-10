@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import format from 'date-fns/format';
 import Markdown from 'react-remarkable';
 
-import EmailCard from './EmailCard';
+import { markEmailAsOpened } from '../../../reducers/email';
 
+import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
 
 type Props = {
@@ -191,7 +193,12 @@ function EmailInfo({ email }) {
   );
 }
 
-export default class Email extends Component<Props> {
+class Email extends Component<Props> {
+  async componentDidMount() {
+    const { email, markEmailAsOpened } = this.props;
+    await markEmailAsOpened(email);
+  }
+
   render() {
     return (
       <div
@@ -226,3 +233,9 @@ export default class Email extends Component<Props> {
     );
   }
 }
+
+export const EmailComponent = Email;
+export default connect(
+  null,
+  { markEmailAsOpened }
+)(Email);
