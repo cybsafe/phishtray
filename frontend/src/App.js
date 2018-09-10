@@ -8,6 +8,7 @@ import { tickTimer } from './reducers/exercise';
 
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
+import Exercise from './pages/Exercise';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
 
@@ -101,6 +102,7 @@ class App extends Component {
                   <Route path="/inbox" component={Inbox} />
                   <Route path="/accounts" component={Accounts} />
                   <Route path="/files" component={FileManager} />
+                  <Route path="/welcome" component={Exercise} />
                   <Route
                     exact
                     path="/"
