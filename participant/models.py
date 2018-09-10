@@ -1,17 +1,19 @@
 from django.db import models
-from exercise.models import Exercise, ExerciseKey
-import django.utils
-import json
-
+from django.core.exceptions import ValidationError
+from exercise.models import Exercise, ExerciseKey, ExerciseEmail
 
 STARTED_EXPERIMENT = 0
 COMPLETED_EXPERIMENT = 1
-OTHER = 2
+OPENED_EMAIL = 2
+OPENED_UNSAFE_EMAIL_LINK = 3
+DOWNLOADED_UNSAFE_EMAIL_ATTACHMENT = 4
 
 EVENT_TYPES = (
     (STARTED_EXPERIMENT, 'started'),
     (COMPLETED_EXPERIMENT, 'completed'),
-    (OTHER, 'opened'),
+    (OPENED_EMAIL, 'opened'),
+    (OPENED_UNSAFE_EMAIL_LINK, 'unsafe_link'),
+    (DOWNLOADED_UNSAFE_EMAIL_ATTACHMENT, 'unsafe_attachment'),
 )
 
 
@@ -48,10 +50,16 @@ class ParticipantAction(models.Model):
         return self.id
 
     id = models.AutoField(primary_key=True)
-    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    experiment = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+    participant = models.ForeignKey(Participant, on_delete=models.DO_NOTHING)
+    experiment = models.ForeignKey(Exercise, on_delete=models.DO_NOTHING)
+    email = models.ForeignKey(ExerciseEmail, on_delete=models.DO_NOTHING)
 
     type = models.IntegerField(choices=EVENT_TYPES)
 
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    modified_date = models.DateTimeField(auto_now=True, blank=True)
+
+    # action log shouldn't be modified
+    def save(self, *args, **kwargs):
+        if self.pk:
+            raise ValidationError("You may not edit an existing %s" % self._meta.model_name)
+        super(ParticipantAction, self).save(*args, **kwargs)

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from picklefield.fields import PickledObjectField
 from random import randint
@@ -15,11 +16,12 @@ EXERCISE_KEY_TYPES = (
 
 EXERCISE_EMAIL_PHISH = 0
 EXERCISE_EMAIL_REGULAR = 1
+EXERCISE_EMAIL_ETRAY = 2
 
 EXERCISE_PHISH_TYPES = (
     (EXERCISE_EMAIL_PHISH, 'phishing'),
     (EXERCISE_EMAIL_REGULAR, 'regular'),
-    (EXERCISE_EMAIL_REGULAR, 'etray'),
+    (EXERCISE_EMAIL_ETRAY, 'etray'),
 )
 
 EXERCISE_REPLY_TYPE = (
@@ -72,6 +74,16 @@ class ExerciseEmail(models.Model):
     replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
     belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
+    created_date = models.DateTimeField(auto_now_add=True, blank=True)
+    deleted = models.BooleanField(default=False)
+
+    # don't allow overwrite once published
+    published = models.BooleanField(default=False)
+    def save(self, *args, **kwargs):
+        if self.published:
+            raise ValidationError("You may not edit an existing %s" % self._meta.model_name)
+        super(ExerciseEmail, self).save(*args, **kwargs)
+
 
 class Exercise(models.Model):
 
@@ -89,13 +101,15 @@ class Exercise(models.Model):
     email_reveal_times = PickledObjectField(null=True)
 
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    modified_date = models.DateTimeField(auto_now=True, blank=True)
+    deleted = models.BooleanField(default=False)
 
-    @property
-    def link(self):
-        return helpers.hasher.encode(self.id)
+    # don't allow overwrite once published
+    published = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
+        if self.published:
+            raise ValidationError("You may not edit an existing %s" % self._meta.model_name)
+
         if not self.pk:
             super(Exercise, self).save(*args, **kwargs)
         else:
@@ -106,6 +120,10 @@ class Exercise(models.Model):
             if not self.email_reveal_times:
                 self.set_email_reveal_times()
             super(Exercise, self).save(*args, **kwargs)
+
+    @property
+    def link(self):
+        return helpers.hasher.encode(self.id)
 
     def set_email_reveal_times(self):
         # generate email reveal times - these are unique per exercise and are stored in seconds
