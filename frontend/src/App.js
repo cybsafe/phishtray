@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import styled, { css, cx } from 'react-emotion';
 import { Provider } from 'react-redux';
@@ -56,6 +56,32 @@ function SidebarLink({ to, children, ...rest }) {
   );
 }
 
+const DefaultLayout = ({ children }) => (
+  <Fragment>
+    <div
+      className={css({
+        height: '100%',
+        minHeight: '100%',
+        overflow: 'hidden',
+      })}
+    >
+      <Header />
+      <Container>
+        <Sidebar>
+          <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
+            Inbox
+          </SidebarLink>
+          <SidebarLink to="/accounts">Accounts</SidebarLink>
+          <SidebarLink to="/contacts">Contacts</SidebarLink>
+          <SidebarLink to="/web">Web</SidebarLink>
+          <SidebarLink to="/files">Files</SidebarLink>
+        </Sidebar>
+        <div className={css({ flex: 1 })}>{children}</div>
+      </Container>
+    </div>
+  </Fragment>
+);
+
 class App extends Component {
   constructor() {
     super();
@@ -85,32 +111,38 @@ class App extends Component {
               overflow: 'hidden',
             })}
           >
-            <Header />
-            <Container>
-              <Sidebar>
-                <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
-                  Inbox
-                </SidebarLink>
-                <SidebarLink to="/accounts">Accounts</SidebarLink>
-                <SidebarLink to="/contacts">Contacts</SidebarLink>
-                <SidebarLink to="/web">Web</SidebarLink>
-                <SidebarLink to="/files">Files</SidebarLink>
-              </Sidebar>
-
-              <div className={css({ flex: 1 })}>
-                <Switch>
-                  <Route path="/inbox" component={Inbox} />
-                  <Route path="/accounts" component={Accounts} />
-                  <Route path="/files" component={FileManager} />
-                  <Route path="/welcome" component={Exercise} />
-                  <Route
-                    exact
-                    path="/"
-                    render={() => <Redirect from="/" to="/inbox" />}
-                  />
-                </Switch>
-              </div>
-            </Container>
+            <Switch>
+              <Route
+                path="/inbox"
+                render={props => (
+                  <DefaultLayout>
+                    <Inbox {...props} />
+                  </DefaultLayout>
+                )}
+              />
+              <Route
+                path="/accounts"
+                render={props => (
+                  <DefaultLayout>
+                    <Accounts {...props} />
+                  </DefaultLayout>
+                )}
+              />
+              <Route
+                path="/files"
+                render={props => (
+                  <DefaultLayout>
+                    <FileManager {...props} />
+                  </DefaultLayout>
+                )}
+              />
+              <Route path="/welcome" component={Exercise} />
+              <Route
+                exact
+                path="/"
+                render={() => <Redirect from="/" to="/inbox" />}
+              />
+            </Switch>
           </div>
         </BrowserRouter>
       </Provider>
