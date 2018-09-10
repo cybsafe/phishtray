@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
-import { InlineLoading } from 'carbon-components-react';
+import { InlineLoading, Button } from 'carbon-components-react';
+import ReactMarkdown from 'react-markdown';
 
 import {
   loadExercises,
@@ -11,7 +12,7 @@ import {
 
 const Container = styled('div')({
   display: 'flex',
-  flexDirection: 'row',
+  flexDirection: 'column',
   minHeight: '100%',
   margin: 50,
   marginTop: 0,
@@ -32,7 +33,6 @@ export class Exercise extends Component {
             className={css({
               color: 'black',
               justifyContent: 'center',
-
               '& svg': { stroke: 'black !important' },
             })}
             description="Loading"
@@ -41,7 +41,14 @@ export class Exercise extends Component {
       );
     }
 
-    return <Container>{exercise.content}</Container>;
+    return (
+      <Fragment>
+        <Container>
+          <ReactMarkdown>{exercise.content}</ReactMarkdown>
+          <Button>Start</Button>
+        </Container>
+      </Fragment>
+    );
   }
 }
 
