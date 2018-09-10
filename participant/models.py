@@ -50,9 +50,9 @@ class ParticipantAction(models.Model):
         return self.id
 
     id = models.AutoField(primary_key=True)
-    participant = models.ForeignKey(Participant, on_delete=models.DO_NOTHING)
-    experiment = models.ForeignKey(Exercise, on_delete=models.DO_NOTHING)
-    email = models.ForeignKey(ExerciseEmail, on_delete=models.DO_NOTHING)
+    participant = models.ForeignKey(Participant, on_delete=models.SET_NULL, null=True)
+    experiment = models.ForeignKey(Exercise, on_delete=models.CASCADE, null=True)
+    email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE, null=True)
 
     type = models.IntegerField(choices=EVENT_TYPES)
 
