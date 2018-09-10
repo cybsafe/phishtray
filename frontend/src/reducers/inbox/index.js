@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import produce from 'immer';
 
 import { getAllEmails } from '../../data/threads';
-import { getExerciseTimer } from '../exercise';
+import { getExerciseTimer, getElapsedTime } from '../exercise';
 
 type Email = {
   id: string,
@@ -65,6 +65,42 @@ export function loadThreads() {
       type: 'inbox/LOAD_THREADS',
       payload: threads,
     });
+  };
+}
+
+// Actions
+// Gateway URL:
+const API_GATEWAY = 'http://localhost:8282';
+
+export function postUserActions(time, thread, type) {
+  const body = {
+    milliseconds: time,
+    action: {
+      type: type,
+      associations: [{ exerciseEmail: '345' }, { exerciseEmailReply: '3476' }],
+    },
+  };
+
+  return async () => {
+    const response = await fetch(
+      `${API_GATEWAY}/exercise/${thread.id}/actions`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    const json = await response.json();
+    console.log(`POST >> ${type}`, json);
+    return {
+      type: 'inbox/USER_ACTION',
+      payload: {
+        json,
+      },
+    };
   };
 }
 

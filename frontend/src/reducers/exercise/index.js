@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 
 const INITIAL_STATE = {
   timer: 0, // exercise time elapsed in seconds
+  startTime: new Date(),
 };
 
 export default function reducer(state = INITIAL_STATE, action = {}) {
@@ -37,3 +38,9 @@ export const getExerciseTimer = createSelector(
   exerciseSelector,
   exercise => exercise.timer
 );
+
+const timeSelector = state => state.exercise;
+
+export const getElapsedTime = createSelector(timeSelector, exercise => {
+  return new Date() - exercise.startTime;
+});

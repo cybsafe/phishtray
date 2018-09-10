@@ -6,6 +6,7 @@ import Markdown from 'react-remarkable';
 import EmailCard from './EmailCard';
 
 import QuickReply from './QuickReply';
+import { EMAIL_ACTION_TYPES } from '../constants/email_constants';
 
 type Props = {
   email: Object,
@@ -52,7 +53,7 @@ const BodyContainer = styled('div')({
   },
 });
 
-function EmailActions() {
+function EmailActions({ clicked }) {
   return (
     <div
       className={css({
@@ -62,10 +63,30 @@ function EmailActions() {
         marginTop: '20px',
       })}
     >
-      <ActionLink href="#">Reply</ActionLink>
-      <ActionLink href="#">Forward</ActionLink>
-      <ActionLink href="#">Delete</ActionLink>
-      <ActionLink href="#">Report</ActionLink>
+      <ActionLink
+        onClick={() => clicked(EMAIL_ACTION_TYPES.EMAIL_REPLY)}
+        href="#"
+      >
+        Reply
+      </ActionLink>
+      <ActionLink
+        onClick={() => clicked(EMAIL_ACTION_TYPES.EMAIL_FORWARD)}
+        href="#"
+      >
+        Forward
+      </ActionLink>
+      <ActionLink
+        onClick={() => clicked(EMAIL_ACTION_TYPES.EMAIL_DELETE)}
+        href="#"
+      >
+        Delete
+      </ActionLink>
+      <ActionLink
+        onClick={() => clicked(EMAIL_ACTION_TYPES.EMAIL_REPORT)}
+        href="#"
+      >
+        Report
+      </ActionLink>
     </div>
   );
 }
@@ -201,7 +222,7 @@ export default class Email extends Component<Props> {
           padding: '0 40px',
         })}
       >
-        <EmailActions />
+        <EmailActions clicked={this.props.clicked} />
         <EmailInfo email={this.props.email} />
 
         <h3

@@ -22,7 +22,7 @@
     "reselect": "^3.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server/server.js & react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -31,11 +31,14 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.5",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
     "eslint": "^5.0.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-prettier": "^2.6.1",
     "eslint-plugin-react": "^7.9.1",
+    "express": "^4.16.3",
     "prettier": "^1.13.5"
   }
 }
