@@ -1,9 +1,15 @@
-from django.contrib import admin
 from django import forms
-
 from django.contrib import admin
 
-from .models import Exercise, ExerciseKey, ExerciseEmail, ExerciseAttachment, ExerciseEmailReply, ExerciseURL, ExerciseWebPages
+from .models import (
+    Exercise,
+    ExerciseAttachment,
+    ExerciseEmail,
+    ExerciseEmailReply,
+    ExerciseKey,
+    ExerciseURL,
+    ExerciseWebPages
+)
 
 
 class ExerciseAdminForm(forms.ModelForm):
@@ -11,13 +17,10 @@ class ExerciseAdminForm(forms.ModelForm):
         model = Exercise
         exclude = []
 
-    readonly_fields = ['link',]
-
 
 class ExerciseAdmin(admin.ModelAdmin):
     form = ExerciseAdminForm
-    list_display = ('id', 'title', 'link', 'description', 'length_minutes')
-    list_filter = ['id']
+    list_display = ('id', 'title', 'description', 'length_minutes')
 
 
 admin.site.register(Exercise, ExerciseAdmin)

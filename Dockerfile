@@ -30,6 +30,9 @@ RUN yum -y install \
 	mariadb-devel \
 &&  yum -y clean all
 
+# Add aliases
+RUN echo "alias py3='python3.6'" >> ~/.bashrc
+
 # PIP Requirements
 COPY requirements.txt ./
 

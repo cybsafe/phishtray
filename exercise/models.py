@@ -1,10 +1,9 @@
+import uuid
 from django.db import models
 from django.core.exceptions import ValidationError
 
 from picklefield.fields import PickledObjectField
 from random import randint
-from utils import helpers
-
 
 KEY_TYPE_INTEGER = 0
 KEY_TYPE_TEXT = 1
@@ -31,28 +30,22 @@ EXERCISE_REPLY_TYPE = (
 
 
 class ExerciseAttachment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    filename = models.CharField(max_length=250, blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True, blank=True)
+    modified_date = models.DateTimeField(auto_now=True, blank=True)
 
     def __str__(self):
         return self.filename
 
-    id = models.AutoField(primary_key=True)
-
-    filename = models.CharField(max_length=250, blank=True, null=True)
-
-    created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    modified_date = models.DateTimeField(auto_now=True, blank=True)
-
 
 class ExerciseEmailReply(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
+    message = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.message
-
-    id = models.AutoField(primary_key=True)
-
-    reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
-
-    message = models.TextField(null=True, blank=True)
 
 
 class ExerciseEmail(models.Model):
@@ -60,16 +53,16 @@ class ExerciseEmail(models.Model):
     def __str__(self):
         return self.subject
 
-    id = models.AutoField(primary_key=True)
+        id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     subject = models.CharField(max_length=250, blank=True, null=True)
     from_address = models.CharField(max_length=250, blank=True, null=True)
     from_name = models.CharField(max_length=250, blank=True, null=True)
     to_address = models.CharField(max_length=250, blank=True, null=True)
     to_name = models.CharField(max_length=250, blank=True, null=True)
+
     phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
-
     attachments = models.ManyToManyField(ExerciseAttachment, blank=True)
     replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
     belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
@@ -91,7 +84,7 @@ class Exercise(models.Model):
     def __str__(self):
         return self.title
 
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     introduction = models.TextField(null=True, blank=True)
@@ -103,28 +96,6 @@ class Exercise(models.Model):
 
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     deleted = models.BooleanField(default=False)
-
-    # don't allow overwrite once published
-    published = models.BooleanField(default=False)
-
-    def save(self, *args, **kwargs):
-        if self.published:
-            raise ValidationError("You may not edit an existing %s" % self._meta.model_name)
-
-        if not self.pk:
-            super(Exercise, self).save(*args, **kwargs)
-        else:
-            # Set reveal time for emails in this exercise
-            # Only set this if this wasn't generated before!
-            # TODO: (TCKT-1234) introduce a field to record state for an exercise e.g.: "live"
-            # reveal_times could be regenerated until the exercise get to a certain state
-            if not self.email_reveal_times:
-                self.set_email_reveal_times()
-            super(Exercise, self).save(*args, **kwargs)
-
-    @property
-    def link(self):
-        return helpers.hasher.encode(self.id)
 
     def set_email_reveal_times(self):
         # generate email reveal times - these are unique per exercise and are stored in seconds
@@ -165,7 +136,7 @@ class ExerciseKey(models.Model):
     def __str__(self):
         return self.key
 
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     exercise = models.ManyToManyField(Exercise)
 
     type = models.IntegerField(choices=EXERCISE_KEY_TYPES)
@@ -185,8 +156,7 @@ class ExerciseWebPages(models.Model):
     def __str__(self):
         return self.subject
 
-    id = models.AutoField(primary_key=True)
-
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subject = models.CharField(max_length=250, blank=True, null=True)
     url = models.CharField(max_length=250, blank=True, null=True)
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
@@ -198,8 +168,7 @@ class ExerciseURL(models.Model):
     def __str__(self):
         return self.subject
 
-    id = models.AutoField(primary_key=True)
-
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subject = models.CharField(max_length=250, blank=True, null=True)
     actual_url = models.CharField(max_length=250, blank=True, null=True)
     real_url = models.CharField(max_length=250, blank=True, null=True)

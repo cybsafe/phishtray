@@ -14,13 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from django.conf.urls import url, include
 
 admin.site.site_header = 'Phishtray Administration'
 
 urlpatterns = [
-    path('exercise/', include('exercise.urls', namespace="exercise")),
-    path('admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
+    url(r'^api/v1/', include('exercise.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls')),
 ]
