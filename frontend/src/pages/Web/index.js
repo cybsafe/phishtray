@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
+import { connect } from 'react-redux';
 
-import WebBrowser from './components/WebBrowser';
+import { showWebpage } from '../../reducers/ui';
 
 const Container = styled('div')({
   display: 'flex',
@@ -31,28 +32,14 @@ const WebsiteTitle = styled('h3')({
 });
 
 class Web extends Component {
-  state = {
-    displayWebBrowser: false,
-    websiteId: null,
-  };
-
   handleWebsiteClick = websiteId => {
     return event => {
       event.preventDefault();
-      this.setState({
-        websiteId,
-        displayWebBrowser: true,
-      });
+      this.props.showWebpage(websiteId);
     };
   };
 
-  handleBrowserClose = () => {
-    this.setState({ displayWebBrowser: false, websiteId: null });
-  };
-
   render() {
-    const { displayWebBrowser, websiteId } = this.state;
-
     return (
       <Container>
         <LinkContainer onClick={this.handleWebsiteClick('myoffice')}>
@@ -67,12 +54,12 @@ class Web extends Component {
           <WebsiteIcon className={css({ backgroundColor: '#e84118' })} />
           <WebsiteTitle>Bank</WebsiteTitle>
         </LinkContainer>
-        {displayWebBrowser ? (
-          <WebBrowser websiteId={websiteId} onClose={this.handleBrowserClose} />
-        ) : null}
       </Container>
     );
   }
 }
 
-export default Web;
+export default connect(
+  null,
+  { showWebpage }
+)(Web);

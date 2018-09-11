@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
+import { connect } from 'react-redux';
 
-import websites from '../websites';
+import { getWebpage, closeWebpage } from '../../reducers/ui';
 
 const BrowserChrome = styled('div')({
   position: 'absolute',
-  top: -30,
-  left: 20,
+  top: 30,
+  left: 50,
   width: '95%',
   height: '90%',
   backgroundColor: '#fff',
@@ -69,30 +70,32 @@ function BrowserHeader({ onClose, url, isSecure }) {
   );
 }
 
-export default class WebBrowser extends Component {
+export class WebBrowser extends Component {
   render() {
-    const { onClose, websiteId } = this.props;
-    const website = websites[websiteId];
+    const { closeWebpage, webpage } = this.props;
 
-    if (!website) {
-      return (
-        <BrowserChrome>
-          <p>Can't find website</p>
-        </BrowserChrome>
-      );
+    if (!webpage) {
+      return null;
     }
 
-    const ContentComponent = website.component;
+    const ContentComponent = webpage.component;
 
     return (
       <BrowserChrome>
         <BrowserHeader
-          onClose={onClose}
-          isSecure={website.isSecure}
-          url={website.url}
+          onClose={closeWebpage}
+          isSecure={webpage.isSecure}
+          url={webpage.url}
         />
         <ContentComponent />
       </BrowserChrome>
     );
   }
 }
+
+export default connect(
+  state => ({
+    webpage: getWebpage(state),
+  }),
+  { closeWebpage }
+)(WebBrowser);

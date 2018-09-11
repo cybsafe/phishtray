@@ -11,6 +11,7 @@ import Accounts from './pages/Accounts';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
 import Web from './pages/Web';
+import WebBrowser from './components/WebBrowser';
 
 const Container = styled('div')({
   display: 'flex',
@@ -110,6 +111,8 @@ class App extends Component {
                   />
                 </Switch>
               </div>
+
+              <WebBrowser />
             </Container>
           </div>
         </BrowserRouter>
