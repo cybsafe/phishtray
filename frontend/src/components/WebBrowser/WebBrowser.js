@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 
 import { getWebpage, closeWebpage } from '../../reducers/ui';
 
@@ -87,7 +88,9 @@ export class WebBrowser extends Component {
           isSecure={webpage.isSecure}
           url={webpage.url}
         />
-        <ContentComponent />
+        <MemoryRouter>
+          <ContentComponent />
+        </MemoryRouter>
       </BrowserChrome>
     );
   }
