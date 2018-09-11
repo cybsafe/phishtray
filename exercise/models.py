@@ -79,6 +79,7 @@ class ExerciseEmail(models.Model):
 
     # don't allow overwrite once published
     published = models.BooleanField(default=False)
+
     def save(self, *args, **kwargs):
         if self.published:
             raise ValidationError("You may not edit an existing %s" % self._meta.model_name)

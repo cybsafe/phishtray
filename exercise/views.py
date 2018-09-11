@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from exercise.models import Exercise, ExerciseEmail, ExerciseEmailReply
 from participant.models import Participant, ParticipantProfile
+from participant.helpers import LogParticipantAction
 from utils import helpers
 from rest_framework import serializers, viewsets
 from exercise.serializer import *
@@ -29,6 +30,9 @@ def profile(request, link):
         )
         participant.save()
 
+        logger = LogParticipantAction(participant=participant, experiment=exercise)
+        request.session['logger'] = serializers.serialize("json", [logger])
+
         for key in profile_keys:
             ParticipantProfile(
                 participant=participant,
@@ -44,6 +48,8 @@ def profile(request, link):
 
 
 def start(request, link, p_id):
+    logger = serializers.deserialize("json", request.session['logger']).next().object
+    logger.experiment_started()
     e_id = helpers.hasher.decode(link)
     exercise = get_object_or_404(Exercise, pk=e_id[0])
     context = {'exercise': exercise, 'exercise_keys': exercise.exercisekey_set.all()}
