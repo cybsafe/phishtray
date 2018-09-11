@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
-
-import { getAllFiles } from '../../data/files';
+import { connect } from 'react-redux';
+import { InlineLoading } from 'carbon-components-react';
 
 import FileListItem from './components/FileListItem';
 import FileModal from './components/FileModal';
+import {
+  getFiles,
+  getLastRefreshed,
+  getModal,
+  loadFiles,
+  removeFile,
+  displayFile,
+  hideFile,
+  hideAndDeleteFile,
+} from '../../reducers/fileManager';
 
 const columns = [
   {
@@ -37,90 +47,81 @@ const Table = styled('table')({
   width: '100%',
 });
 
-function TableHead() {
-  return (
-    <thead>
-      <tr>
-        {columns.map((column, index) => {
-          const width = `${column.width}%`;
-          return (
-            <th
-              key={index}
-              className={css({
-                width,
-                padding: '50px 0 10px',
-                textAlign: 'left',
-                color: '#5596e6',
-              })}
-            >
-              {column.header}
-            </th>
-          );
-        })}
-      </tr>
-    </thead>
-  );
-}
+const TableHead = () => (
+  <thead>
+    <tr>
+      {columns.map((column, index) => {
+        const width = `${column.width}%`;
+        return (
+          <th
+            key={index}
+            className={css({
+              width,
+              padding: '50px 0 10px',
+              textAlign: 'left',
+              color: '#5596e6',
+            })}
+          >
+            {column.header}
+          </th>
+        );
+      })}
+    </tr>
+  </thead>
+);
 
-export default class FileManager extends Component {
-  constructor() {
-    super();
-    this.state = {
-      files: getAllFiles(),
-      modal: {
-        isOpen: false,
-        fileUrl: null,
-      },
-    };
+const Loading = () => (
+  <Container>
+    <InlineLoading
+      className={css({
+        color: '#fff',
+        justifyContent: 'center',
+        marginTop: '20%',
+        '& svg': { stroke: '#fff !important' },
+      })}
+      description="Loading"
+    />
+  </Container>
+);
+
+export class FileManager extends Component {
+  async componentDidMount() {
+    await this.props.loadFiles();
   }
 
   deleteFileHandler = fileToDelete => {
-    const files = this.state.files;
-    const updatedFiles = files.filter(file => file.id !== fileToDelete.id);
-    let modal = this.state.modal;
+    const { modal, removeFile, hideAndDeleteFile } = this.props;
     if (modal.isOpen && modal.fileUrl === fileToDelete.fileUrl) {
-      modal = {
-        isOpen: false,
-        fileUrl: null,
-      };
+      hideAndDeleteFile(fileToDelete.id);
+    } else {
+      removeFile(fileToDelete.id);
     }
-    this.setState({
-      files: updatedFiles,
-      modal,
-    });
   };
 
   displayFileModalHandler = fileUrl => {
-    this.setState({
-      modal: {
-        isOpen: true,
-        fileUrl,
-      },
-    });
+    this.props.displayFile(fileUrl);
   };
 
   hideFileModalHandler = () => {
-    this.setState({
-      modal: {
-        isOpen: false,
-        fileUrl: null,
-      },
-    });
+    this.props.hideFile();
   };
 
   render() {
+    const { files, isLoaded, modal } = this.props;
+    if (!isLoaded) return <Loading />;
+
     return (
       <Container>
-        {this.state.modal.isOpen && (
+        {modal.isOpen && (
           <FileModal
-            fileUrl={this.state.modal.fileUrl}
+            fileUrl={modal.fileUrl}
             hideFileModalHandler={this.hideFileModalHandler}
           />
         )}
         <Table>
           <TableHead />
           <tbody>
-            {this.state.files.map(file => (
+            {files.map(file => (
               <FileListItem
                 key={file.id}
                 file={file}
@@ -134,3 +135,18 @@ export default class FileManager extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    files: getFiles(state),
+    isLoaded: getLastRefreshed(state) !== null,
+    modal: getModal(state),
+  }),
+  {
+    loadFiles,
+    removeFile,
+    displayFile,
+    hideFile,
+    hideAndDeleteFile,
+  }
+)(FileManager);
