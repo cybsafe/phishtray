@@ -50,17 +50,24 @@ class ParticipantAction(models.Model):
         return self.id
 
     id = models.AutoField(primary_key=True)
-    participant = models.ForeignKey(Participant, on_delete=models.SET_NULL, null=True)
-    experiment = models.ForeignKey(Exercise, on_delete=models.CASCADE, null=True)
-    email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE, null=True)
-    attachment = models.ForeignKey(ExerciseAttachment, on_delete=models.SET_NULL, null=True)
-
-    type = models.IntegerField(choices=EVENT_TYPES)
-
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
+
+    @property
+    def action_logs(self): ActionLog.objects.filter(pa_id=self.id)
 
     # action log shouldn't be modified
     def save(self, *args, **kwargs):
         if self.pk:
             raise ValidationError("You may not edit an existing %s" % self._meta.model_name)
         super(ParticipantAction, self).save(*args, **kwargs)
+
+
+class ActionLog(models.Model):
+
+    def __str__(self):
+        return self.id
+
+    id = models.AutoField(primary_key=True)
+    pa_id = models.ForeignKey(ParticipantAction, blank=False, null=False, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=False, null=False)
+    value = models.CharField(max_length=500, blank=False, null=False)
