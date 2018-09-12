@@ -1,25 +1,29 @@
 version: '2'
 
 services:
-  web:
-    build: .
-    command: python3 manage.py runserver 0.0.0.0:8001
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/usr/src/app
-    networks:
-      - webnet
-    depends_on:
-      - db
+
   db:
     image: mysql:5.7
     volumes:
-      - ./db:/var/lib/mysql
+    - ./db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=admin
-      - MYSQL_DATABASE=phishtray
+    - MYSQL_ROOT_PASSWORD=admin
+    - MYSQL_DATABASE=phishtray
     networks:
-      - webnet
+    - webnet
+
+  django:
+    build: .
+    command: bash -c "python3.6 manage.py makemigrations; python3.6 manage.py migrate; tail -f /dev/null"
+    ports:
+    - "9000:9000"
+    - "9022:22"
+    volumes:
+    - .:/usr/src/app
+    networks:
+    - webnet
+    depends_on:
+    - db
+
 networks:
   webnet:
