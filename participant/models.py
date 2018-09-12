@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from exercise.models import Exercise, ExerciseKey, ExerciseEmail
+from exercise.models import Exercise, ExerciseKey, ExerciseEmail, ExerciseAttachment
 
 STARTED_EXPERIMENT = 0
 COMPLETED_EXPERIMENT = 1
@@ -53,6 +53,7 @@ class ParticipantAction(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.SET_NULL, null=True)
     experiment = models.ForeignKey(Exercise, on_delete=models.CASCADE, null=True)
     email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE, null=True)
+    attachment = models.ForeignKey(ExerciseAttachment, on_delete=models.SET_NULL, null=True)
 
     type = models.IntegerField(choices=EVENT_TYPES)
 

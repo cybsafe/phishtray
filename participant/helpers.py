@@ -1,56 +1,18 @@
-from .models import ParticipantAction, STARTED_EXPERIMENT, COMPLETED_EXPERIMENT, \
-    OPENED_EMAIL, OPENED_UNSAFE_EMAIL_LINK, DOWNLOADED_UNSAFE_EMAIL_ATTACHMENT
+from .models import ParticipantAction, Participant
+from exercise.models import Exercise, ExerciseEmail, ExerciseAttachment
 
 
-class LogParticipantAction:
-
-    def __init__(self, participant, experiment):
-        self.participant = participant
-        self.experiment = experiment
-        self.email = None
-
-    def experiment_started(self):
-        action = ParticipantAction.create(
-            type=STARTED_EXPERIMENT,
-            participant=self.participant,
-            experiment=self.experiment,
-            email=self.email
-        )
-        action.save()
-
-    def experiment_ended(self):
-        action = ParticipantAction.create(
-            type=COMPLETED_EXPERIMENT,
-            participant=self.participant,
-            experiment=self.experiment,
-            email=self.email
-        )
-        action.save()
-
-    def email_opened(self, email):
-        self.email = email
-        action = ParticipantAction.create(
-            type=OPENED_EMAIL,
-            participant=self.participant,
-            experiment=self.experiment,
-            email=self.email
-        )
-        action.save()
-
-    def email_link_opened(self):
-        action = ParticipantAction.create(
-            type=OPENED_UNSAFE_EMAIL_LINK,
-            participant=self.participant,
-            experiment=self.experiment,
-            email=self.email
-        )
-        action.save()
-
-    def email_attachment_downloaded(self):
-        action = ParticipantAction.create(
-            type=DOWNLOADED_UNSAFE_EMAIL_ATTACHMENT,
-            participant=self.participant,
-            experiment=self.experiment,
-            email=self.email
-        )
-        action.save()
+@staticmethod
+def log_action(type, user_data):
+    participant = Participant.objects.get(pk=user_data.participant)
+    experiment = Exercise.objects.get(pk=user_data.exercise)
+    email = ExerciseEmail.objects.get(pk=user_data.email) if 'email' in user_data else None
+    attachment = ExerciseAttachment.objects.get(pk=user_data.attachment) if 'attachment' in user_data else None
+    action = ParticipantAction.create(
+        type=type,
+        participant=participant,
+        experiment=experiment,
+        email=email,
+        attachment=attachment
+    )
+    action.save()
