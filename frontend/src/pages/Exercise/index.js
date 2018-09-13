@@ -25,36 +25,64 @@ const Container = styled('div')({
   marginTop: 0,
 });
 
-const WelcomeForm = ({ form, title }) => (
-  <Fragment>
-    {title}
-    <Form onSubmit={this.handleSubmit}>
-      {form.map(item => {
-        switch (item.type) {
-          case 'number':
-            return <NumberInput label={item.label} />;
-
-          case 'string':
-            return <TextInput labelText={item.label} />;
-        }
-      })}
-      <Button type="submit">Click here to start the E-tray</Button>
-    </Form>
-  </Fragment>
-);
-
-const Title = styled('div')({
-  display: 'block',
-});
+const Title = styled('h1')({ display: 'block' });
 
 export class Exercise extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { form: {} };
+  }
+
   async componentDidMount() {
     await this.props.loadExercises();
+    await this.props.exercise.form.map(item => {
+      this.setState(previousState => ({
+        form: {
+          ...previousState.form,
+          [item.key]: '',
+        },
+      }));
+    });
   }
 
   nextPath(path) {
     this.props.history.push(path);
   }
+
+  userInput = event => {
+    this.setState({ [event.target.id]: event.target.value });
+    console.log(event.target.id);
+  };
+
+  WelcomeForm = exercise => (
+    <Fragment>
+      <Title>{exercise.title}</Title>
+      <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
+        {exercise.form.map(item => {
+          switch (item.type) {
+            case 'number':
+              return (
+                <NumberInput
+                  label={item.label}
+                  id={`${item.key}`}
+                  onChange={this.userInput}
+                />
+              );
+
+            case 'string':
+              return (
+                <TextInput
+                  labelText={item.label}
+                  id={`${item.key}`}
+                  onChange={this.userInput}
+                />
+              );
+          }
+        })}
+        <Button type="submit">Click here to start the E-tray</Button>
+      </Form>
+    </Fragment>
+  );
 
   render() {
     const { exercise, isLoaded, match } = this.props;
@@ -95,7 +123,7 @@ export class Exercise extends Component {
             render={() => (
               <Container>
                 <Title>{exercise.exercise}</Title>
-                <WelcomeForm form={exercise.form} />
+                {this.WelcomeForm(exercise)}
               </Container>
             )}
           />
