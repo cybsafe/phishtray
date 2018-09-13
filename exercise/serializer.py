@@ -66,7 +66,7 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Exercise
         fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes', 'emails',
-                  'email_reveal_times', 'created_date', 'modified_date')
+                  'email_reveal_times', 'created_date')
 
     def get_email_reveal_times(self, obj):
         return obj.email_reveal_times

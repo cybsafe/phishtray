@@ -3,8 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
-from exercise.models import Exercise, ExerciseEmail, ExerciseEmailReply
-from participant.models import Participant, ParticipantProfile
+from participant.models import Participant, ParticipantProfile, ParticipantAction, ActionLog
 from utils import helpers
 from rest_framework import serializers, viewsets
 from exercise.serializer import *
@@ -48,6 +47,23 @@ def start(request, link, p_id):
     exercise = get_object_or_404(Exercise, pk=e_id[0])
     context = {'exercise': exercise, 'exercise_keys': exercise.exercisekey_set.all()}
     return render(request, 'start.html', context)
+
+
+# api method to create an action log
+# TODO: add url /api/v1/action to this action
+def action_logger(request):
+    log_data = serializers.deserialize("json", request.POST.get('log_data')).object
+    pa = ParticipantAction.create()
+    pa.save()
+    a_keys = ['action_type', 'participant_id', 'experiment_id', 'email_id', 'attachment_id']
+    for a_key in a_keys:
+        if log_data.get(a_key) is not None:
+            log = ActionLog.create(
+                action_id=pa.id,
+                name=a_key,
+                value=log_data.get(a_key)
+            )
+            log.save()
 
 
 class ExerciseViewSet(viewsets.ModelViewSet):

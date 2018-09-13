@@ -99,7 +99,6 @@ class ExerciseRestTests(TestCase):
         self.assertEqual(json_data['description'], 'test desc')
         self.assertEqual(json_data['length_minutes'], 10)
         self.assertIsNotNone(json_data['created_date'])
-        self.assertIsNotNone(json_data['modified_date'])
         EmailAssertHelper.assert_first_email(self,json_data['emails'][0])
 
     @staticmethod
