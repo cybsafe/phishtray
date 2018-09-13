@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='actionlog',
-            name='pa_id',
+            name='action_id',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='participant.ParticipantAction'),
         ),
     ]

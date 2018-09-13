@@ -53,7 +53,7 @@ class ParticipantAction(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
 
     @property
-    def action_logs(self): ActionLog.objects.filter(pa_id=self.id)
+    def action_logs(self): ActionLog.objects.filter(action_id=self.id)
 
     # action log shouldn't be modified
     def save(self, *args, **kwargs):
@@ -68,6 +68,6 @@ class ActionLog(models.Model):
         return self.id
 
     id = models.AutoField(primary_key=True)
-    pa_id = models.ForeignKey(ParticipantAction, blank=False, null=False, on_delete=models.CASCADE)
+    action_id = models.ForeignKey(ParticipantAction, blank=False, null=False, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
     value = models.CharField(max_length=500, blank=False, null=False)

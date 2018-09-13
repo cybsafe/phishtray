@@ -50,6 +50,7 @@ def start(request, link, p_id):
 
 
 # api method to create an action log
+# TODO: add url /api/v1/action to this action
 def action_logger(request):
     log_data = serializers.deserialize("json", request.POST.get('log_data')).object
     pa = ParticipantAction.create()
@@ -57,7 +58,11 @@ def action_logger(request):
     a_keys = ['action_type', 'participant_id', 'experiment_id', 'email_id', 'attachment_id']
     for a_key in a_keys:
         if log_data.get(a_key) is not None:
-            log = ActionLog.create(pa_id=pa.id, name=a_key, value=log_data.get(a_key))
+            log = ActionLog.create(
+                action_id=pa.id,
+                name=a_key,
+                value=log_data.get(a_key)
+            )
             log.save()
 
 
