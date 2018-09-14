@@ -42,11 +42,13 @@ export class Exercise extends Component {
 
   async componentDidMount() {
     await this.props.loadExercises();
-    await this.props.exercise.form.map(item => {
-      this.setState(previousState => ({
-        ...previousState,
-        [item.key]: '',
-      }));
+    await this.props.exercise.profile_form.map(item => {
+      this.setState({
+        [item.id]: {
+          id: item.id,
+          value: '',
+        },
+      });
     });
   }
 
@@ -56,13 +58,17 @@ export class Exercise extends Component {
 
   userInput = event => {
     this.setState({
-      [event.target.name]: event.target.value,
+      [event.target.id]: {
+        id: event.target.name,
+        value: event.target.value,
+      },
     });
   };
 
   handleSubmit = () => {
-    const data = this.state;
+    const data = Object.keys(this.state).map(answer => this.state[answer]);
 
+    console.log(data);
     fetch('/api/form-submit-url', {
       method: 'POST',
       body: data,
@@ -75,17 +81,18 @@ export class Exercise extends Component {
     <Fragment>
       <Title>{exercise.title}</Title>
       <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
-        {exercise.form.map(item => {
-          switch (item.type) {
+        {exercise.profile_form.map(item => {
+          switch (item.field_type) {
             case 'number':
               return (
                 <Number
                   label={item.label}
                   min={0}
-                  id={`${item.key}`}
-                  name={`${item.key}`}
+                  id={`${item.id}`}
+                  name={`${item.id}`}
                   onChange={this.userInput}
                   onClick={this.userInput}
+                  required={item.required}
                   invalidText="Please input a number value"
                 />
               );
@@ -93,10 +100,11 @@ export class Exercise extends Component {
             case 'string':
               return (
                 <TextInput
-                  id={`${item.key}`}
+                  id={`${item.id}`}
                   labelText={item.label}
-                  name={`${item.key}`}
+                  name={`${item.id}`}
                   onChange={this.userInput}
+                  required={item.required}
                 />
               );
           }
