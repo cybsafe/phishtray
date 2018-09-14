@@ -27,20 +27,24 @@ const Container = styled('div')({
 
 const Title = styled('h1')({ display: 'block' });
 
+const Number = styled(NumberInput)`
+  .bx--number__controls {
+    visibility: hidden;
+  }
+`;
+
 export class Exercise extends Component {
   constructor(props) {
     super(props);
-    this.state = { form: {} };
+    this.state = {};
   }
 
   async componentDidMount() {
     await this.props.loadExercises();
     await this.props.exercise.form.map(item => {
       this.setState(previousState => ({
-        form: {
-          ...previousState.form,
-          [item.key]: '',
-        },
+        ...previousState,
+        [item.key]: '',
       }));
     });
   }
@@ -50,8 +54,9 @@ export class Exercise extends Component {
   }
 
   userInput = event => {
-    this.setState({ [event.target.id]: event.target.value });
-    console.log(event.target.id);
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
   };
 
   WelcomeForm = exercise => (
@@ -62,18 +67,21 @@ export class Exercise extends Component {
           switch (item.type) {
             case 'number':
               return (
-                <NumberInput
+                <Number
                   label={item.label}
                   id={`${item.key}`}
+                  name={`${item.key}`}
                   onChange={this.userInput}
+                  onClick={this.userInput}
                 />
               );
 
             case 'string':
               return (
                 <TextInput
-                  labelText={item.label}
                   id={`${item.key}`}
+                  labelText={item.label}
+                  name={`${item.key}`}
                   onChange={this.userInput}
                 />
               );
