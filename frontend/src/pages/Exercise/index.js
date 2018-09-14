@@ -68,7 +68,6 @@ export class Exercise extends Component {
   handleSubmit = () => {
     const data = Object.keys(this.state).map(answer => this.state[answer]);
 
-    console.log(data);
     fetch('/api/form-submit-url', {
       method: 'POST',
       body: data,
