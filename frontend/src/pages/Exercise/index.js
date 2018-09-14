@@ -63,11 +63,12 @@ export class Exercise extends Component {
   handleSubmit = () => {
     const data = this.state;
 
-    console.log(data);
     fetch('/api/form-submit-url', {
       method: 'POST',
       body: data,
     });
+
+    this.nextPath('/');
   };
 
   WelcomeForm = exercise => (
@@ -131,8 +132,8 @@ export class Exercise extends Component {
             path={`${match.url}`}
             render={() => (
               <Container>
-                <Title>{exercise.exercise}</Title>
-                <ReactMarkdown>{exercise.content}</ReactMarkdown>
+                <Title>{exercise.title}</Title>
+                <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
                 <Button onClick={() => this.nextPath('/welcome/form')}>
                   Continue
                 </Button>
@@ -141,12 +142,7 @@ export class Exercise extends Component {
           />
           <Route
             path={`${match.url}/form`}
-            render={() => (
-              <Container>
-                <Title>{exercise.exercise}</Title>
-                {this.WelcomeForm(exercise)}
-              </Container>
-            )}
+            render={() => <Container>{this.WelcomeForm(exercise)}</Container>}
           />
         </Switch>
       </Fragment>
