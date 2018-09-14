@@ -37,6 +37,7 @@ export class Exercise extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   async componentDidMount() {
@@ -59,6 +60,16 @@ export class Exercise extends Component {
     });
   };
 
+  handleSubmit = () => {
+    const data = this.state;
+
+    console.log(data);
+    fetch('/api/form-submit-url', {
+      method: 'POST',
+      body: data,
+    });
+  };
+
   WelcomeForm = exercise => (
     <Fragment>
       <Title>{exercise.title}</Title>
@@ -69,10 +80,12 @@ export class Exercise extends Component {
               return (
                 <Number
                   label={item.label}
+                  min={0}
                   id={`${item.key}`}
                   name={`${item.key}`}
                   onChange={this.userInput}
                   onClick={this.userInput}
+                  invalidText="Please input a number value"
                 />
               );
 
