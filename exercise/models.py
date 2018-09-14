@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from picklefield.fields import PickledObjectField
 from random import randint
 
+from phishtray.base import PhishtrayBaseModel
+
 KEY_TYPE_INTEGER = 0
 KEY_TYPE_TEXT = 1
 
@@ -29,18 +31,14 @@ EXERCISE_REPLY_TYPE = (
 )
 
 
-class ExerciseAttachment(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class ExerciseAttachment(PhishtrayBaseModel):
     filename = models.CharField(max_length=250, blank=True, null=True)
-    created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    modified_date = models.DateTimeField(auto_now=True, blank=True)
 
     def __str__(self):
         return self.filename
 
 
-class ExerciseEmailReply(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class ExerciseEmailReply(PhishtrayBaseModel):
     reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
     message = models.TextField(null=True, blank=True)
 
@@ -48,12 +46,10 @@ class ExerciseEmailReply(models.Model):
         return self.message
 
 
-class ExerciseEmail(models.Model):
+class ExerciseEmail(PhishtrayBaseModel):
 
     def __str__(self):
         return self.subject
-
-        id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     subject = models.CharField(max_length=250, blank=True, null=True)
     from_address = models.CharField(max_length=250, blank=True, null=True)
@@ -67,24 +63,12 @@ class ExerciseEmail(models.Model):
     replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
     belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
-    created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    deleted = models.BooleanField(default=False)
 
-    # don't allow overwrite once published
-    published = models.BooleanField(default=False)
-
-    def save(self, *args, **kwargs):
-        if self.published:
-            raise ValidationError("You may not edit an existing %s" % self._meta.model_name)
-        super(ExerciseEmail, self).save(*args, **kwargs)
-
-
-class Exercise(models.Model):
+class Exercise(PhishtrayBaseModel):
 
     def __str__(self):
         return self.title
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     introduction = models.TextField(null=True, blank=True)
@@ -93,9 +77,6 @@ class Exercise(models.Model):
     length_minutes = models.IntegerField()
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
     email_reveal_times = PickledObjectField(null=True)
-
-    created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    deleted = models.BooleanField(default=False)
 
     def set_email_reveal_times(self):
         # generate email reveal times - these are unique per exercise and are stored in seconds
@@ -131,44 +112,37 @@ class Exercise(models.Model):
         self.email_reveal_times = reveal_times
 
 
-class ExerciseKey(models.Model):
+class ExerciseKey(PhishtrayBaseModel):
 
     def __str__(self):
         return self.key
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     exercise = models.ManyToManyField(Exercise)
-
     type = models.IntegerField(choices=EXERCISE_KEY_TYPES)
     key = models.CharField(max_length=180, blank=True, null=True)
     description = models.TextField(null=True, blank=True)
-
-    created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    modified_date = models.DateTimeField(auto_now=True, blank=True)
 
     @property
     def html5_type(self):
         return EXERCISE_KEY_TYPES[self.type][1]
 
 
-class ExerciseWebPages(models.Model):
+class ExerciseWebPages(PhishtrayBaseModel):
 
     def __str__(self):
         return self.subject
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subject = models.CharField(max_length=250, blank=True, null=True)
     url = models.CharField(max_length=250, blank=True, null=True)
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
 
 
-class ExerciseURL(models.Model):
+class ExerciseURL(PhishtrayBaseModel):
 
     def __str__(self):
         return self.subject
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subject = models.CharField(max_length=250, blank=True, null=True)
     actual_url = models.CharField(max_length=250, blank=True, null=True)
     real_url = models.CharField(max_length=250, blank=True, null=True)

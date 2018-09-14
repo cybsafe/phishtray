@@ -12,7 +12,7 @@ class ExerciseEmailReplySerializer(serializers.HyperlinkedModelSerializer):
 class ExerciseAttachmentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ExerciseAttachment
-        fields = ('id', 'filename', 'created_date', 'modified_date')
+        fields = ('id', 'filename')
 
 
 class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
@@ -67,7 +67,7 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Exercise
         fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes', 'threads',
-                  'email_reveal_times', 'created_date')
+                  'email_reveal_times')
 
     def get_email_reveal_times(self, obj):
         # Attempt to generate reveal times if it's missing

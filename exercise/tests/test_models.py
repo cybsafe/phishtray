@@ -18,6 +18,7 @@ class ExerciseModelTests(TestCase):
         emails = EmailFactory.create_batch(4)
         exercise = ExerciseFactory.create(emails=emails)
 
+        exercise.set_email_reveal_times()
         received_emails = [e for e in exercise.email_reveal_times if e['reveal_time'] is 0]
 
         self.assertEqual(4, exercise.emails.all().count())
@@ -27,6 +28,7 @@ class ExerciseModelTests(TestCase):
         emails = EmailFactory.create_batch(27)
         exercise = ExerciseFactory.create(emails=emails)
 
+        exercise.set_email_reveal_times()
         received_emails = [e for e in exercise.email_reveal_times if e['reveal_time'] is 0]
 
         self.assertEqual(27, exercise.emails.all().count())
@@ -39,8 +41,10 @@ class ExerciseModelTests(TestCase):
         emails = EmailFactory.create_batch(35)
         exercise = ExerciseFactory.create(emails=emails)
 
+        exercise.set_email_reveal_times()
         received_emails = [e for e in exercise.email_reveal_times if e['reveal_time'] is 0]
         received_email_ids = [re['email_id'] for re in received_emails]
+
         self.assertEqual(35, exercise.emails.all().count())
         self.assertEqual(3, len(received_emails))
 

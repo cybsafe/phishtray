@@ -3,7 +3,7 @@ from random import randint
 from django.urls import reverse
 from rest_framework.views import status
 
-from .base import PhishtrayAPIBaseTest
+from phishtray.test.base import PhishtrayAPIBaseTest
 from ..models import Exercise, ExerciseEmail
 from ..serializer import ExerciseSerializer, ExerciseEmailSerializer, EmailDetailsSerializer
 
