@@ -1,7 +1,7 @@
 const EXERCISES = {
   id: '0',
   title: 'Welcome on board!',
-  description: '',
+  description: 'Exercise A: Time and organisation management',
   afterword: '',
   time: '5', // countdown time in minutes
   introduction:
@@ -9,20 +9,20 @@ const EXERCISES = {
   profile_form: [
     {
       id: 432,
-      label: 'How old are you',
-      field_type: 'number',
+      question: 'How old are you',
+      question_type: 'number',
       required: true,
     },
     {
       id: 434,
-      label: 'How do you feel about privacy?',
-      field_type: 'string',
+      question: 'How do you feel about privacy?',
+      question_type: 'string',
       required: false,
     },
     {
       id: 435,
-      label: 'Job Role',
-      field_type: 'string',
+      question: 'Job Role',
+      question_type: 'string',
       required: true,
     },
   ],

@@ -65,6 +65,7 @@ const DefaultLayout = ({ children }) => (
         height: '100%',
         minHeight: '100%',
         overflow: 'hidden',
+        backgroundColor: '#f5f7fa',
       })}
     >
       <Header />
