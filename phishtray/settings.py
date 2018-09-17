@@ -31,8 +31,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'exercise',
-    'participant',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'exercise',
+    'participant',
 ]
 
 MIDDLEWARE = [
@@ -112,7 +112,8 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
 # Internationalization
@@ -134,3 +135,5 @@ URLSALT = "defaultchangeme"
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+HASHID_FIELD_SALT = '4k8+fl6moadlr=z*ix170o(%(116z88kep@_0%o%)6kf(t7(j!'

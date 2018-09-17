@@ -11,6 +11,8 @@ import Accounts from './pages/Accounts';
 import Exercise from './pages/Exercise';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
+import Web from './pages/Web';
+import WebBrowser from './components/WebBrowser';
 
 const Container = styled('div')({
   display: 'flex',
@@ -136,6 +138,14 @@ class App extends Component {
                   </DefaultLayout>
                 )}
               />
+              <Route
+                path="/web"
+                render={props => (
+                  <DefaultLayout>
+                    <Web {...props} />
+                  </DefaultLayout>
+                )}
+              />
               <Route path="/welcome" component={Exercise} />
               <Route
                 exact
@@ -143,6 +153,7 @@ class App extends Component {
                 render={() => <Redirect from="/" to="/inbox" />}
               />
             </Switch>
+            <WebBrowser />
           </div>
         </BrowserRouter>
       </Provider>
