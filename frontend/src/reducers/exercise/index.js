@@ -27,6 +27,7 @@ export default function reducer(state = INITIAL_STATE, action = {}) {
 }
 
 // Actions
+
 export function tickTimer(amount = 10) {
   return {
     type: 'exercise/TIMER_TICK',

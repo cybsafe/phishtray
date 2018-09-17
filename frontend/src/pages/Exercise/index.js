@@ -18,6 +18,8 @@ import {
   getExercise,
 } from '../../reducers/exercise';
 
+import { startCountdown } from '../../actions/countdownActions';
+
 const Container = styled('div')({
   margin: 'auto',
   minHeight: '100%',
@@ -95,6 +97,12 @@ export class Exercise extends Component {
 
   handleSubmit = () => {
     const data = Object.keys(this.state).map(answer => this.state[answer]);
+
+    // TODO: start countdown
+    console.log('HERE');
+    const { exercise } = this.props;
+    console.log(exercise);
+    startCountdown(+exercise.time);
 
     fetch('/api/form-submit-url', {
       method: 'POST',
