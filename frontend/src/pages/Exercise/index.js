@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ import {
   NumberInput,
   TextInput,
   Form,
+  Tile,
 } from 'carbon-components-react';
 import ReactMarkdown from 'react-markdown';
 
@@ -18,14 +19,38 @@ import {
 } from '../../reducers/exercise';
 
 const Container = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
+  margin: 'auto',
   minHeight: '100%',
-  margin: 50,
-  marginTop: 0,
+  marginTop: '20px',
+  width: '768px',
+  backgroundColor: '#f5f7fa',
 });
 
-const Title = styled('h1')({ display: 'block' });
+const Title = styled('h1')({
+  display: 'block',
+  fontSize: ' 2.25rem',
+  lineHeight: 1.25,
+  marginBottom: '35px',
+  fontWeight: 300,
+});
+
+const Subtitle = styled('h1')({
+  display: 'block',
+  fontSize: ' 1.25rem',
+  lineHeight: 1,
+  paddingBottom: '15px',
+  fontWeight: 300,
+  borderBottom: '1px solid grey',
+});
+
+const FormContainer = styled('div')({
+  display: 'block',
+  margin: 'auto',
+  width: '384px',
+  lineHeight: 1,
+  paddingBottom: '15px',
+  paddingTop: '15px',
+});
 
 const Number = styled(NumberInput)`
   .bx--number__controls {
@@ -42,14 +67,14 @@ export class Exercise extends Component {
 
   async componentDidMount() {
     await this.props.loadExercises();
-    await this.props.exercise.profile_form.map(item => {
+    await this.props.exercise.profile_form.map(item =>
       this.setState({
         [item.id]: {
           id: item.id,
           value: '',
         },
-      });
-    });
+      })
+    );
   }
 
   nextPath(path) {
@@ -77,40 +102,55 @@ export class Exercise extends Component {
   };
 
   WelcomeForm = exercise => (
-    <Fragment>
+    <Container>
       <Title>{exercise.title}</Title>
-      <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
-        {exercise.profile_form.map(item => {
-          switch (item.field_type) {
-            case 'number':
-              return (
-                <Number
-                  label={item.label}
-                  min={0}
-                  id={`${item.id}`}
-                  name={`${item.id}`}
-                  onChange={this.userInput}
-                  onClick={this.userInput}
-                  required={item.required}
-                  invalidText="Please input a number value"
-                />
-              );
+      <Tile>
+        <Subtitle>{exercise.description}</Subtitle>
+        <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
+          {exercise.profile_form.map(item => {
+            switch (item.question_type) {
+              case 'number':
+                return (
+                  <FormContainer>
+                    <Number
+                      className={css(`width: 100%`)}
+                      label={item.question}
+                      min={0}
+                      id={`${item.id}`}
+                      name={`${item.id}`}
+                      onChange={this.userInput}
+                      onClick={this.userInput}
+                      required={item.required}
+                      invalidText="Please input a number value"
+                    />
+                  </FormContainer>
+                );
 
-            case 'string':
-              return (
-                <TextInput
-                  id={`${item.id}`}
-                  labelText={item.label}
-                  name={`${item.id}`}
-                  onChange={this.userInput}
-                  required={item.required}
-                />
-              );
-          }
-        })}
-        <Button type="submit">Click here to start the E-tray</Button>
-      </Form>
-    </Fragment>
+              case 'string':
+                return (
+                  <FormContainer>
+                    <TextInput
+                      id={`${item.id}`}
+                      labelText={item.question}
+                      name={`${item.id}`}
+                      onChange={this.userInput}
+                      required={item.required}
+                    />
+                  </FormContainer>
+                );
+              default:
+                return {};
+            }
+          })}
+          <Button
+            className={css(`display: flex !important; margin-left: auto`)}
+            type="submit"
+          >
+            Click here to start the E-tray
+          </Button>
+        </Form>
+      </Tile>
+    </Container>
   );
 
   render() {
@@ -132,27 +172,34 @@ export class Exercise extends Component {
     }
 
     return (
-      <Fragment>
-        <Switch>
-          <Route
-            exact
-            path={`${match.url}`}
-            render={() => (
-              <Container>
-                <Title>{exercise.title}</Title>
+      <Switch>
+        <Route
+          exact
+          path={`${match.url}`}
+          render={() => (
+            <Container>
+              <Title>{exercise.title}</Title>
+              <Tile>
+                <Subtitle>{exercise.description}</Subtitle>
+
                 <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
-                <Button onClick={() => this.nextPath('/welcome/form')}>
+                <hr />
+                <p>This exercise will take: {exercise.time}</p>
+                <Button
+                  className={css(`display: flex !important; margin-left: auto`)}
+                  onClick={() => this.nextPath('/welcome/form')}
+                >
                   Continue
                 </Button>
-              </Container>
-            )}
-          />
-          <Route
-            path={`${match.url}/form`}
-            render={() => <Container>{this.WelcomeForm(exercise)}</Container>}
-          />
-        </Switch>
-      </Fragment>
+              </Tile>
+            </Container>
+          )}
+        />
+        <Route
+          path={`${match.url}/form`}
+          render={() => <Container>{this.WelcomeForm(exercise)}</Container>}
+        />
+      </Switch>
     );
   }
 }
