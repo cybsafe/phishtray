@@ -152,6 +152,7 @@ class App extends Component {
                 path="/"
                 render={() => <Redirect from="/" to="/inbox" />}
               />
+              <Route component={DefaultLayout} />
             </Switch>
             <WebBrowser />
           </div>
