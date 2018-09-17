@@ -31,6 +31,7 @@ export default function reducer(state = INITIAL_STATE, action = {}) {
 }
 
 // Actions
+
 export function tickTimer(amount = 10) {
   return {
     type: 'exercise/TIMER_TICK',
@@ -44,7 +45,6 @@ export function loadExercises() {
   return async dispatch => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     const exercise = loadExercise();
-
     return dispatch({
       type: 'exercise/LOAD_EXERCISE',
       payload: exercise,

@@ -65,7 +65,10 @@ function BrowserHeader({ onClose, url, isSecure }) {
         <span className={css({ color: isSecure ? 'green' : 'red' })}>
           {isSecure ? 'https' : 'http'}
         </span>
-        <span>://{url}</span>
+        <span>
+          ://
+          {url}
+        </span>
       </div>
     </div>
   );

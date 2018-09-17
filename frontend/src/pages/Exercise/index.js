@@ -17,6 +17,8 @@ import {
   getExercise,
 } from '../../reducers/exercise';
 
+import { startCountdown } from '../../actions/countdownActions';
+
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'column',
@@ -68,6 +70,12 @@ export class Exercise extends Component {
   handleSubmit = () => {
     const data = Object.keys(this.state).map(answer => this.state[answer]);
 
+    // TODO: start countdown
+    console.log('HERE');
+    const { exercise } = this.props;
+    console.log(exercise);
+    startCountdown(+exercise.time);
+
     fetch('/api/form-submit-url', {
       method: 'POST',
       body: data,
@@ -79,7 +87,7 @@ export class Exercise extends Component {
   WelcomeForm = exercise => (
     <Fragment>
       <Title>{exercise.title}</Title>
-      <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
+      <Form id={`exercise-${exercise.id}`}>
         {exercise.profile_form.map(item => {
           switch (item.field_type) {
             case 'number':
@@ -108,7 +116,9 @@ export class Exercise extends Component {
               );
           }
         })}
-        <Button type="submit">Click here to start the E-tray</Button>
+        <Button type="button" onClick={this.handleSubmit}>
+          Click here to start the E-tray
+        </Button>
       </Form>
     </Fragment>
   );
