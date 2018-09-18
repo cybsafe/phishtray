@@ -64,7 +64,7 @@ class DemographicsInfo(PhishtrayBaseModel):
 
     QUESTION_TYPES = (
         (QUESTION_TYPE_INTEGER, 'number'),
-        (QUESTION_TYPE_TEXT, 'text'),
+        (QUESTION_TYPE_TEXT, 'string'),
     )
 
     question_type = models.IntegerField(choices=QUESTION_TYPES)
