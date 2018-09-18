@@ -5,6 +5,7 @@ import { loadExercise } from '../../data/exercises';
 const INITIAL_STATE = {
   timer: 0, // exercise time elapsed in seconds
   lastRefreshed: null,
+  exerciseContent: [],
 };
 
 export default function reducer(state = INITIAL_STATE, action = {}) {
