@@ -3,6 +3,12 @@ from rest_framework import serializers
 from .models import *
 
 
+class DemographicsInfoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = DemographicsInfo
+        fields = ('id', 'question', 'question_type', 'required')
+
+
 class ExerciseEmailReplySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ExerciseEmailReply
@@ -63,11 +69,12 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     threads = EmailDetailsSerializer(source='emails', many=True)
     email_reveal_times = serializers.SerializerMethodField()
+    profile_form = DemographicsInfoSerializer(source='demographics', many=True)
 
     class Meta:
         model = Exercise
-        fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes', 'threads',
-                  'email_reveal_times')
+        fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes',
+                  'profile_form', 'threads', 'email_reveal_times')
 
     def get_email_reveal_times(self, obj):
         # Attempt to generate reveal times if it's missing

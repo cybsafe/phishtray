@@ -69,6 +69,10 @@ class DemographicsInfo(PhishtrayBaseModel):
 
     question_type = models.IntegerField(choices=QUESTION_TYPES)
     question = models.CharField(max_length=180, blank=True, null=True)
+    required = models.BooleanField(
+        help_text='Mark question mandatory on the participant form.',
+        default=False
+    )
 
     def __str__(self):
         return self.question
