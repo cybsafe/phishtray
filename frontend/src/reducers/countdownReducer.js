@@ -13,11 +13,8 @@ const reducer = (state: CountdownState = INITIAL_STATE, action = {}) => {
     case 'countdown/SET_TIME':
       return {
         ...state,
-        countdown: {
-          ...state.countdown,
-          startTime: action.payload.startTime,
-          countdownMins: action.payload.countdownMins,
-        },
+        startTime: action.payload.startTime,
+        countdownMins: action.payload.countdownMins,
       };
     default:
       return state;

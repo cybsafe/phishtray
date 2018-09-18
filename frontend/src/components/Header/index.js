@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
+import { withRouter } from 'react-router';
 import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import StopClock from './StopClock';
@@ -29,6 +30,9 @@ const ClockContainer = styled('div')({
 type Props = {
   startTime: number,
   countdownMins: number,
+  match: *,
+  history: *,
+  location: *,
 };
 
 class Header extends Component<Props> {
@@ -89,6 +93,7 @@ class Header extends Component<Props> {
               startTime={this.props.startTime}
               currentTime={Date.now()}
               countdown={this.props.countdownMins * 60}
+              history={this.props.history}
             />
           </div>
         </ClockContainer>
@@ -105,4 +110,4 @@ const mapStateToProps = reduxState => ({
 export default connect(
   mapStateToProps,
   {}
-)(Header);
+)(withRouter(Header));
