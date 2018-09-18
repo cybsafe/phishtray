@@ -8,7 +8,10 @@ import {
   getThreads,
   getLastRefreshed,
   loadThreads,
+  emailOpen,
 } from '../../reducers/inbox';
+
+import { getExercise } from '../../reducers/exercise';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
@@ -63,7 +66,15 @@ export class Inbox extends Component {
       <Container>
         <EmailList>
           {threads.map(thread => (
-            <EmailListItem key={thread.id} email={thread} />
+            <EmailListItem
+              key={thread.id}
+              email={thread}
+              onOpen={this.props.emailOpen}
+              onOpenParams={{
+                startTime: this.props.startTime,
+                excerciseID: this.props.exercise.id,
+              }}
+            />
           ))}
         </EmailList>
         <EmailContainer>
@@ -78,6 +89,11 @@ export default connect(
   state => ({
     threads: getThreads(state),
     isLoaded: getLastRefreshed(state) !== null,
+    startTime: state.countdown.startTime,
+    exercise: getExercise(state),
   }),
-  { loadThreads }
+  {
+    loadThreads,
+    emailOpen,
+  }
 )(Inbox);

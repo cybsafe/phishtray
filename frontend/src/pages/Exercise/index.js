@@ -18,6 +18,8 @@ import {
   getExercise,
 } from '../../reducers/exercise';
 
+import { startCountdown } from '../../actions/countdownActions';
+
 const Container = styled('div')({
   margin: 'auto',
   minHeight: '100%',
@@ -58,7 +60,14 @@ const Number = styled(NumberInput)`
   }
 `;
 
-export class Exercise extends Component {
+type Props = {
+  exercise: Object,
+  isLoaded: *,
+  loadExercises: (*) => void,
+  startCountdown: (*) => void,
+};
+
+export class Exercise extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {};
@@ -92,6 +101,8 @@ export class Exercise extends Component {
 
   handleSubmit = () => {
     const data = Object.keys(this.state).map(answer => this.state[answer]);
+    const { exercise } = this.props;
+    this.props.startCountdown(+exercise.time);
 
     fetch('/api/form-submit-url', {
       method: 'POST',
@@ -106,7 +117,7 @@ export class Exercise extends Component {
       <Title>{exercise.title}</Title>
       <Tile>
         <Subtitle>{exercise.description}</Subtitle>
-        <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
+        <Form id={`exercise-${exercise.id}`}>
           {exercise.profile_form.map(item => {
             switch (item.question_type) {
               case 'number':
@@ -144,7 +155,8 @@ export class Exercise extends Component {
           })}
           <Button
             className={css(`display: flex !important; margin-left: auto`)}
-            type="submit"
+            type="button"
+            onClick={this.handleSubmit}
           >
             Click here to start the E-tray
           </Button>
@@ -209,5 +221,5 @@ export default connect(
     exercise: getExercise(state),
     isLoaded: getLastRefreshed(state) !== null,
   }),
-  { loadExercises }
+  { loadExercises, startCountdown }
 )(Exercise);

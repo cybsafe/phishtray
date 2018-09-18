@@ -26,13 +26,26 @@ const Text = styled('div')(
   })
 );
 
-export default function EmailListItem({ email }) {
+export default function EmailListItem({ email, onOpen, onOpenParams }) {
+  const { startTime, excerciseID } = onOpenParams;
   return (
     <Route path={`/inbox/${email.id}`}>
       {({ match }) => (
         <Link
           to={`/inbox/${email.id}`}
           className={css({ textDecoration: 'none', display: 'block' })}
+          onClick={() => {
+            onOpen({
+              excerciseAction: 'email_open',
+              associationsDetails: {
+                associations: {
+                  excerciseEmail: email.id,
+                },
+              },
+              time: Date.now() - startTime,
+              excerciseID,
+            });
+          }}
         >
           <Container isSelected={!!match}>
             <Text
