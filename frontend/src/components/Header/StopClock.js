@@ -51,7 +51,9 @@ const getPercRemaining = (
 };
 
 const getTimeLabel = (secondsRemaining: number) =>
-  `${Math.ceil(secondsRemaining / 60)}m`;
+  secondsRemaining < 60
+    ? `${Math.round(secondsRemaining)}s`
+    : `${Math.round(secondsRemaining / 60)}m`;
 
 class StopClock extends Component<Props, State> {
   state: State = {
