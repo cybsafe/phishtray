@@ -60,7 +60,14 @@ const Number = styled(NumberInput)`
   }
 `;
 
-export class Exercise extends Component {
+type Props = {
+  exercise: Object,
+  isLoaded: *,
+  loadExercises: (*) => void,
+  startCountdown: (*) => void,
+};
+
+export class Exercise extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {};
@@ -97,12 +104,8 @@ export class Exercise extends Component {
 
   handleSubmit = () => {
     const data = Object.keys(this.state).map(answer => this.state[answer]);
-
-    // TODO: start countdown
-    console.log('HERE');
     const { exercise } = this.props;
-    console.log(exercise);
-    startCountdown(+exercise.time);
+    this.props.startCountdown(+exercise.time);
 
     fetch('/api/form-submit-url', {
       method: 'POST',
@@ -220,5 +223,5 @@ export default connect(
     exercise: getExercise(state),
     isLoaded: getLastRefreshed(state) !== null,
   }),
-  { getExerciseData }
+  { getExerciseData, startCountdown }
 )(Exercise);
