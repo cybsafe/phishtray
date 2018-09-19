@@ -5,7 +5,9 @@ from exercise.factories import (
     ExerciseFactory
 )
 from .models import (
+    ActionLog,
     Participant,
+    ParticipantAction,
     ParticipantProfileEntry
 )
 
@@ -23,3 +25,17 @@ class ParticipantFactory(factory.django.DjangoModelFactory):
         model = Participant
 
     exercise = factory.SubFactory(ExerciseFactory)
+
+
+class ParticipantActionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ParticipantAction
+
+    participant = factory.SubFactory(ParticipantFactory)
+
+
+class ActionLogFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ActionLog
+
+    action = factory.SubFactory(ParticipantActionFactory)

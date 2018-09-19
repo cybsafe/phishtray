@@ -22,21 +22,6 @@ EVENT_TYPES = (
 )
 
 
-class ActionLog(PhishtrayBaseModel):
-    """
-    Simple key/value entries representing Participant actions.
-    """
-    name = models.CharField(max_length=255, blank=False, null=False)
-    value = models.CharField(max_length=500, blank=False, null=False)
-
-
-class ParticipantAction(PhishtrayBaseModel):
-    """
-    Groups a set of ActionLogs together.
-    """
-    action_logs = models.ManyToManyField(ActionLog, editable=False)
-
-
 class ParticipantProfileEntry(PhishtrayBaseModel):
     """
     Aggregates Demographic Info
@@ -54,5 +39,20 @@ class Participant(PhishtrayBaseModel):
         return 'Participant: {} For: {}'.format(self.id, self.exercise)
 
     exercise = models.ForeignKey(Exercise, on_delete=models.PROTECT)
-    actions = models.ManyToManyField(ParticipantAction)
     profile = models.ManyToManyField(ParticipantProfileEntry)
+
+
+class ParticipantAction(PhishtrayBaseModel):
+    """
+    Groups a set of ActionLogs together.
+    """
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+
+
+class ActionLog(PhishtrayBaseModel):
+    """
+    Simple key/value entries representing Participant actions.
+    """
+    action = models.ForeignKey(ParticipantAction, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=False, null=False)
+    value = models.CharField(max_length=500, blank=False, null=False)
