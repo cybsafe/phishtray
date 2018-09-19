@@ -1,0 +1,18 @@
+from rest_framework import routers
+
+from exercise.views import (
+    ExerciseViewSet,
+    ExerciseEmailViewSet,
+    ExerciseEmailThreadViewSet,
+)
+
+from participant.views import ParticipantViewSet
+
+app_name = 'api'
+router = routers.DefaultRouter()
+router.register(r'emails', ExerciseEmailViewSet, base_name='email')
+router.register(r'exercises', ExerciseViewSet, base_name='exercise')
+router.register(r'participants', ParticipantViewSet, base_name='participant')
+router.register(r'threads', ExerciseEmailThreadViewSet, base_name='thread')
+
+urlpatterns = router.urls

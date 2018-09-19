@@ -1,19 +1,10 @@
-import uuid
 from django.db import models
-from django.core.exceptions import ValidationError
 
 from picklefield.fields import PickledObjectField
 from random import randint
 
 from phishtray.base import PhishtrayBaseModel
 
-KEY_TYPE_INTEGER = 0
-KEY_TYPE_TEXT = 1
-
-EXERCISE_KEY_TYPES = (
-    (KEY_TYPE_INTEGER, 'number'),
-    (KEY_TYPE_TEXT, 'text'),
-)
 
 EXERCISE_EMAIL_PHISH = 0
 EXERCISE_EMAIL_REGULAR = 1
@@ -64,6 +55,29 @@ class ExerciseEmail(PhishtrayBaseModel):
     belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
 
+class DemographicsInfo(PhishtrayBaseModel):
+    """
+    Demographic Questions that can be added to Exercises.
+    """
+    QUESTION_TYPE_INTEGER = 0
+    QUESTION_TYPE_TEXT = 1
+
+    QUESTION_TYPES = (
+        (QUESTION_TYPE_INTEGER, 'number'),
+        (QUESTION_TYPE_TEXT, 'string'),
+    )
+
+    question_type = models.IntegerField(choices=QUESTION_TYPES)
+    question = models.CharField(max_length=180, blank=True, null=True)
+    required = models.BooleanField(
+        help_text='Mark question mandatory on the participant form.',
+        default=False
+    )
+
+    def __str__(self):
+        return self.question
+
+
 class Exercise(PhishtrayBaseModel):
 
     def __str__(self):
@@ -73,8 +87,8 @@ class Exercise(PhishtrayBaseModel):
     description = models.TextField(null=True, blank=True)
     introduction = models.TextField(null=True, blank=True)
     afterword = models.TextField(null=True, blank=True)
-
     length_minutes = models.IntegerField()
+    demographics = models.ManyToManyField(DemographicsInfo, blank=True)
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
     email_reveal_times = PickledObjectField(null=True)
 
@@ -110,21 +124,6 @@ class Exercise(PhishtrayBaseModel):
             reveal_times += updated_reveal_times
 
         self.email_reveal_times = reveal_times
-
-
-class ExerciseKey(PhishtrayBaseModel):
-
-    def __str__(self):
-        return self.key
-
-    exercise = models.ManyToManyField(Exercise)
-    type = models.IntegerField(choices=EXERCISE_KEY_TYPES)
-    key = models.CharField(max_length=180, blank=True, null=True)
-    description = models.TextField(null=True, blank=True)
-
-    @property
-    def html5_type(self):
-        return EXERCISE_KEY_TYPES[self.type][1]
 
 
 class ExerciseWebPages(PhishtrayBaseModel):
