@@ -1,4 +1,5 @@
 Django==2.0.5
+django-cors-headers==2.4.0
 django-extensions==2.0.7
 django-filter==1.1.0
 django-picklefield==1.0.0

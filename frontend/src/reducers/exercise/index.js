@@ -1,32 +1,28 @@
 // @flow
 import { createSelector } from 'reselect';
-import { loadExercise } from '../../data/exercises';
+import { fetchAndDispatch } from '../../utils';
 
 const INITIAL_STATE = {
   timer: 0, // exercise time elapsed in seconds
-  lastRefreshed: null,
 };
 
 export default function reducer(state = INITIAL_STATE, action = {}) {
   switch (action.type) {
-    case 'exercise/TIMER_TICK': {
+    case 'exercise/TIMER_TICK':
       return {
         ...state,
         timer: (state.timer += action.payload.amount),
       };
-    }
 
-    case 'exercise/LOAD_EXERCISE': {
+    case 'exercise/LOAD_DATA':
       return {
         ...state,
+        ...action.payload,
         lastRefreshed: new Date(),
-        exerciseContent: action.payload,
       };
-    }
 
-    default: {
+    default:
       return state;
-    }
   }
 }
 
@@ -40,17 +36,8 @@ export function tickTimer(amount = 10) {
   };
 }
 
-export function loadExercises() {
-  return async dispatch => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const exercise = loadExercise();
-
-    return dispatch({
-      type: 'exercise/LOAD_EXERCISE',
-      payload: exercise,
-    });
-  };
-}
+export const getExerciseData = (exerciseUuid: string) =>
+  fetchAndDispatch(`/api/v1/exercises/${exerciseUuid}/`, 'exercise/LOAD_DATA');
 
 // Selectors
 const exerciseSelector = state => state.exercise;
@@ -62,7 +49,7 @@ export const getLastRefreshed = createSelector(
 
 export const getExercise = createSelector(
   exerciseSelector,
-  exercise => exercise.exerciseContent
+  exercise => exercise
 );
 
 export const getExerciseTimer = createSelector(

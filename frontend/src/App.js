@@ -147,7 +147,7 @@ class App extends Component {
                   </DefaultLayout>
                 )}
               />
-              <Route path="/welcome" component={Exercise} />
+              <Route path="/welcome/:exerciseUuid" component={Exercise} />
               <Route
                 exact
                 path="/"
