@@ -77,6 +77,42 @@ export function markThreadAsRead(threadId) {
   };
 }
 
+export const emailOpen = dataToPost => async dispatch => {
+  const {
+    excerciseAction,
+    associationsDetails,
+    time,
+    excerciseID,
+  } = dataToPost;
+
+  const url = `exercise/${excerciseID}/action/`;
+  const rawResponse = () =>
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        milliseconds: time,
+        action: {
+          type: excerciseAction,
+          ...associationsDetails,
+        },
+      }),
+    });
+
+  try {
+    const resJSON = await rawResponse();
+  } catch (e) {
+    console.log('Did not post', e);
+  }
+
+  dispatch({
+    type: 'exercise/EMAIL_OPEN',
+  });
+};
+
 // Selectors
 const inboxSelector = state => state.inbox;
 export const getThreads = createSelector(
