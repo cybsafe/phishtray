@@ -6,17 +6,37 @@ import Markdown from 'react-markdown';
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
 
+import { logAction } from '../../../utils';
+
 type Props = {
   email: Object,
 };
 
-const ActionLink = styled('a')({
+const ActionLink = styled('button')({
   marginRight: 20,
   textDecoration: 'none',
   color: '#B8B8B8',
   fontWeight: 'bold',
   letterSpacing: '1.1px',
 });
+
+function ActionLinkwithClick({ data, title }) {
+  return (
+    <ActionLink
+      onClick={() =>
+        logAction({
+          actionType: data.actionType,
+          participantId: data.participantId,
+          timeDelta: Date.now() - data.startTime,
+          emailId: data.emailId,
+          timestamp: new Date(),
+        })
+      }
+    >
+      {title}
+    </ActionLink>
+  );
+}
 
 function AttachmentLink({ attachment }) {
   return (
@@ -53,7 +73,7 @@ const Paragraph = styled('p')({
   fontSize: 20,
 });
 
-function EmailActions() {
+function EmailActions({ onReplyParams }) {
   return (
     <div
       className={css({
@@ -63,10 +83,34 @@ function EmailActions() {
         marginTop: '20px',
       })}
     >
-      <ActionLink href="#">Reply</ActionLink>
-      <ActionLink href="#">Forward</ActionLink>
-      <ActionLink href="#">Delete</ActionLink>
-      <ActionLink href="#">Report</ActionLink>
+      <ActionLinkwithClick
+        data={{
+          ...onReplyParams,
+          actionType: 'emailReply',
+        }}
+        title="Reply"
+      />
+      <ActionLinkwithClick
+        data={{
+          ...onReplyParams,
+          actionType: 'emailForward',
+        }}
+        title="Forward"
+      />
+      <ActionLinkwithClick
+        data={{
+          ...onReplyParams,
+          actionType: 'emailDelete',
+        }}
+        title="Delete"
+      />
+      <ActionLinkwithClick
+        data={{
+          ...onReplyParams,
+          actionType: 'emailReport',
+        }}
+        title="Report"
+      />
     </div>
   );
 }
@@ -211,7 +255,7 @@ export default class Email extends Component<Props> {
           padding: '0 40px',
         })}
       >
-        <EmailActions />
+        <EmailActions onReplyParams={this.props.onReplyParams} />
         <EmailInfo email={this.props.email} />
 
         <h3

@@ -55,7 +55,14 @@ export class Inbox extends Component {
       <Container>
         <EmailList>
           {threads.map(thread => (
-            <EmailListItem key={thread.id} email={thread} />
+            <EmailListItem
+              key={thread.id}
+              email={thread}
+              onOpenParams={{
+                startTime: this.props.startTime,
+                participantId: this.props.participantId,
+              }}
+            />
           ))}
         </EmailList>
         <EmailContainer>
@@ -70,6 +77,8 @@ export default connect(
   state => ({
     threads: getThreads(state),
     isLoaded: getLastRefreshed(state) !== null,
+    startTime: state.exercise.startTime,
+    participantId: state.exercise.participant,
   }),
   {}
 )(Inbox);

@@ -19,7 +19,33 @@ export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
         payload: json,
       })
     )
-    .catch(e => console.error(`Failed to fetch data for ${dispatchType}`));
+    .catch(e => console.error(`Failed to fetch data for ${dispatchType}`, e));
+
+export const logAction = async actionData => {
+  const { participantId, ...rest } = actionData;
+
+  console.log('logAction actionData', actionData);
+
+  const url = `${HOST_BACKEND}/api/v1/participants/${participantId}/action/`;
+
+  const rawResponse = () =>
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...rest,
+      }),
+    });
+
+  try {
+    const res = await rawResponse();
+  } catch (e) {
+    console.error('logAction failed', e);
+  }
+};
 
 export const postFormData = (apiUrl: string, data: Object) => {
   fetch(`${HOST_BACKEND}${apiUrl}`, {
