@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import styled, { css } from 'react-emotion';
+import styled, { css, injectGlobal } from 'react-emotion';
 import { connect } from 'react-redux';
 import {
   InlineLoading,
@@ -67,6 +67,12 @@ type Props = {
   loadExercises: (*) => void,
   startCountdown: (*) => void,
 };
+
+injectGlobal`
+  #root > div:first-child {
+    overflow-y: scroll !important;
+  }
+`;
 
 export class Exercise extends Component<Props> {
   constructor(props) {
