@@ -18,6 +18,8 @@ import {
   getExercise,
 } from '../../reducers/exercise';
 
+import { startCountdown } from '../../actions/exerciseActions';
+
 const Container = styled('div')({
   margin: 'auto',
   minHeight: '100%',
@@ -58,12 +60,22 @@ const Number = styled(NumberInput)`
   }
 `;
 
-export class Exercise extends Component {
+type Props = {
+  exercise: Object,
+  isLoaded: *,
+  loadExercises: (*) => void,
+  startCountdown: (*) => void,
+};
+
+export class Exercise extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {};
     this.handleSubmit = this.handleSubmit.bind(this);
-    const { exerciseUuid } = props.match.params;
+  }
+
+  componentDidMount() {
+    const { exerciseUuid } = this.props.match.params;
     this.props.getExerciseData(exerciseUuid);
   }
 
@@ -95,6 +107,9 @@ export class Exercise extends Component {
 
   handleSubmit = () => {
     const data = Object.keys(this.state).map(answer => this.state[answer]);
+    const { exercise } = this.props;
+    console.log(exercise);
+    this.props.startCountdown(+exercise.lengthMinutes);
 
     fetch('/api/form-submit-url', {
       method: 'POST',
@@ -187,7 +202,7 @@ export class Exercise extends Component {
 
                 <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
                 <hr />
-                <p>This exercise will take: {exercise.length_minutes} mins</p>
+                <p>This exercise will take: {exercise.lengthMinutes} mins</p>
                 <Button
                   className={css(`display: flex !important; margin-left: auto`)}
                   onClick={() => this.nextPath(`/welcome/${exercise.id}/form`)}
@@ -212,5 +227,5 @@ export default connect(
     exercise: getExercise(state),
     isLoaded: getLastRefreshed(state) !== null,
   }),
-  { getExerciseData }
+  { getExerciseData, startCountdown }
 )(Exercise);
