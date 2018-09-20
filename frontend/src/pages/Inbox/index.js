@@ -4,11 +4,9 @@ import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
 
-import {
-  getThreads,
-  getLastRefreshed,
-  loadThreads,
-} from '../../reducers/inbox';
+import { getLastRefreshed, loadThreads } from '../../reducers/inbox';
+
+import { getThreads } from '../../reducers/exercise';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
@@ -34,7 +32,7 @@ const EmailContainer = styled('div')({
 
 export class Inbox extends Component {
   async componentDidMount() {
-    await this.props.loadThreads();
+    !this.props.isLoaded && (await this.props.loadThreads());
   }
 
   render() {

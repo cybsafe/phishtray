@@ -52,6 +52,11 @@ export const getExercise = createSelector(
   exercise => exercise
 );
 
+export const getThreads = createSelector(
+  exerciseSelector,
+  exercise => exercise.threads
+);
+
 export const getExerciseTimer = createSelector(
   exerciseSelector,
   exercise => exercise.timer
