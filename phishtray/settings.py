@@ -117,11 +117,10 @@ REST_FRAMEWORK = {
         # Any other renders
     ),
 
-    # don't parse requests
-    # 'DEFAULT_PARSER_CLASSES': (
-    #     'djangorestframework_camel_case.parser.CamelCaseJSONParser',
-    #     # Any other parsers
-    # ),
+    'DEFAULT_PARSER_CLASSES': (
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+        # Any other parsers
+    ),
 
     # don't use underscores before numbers
     # https://github.com/krasa/StringManipulation/issues/8#issuecomment-121203018
