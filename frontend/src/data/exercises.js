@@ -26,6 +26,12 @@ const EXERCISES = {
       required: true,
     },
   ],
+  emailRevealTimes: [
+    {
+      emailId: 'fa59b235-184f-40ba-aae7-daaf48689d22',
+      revealTime: 5,
+    },
+  ],
 };
 
 export function loadExercise() {
