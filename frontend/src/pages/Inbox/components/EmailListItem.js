@@ -2,6 +2,8 @@ import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 
+import { logAction } from '../../../utils';
+
 const Container = styled('div')(
   {
     padding: '30px',
@@ -26,13 +28,22 @@ const Text = styled('div')(
   })
 );
 
-export default function EmailListItem({ email }) {
+export default function EmailListItem({ email, onOpenParams }) {
+  const { startTime, participantId } = onOpenParams;
   return (
     <Route path={`/inbox/${email.id}`}>
       {({ match }) => (
         <Link
           to={`/inbox/${email.id}`}
           className={css({ textDecoration: 'none', display: 'block' })}
+          onClick={() => {
+            logAction({
+              participantId,
+              type: 'emailOpen',
+              timestamp: new Date(),
+              time: Date.now() - startTime,
+            });
+          }}
         >
           <Container isSelected={!!match}>
             <Text
