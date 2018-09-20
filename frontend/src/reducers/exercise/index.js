@@ -75,26 +75,23 @@ export const getExerciseTimer = createSelector(
   exercise => exercise.timer
 );
 
-export const getThreads = createSelector(
-  exerciseSelector,
-  (exercise, exerciseTimer) =>
-    exercise.threads.filter(
-      thread =>
-        exercise.emailRevealTimes.filter(time => time.emailId === thread.id)[0]
-          .revealTime <= exerciseTimer
-    )
+export const getThreads = createSelector(exerciseSelector, exercise =>
+  exercise.threads.filter(
+    thread =>
+      exercise.emailRevealTimes.filter(time => time.emailId === thread.id)[0]
+        .revealTime <= exercise.timer
+  )
 );
 
 export const getThread = createSelector(
   [exerciseSelector, (_, props) => props.threadId, getExerciseTimer],
-  (exercise, exerciseTimer) =>
+  exercise =>
     exercise.threads.find(
       thread =>
         thread.id &&
-        console.log(
-          exercise.emailRevealTimes.filter(
-            time => time.emailId === thread.id
-          )[0].revealTime / 100
-        )
+        exercise.emailRevealTimes.filter(time => time.emailId === thread.id)[0]
+          .revealTime /
+          100 <=
+          exercise.timer
     )
 );
