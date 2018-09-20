@@ -20,6 +20,7 @@ export default function reducer(state = INITIAL_STATE, action = {}) {
       return {
         ...state,
         ...action.payload.exercise,
+        participant: action.payload.participant,
         lastRefreshed: new Date(),
       };
     }

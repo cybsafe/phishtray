@@ -19,6 +19,7 @@ import {
 } from '../../reducers/exercise';
 
 import { startCountdown } from '../../actions/exerciseActions';
+import { postFormData } from '../../utils';
 
 const Container = styled('div')({
   margin: 'auto',
@@ -105,16 +106,22 @@ export class Exercise extends Component<Props> {
     });
   };
 
-  handleSubmit = () => {
-    const data = Object.keys(this.state).map(answer => this.state[answer]);
+  handleSubmit = event => {
+    event.preventDefault();
+
     const { exercise } = this.props;
-    console.log(exercise);
     this.props.startCountdown(+exercise.lengthMinutes);
 
-    fetch('/api/form-submit-url', {
-      method: 'POST',
-      body: data,
-    });
+    const data = {
+      profileForm: Object.keys(this.state).map(
+        answerKey => this.state[answerKey]
+      ),
+    };
+
+    postFormData(
+      `/api/v1/participants/${exercise.participant}/extend-profile/`,
+      data
+    );
 
     this.nextPath('/');
   };
