@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
 import format from 'date-fns/format';
-import Markdown from 'react-remarkable';
+import Markdown from 'react-markdown';
 
 import EmailCard from './EmailCard';
 
@@ -43,13 +43,15 @@ const EmailField = styled('div')({
   alignItems: 'center',
 });
 
-const BodyContainer = styled('div')({
+const Heading = styled('h1')({
   marginTop: 40,
   color: '#666',
-  '& p': {
-    marginBottom: 20,
-    fontSize: 20,
-  },
+});
+
+const Paragraph = styled('p')({
+  color: '#666',
+  marginBottom: 20,
+  fontSize: 20,
 });
 
 function EmailActions() {
@@ -191,6 +193,15 @@ function EmailInfo({ email }) {
   );
 }
 
+function RouterLink(props) {
+  console.log('RouterLink props', props);
+  return (
+    <a onClick={props.showWebpage(props.href.substring(1))} href="#">
+      {props.children}
+    </a>
+  );
+}
+
 export default class Email extends Component<Props> {
   render() {
     return (
@@ -215,7 +226,14 @@ export default class Email extends Component<Props> {
           {this.props.email.subject}
         </h3>
 
-        <Markdown source={this.props.email.body} container={BodyContainer} />
+        <Markdown
+          source={this.props.email.body}
+          renderers={{
+            link: props => RouterLink({ ...this.props, ...props }),
+            paragraph: Paragraph,
+            heading: Heading,
+          }}
+        />
         {this.props.email.attachments && (
           <EmailAttachments attachments={this.props.email.attachments} />
         )}

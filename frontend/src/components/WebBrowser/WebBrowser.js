@@ -24,6 +24,29 @@ const BrowserHeaderButton = styled('div')({
   cursor: 'pointer',
 });
 
+function UnLocked(props) {
+  return (
+    <svg width="12" height="16">
+      <path d="M2.5 7V3.5a3.5 3.5 0 0 1 7 0V4h-1v-.5a2.5 2.5 0 0 0-5 0V7h7A1.5 1.5 0 0 1 12 8.5v6a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 0 14.5v-6A1.5 1.5 0 0 1 1.5 7h1zm-1 1a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-6a.5.5 0 0 0-.5-.5h-9z" />
+    </svg>
+  );
+}
+
+function Locked(props) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      className={css({
+        fill: 'green',
+        stroke: 'green',
+      })}
+    >
+      <path d="M4.5 7V3.5a3.5 3.5 0 0 1 7 0V7h1A1.5 1.5 0 0 1 14 8.5v6a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-6A1.5 1.5 0 0 1 3.5 7h1zm1 0h5V3.5a2.5 2.5 0 0 0-5 0V7zm-2 1a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-6a.5.5 0 0 0-.5-.5h-9z" />
+    </svg>
+  );
+}
+
 function BrowserHeader({ onClose, url, isSecure }) {
   return (
     <div
@@ -62,10 +85,22 @@ function BrowserHeader({ onClose, url, isSecure }) {
           flex: 1,
         })}
       >
+        <span>
+          {isSecure ? (
+            <span className={css({ color: 'green' })}>
+              <Locked /> Secure |
+            </span>
+          ) : (
+            <UnLocked />
+          )}{' '}
+        </span>
         <span className={css({ color: isSecure ? 'green' : 'red' })}>
           {isSecure ? 'https' : 'http'}
         </span>
-        <span>://{url}</span>
+        <span>
+          ://
+          {url}
+        </span>
       </div>
     </div>
   );

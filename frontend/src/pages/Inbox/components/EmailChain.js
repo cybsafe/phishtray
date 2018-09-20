@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import { getThread, markThreadAsRead } from '../../../reducers/inbox';
 
+import { showWebpage } from '../../../reducers/ui';
+
 import Email from './Email';
 
 export class EmailChain extends Component {
@@ -22,11 +24,18 @@ export class EmailChain extends Component {
     }
   }
 
+  handleWebsiteClick = websiteId => {
+    return event => {
+      event.preventDefault();
+      this.props.showWebpage(websiteId);
+    };
+  };
+
   render() {
     const { thread } = this.props;
     return thread.emails.map(email => (
       <Fragment key={email.id}>
-        <Email email={email} />
+        <Email email={email} showWebpage={this.handleWebsiteClick} />
         <hr
           className={css({
             width: '100%',
@@ -41,5 +50,5 @@ export default connect(
   (state, props) => ({
     thread: getThread(state, { threadId: props.match.params.emailId }),
   }),
-  { markThreadAsRead }
+  { markThreadAsRead, showWebpage }
 )(EmailChain);
