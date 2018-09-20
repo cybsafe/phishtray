@@ -3,15 +3,16 @@ import uuid
 from django.urls import reverse
 from rest_framework import status
 
+from participant.models import ActionLog
 from phishtray.test.base import PhishtrayAPIBaseTest
 from ..factories import ParticipantFactory
 from exercise.factories import DemographicsInfoFactory
 
 
-class ParticipantAPITests(PhishtrayAPIBaseTest):
+class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
 
     def setUp(self):
-        super(ParticipantAPITests, self).setUp()
+        super(ParticipantProfileAPITests, self).setUp()
         self.participant = ParticipantFactory()
         # create questions and profile entries
         self.questions = DemographicsInfoFactory.create_batch(10)
@@ -89,3 +90,73 @@ class ParticipantAPITests(PhishtrayAPIBaseTest):
         response = self.client.post(url, data)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(0, self.participant.profile.all().count())
+
+
+class ParticipantActionsAPITests(PhishtrayAPIBaseTest):
+
+    def setUp(self):
+        super(ParticipantActionsAPITests, self).setUp()
+        self.participant = ParticipantFactory()
+
+    def test_add_participant_action(self):
+        url = reverse('api:participant-action', args=[self.participant.id])
+        data = {
+            'action_type': 'SOME_ACTION_TYPE',
+            'key1': 1234,
+            'key2': 'some value',
+            'key3': 'wibble wobble'
+        }
+
+        response = self.client.post(url, data)
+        action_id = response.data.get('action_id')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual('Action has been logged successfully.', response.data.get('message'))
+        self.assertEqual(4, ActionLog.objects.filter(action__id=action_id).count())
+
+    def test_add_participant_action_skip_complex_datatypes(self):
+        url = reverse('api:participant-action', args=[self.participant.id])
+        data = {
+            'action_type': 'SOME_ACTION_TYPE',
+            'key1': 1234,
+            'key2': 'some value',
+            'just_a_list': ['t', 'e', 's', 't'],
+            'just_a_dict': {
+                'wibble': 1,
+                'wobble': 2,
+                'another_list': [1, 2, 3, 4]
+            }
+        }
+
+        response = self.client.post(url, data)
+        action_id = response.data.get('action_id')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual('Action has been partially logged. Cannot log complex data types.',
+                         response.data.get('message'))
+        self.assertListEqual(['just_a_list', 'just_a_dict'], response.data.get('skipped'))
+        self.assertEqual(3, ActionLog.objects.filter(action__id=action_id).count())
+
+    def test_add_participant_action_convert_keys_to_snake_case(self):
+        url = reverse('api:participant-action', args=[self.participant.id])
+        data = {
+            'actionType': 'SOME_ACTION_TYPE',
+            'myKeyOne': 1234,
+        }
+
+        response = self.client.post(url, data)
+        action_id = response.data.get('action_id')
+        action_names = [al.name for al in ActionLog.objects.filter(action__id=action_id)]
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual('Action has been logged successfully.', response.data.get('message'))
+        self.assertEqual(2, ActionLog.objects.filter(action__id=action_id).count())
+        self.assertListEqual(['action_type', 'my_key_one'], sorted(action_names))
+
+    def test_add_participant_action_nothing_to_log(self):
+        url = reverse('api:participant-action', args=[self.participant.id])
+        data = {}
+
+        response = self.client.post(url, data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual('Nothing to log.', response.data.get('message'))
