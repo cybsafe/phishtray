@@ -13,6 +13,7 @@ import Header from './components/Header';
 import FileManager from './pages/FileManager';
 import Web from './pages/Web';
 import WebBrowser from './components/WebBrowser';
+import { Tile } from 'carbon-components-react';
 
 const Container = styled('div')({
   display: 'flex',
@@ -104,6 +105,7 @@ class App extends Component {
   }
 
   render() {
+    const Afterward = props => <div>Thanks for taking the exercise</div>;
     return (
       <Provider store={this.store}>
         <BrowserRouter>
@@ -148,6 +150,14 @@ class App extends Component {
                 )}
               />
               <Route path="/welcome/:exerciseUuid" component={Exercise} />
+              <Route
+                path="/afterward"
+                render={props => (
+                  <Tile>
+                    <Afterward />
+                  </Tile>
+                )}
+              />
               <Route
                 exact
                 path="/"
