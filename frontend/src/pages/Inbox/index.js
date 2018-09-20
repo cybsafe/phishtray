@@ -85,7 +85,8 @@ export default connect(
   state => ({
     threads: getThreads(state),
     isLoaded: getLastRefreshed(state) !== null,
-    startTime: state.countdown.startTime,
+    // startTime: state.countdown.startTime,
+    startTime: Date.now(),
     participantId: state.exercise.participant,
   }),
   { loadThreads }

@@ -35,7 +35,15 @@ export class EmailChain extends Component {
     const { thread } = this.props;
     return thread.emails.map(email => (
       <Fragment key={email.id}>
-        <Email email={email} showWebpage={this.handleWebsiteClick} />
+        <Email
+          email={email}
+          showWebpage={this.handleWebsiteClick}
+          onReplyParams={{
+            startTime: this.props.startTime,
+            participantId: this.props.participantId,
+            emailId: email.id,
+          }}
+        />
         <hr
           className={css({
             width: '100%',
@@ -49,6 +57,8 @@ export class EmailChain extends Component {
 export default connect(
   (state, props) => ({
     thread: getThread(state, { threadId: props.match.params.emailId }),
+    startTime: Date.now(),
+    participantId: state.exercise.participant,
   }),
   { markThreadAsRead, showWebpage }
 )(EmailChain);

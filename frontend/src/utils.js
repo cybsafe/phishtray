@@ -3,10 +3,10 @@
 export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
   dispatch: *
 ) =>
-  fetch(`http://localhost:9000${apiUrl}`, {
+  fetch(`http://phishtray.local:9000${apiUrl}`, {
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': 'http://localhost:3000',
+      'Access-Control-Allow-Origin': 'http://phishtray.local:3000',
     },
   })
     .then(response => response.json())
@@ -16,12 +16,14 @@ export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
         payload: json,
       })
     )
-    .catch(e => console.error(`Failed to fetch data for ${dispatchType}`));
+    .catch(e => console.error(`Failed to fetch data for ${dispatchType}`, e));
 
 export const logAction = async actionData => {
   const { participantId, ...rest } = actionData;
 
-  const url = `/api/v1/participants/${participantId}/action/`;
+  console.log('logAction actionData', actionData);
+
+  const url = `http://phishtray.local:9000/api/v1/participants/${participantId}/action/`;
 
   const rawResponse = () =>
     fetch(url, {
@@ -36,7 +38,7 @@ export const logAction = async actionData => {
     });
 
   try {
-    const resJSON = await rawResponse().json();
+    const res = await rawResponse();
   } catch (e) {
     console.error('logAction failed', e);
   }

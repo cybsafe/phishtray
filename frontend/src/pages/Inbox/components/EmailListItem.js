@@ -39,9 +39,10 @@ export default function EmailListItem({ email, onOpenParams }) {
           onClick={() => {
             logAction({
               participantId,
-              type: 'emailOpen',
+              actionType: 'emailOpen',
+              emailId: email.id,
               timestamp: new Date(),
-              time: Date.now() - startTime,
+              timeDelta: Date.now() - startTime,
             });
           }}
         >
