@@ -194,9 +194,9 @@ function EmailInfo({ email }) {
 }
 
 function RouterLink(props) {
-  console.log('RouterLink props', props);
   return (
-    <a onClick={props.showWebpage(props.href.substring(1))} href="#">
+    <a onClick={props.showWebpage('mypaymentFalse')} href="#">
+      {/* <a onClick={props.showWebpage(props.href.substring(1))} href="#"> */}
       {props.children}
     </a>
   );
