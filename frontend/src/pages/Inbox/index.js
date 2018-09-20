@@ -4,9 +4,11 @@ import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
 
-import { getLastRefreshed, loadThreads } from '../../reducers/inbox';
-
-import { getThreads } from '../../reducers/exercise';
+import {
+  getLastRefreshed,
+  loadThreads,
+  getThreads,
+} from '../../reducers/inbox';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';

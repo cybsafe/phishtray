@@ -16,7 +16,7 @@ type Email = {
 type Thread = {
   id: string,
   subject: string,
-  from: string, // TODO
+  fromAccount: string, // TODO
   revealTime: number,
   emails: [Email],
 };
