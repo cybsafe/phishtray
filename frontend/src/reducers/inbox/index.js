@@ -68,15 +68,6 @@ export function loadThreads() {
   };
 }
 
-export function markThreadAsRead(threadId) {
-  return {
-    type: 'inbox/MARK_THREAD_AS_READ',
-    payload: {
-      threadId,
-    },
-  };
-}
-
 // Selectors
 const inboxSelector = state => state.inbox;
 export const getThreads = createSelector(

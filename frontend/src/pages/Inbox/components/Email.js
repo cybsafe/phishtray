@@ -4,7 +4,6 @@ import format from 'date-fns/format';
 import Markdown from 'react-markdown';
 
 import EmailCard from './EmailCard';
-
 import QuickReply from './QuickReply';
 
 type Props = {
@@ -96,9 +95,10 @@ function EmailAttachments({ attachments }) {
           marginBottom: '20px',
         })}
       >
-        {attachments.map(attachment => (
-          <AttachmentLink key={attachment.id} attachment={attachment} />
-        ))}
+        {attachments &&
+          attachments.map(attachment => (
+            <AttachmentLink key={attachment.id} attachment={attachment} />
+          ))}
       </div>
     </div>
   );

@@ -187,7 +187,7 @@ export class Exercise extends Component {
 
                 <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
                 <hr />
-                <p>This exercise will take: {exercise.length_minutes} mins</p>
+                <p>This exercise will take: {exercise.lengthMinutes} mins</p>
                 <Button
                   className={css(`display: flex !important; margin-left: auto`)}
                   onClick={() => this.nextPath(`/welcome/${exercise.id}/form`)}
