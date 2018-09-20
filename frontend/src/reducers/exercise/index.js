@@ -9,18 +9,19 @@ const INITIAL_STATE = {
 
 export default function reducer(state = INITIAL_STATE, action = {}) {
   switch (action.type) {
-    case 'exercise/TIMER_TICK':
-      return {
-        ...state,
-        timer: (state.timer += action.payload.amount),
-      };
+    case 'exercise/TIMER_TICK': {
+      return produce(state, draft => {
+        draft.timer += action.payload.amount;
+      });
+    }
 
-    case 'exercise/LOAD_DATA':
+    case 'exercise/LOAD_DATA': {
       return {
         ...state,
         ...action.payload,
         lastRefreshed: new Date(),
       };
+    }
 
     case 'exercise/MARK_THREAD_AS_READ': {
       return produce(state, draft => {
@@ -85,13 +86,11 @@ export const getThreads = createSelector(exerciseSelector, exercise =>
 
 export const getThread = createSelector(
   [exerciseSelector, (_, props) => props.threadId, getExerciseTimer],
-  exercise =>
+  (exercise, threadId) =>
     exercise.threads.find(
       thread =>
-        thread.id &&
+        thread.id === threadId &&
         exercise.emailRevealTimes.filter(time => time.emailId === thread.id)[0]
-          .revealTime /
-          100 <=
-          exercise.timer
+          .revealTime <= exercise.timer
     )
 );
