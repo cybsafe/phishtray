@@ -14,6 +14,8 @@ from .models import (
 )
 from .serializer import ParticipantSerializer
 
+from utils.fancy_print import FancyPrint
+
 
 class ParticipantViewSet(viewsets.ModelViewSet):
     """
@@ -119,6 +121,12 @@ class ParticipantViewSet(viewsets.ModelViewSet):
                 'message': 'Action has been partially logged. Cannot log complex data types.',
                 'skipped': complex_keys
             }
+
+        # Log some entries to the console until reporting is sorted
+        FancyPrint.echo('Logged action for participant - ID: {}'.format(participant.id), 'HEADER')
+        for log in ActionLog.objects.filter(action=participant_action.id):
+            FancyPrint.echo('\t> {}: {}'.format(log.name, log.value), 'BOLD')
+        FancyPrint.echo('---------------------------------------'.format(log.name, log.value), 'HEADER')
 
         resp['action_id'] = str(participant_action.id)
         return Response(data=resp)
