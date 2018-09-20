@@ -3,15 +3,15 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
+from djangorestframework_camel_case.util import underscoreize
+
 from exercise.models import DemographicsInfo
-from utils.converters import snake_case
 from .models import (
     ActionLog,
     Participant,
     ParticipantAction,
     ParticipantProfileEntry,
 )
-
 from .serializer import ParticipantSerializer
 
 
@@ -105,7 +105,7 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
             log_entry = ActionLog(
                 action=participant_action,
-                name=snake_case(key),
+                name=key,
                 value=value,
             )
             log_entry.save()
