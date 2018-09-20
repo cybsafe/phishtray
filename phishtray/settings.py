@@ -26,7 +26,7 @@ SECRET_KEY = 'w8w_cxqg6*d6#=#)4kfb-!&r72bp9s_l9x&@u&%@9a%s1bic(+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'localhost:3000', 'localhost:9000']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -114,12 +114,12 @@ REST_FRAMEWORK = {
     # Camel case by default
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
-        # Any other renders
+        'rest_framework.renderers.BrowsableAPIRenderer'
     ),
 
     'DEFAULT_PARSER_CLASSES': (
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
-        # Any other parsers
+        'rest_framework.renderers.BrowsableAPIRenderer'
     ),
 
     # don't use underscores before numbers

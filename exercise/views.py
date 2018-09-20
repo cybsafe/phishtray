@@ -1,6 +1,9 @@
-from rest_framework import viewsets, serializers
+from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
 
+from participant.models import Participant
 from .models import (
     Exercise,
     ExerciseEmail,
@@ -27,6 +30,17 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     http_method_names = ['get', 'head', 'options']
+
+    @action(methods=['get'], detail=True, permission_classes=[])
+    def init(self, request, *args, **kwargs):
+        exercise = self.get_object()
+        participant = Participant(exercise=exercise)
+        participant.save()
+        resp = {
+            'participant': str(participant.id),
+            'exercise': ExerciseSerializer(exercise).data
+        }
+        return Response(data=resp)
 
 
 class ExerciseEmailViewSet(viewsets.ModelViewSet):
