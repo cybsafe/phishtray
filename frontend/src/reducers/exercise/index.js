@@ -4,6 +4,7 @@ import { fetchAndDispatch } from '../../utils';
 
 const INITIAL_STATE = {
   timer: 0, // exercise time elapsed in seconds
+  startTime: 0, // Date.now() when form submitted,
 };
 
 export default function reducer(state = INITIAL_STATE, action = {}) {
@@ -17,8 +18,14 @@ export default function reducer(state = INITIAL_STATE, action = {}) {
     case 'exercise/LOAD_DATA':
       return {
         ...state,
-        ...action.payload,
+        ...action.payload.exercise,
         lastRefreshed: new Date(),
+      };
+
+    case 'exercise/SET_START_TIME':
+      return {
+        ...state,
+        startTime: action.payload.startTime,
       };
 
     default:
@@ -26,7 +33,7 @@ export default function reducer(state = INITIAL_STATE, action = {}) {
   }
 }
 
-// Actions
+// Actions TODO: move exercise actions to /actions/exerciseActions
 
 export function tickTimer(amount = 10) {
   return {
@@ -38,7 +45,10 @@ export function tickTimer(amount = 10) {
 }
 
 export const getExerciseData = (exerciseUuid: string) =>
-  fetchAndDispatch(`/api/v1/exercises/${exerciseUuid}/`, 'exercise/LOAD_DATA');
+  fetchAndDispatch(
+    `/api/v1/exercises/${exerciseUuid}/init`,
+    'exercise/LOAD_DATA'
+  );
 
 // Selectors
 const exerciseSelector = state => state.exercise;

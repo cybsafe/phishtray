@@ -103,8 +103,8 @@ class Header extends Component<Props> {
 }
 
 const mapStateToProps = reduxState => ({
-  startTime: reduxState.countdown.startTime,
-  countdownMins: reduxState.countdown.countdownMins,
+  startTime: reduxState.exercise.startTime,
+  countdownMins: reduxState.exercise.lengthMinutes,
 });
 
 export default connect(

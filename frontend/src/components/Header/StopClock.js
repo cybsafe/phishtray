@@ -73,18 +73,23 @@ class StopClock extends Component<Props, State> {
     this.endTime = this.props.startTime + 1000 * this.props.countdown;
   }
 
+  componentDidUpdate() {
+    if (this.endTime !== 0 && Date.now() >= this.endTime) {
+      clearInterval(this.timer);
+      this.endTime = 0;
+      this.props.history.push('/afterward');
+    }
+  }
+
   componentWillUnmount() {
     clearInterval(this.timer);
   }
 
   render() {
     const { currentTime } = this.state;
-    if (this.endTime !== 0 && currentTime >= this.endTime) {
-      this.props.history.push('/welcome');
-    }
     const { startTime, countdown } = this.props;
     const percentage = getPercRemaining(currentTime, startTime, countdown);
-    return startTime > 0 ? (
+    return this.endTime !== 0 ? (
       <StyledCircularProgressbar
         text={getTimeLabel(countdown - percentage * countdown)}
         percentage={percentage * 100}
