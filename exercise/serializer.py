@@ -31,43 +31,50 @@ class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
                   'content','attachments', 'replies')
 
 
-class EmailCoverSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ExerciseEmail
-        fields = ('id', 'subject', 'from_address', 'from_name')
-
-
 class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
     replies = ExerciseEmailReplySerializer(many=True)
     attachments = ExerciseAttachmentSerializer(many=True)
+    from_account = serializers.SerializerMethodField()
+    to_account = serializers.SerializerMethodField()
+    body = serializers.CharField(source='content')
 
     class Meta:
         model = ExerciseEmail
-        fields = ('id', 'subject', 'from_address', 'from_name', 'to_address', 'to_name', 'phish_type',
-                  'content', 'attachments', 'replies')
+        fields = ('id', 'subject', 'phish_type', 'from_account', 'to_account',
+                  'body', 'attachments', 'replies')
 
-    def to_representation(self, obj):
-        data = EmailCoverSerializer().to_representation(obj)
-        emails = list()
-        emails.append(super(EmailDetailsSerializer, self).to_representation(obj))
-        emails = self.process_email_chain(data['id'], emails)
-        data['emails'] = emails
-        return data
+    def get_from_account(self, email):
+        return email.from_account
 
-    def process_email_chain(self, id, emails):
-        belongs_to = id
-        while belongs_to is not None:
-            try:
-                chain_email = ExerciseEmail.objects.get(belongs_to_id=belongs_to)
-                emails.append(super(EmailDetailsSerializer, self).to_representation(chain_email))
-                belongs_to = chain_email.id
-            except Exception:
-                belongs_to = None
-        return emails
+    def get_to_account(self, email):
+        return email.to_account
+
+
+class ThreadSerializer(serializers.ModelSerializer):
+    body = serializers.CharField(source='content')
+    from_account = serializers.SerializerMethodField()
+    to_account = serializers.SerializerMethodField()
+    replies = ExerciseEmailReplySerializer(many=True)
+    attachments = ExerciseAttachmentSerializer(many=True)
+    emails = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ExerciseEmail
+        fields = ('id', 'subject', 'from_account', 'to_account', 'body', 'attachments', 'replies', 'emails')
+
+    def get_emails(self, email):
+        belonging_emails_queryset = ExerciseEmail.objects.filter(belongs_to=email.id)
+        return EmailDetailsSerializer(belonging_emails_queryset, many=True).data
+
+    def get_from_account(self, email):
+        return email.from_account
+
+    def get_to_account(self, email):
+        return email.to_account
 
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
-    threads = EmailDetailsSerializer(source='emails', many=True)
+    threads = ThreadSerializer(source='emails', many=True)
     email_reveal_times = serializers.SerializerMethodField()
     profile_form = DemographicsInfoSerializer(source='demographics', many=True)
 
@@ -80,4 +87,5 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
         # Attempt to generate reveal times if it's missing
         if not obj.email_reveal_times:
             obj.set_email_reveal_times()
+            obj.save()
         return obj.email_reveal_times

@@ -23,7 +23,7 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
     def test_update_participant_profile(self):
         url = reverse('api:participant-extend_profile', args=[self.participant.id])
         data = {
-            'profile_form': [
+            'profileForm': [
                 {
                     'id': self.questions[0].id,
                     'value': '20'
@@ -46,7 +46,7 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
         bad_id_1 = str(uuid.uuid4())
         bad_id_2 = str(uuid.uuid4())
         data = {
-            'profile_form': [
+            'profileForm': [
                 {
                     'id': bad_id_1,
                     'value': '20'
@@ -68,14 +68,14 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
                          response.data.get('message'))
         self.assertEqual('Missing or invalid demographics IDs.',
                          response.data['errors'][0]['message'])
-        self.assertListEqual([bad_id_1, bad_id_2], response.data['errors'][0]['id_list'])
+        self.assertListEqual([bad_id_1, bad_id_2], response.data['errors'][0]['idList'])
         self.assertEqual(1, self.participant.profile.all().count())
 
     def test_update_participant_profile_missing_profile_form_data(self):
         url = reverse('api:participant-extend_profile', args=[self.participant.id])
         data = {
             # Note the spelling mistake / mismatch
-            'profile_from_oops': [
+            'profileFromOops': [
                 {
                     'id': self.questions[0].id,
                     'value': '20'
@@ -142,7 +142,9 @@ class ParticipantActionsAPITests(PhishtrayAPIBaseTest):
         data = {
             'actionType': 'SOME_ACTION_TYPE',
             'myKeyOne': 1234,
+            'mix_andMatch': 'wobble'
         }
+        expected_keys = ['action_type', 'my_key_one', 'mix_and_match']
 
         response = self.client.post(url, data)
         action_id = response.data.get('action_id')
@@ -150,8 +152,8 @@ class ParticipantActionsAPITests(PhishtrayAPIBaseTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual('Action has been logged successfully.', response.data.get('message'))
-        self.assertEqual(2, ActionLog.objects.filter(action__id=action_id).count())
-        self.assertListEqual(['action_type', 'my_key_one'], sorted(action_names))
+        self.assertEqual(3, ActionLog.objects.filter(action__id=action_id).count())
+        self.assertListEqual(sorted(expected_keys), sorted(action_names))
 
     def test_add_participant_action_nothing_to_log(self):
         url = reverse('api:participant-action', args=[self.participant.id])

@@ -2,11 +2,15 @@ from random import randint
 
 from django.urls import reverse
 from rest_framework.views import status
+from djangorestframework_camel_case.util import underscoreize
 
 from phishtray.test.base import PhishtrayAPIBaseTest
 from ..models import Exercise, ExerciseEmail
-from ..serializer import ExerciseSerializer, ExerciseEmailSerializer, EmailDetailsSerializer
-
+from ..serializer import (
+    ExerciseSerializer,
+    ExerciseEmailSerializer,
+    ThreadSerializer,
+)
 from ..factories import (
     AttachmentFactory,
     EmailFactory,
@@ -42,22 +46,29 @@ class ExerciseAPITests(PhishtrayAPIBaseTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(exercises_count, len(response.data))
-        self.assertEqual(serialized.data, response.data)
+        self.assertEqual(serialized.data, underscoreize(response.data))
 
     def test_get_exercise_details(self):
         """
         Exercise details are public.
         """
-        exercise_1 = ExerciseFactory()
         ExerciseFactory.create_batch(5)
+        exercise_1 = ExerciseFactory()
+        email_count = randint(1, 15)
+        emails = EmailFactory.create_batch(email_count)
+
+        for email in emails:
+            exercise_1.emails.add(email)
+
+        exercise_1.save()
+
         url = reverse('api:exercise-detail', args=[exercise_1.id])
 
         response = self.client.get(url)
-
         serialized = ExerciseSerializer(Exercise.objects.get(pk=exercise_1.id))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(response.data, serialized.data)
+        self.assertEqual(serialized.data, underscoreize(response.data))
 
     def test_get_exercise_details_404(self):
         """
@@ -100,7 +111,7 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(email_count, len(response.data))
-        self.assertEqual(serialized.data, response.data)
+        self.assertEqual(serialized.data, underscoreize(response.data))
 
     def test_get_email_details(self):
         """
@@ -145,46 +156,56 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest):
 
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
-    def test_email_list_allow_admin(self):
+    def test_thread_list_allow_admin(self):
         """
         Admin users should be able to retrieve thread list.
         """
         url = reverse('api:thread-list')
-        email_count = randint(1, 50)
+        email_count = randint(2, 50)
         emails = EmailFactory.create_batch(email_count)
 
         email_1 = emails[0]
         email_1.replies.add(EmailReplyFactory())
         email_1.attachments.add(AttachmentFactory())
+        email_1.belongs_to = emails[1]
         email_1.save()
 
         response = self.admin_client.get(url)
-        serialized = EmailDetailsSerializer(ExerciseEmail.objects.all(), many=True)
+        serialized = ThreadSerializer(ExerciseEmail.objects.all(), many=True)
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(email_count, len(response.data))
-        self.assertEqual(serialized.data, response.data)
+        self.assertEqual(serialized.data, underscoreize(response.data))
 
     def test_get_thread_details(self):
         """
         Thread details are public.
         """
+
         email_1 = EmailFactory()
         email_1.replies.add(EmailReplyFactory())
         email_1.replies.add(EmailReplyFactory())
         email_1.attachments.add(AttachmentFactory())
         email_1.save()
-        EmailFactory.create_batch(5)
+
+        # add some emails to email_1 to make it a thread
+        email_count = randint(1, 15)
+        emails = EmailFactory.create_batch(email_count)
+
+        for email in emails:
+            email.belongs_to = email_1
+            email.save()
+
         url = reverse('api:thread-detail', args=[email_1.id])
 
         response = self.client.get(url)
-
-        serialized = EmailDetailsSerializer(ExerciseEmail.objects.get(pk=email_1.id))
+        serialized = ThreadSerializer(ExerciseEmail.objects.get(pk=email_1.id))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(response.data, serialized.data)
-        self.assertEqual(2, len(response.data.get('emails')[0].get('replies')))
-        self.assertEqual(1, len(response.data.get('emails')[0].get('attachments')))
+        self.assertEqual(serialized.data, underscoreize(response.data))
+        self.assertEqual(email_count, len(response.data.get('emails')))
+        self.assertEqual(2, len(response.data.get('replies')))
+        self.assertEqual(1, len(response.data.get('attachments')))
 
     def test_get_thread_details_404(self):
         """
