@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
+import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import Markdown from 'react-markdown';
 
@@ -38,10 +39,19 @@ function ActionLinkwithClick({ data, title }) {
   );
 }
 
-function AttachmentLink({ attachment }) {
+function AttachmentLink({ attachment, onClickParams }) {
   return (
-    <a
-      href="#"
+    <Link
+      to="/files"
+      onClick={() =>
+        logAction({
+          actionType: 'attachment_downloaded',
+          participantId: onClickParams.participantId,
+          timeDelta: Date.now() - onClickParams.startTime,
+          emailId: onClickParams.emailId,
+          timestamp: new Date(),
+        })
+      }
       className={css({
         marginRight: 20,
         textDecoration: 'none',
@@ -50,7 +60,7 @@ function AttachmentLink({ attachment }) {
       })}
     >
       > {attachment.filename}
-    </a>
+    </Link>
   );
 }
 
@@ -115,7 +125,7 @@ function EmailActions({ onReplyParams }) {
   );
 }
 
-function EmailAttachments({ attachments }) {
+function EmailAttachments({ attachments, onClickParams }) {
   return (
     <div
       className={css({
@@ -141,7 +151,11 @@ function EmailAttachments({ attachments }) {
       >
         {attachments &&
           attachments.map(attachment => (
-            <AttachmentLink key={attachment.id} attachment={attachment} />
+            <AttachmentLink
+              onClickParams={onClickParams}
+              key={attachment.id}
+              attachment={attachment}
+            />
           ))}
       </div>
     </div>
@@ -239,7 +253,21 @@ function EmailInfo({ email }) {
 
 function RouterLink(props) {
   return (
-    <a onClick={props.showWebpage(props.href.substring(1))} href="#">
+    <a
+      onClick={props.showWebpage(props.href.substring(1))}
+      onMouseUp={() => {
+        const { onReplyParams, showWebpage } = props;
+        logAction({
+          actionType: 'link_clicked',
+          participantId: onReplyParams.participantId,
+          timeDelta: Date.now() - onReplyParams.startTime,
+          emailId: onReplyParams.emailId,
+          link: props.href.substring(1),
+          timestamp: new Date(),
+        });
+      }}
+      href="#"
+    >
       {props.children}
     </a>
   );
@@ -278,10 +306,16 @@ export default class Email extends Component<Props> {
           }}
         />
         {this.props.email.attachments && (
-          <EmailAttachments attachments={this.props.email.attachments} />
+          <EmailAttachments
+            onClickParams={this.props.onReplyParams}
+            attachments={this.props.email.attachments}
+          />
         )}
         {this.props.email.replies && (
-          <QuickReply replies={this.props.email.replies} />
+          <QuickReply
+            onClickParams={this.props.onReplyParams}
+            replies={this.props.email.replies}
+          />
         )}
       </div>
     );
