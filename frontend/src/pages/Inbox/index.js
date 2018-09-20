@@ -77,8 +77,7 @@ export default connect(
   state => ({
     threads: getThreads(state),
     isLoaded: getLastRefreshed(state) !== null,
-    // startTime: state.countdown.startTime,
-    startTime: Date.now(),
+    startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
   }),
   {}

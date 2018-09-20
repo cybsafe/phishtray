@@ -6,7 +6,6 @@ const HOST_FRONTEND = 'http://phishtray.local:3000';
 export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
   dispatch: *
 ) =>
-
   fetch(`${HOST_BACKEND}${apiUrl}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -46,7 +45,7 @@ export const logAction = async actionData => {
   } catch (e) {
     console.error('logAction failed', e);
   }
-}
+};
 
 export const postFormData = (apiUrl: string, data: Object) => {
   fetch(`${HOST_BACKEND}${apiUrl}`, {

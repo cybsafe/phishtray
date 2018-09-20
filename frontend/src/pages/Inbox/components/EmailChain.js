@@ -56,7 +56,7 @@ export class EmailChain extends Component {
 export default connect(
   (state, props) => ({
     thread: getThread(state, { threadId: props.match.params.emailId }),
-    startTime: Date.now(),
+    startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
   }),
   { markThreadAsRead, showWebpage }
