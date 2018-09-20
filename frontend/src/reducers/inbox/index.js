@@ -16,7 +16,7 @@ type Email = {
 type Thread = {
   id: string,
   subject: string,
-  from: string, // TODO
+  fromAccount: string, // TODO
   revealTime: number,
   emails: [Email],
 };
@@ -65,15 +65,6 @@ export function loadThreads() {
       type: 'inbox/LOAD_THREADS',
       payload: threads,
     });
-  };
-}
-
-export function markThreadAsRead(threadId) {
-  return {
-    type: 'inbox/MARK_THREAD_AS_READ',
-    payload: {
-      threadId,
-    },
   };
 }
 

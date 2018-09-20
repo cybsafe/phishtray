@@ -2,8 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
 import { connect } from 'react-redux';
 
-import { getThread, markThreadAsRead } from '../../../reducers/inbox';
-
+import { getThread, markThreadAsRead } from '../../../reducers/exercise';
 import { showWebpage } from '../../../reducers/ui';
 
 import Email from './Email';
