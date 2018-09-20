@@ -26,7 +26,7 @@ SECRET_KEY = 'w8w_cxqg6*d6#=#)4kfb-!&r72bp9s_l9x&@u&%@9a%s1bic(+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'localhost:3000', 'localhost:9000']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -111,6 +111,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
+    # Camel case by default
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    ),
+
+    'DEFAULT_PARSER_CLASSES': (
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    ),
+
+    # don't use underscores before numbers
+    # https://github.com/krasa/StringManipulation/issues/8#issuecomment-121203018
+    'JSON_UNDERSCOREIZE': {
+        'no_underscore_before_number': True,
+    },
+
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [

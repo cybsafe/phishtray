@@ -6,23 +6,23 @@ const EXERCISES = {
   time: '5 minutes',
   introduction:
     '# Vacuus et Athenae in fervoribus essent stamina \n## Videntur echidnae colorem sorores praestructa Liber cavus \n\nLorem markdownum animi, voce mihi aenae qui lumen hostem Hyleusque tangit. Haec\nortus conplectitur respondit nullo rapida foedere Lycisce castique, aret est\nNoctisque. **Pone suas** sic! Mihi ante vasta curvamine praesentem raptatur\nbarba sternere promissa in flexo.\n',
-  profile_form: [
+  profileForm: [
     {
       id: 432,
       question: 'How old are you',
-      question_type: 'number',
+      questionType: 'number',
       required: true,
     },
     {
       id: 434,
       question: 'How do you feel about privacy?',
-      question_type: 'string',
+      questionType: 'string',
       required: false,
     },
     {
       id: 435,
       question: 'Job Role',
-      question_type: 'string',
+      questionType: 'string',
       required: true,
     },
   ],

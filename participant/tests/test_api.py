@@ -23,7 +23,7 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
     def test_update_participant_profile(self):
         url = reverse('api:participant-extend_profile', args=[self.participant.id])
         data = {
-            'profile_form': [
+            'profileForm': [
                 {
                     'id': self.questions[0].id,
                     'value': '20'
@@ -46,7 +46,7 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
         bad_id_1 = str(uuid.uuid4())
         bad_id_2 = str(uuid.uuid4())
         data = {
-            'profile_form': [
+            'profileForm': [
                 {
                     'id': bad_id_1,
                     'value': '20'
@@ -68,14 +68,14 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
                          response.data.get('message'))
         self.assertEqual('Missing or invalid demographics IDs.',
                          response.data['errors'][0]['message'])
-        self.assertListEqual([bad_id_1, bad_id_2], response.data['errors'][0]['id_list'])
+        self.assertListEqual([bad_id_1, bad_id_2], response.data['errors'][0]['idList'])
         self.assertEqual(1, self.participant.profile.all().count())
 
     def test_update_participant_profile_missing_profile_form_data(self):
         url = reverse('api:participant-extend_profile', args=[self.participant.id])
         data = {
             # Note the spelling mistake / mismatch
-            'profile_from_oops': [
+            'profileFromOops': [
                 {
                     'id': self.questions[0].id,
                     'value': '20'
