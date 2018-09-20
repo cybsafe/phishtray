@@ -69,7 +69,7 @@ export class Exercise extends Component {
 
   componentDidUpdate() {
     if (Object.keys(this.state).length === 0) {
-      this.props.exercise.profile_form.map(item =>
+      this.props.exercise.profileForm.map(item =>
         this.setState({
           [item.id]: {
             id: item.id,
@@ -110,8 +110,8 @@ export class Exercise extends Component {
       <Tile>
         <Subtitle>{exercise.description}</Subtitle>
         <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
-          {exercise.profile_form.map(item => {
-            switch (item.question_type) {
+          {exercise.profileForm.map(item => {
+            switch (item.questionType) {
               case 0: // number
                 return (
                   <FormContainer>
