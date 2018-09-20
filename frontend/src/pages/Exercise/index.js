@@ -13,7 +13,7 @@ import {
 import ReactMarkdown from 'react-markdown';
 
 import {
-  loadExercises,
+  getExerciseData,
   getLastRefreshed,
   getExercise,
 } from '../../reducers/exercise';
@@ -63,18 +63,21 @@ export class Exercise extends Component {
     super(props);
     this.state = {};
     this.handleSubmit = this.handleSubmit.bind(this);
+    const { exerciseUuid } = props.match.params;
+    this.props.getExerciseData(exerciseUuid);
   }
 
-  async componentDidMount() {
-    await this.props.loadExercises();
-    await this.props.exercise.profile_form.map(item =>
-      this.setState({
-        [item.id]: {
-          id: item.id,
-          value: '',
-        },
-      })
-    );
+  componentDidUpdate() {
+    if (Object.keys(this.state).length === 0) {
+      this.props.exercise.profile_form.map(item =>
+        this.setState({
+          [item.id]: {
+            id: item.id,
+            value: '',
+          },
+        })
+      );
+    }
   }
 
   nextPath(path) {
@@ -109,7 +112,7 @@ export class Exercise extends Component {
         <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
           {exercise.profile_form.map(item => {
             switch (item.question_type) {
-              case 'number':
+              case 0: // number
                 return (
                   <FormContainer>
                     <Number
@@ -126,7 +129,7 @@ export class Exercise extends Component {
                   </FormContainer>
                 );
 
-              case 'string':
+              case 1: // text
                 return (
                   <FormContainer>
                     <TextInput
@@ -184,10 +187,10 @@ export class Exercise extends Component {
 
                 <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
                 <hr />
-                <p>This exercise will take: {exercise.time}</p>
+                <p>This exercise will take: {exercise.length_minutes} mins</p>
                 <Button
                   className={css(`display: flex !important; margin-left: auto`)}
-                  onClick={() => this.nextPath('/welcome/form')}
+                  onClick={() => this.nextPath(`/welcome/${exercise.id}/form`)}
                 >
                   Continue
                 </Button>
@@ -209,5 +212,5 @@ export default connect(
     exercise: getExercise(state),
     isLoaded: getLastRefreshed(state) !== null,
   }),
-  { loadExercises }
+  { getExerciseData }
 )(Exercise);
