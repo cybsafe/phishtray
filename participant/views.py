@@ -3,16 +3,18 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
+from djangorestframework_camel_case.util import underscoreize
+
 from exercise.models import DemographicsInfo
-from utils.converters import snake_case
 from .models import (
     ActionLog,
     Participant,
     ParticipantAction,
     ParticipantProfileEntry,
 )
-
 from .serializer import ParticipantSerializer
+
+from utils.fancy_print import FancyPrint
 
 
 class ParticipantViewSet(viewsets.ModelViewSet):
@@ -105,7 +107,7 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
             log_entry = ActionLog(
                 action=participant_action,
-                name=snake_case(key),
+                name=key,
                 value=value,
             )
             log_entry.save()
@@ -119,6 +121,12 @@ class ParticipantViewSet(viewsets.ModelViewSet):
                 'message': 'Action has been partially logged. Cannot log complex data types.',
                 'skipped': complex_keys
             }
+
+        # Log some entries to the console until reporting is sorted
+        FancyPrint.echo('Logged action for participant - ID: {}'.format(participant.id), 'HEADER')
+        for log in ActionLog.objects.filter(action=participant_action.id):
+            FancyPrint.echo('\t> {}: {}'.format(log.name, log.value), 'BOLD')
+        FancyPrint.echo('---------------------------------------'.format(log.name, log.value), 'HEADER')
 
         resp['action_id'] = str(participant_action.id)
         return Response(data=resp)

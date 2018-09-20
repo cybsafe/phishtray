@@ -57,7 +57,7 @@ export default function EmailListItem({ email, onOpenParams }) {
             >
               {email.subject}
             </Text>
-            <Text isRead={email.isRead}>{email.from}</Text>
+            <Text isRead={email.isRead}>{email.fromAccount.name}</Text>
           </Container>
         </Link>
       )}

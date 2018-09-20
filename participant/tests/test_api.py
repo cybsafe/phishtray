@@ -142,7 +142,9 @@ class ParticipantActionsAPITests(PhishtrayAPIBaseTest):
         data = {
             'actionType': 'SOME_ACTION_TYPE',
             'myKeyOne': 1234,
+            'mix_andMatch': 'wobble'
         }
+        expected_keys = ['action_type', 'my_key_one', 'mix_and_match']
 
         response = self.client.post(url, data)
         action_id = response.data.get('action_id')
@@ -150,8 +152,8 @@ class ParticipantActionsAPITests(PhishtrayAPIBaseTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual('Action has been logged successfully.', response.data.get('message'))
-        self.assertEqual(2, ActionLog.objects.filter(action__id=action_id).count())
-        self.assertListEqual(['action_type', 'my_key_one'], sorted(action_names))
+        self.assertEqual(3, ActionLog.objects.filter(action__id=action_id).count())
+        self.assertListEqual(sorted(expected_keys), sorted(action_names))
 
     def test_add_participant_action_nothing_to_log(self):
         url = reverse('api:participant-action', args=[self.participant.id])

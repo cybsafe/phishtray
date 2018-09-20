@@ -1,12 +1,16 @@
 // @flow
 
+const HOST_BACKEND = 'http://phishtray.local:9000';
+const HOST_FRONTEND = 'http://phishtray.local:3000';
+
 export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
   dispatch: *
 ) =>
-  fetch(`http://phishtray.local:9000${apiUrl}`, {
+
+  fetch(`${HOST_BACKEND}${apiUrl}`, {
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': 'http://phishtray.local:3000',
+      'Access-Control-Allow-Origin': HOST_FRONTEND,
     },
   })
     .then(response => response.json())
@@ -23,7 +27,7 @@ export const logAction = async actionData => {
 
   console.log('logAction actionData', actionData);
 
-  const url = `http://phishtray.local:9000/api/v1/participants/${participantId}/action/`;
+  const url = `${HOST_BACKEND}/api/v1/participants/${participantId}/action/`;
 
   const rawResponse = () =>
     fetch(url, {
@@ -42,4 +46,18 @@ export const logAction = async actionData => {
   } catch (e) {
     console.error('logAction failed', e);
   }
+}
+
+export const postFormData = (apiUrl: string, data: Object) => {
+  fetch(`${HOST_BACKEND}${apiUrl}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': HOST_FRONTEND,
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(response => console.log(response.json()))
+    .catch(e => console.error('Failed to post form data', e));
 };

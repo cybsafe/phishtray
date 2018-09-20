@@ -95,7 +95,7 @@ class App extends Component {
 
   componentDidMount() {
     this._exerciseTick = setInterval(() => {
-      this.store.dispatch(tickTimer(5));
+      this.store.dispatch(tickTimer(100)); //this is way too high, demo purposes
     }, 5 * 1000);
   }
 

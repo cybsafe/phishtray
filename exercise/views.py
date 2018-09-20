@@ -12,7 +12,7 @@ from .serializer import (
     EmailDetailsSerializer,
     ExerciseSerializer,
     ExerciseEmailSerializer,
-)
+    ThreadSerializer)
 
 
 class ExerciseViewSet(viewsets.ModelViewSet):
@@ -65,7 +65,7 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
     This view retrieves emails in thread style
     """
     queryset = ExerciseEmail.objects.all()
-    serializer_class = EmailDetailsSerializer
+    serializer_class = ThreadSerializer
 
     def get_permissions(self):
         """

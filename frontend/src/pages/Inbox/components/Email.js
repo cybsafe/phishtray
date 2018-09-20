@@ -4,7 +4,6 @@ import format from 'date-fns/format';
 import Markdown from 'react-markdown';
 
 import EmailCard from './EmailCard';
-
 import QuickReply from './QuickReply';
 
 import { logAction } from '../../../utils';
@@ -140,9 +139,10 @@ function EmailAttachments({ attachments }) {
           marginBottom: '20px',
         })}
       >
-        {attachments.map(attachment => (
-          <AttachmentLink key={attachment.id} attachment={attachment} />
-        ))}
+        {attachments &&
+          attachments.map(attachment => (
+            <AttachmentLink key={attachment.id} attachment={attachment} />
+          ))}
       </div>
     </div>
   );
@@ -159,14 +159,14 @@ function EmailInfo({ email }) {
     >
       <div className={css({ flex: 0, flexBasis: '60px' })}>
         <EmailCard
-          name={email.from.name}
-          photoUrl={email.from.photoUrl}
-          role={email.from.role}
-          email={email.from.email}
+          name={email.fromAccount.name}
+          photoUrl={email.fromAccount.photoUrl}
+          role={email.fromAccount.role}
+          email={email.fromAccount.email}
           triggerText={
             <img
               className={css({ width: 60, height: 60, borderRadius: '50%' })}
-              src={email.from.photoUrl}
+              src={email.fromAccount.photoUrl}
               alt=""
             />
           }
@@ -185,10 +185,10 @@ function EmailInfo({ email }) {
         <EmailField>
           <p>From: </p>
           <EmailCard
-            name={email.from.name}
-            photoUrl={email.from.photoUrl}
-            role={email.from.role}
-            email={email.from.email}
+            name={email.fromAccount.name}
+            photoUrl={email.fromAccount.photoUrl}
+            role={email.fromAccount.role}
+            email={email.fromAccount.email}
             triggerText={
               <a
                 className={css({
@@ -196,7 +196,7 @@ function EmailInfo({ email }) {
                   display: 'inline-block',
                 })}
               >
-                {email.from.name ? email.from.name + ' ' : ' '}
+                {email.fromAccount.name ? email.fromAccount.name + ' ' : ' '}
                 {String.fromCharCode(8744)}
               </a>
             }
@@ -231,7 +231,7 @@ function EmailInfo({ email }) {
           letterSpacing: '1px',
         })}
       >
-        {format(email.timestamp, 'dddd D MMM YYYY')}
+        {format(Date.now(), 'dddd D MMM YYYY')}
       </div>
     </div>
   );
