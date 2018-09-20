@@ -10,6 +10,8 @@ import {
   getThreads,
 } from '../../reducers/inbox';
 
+//import getThreads from '../../reducers/exercise';
+
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
 

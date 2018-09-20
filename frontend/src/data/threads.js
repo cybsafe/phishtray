@@ -150,7 +150,7 @@ const THREADS = [
         id: '54476574-cc91-4e9a-b366-424b0aaed34d',
 
         body:
-          '# Good afternoon,\n\nWe recently received a request to process a refund request on your account. Before we deposit the money, HBSC require confirmation fromAccount you.\n\n \n\n [Please click here to release your money](/#)',
+          '# Good afternoon,\n\nWe recently received a request to process a refund request on your account. Before we deposit the money, HBSC require confirmation from you.\n\n \n\n [Please click here to release your money](/#)',
       },
     ],
   },
