@@ -1,5 +1,5 @@
 // @flow
-import { getAllFiles } from '../../data/files';
+import { getAllFiles } from '../data/files';
 import { createSelector } from 'reselect';
 
 type File = {

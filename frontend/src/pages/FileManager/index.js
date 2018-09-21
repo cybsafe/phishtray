@@ -14,7 +14,7 @@ import {
   displayFile,
   hideFile,
   hideAndDeleteFile,
-} from '../../reducers/fileManager';
+} from '../../reducers/fileManagerReducer';
 
 const columns = [
   {

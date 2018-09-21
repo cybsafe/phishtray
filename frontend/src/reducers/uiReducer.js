@@ -2,7 +2,7 @@
 import { createSelector } from 'reselect';
 import produce from 'immer';
 
-import websites from '../../components/WebBrowser/websites';
+import websites from '../components/WebBrowser/websites';
 
 // eslint-disable-next-line no-undef
 type WebPage = $Keys<typeof websites>;

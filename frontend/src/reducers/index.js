@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import exercise from './exercise';
-import inbox from './inbox';
-import fileManager from './fileManager';
-import ui from './ui';
+import exercise from './exerciseReducer';
+import inbox from './inboxReducer';
+import fileManager from './fileManagerReducer';
+import ui from './uiReducer';
 
 const rootReducer = combineReducers({
   exercise,
