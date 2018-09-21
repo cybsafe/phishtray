@@ -10,7 +10,7 @@ export const startCountdown = () => async (dispatch: *) => {
   });
 };
 
-export function tickTimer(amount = 10) {
+export function tickTimer(amount: number = 10) {
   return {
     type: 'exercise/TIMER_TICK',
     payload: {
@@ -19,7 +19,7 @@ export function tickTimer(amount = 10) {
   };
 }
 
-export function markThreadAsRead(threadId) {
+export function markThreadAsRead(threadId: string) {
   return {
     type: 'exercise/MARK_THREAD_AS_READ',
     payload: {

@@ -16,7 +16,10 @@ const INITIAL_STATE = {
   webBrowser: null,
 };
 
-export default function reducer(state: State = INITIAL_STATE, action = {}) {
+export default function reducer(
+  state: State = INITIAL_STATE,
+  action: Object = {}
+) {
   switch (action.type) {
     case 'ui/VIEW_WEBPAGE': {
       return produce(state, draft => {

@@ -21,7 +21,7 @@ export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
     )
     .catch(e => console.error(`Failed to fetch data for ${dispatchType}`, e));
 
-export const logAction = async actionData => {
+export const logAction = async (actionData: *) => {
   const { participantId, ...rest } = actionData;
 
   const url = `${HOST_BACKEND}/api/v1/participants/${participantId}/action/`;

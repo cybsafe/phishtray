@@ -59,16 +59,7 @@ class StopClock extends Component<Props, State> {
     currentTime: Date.now(),
   };
 
-  tick = () => {
-    this.setState({
-      currentTime: Date.now(),
-    });
-  };
-
-  timer = null;
-  endTime = 0;
   componentDidMount() {
-    this.timer = setInterval(this.tick, 500);
     this.endTime = this.props.startTime + 1000 * this.props.countdown;
   }
 
@@ -83,6 +74,15 @@ class StopClock extends Component<Props, State> {
   componentWillUnmount() {
     clearInterval(this.timer);
   }
+
+  timer: IntervalID = setInterval(this.tick, 500);
+  endTime: number = 0;
+
+  tick = () => {
+    this.setState({
+      currentTime: Date.now(),
+    });
+  };
 
   render() {
     const { currentTime } = this.state;

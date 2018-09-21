@@ -10,22 +10,26 @@ type File = {
 
 type State = {
   lastRefreshed: ?Date,
-  files: [File],
+  files: File[],
   modal: {
     isOpen: boolean,
-    fileUrl: ?string,
+    fileUrl: string,
   },
 };
 
-const INITIAL_STATE = {
+const INITIAL_STATE: State = {
   lastRefreshed: null,
   files: [],
   modal: {
     isOpen: false,
+    fileUrl: '',
   },
 };
 
-export default function reducer(state: State = INITIAL_STATE, action = {}) {
+export default function reducer(
+  state: State = INITIAL_STATE,
+  action: Object = {}
+) {
   switch (action.type) {
     case 'fileManager/LOAD_FILES': {
       return {

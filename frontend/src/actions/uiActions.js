@@ -1,4 +1,5 @@
 // @flow
+import websites from '../components/WebBrowser/websites';
 
 // eslint-disable-next-line no-undef
 type WebPage = $Keys<typeof websites>;

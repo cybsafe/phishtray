@@ -1,12 +1,38 @@
 // @flow
 import produce from 'immer';
+import type {
+  FormQuestion,
+  ExerciseThread,
+  EmailRevealTime,
+} from '../types/exerciseTypes';
 
-const INITIAL_STATE = {
-  timer: 0, // exercise time elapsed in seconds
-  startTime: 0, // Date.now() when form submitted,
+type ExerciseState = {
+  timer: number,
+  startTime: number,
+  // from API
+  id?: string,
+  title?: string,
+  description?: string,
+  introduction?: string,
+  afterword?: string,
+  lengthMinutes?: number,
+  profileForm?: FormQuestion[],
+  threads: ExerciseThread[],
+  emailRevealTimes?: EmailRevealTime[],
+  participant?: string,
+  lastRefreshed?: string,
 };
 
-export default function reducer(state = INITIAL_STATE, action = {}) {
+const INITIAL_STATE: ExerciseState = {
+  timer: 0, // exercise time elapsed in seconds
+  startTime: 0, // Date.now() when form submitted,
+  threads: [],
+};
+
+export default function reducer(
+  state: ExerciseState = INITIAL_STATE,
+  action: Object = {}
+) {
   switch (action.type) {
     case 'exercise/TIMER_TICK': {
       return produce(state, draft => {
@@ -27,6 +53,7 @@ export default function reducer(state = INITIAL_STATE, action = {}) {
       return produce(state, draft => {
         const { threadId } = action.payload;
         const thread = draft.threads.find(thread => thread.id === threadId);
+        /* eslint-disable-next-line */
         thread.isRead = true;
       });
     }
