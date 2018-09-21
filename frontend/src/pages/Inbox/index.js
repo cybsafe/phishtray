@@ -4,7 +4,10 @@ import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
 
-import { getThreads, getLastRefreshed } from '../../reducers/exercise';
+import {
+  getThreads,
+  getLastRefreshed,
+} from '../../selectors/exerciseSelectors';
 
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';

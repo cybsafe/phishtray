@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import produce from 'immer';
 
 import { getAllEmails } from '../../data/threads';
-import { getExerciseTimer } from '../exercise';
+import { getExerciseTimer } from '../../selectors/exerciseSelectors';
 
 type Email = {
   id: string,

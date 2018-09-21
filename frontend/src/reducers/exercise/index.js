@@ -1,5 +1,4 @@
 // @flow
-import { createSelector } from 'reselect';
 import produce from 'immer';
 
 const INITIAL_STATE = {
@@ -42,40 +41,3 @@ export default function reducer(state = INITIAL_STATE, action = {}) {
       return state;
   }
 }
-
-// Selectors
-const exerciseSelector = state => state.exercise;
-
-export const getLastRefreshed = createSelector(
-  exerciseSelector,
-  exercise => exercise.lastRefreshed
-);
-
-export const getExercise = createSelector(
-  exerciseSelector,
-  exercise => exercise
-);
-
-export const getExerciseTimer = createSelector(
-  exerciseSelector,
-  exercise => exercise.timer
-);
-
-export const getThreads = createSelector(exerciseSelector, exercise =>
-  exercise.threads.filter(
-    thread =>
-      exercise.emailRevealTimes.filter(time => time.emailId === thread.id)[0]
-        .revealTime <= exercise.timer
-  )
-);
-
-export const getThread = createSelector(
-  [exerciseSelector, (_, props) => props.threadId, getExerciseTimer],
-  (exercise, threadId) =>
-    exercise.threads.find(
-      thread =>
-        thread.id === threadId &&
-        exercise.emailRevealTimes.filter(time => time.emailId === thread.id)[0]
-          .revealTime <= exercise.timer
-    )
-);

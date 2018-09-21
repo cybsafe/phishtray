@@ -12,7 +12,10 @@ import {
 } from 'carbon-components-react';
 import ReactMarkdown from 'react-markdown';
 
-import { getLastRefreshed, getExercise } from '../../reducers/exercise';
+import {
+  getLastRefreshed,
+  getExercise,
+} from '../../selectors/exerciseSelectors';
 
 import { getExerciseData, startCountdown } from '../../actions/exerciseActions';
 import { postFormData } from '../../utils';
