@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+// @flow
+import React from 'react';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -11,6 +12,7 @@ import { logAction } from '../../../utils';
 
 type Props = {
   email: Object,
+  onReplyParams: Object,
 };
 
 const ActionLink = styled('button')({
@@ -219,9 +221,9 @@ function EmailInfo({ email }) {
         <EmailField>
           <p>To: </p>
           <EmailCard
-            name={'You'}
-            photoUrl={'https://randomuser.me/api/portraits/women/83.jpg'}
-            email={'you@yourcompany.com'}
+            name="You"
+            photoUrl="https://randomuser.me/api/portraits/women/83.jpg"
+            email="you@yourcompany.com"
             triggerText={
               <a
                 className={css({
@@ -273,51 +275,49 @@ function RouterLink(props) {
   );
 }
 
-export default class Email extends Component<Props> {
-  render() {
-    return (
-      <div
-        className={css({
-          maxWidth: 880,
-          margin: '0 auto',
-          padding: '0 40px',
-        })}
-      >
-        <EmailActions onReplyParams={this.props.onReplyParams} />
-        <EmailInfo email={this.props.email} />
+const Email = (props: Props) => (
+  <div
+    className={css({
+      maxWidth: 880,
+      margin: '0 auto',
+      padding: '0 40px',
+    })}
+  >
+    <EmailActions onReplyParams={props.onReplyParams} />
+    <EmailInfo email={props.email} />
 
-        <h3
-          className={css({
-            marginTop: 40,
-            fontSize: 40,
-            color: '#333',
-            letterSpacing: '1.2px',
-          })}
-        >
-          {this.props.email.subject}
-        </h3>
+    <h3
+      className={css({
+        marginTop: 40,
+        fontSize: 40,
+        color: '#333',
+        letterSpacing: '1.2px',
+      })}
+    >
+      {props.email.subject}
+    </h3>
 
-        <Markdown
-          source={this.props.email.body}
-          renderers={{
-            link: props => RouterLink({ ...this.props, ...props }),
-            paragraph: Paragraph,
-            heading: Heading,
-          }}
-        />
-        {this.props.email.attachments && (
-          <EmailAttachments
-            onClickParams={this.props.onReplyParams}
-            attachments={this.props.email.attachments}
-          />
-        )}
-        {this.props.email.replies && (
-          <QuickReply
-            onClickParams={this.props.onReplyParams}
-            replies={this.props.email.replies}
-          />
-        )}
-      </div>
-    );
-  }
-}
+    <Markdown
+      source={props.email.body}
+      renderers={{
+        link: props => RouterLink({ ...props, ...props }),
+        paragraph: Paragraph,
+        heading: Heading,
+      }}
+    />
+    {props.email.attachments && (
+      <EmailAttachments
+        onClickParams={props.onReplyParams}
+        attachments={props.email.attachments}
+      />
+    )}
+    {props.email.replies && (
+      <QuickReply
+        onClickParams={props.onReplyParams}
+        replies={props.email.replies}
+      />
+    )}
+  </div>
+);
+
+export default Email;

@@ -6,6 +6,23 @@ export type FormQuestion = {
   required: true | false,
 };
 
+export type ExerciseState = {
+  timer: number,
+  startTime: number,
+  // from API
+  id?: string,
+  title?: string,
+  description?: string,
+  introduction?: string,
+  afterword?: string,
+  lengthMinutes?: number,
+  profileForm?: FormQuestion[],
+  threads: ExerciseThread[],
+  emailRevealTimes?: EmailRevealTime[],
+  participant?: string,
+  lastRefreshed?: string,
+};
+
 export type ExerciseEmailAccount = {
   email: string,
   name: string,

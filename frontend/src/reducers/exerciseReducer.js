@@ -1,27 +1,6 @@
 // @flow
 import produce from 'immer';
-import type {
-  FormQuestion,
-  ExerciseThread,
-  EmailRevealTime,
-} from '../types/exerciseTypes';
-
-type ExerciseState = {
-  timer: number,
-  startTime: number,
-  // from API
-  id?: string,
-  title?: string,
-  description?: string,
-  introduction?: string,
-  afterword?: string,
-  lengthMinutes?: number,
-  profileForm?: FormQuestion[],
-  threads: ExerciseThread[],
-  emailRevealTimes?: EmailRevealTime[],
-  participant?: string,
-  lastRefreshed?: string,
-};
+import type { ExerciseState } from '../types/exerciseTypes';
 
 const INITIAL_STATE: ExerciseState = {
   timer: 0, // exercise time elapsed in seconds
