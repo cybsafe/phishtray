@@ -6,20 +6,24 @@ export default {
     isSecure: true,
     url: 'www.myoffice.com',
     component: MyOffice,
+    link: 'myoffice',
   },
   mypayment: {
     isSecure: true,
     url: 'www.moneytransfer.com',
     component: MyPayment,
+    link: 'mypayment',
   },
   mypaymentFalse: {
     isSecure: false,
     url: 'www.moneytransfr.com',
     component: MyPayment,
+    link: 'mypaymentFalse',
   },
   mypaymentFalseInsecure: {
     isSecure: true,
     url: 'www.moneytransfr.com',
     component: MyPayment,
+    link: 'mypaymentFalseInsecure',
   },
 };

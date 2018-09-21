@@ -15,6 +15,7 @@ import {
   hideFile,
   hideAndDeleteFile,
 } from '../../reducers/fileManager';
+import { logAction } from '../../utils';
 
 const columns = [
   {
@@ -106,8 +107,18 @@ export class FileManager extends Component {
     this.props.hideFile();
   };
 
+  logActionsHandler = params => {
+    return logAction({
+      participantId: this.props.participantId,
+      timeDelta: Date.now() - this.props.startTime,
+      timestamp: new Date(),
+      ...params,
+    });
+  };
+
   render() {
     const { files, isLoaded, modal } = this.props;
+
     if (!isLoaded) return <Loading />;
 
     return (
@@ -125,8 +136,22 @@ export class FileManager extends Component {
               <FileListItem
                 key={file.id}
                 file={file}
-                deleteFileHandler={this.deleteFileHandler}
-                displayFileModalHandler={this.displayFileModalHandler}
+                deleteFileHandler={file => {
+                  this.logActionsHandler({
+                    actionType: 'file_delete',
+                    fileId: file.id,
+                    fileName: file.fileName,
+                  }),
+                    this.deleteFileHandler(file);
+                }}
+                displayFileModalHandler={file => {
+                  this.logActionsHandler({
+                    actionType: 'file_open',
+                    fileId: file.id,
+                    fileName: file.fileName,
+                  }),
+                    this.displayFileModalHandler(file);
+                }}
               />
             ))}
           </tbody>
@@ -141,6 +166,8 @@ export default connect(
     files: getFiles(state),
     isLoaded: getLastRefreshed(state) !== null,
     modal: getModal(state),
+    startTime: state.exercise.startTime,
+    participantId: state.exercise.participant,
   }),
   {
     loadFiles,

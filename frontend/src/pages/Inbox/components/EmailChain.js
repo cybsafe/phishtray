@@ -23,20 +23,13 @@ export class EmailChain extends Component {
     }
   }
 
-  handleWebsiteClick = websiteId => {
-    return event => {
-      event.preventDefault();
-      this.props.showWebpage(websiteId);
-    };
-  };
-
   render() {
     const { thread } = this.props;
     return thread.emails.map(email => (
       <Fragment key={email.id}>
         <Email
           email={email}
-          showWebpage={this.handleWebsiteClick}
+          showWebpage={this.props.showWebpage}
           onReplyParams={{
             startTime: this.props.startTime,
             participantId: this.props.participantId,
