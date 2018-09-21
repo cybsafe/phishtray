@@ -1,11 +1,9 @@
 # running the demo
 
-1. Open the web terminal with `docker exec -it phishtray_django_1 bash`
-2. Run the django server on port 9000 with `py3 manage.py runserver 0:9000`
-3. Navigate to http://phishtray.local:9000/admin and create an Exercise with emails
-4. Copy the exercise UUID
-5. In your local terminal, from the phishtray folder, `cd frontend` and `yarn start`
-6. Navigate to http://phishtray.local:3000/welcome/<exercise:uuid>/ to start the exercise
+1. Navigate to http://phishtray.local:9000/admin and create an Exercise with emails
+1. Copy the exercise UUID
+1. In your local terminal, from the phishtray folder, `cd frontend` and `yarn start`
+1. Navigate to http://phishtray.local:3000/welcome/<exercise:uuid>/ to start the exercise
 
 
 # phishtray installation
