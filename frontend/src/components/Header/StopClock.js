@@ -6,8 +6,7 @@ import 'react-circular-progressbar/dist/styles.css';
 type Props = {
   startTime: number, // Date.now() ms at start
   countdown: number, // delta in seconds
-  currentTime: number, // Date.now() at present
-  history: *,
+  onTimeout: () => void,
 };
 
 type State = {
@@ -77,7 +76,7 @@ class StopClock extends Component<Props, State> {
     if (this.endTime !== 0 && Date.now() >= this.endTime) {
       clearInterval(this.timer);
       this.endTime = 0;
-      this.props.history.push('/afterward');
+      this.props.onTimeout();
     }
   }
 

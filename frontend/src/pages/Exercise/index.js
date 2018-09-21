@@ -116,7 +116,7 @@ export class Exercise extends Component<Props> {
     event.preventDefault();
 
     const { exercise } = this.props;
-    this.props.startCountdown(+exercise.lengthMinutes);
+    this.props.startCountdown(exercise.lengthMinutes);
 
     const data = {
       profileForm: Object.keys(this.state).map(

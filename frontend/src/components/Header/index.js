@@ -91,9 +91,8 @@ class Header extends Component<Props> {
           >
             <StopClock
               startTime={this.props.startTime}
-              currentTime={Date.now()}
               countdown={this.props.countdownMins * 60}
-              history={this.props.history}
+              onTimeout={() => this.props.history.push('/afterward')}
             />
           </div>
         </ClockContainer>
