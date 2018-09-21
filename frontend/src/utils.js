@@ -24,8 +24,6 @@ export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
 export const logAction = async actionData => {
   const { participantId, ...rest } = actionData;
 
-  console.log('logAction actionData', actionData);
-
   const url = `${HOST_BACKEND}/api/v1/participants/${participantId}/action/`;
 
   const rawResponse = () =>
