@@ -3,7 +3,8 @@ import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
-import { getWebpage, closeWebpage } from '../../reducers/uiReducer';
+import { getWebpage } from '../../selectors/uiSelectors';
+import { closeWebpage } from '../../actions/uiActions';
 
 const BrowserChrome = styled('div')({
   position: 'absolute',

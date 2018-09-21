@@ -3,7 +3,7 @@ import { css } from 'react-emotion';
 import { connect } from 'react-redux';
 import { markThreadAsRead } from '../../../actions/exerciseActions';
 import { getThread } from '../../../selectors/exerciseSelectors';
-import { showWebpage } from '../../../reducers/uiReducer';
+import { showWebpage } from '../../../actions/uiActions';
 
 import Email from './Email';
 
