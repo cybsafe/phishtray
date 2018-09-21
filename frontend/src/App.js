@@ -4,7 +4,7 @@ import styled, { css, cx } from 'react-emotion';
 import { Provider } from 'react-redux';
 
 import configureStore from './redux';
-import { tickTimer } from './reducers/exercise';
+import { tickTimer } from './actions/exerciseActions';
 
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';

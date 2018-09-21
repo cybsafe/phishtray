@@ -12,13 +12,9 @@ import {
 } from 'carbon-components-react';
 import ReactMarkdown from 'react-markdown';
 
-import {
-  getExerciseData,
-  getLastRefreshed,
-  getExercise,
-} from '../../reducers/exercise';
+import { getLastRefreshed, getExercise } from '../../reducers/exercise';
 
-import { startCountdown } from '../../actions/exerciseActions';
+import { getExerciseData, startCountdown } from '../../actions/exerciseActions';
 import { postFormData } from '../../utils';
 
 const Container = styled('div')({

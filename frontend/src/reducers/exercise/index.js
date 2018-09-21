@@ -1,6 +1,5 @@
 // @flow
 import { createSelector } from 'reselect';
-import { fetchAndDispatch } from '../../utils';
 import produce from 'immer';
 
 const INITIAL_STATE = {
@@ -43,32 +42,6 @@ export default function reducer(state = INITIAL_STATE, action = {}) {
       return state;
   }
 }
-
-// Actions TODO: move exercise actions to /actions/exerciseActions
-
-export function tickTimer(amount = 10) {
-  return {
-    type: 'exercise/TIMER_TICK',
-    payload: {
-      amount,
-    },
-  };
-}
-
-export function markThreadAsRead(threadId) {
-  return {
-    type: 'exercise/MARK_THREAD_AS_READ',
-    payload: {
-      threadId,
-    },
-  };
-}
-
-export const getExerciseData = (exerciseUuid: string) =>
-  fetchAndDispatch(
-    `/api/v1/exercises/${exerciseUuid}/init`,
-    'exercise/LOAD_DATA'
-  );
 
 // Selectors
 const exerciseSelector = state => state.exercise;

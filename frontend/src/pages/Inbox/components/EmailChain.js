@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
 import { connect } from 'react-redux';
-
-import { getThread, markThreadAsRead } from '../../../reducers/exercise';
+import { markThreadAsRead } from '../../../actions/exerciseActions';
+import { getThread } from '../../../reducers/exercise';
 import { showWebpage } from '../../../reducers/ui';
 
 import Email from './Email';
