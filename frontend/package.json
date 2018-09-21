@@ -32,12 +32,19 @@
     "format": "prettier \"src/**/*.js\" --write"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.5",
+    "babel-preset-flow": "^6.23.0",
     "eslint": "^5.0.0",
+    "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-babel": "^5.2.0",
+    "eslint-plugin-flowtype": "^2.50.1",
     "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-prettier": "^2.6.1",
     "eslint-plugin-react": "^7.9.1",
+    "flow-bin": "^0.81.0",
     "jest-date-mock": "^1.0.3",
     "prettier": "^1.13.5",
     "redux-mock-store": "^1.5.3"
