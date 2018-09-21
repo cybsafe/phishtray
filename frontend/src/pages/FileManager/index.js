@@ -5,16 +5,20 @@ import { InlineLoading } from 'carbon-components-react';
 
 import FileListItem from './components/FileListItem';
 import FileModal from './components/FileModal';
+
 import {
   getFiles,
   getLastRefreshed,
   getModal,
+} from '../../selectors/fileManagerSelectors';
+
+import {
   loadFiles,
   removeFile,
   displayFile,
   hideFile,
   hideAndDeleteFile,
-} from '../../reducers/fileManagerReducer';
+} from '../../actions/fileManagerActions';
 
 const columns = [
   {

@@ -1,6 +1,4 @@
 // @flow
-import { getAllFiles } from '../data/files';
-import { createSelector } from 'reselect';
 
 type File = {
   id: string,
@@ -74,64 +72,3 @@ export default function reducer(state: State = INITIAL_STATE, action = {}) {
     }
   }
 }
-
-// Actions
-export function loadFiles() {
-  return async dispatch => {
-    const files = getAllFiles();
-    return dispatch({
-      type: 'fileManager/LOAD_FILES',
-      payload: files,
-    });
-  };
-}
-
-export function removeFile(fileId) {
-  return {
-    type: 'fileManager/REMOVE_FILE',
-    payload: {
-      fileId,
-    },
-  };
-}
-
-export function displayFile(fileUrl) {
-  return {
-    type: 'fileManager/DISPLAY_FILE',
-    payload: {
-      fileUrl,
-    },
-  };
-}
-
-export function hideFile() {
-  return {
-    type: 'fileManager/HIDE_FILE',
-  };
-}
-
-export function hideAndDeleteFile(fileId) {
-  return {
-    type: 'fileManager/HIDE_AND_DELETE_FILE',
-    payload: {
-      fileId,
-    },
-  };
-}
-
-// Selectors
-const filesSelector = state => state.fileManager;
-export const getFiles = createSelector(
-  filesSelector,
-  fileManager => fileManager.files
-);
-
-export const getLastRefreshed = createSelector(
-  filesSelector,
-  fileManager => fileManager.lastRefreshed
-);
-
-export const getModal = createSelector(
-  filesSelector,
-  fileManager => fileManager.modal
-);
