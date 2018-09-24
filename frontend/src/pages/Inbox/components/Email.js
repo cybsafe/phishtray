@@ -254,8 +254,7 @@ function EmailInfo({ email }) {
 function RouterLink(props) {
   return (
     <a
-      onClick={props.showWebpage(props.href.substring(1))}
-      onMouseUp={() => {
+      onClick={() => {
         const { onReplyParams, showWebpage } = props;
         logAction({
           actionType: 'link_clicked',
@@ -265,6 +264,7 @@ function RouterLink(props) {
           link: props.href.substring(1),
           timestamp: new Date(),
         });
+        props.showWebpage(props.href.substring(1));
       }}
       href="#"
     >

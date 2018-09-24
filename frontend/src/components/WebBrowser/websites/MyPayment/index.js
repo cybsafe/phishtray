@@ -26,7 +26,6 @@ const TextInputProps = () => ({
   type: 'email',
   placeholder: 'Email Address',
   disabled: false,
-  onClick: () => console.log('onClick'),
   labelText: '',
 });
 
@@ -40,7 +39,6 @@ const ButtonAlternateProps = () => ({
   className: css({ display: 'flex', flexGrow: 1 }),
   id: 'test2',
   kind: 'secondary',
-  onClick: () => console.log('onClick'),
 });
 
 export default class MyPayment extends Component {
@@ -64,19 +62,40 @@ export default class MyPayment extends Component {
             <LoginContainer>
               <img src={Logo} width={323} height={58} alt="logo" />
               <FieldWrapper>
-                <TextInput {...TextInputProps()} />
+                <TextInput
+                  {...TextInputProps()}
+                  onClick={() => {
+                    this.props.logBrowserActions({
+                      event: `clicked_input_email`,
+                    });
+                  }}
+                />
               </FieldWrapper>
               <FieldWrapper>
                 <Button
                   {...ButtonProps()}
-                  onClick={() => history.push('/congrats')}
+                  onClick={() => {
+                    this.props.logBrowserActions({
+                      event: `clicked_${ButtonProps().kind}_button_next`,
+                    });
+                    history.push('/congrats');
+                  }}
                 >
                   Next
                 </Button>
               </FieldWrapper>
               <FieldWrapper>Having trouble logging in?</FieldWrapper>
               <FieldWrapper>
-                <Button {...ButtonAlternateProps()}>Sign Up</Button>
+                <Button
+                  {...ButtonAlternateProps()}
+                  onClick={() =>
+                    this.props.logBrowserActions({
+                      event: `clicked_${ButtonProps().kind}_button_signup`,
+                    })
+                  }
+                >
+                  Sign Up
+                </Button>
               </FieldWrapper>
             </LoginContainer>
           )}
