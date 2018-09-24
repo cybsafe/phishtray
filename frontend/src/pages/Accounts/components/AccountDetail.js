@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
 
@@ -23,7 +24,7 @@ function AccountInfo({ credentials }) {
 }
 
 const Account = (props: Props) => {
-  const { match } = this.props;
+  const { match } = props;
   const {
     params: { id },
   } = match;

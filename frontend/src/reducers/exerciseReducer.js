@@ -1,11 +1,11 @@
 // @flow
 import produce from 'immer';
-import type { ExerciseState, ExerciseThread } from '../types/exerciseTypes';
+import type { ExerciseState } from '../types/exerciseTypes';
 
 const INITIAL_STATE: ExerciseState = {
   timer: 0, // exercise time elapsed in seconds
   startTime: 0, // Date.now() when form submitted,
-  threads: ExerciseThread[],
+  threads: [],
 };
 
 export default function reducer(
