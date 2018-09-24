@@ -55,27 +55,29 @@ const getTimeLabel = (secondsRemaining: number) =>
     : `${Math.ceil(secondsRemaining / 60)}m`;
 
 class StopClock extends Component<Props, State> {
+  timer: ?IntervalID;
+
   state: State = {
     currentTime: Date.now(),
   };
 
   componentDidMount() {
     this.endTime = this.props.startTime + 1000 * this.props.countdown;
+    this.timer = setInterval(this.tick, 500);
   }
 
   componentDidUpdate() {
     if (this.endTime !== 0 && Date.now() >= this.endTime) {
-      clearInterval(this.timer);
+      this.timer && clearInterval(this.timer);
       this.endTime = 0;
       this.props.onTimeout();
     }
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    this.timer && clearInterval(this.timer);
   }
 
-  timer: IntervalID = setInterval(this.tick, 500);
   endTime: number = 0;
 
   tick = () => {
@@ -88,12 +90,14 @@ class StopClock extends Component<Props, State> {
     const { currentTime } = this.state;
     const { startTime, countdown } = this.props;
     const percentage = getPercRemaining(currentTime, startTime, countdown);
-    return this.endTime !== 0 ? (
-      <StyledCircularProgressbar
-        text={getTimeLabel(countdown - percentage * countdown)}
-        percentage={percentage * 100}
-      />
-    ) : null;
+    return (
+      this.endTime !== 0 && (
+        <StyledCircularProgressbar
+          text={getTimeLabel(countdown - percentage * countdown)}
+          percentage={percentage * 100}
+        />
+      )
+    );
   }
 }
 
