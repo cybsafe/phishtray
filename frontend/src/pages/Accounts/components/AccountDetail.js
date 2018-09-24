@@ -1,8 +1,12 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import styled, { css } from 'react-emotion';
-
+import { type Match } from 'react-router-dom';
 import { getAccount } from '../../../data/accounts';
+
+type Props = {
+  match: Match,
+};
 
 const BodyContainer = styled('div')({
   maxWidth: 880,
