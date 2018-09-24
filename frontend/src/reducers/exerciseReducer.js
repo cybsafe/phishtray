@@ -1,11 +1,11 @@
 // @flow
 import produce from 'immer';
-import type { ExerciseState } from '../types/exerciseTypes';
+import type { ExerciseState, ExerciseThread } from '../types/exerciseTypes';
 
 const INITIAL_STATE: ExerciseState = {
   timer: 0, // exercise time elapsed in seconds
   startTime: 0, // Date.now() when form submitted,
-  threads: [],
+  threads: ExerciseThread[],
 };
 
 export default function reducer(
@@ -32,8 +32,8 @@ export default function reducer(
       return produce(state, draft => {
         const { threadId } = action.payload;
         const thread = draft.threads.find(thread => thread.id === threadId);
-        /* eslint-disable-next-line */
-        thread.isRead = true;
+        const isRead = thread && true;
+        thread.isRead = isRead;
       });
     }
 

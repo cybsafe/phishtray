@@ -22,34 +22,34 @@ function AccountInfo({ credentials }) {
   );
 }
 
-export default class Account extends Component {
-  render() {
-    const { match } = this.props;
-    const {
-      params: { id },
-    } = match;
-    const account = getAccount(id);
+const Account = (props: Props) => {
+  const { match } = this.props;
+  const {
+    params: { id },
+  } = match;
+  const account = getAccount(id);
 
-    return (
-      <BodyContainer>
-        <h3
-          className={css({
-            marginTop: 40,
-            fontSize: 40,
-            color: '#333',
-            letterSpacing: '1.2px',
-          })}
-        >
-          {account.name}
-        </h3>
+  return (
+    <BodyContainer>
+      <h3
+        className={css({
+          marginTop: 40,
+          fontSize: 40,
+          color: '#333',
+          letterSpacing: '1.2px',
+        })}
+      >
+        {account.name}
+      </h3>
 
-        <Spacer />
-        <section className="bx--structured-list">
-          {account.data.map(credentials => (
-            <AccountInfo key={credentials.id} credentials={credentials} />
-          ))}
-        </section>
-      </BodyContainer>
-    );
-  }
-}
+      <Spacer />
+      <section className="bx--structured-list">
+        {account.data.map(credentials => (
+          <AccountInfo key={credentials.id} credentials={credentials} />
+        ))}
+      </section>
+    </BodyContainer>
+  );
+};
+
+export default Account;

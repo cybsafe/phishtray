@@ -80,7 +80,6 @@ injectGlobal`
 export class Exercise extends Component<Props> {
   constructor(props: Props) {
     super(props);
-    this.state = {};
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
