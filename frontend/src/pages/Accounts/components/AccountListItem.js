@@ -26,13 +26,18 @@ const Text = styled('div')(
   })
 );
 
-export default function AccountListItem({ account }) {
+export default function AccountListItem({ account, logAction }) {
   return (
     <Route path={`/accounts/${account.id}`}>
-      {({ match }) => (
+      {({ match, history }) => (
         <Link
-          to={`/accounts/${account.id}`}
+          to={``}
           className={css({ textDecoration: 'none', display: 'block' })}
+          onClick={e => {
+            history.push(`/accounts/${account.id}`);
+            logAction({ accountId: account.id, accountName: account.name });
+            e.preventDefault();
+          }}
         >
           <Container isSelected={!!match}>
             <Text

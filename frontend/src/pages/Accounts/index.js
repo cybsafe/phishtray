@@ -7,6 +7,9 @@ import { getAllAccounts } from '../../data/accounts';
 import AccountDetail from './components/AccountDetail';
 import AccountListItem from './components/AccountListItem';
 
+import { connect } from 'react-redux';
+import { logAction } from '../../utils';
+
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
@@ -46,7 +49,17 @@ function NoMatch() {
   );
 }
 
-export default class Accounts extends Component {
+class Accounts extends Component {
+  logActionsHandler = params => {
+    return logAction({
+      participantId: this.props.participantId,
+      timeDelta: Date.now() - this.props.startTime,
+      timestamp: new Date(),
+      actionType: 'account_open',
+      ...params,
+    });
+  };
+
   render() {
     const { match } = this.props;
     const accounts = getAllAccounts();
@@ -55,7 +68,11 @@ export default class Accounts extends Component {
       <Container>
         <AccountList>
           {accounts.map(account => (
-            <AccountListItem key={account.id} account={account} />
+            <AccountListItem
+              key={account.id}
+              account={account}
+              logAction={params => this.logActionsHandler(params)}
+            />
           ))}
         </AccountList>
         <AccountContainer>
@@ -68,3 +85,11 @@ export default class Accounts extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    startTime: state.exercise.startTime,
+    participantId: state.exercise.participant,
+  }),
+  {}
+)(Accounts);

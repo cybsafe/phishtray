@@ -6,6 +6,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { getWebpage } from '../../selectors/uiSelectors';
 import { closeWebpage } from '../../actions/uiActions';
 
+import { logAction } from '../../utils';
+
 const BrowserChrome = styled('div')({
   position: 'absolute',
   top: 30,
@@ -72,7 +74,7 @@ function BrowserHeader({ onClose, url, isSecure }) {
         })}
       >
         <BrowserHeaderButton
-          onClick={onClose}
+          onClick={() => onClose()}
           className={css({ backgroundColor: '#f44' })}
         />
         <BrowserHeaderButton className={css({ backgroundColor: '#fb5' })} />
@@ -108,6 +110,19 @@ function BrowserHeader({ onClose, url, isSecure }) {
 }
 
 export class WebBrowser extends Component {
+  logBrowserActions = params => {
+    return logAction({
+      participantId: this.props.participantId,
+      timeDelta: Date.now() - this.props.startTime,
+      timestamp: new Date(),
+      website: this.props.webpage.link,
+      websiteURL: this.props.webpage.url,
+      isSecure: this.props.webpage.isSecure,
+      actionType: `webpage_click`,
+      ...params,
+    });
+  };
+
   render() {
     const { closeWebpage, webpage } = this.props;
 
@@ -120,12 +135,17 @@ export class WebBrowser extends Component {
     return (
       <BrowserChrome>
         <BrowserHeader
-          onClose={closeWebpage}
+          onClose={() => {
+            this.logBrowserActions({
+              actionType: 'closedBrowser',
+            });
+            closeWebpage();
+          }}
           isSecure={webpage.isSecure}
           url={webpage.url}
         />
         <MemoryRouter>
-          <ContentComponent />
+          <ContentComponent logBrowserActions={this.logBrowserActions} />
         </MemoryRouter>
       </BrowserChrome>
     );
@@ -135,6 +155,8 @@ export class WebBrowser extends Component {
 export default connect(
   state => ({
     webpage: getWebpage(state),
+    startTime: state.exercise.startTime,
+    participantId: state.exercise.participant,
   }),
   { closeWebpage }
 )(WebBrowser);
