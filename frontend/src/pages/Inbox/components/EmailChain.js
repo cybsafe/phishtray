@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
 import { connect } from 'react-redux';
-
-import { getThread, markThreadAsRead } from '../../../reducers/exercise';
-import { showWebpage } from '../../../reducers/ui';
+import { markThreadAsRead } from '../../../actions/exerciseActions';
+import { getThread } from '../../../selectors/exerciseSelectors';
+import { showWebpage } from '../../../actions/uiActions';
 
 import Email from './Email';
 

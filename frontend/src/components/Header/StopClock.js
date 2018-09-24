@@ -6,8 +6,7 @@ import 'react-circular-progressbar/dist/styles.css';
 type Props = {
   startTime: number, // Date.now() ms at start
   countdown: number, // delta in seconds
-  currentTime: number, // Date.now() at present
-  history: *,
+  onTimeout: () => void,
 };
 
 type State = {
@@ -56,9 +55,30 @@ const getTimeLabel = (secondsRemaining: number) =>
     : `${Math.ceil(secondsRemaining / 60)}m`;
 
 class StopClock extends Component<Props, State> {
+  timer: ?IntervalID;
+
   state: State = {
     currentTime: Date.now(),
   };
+
+  componentDidMount() {
+    this.endTime = this.props.startTime + 1000 * this.props.countdown;
+    this.timer = setInterval(this.tick, 500);
+  }
+
+  componentDidUpdate() {
+    if (this.endTime !== 0 && Date.now() >= this.endTime) {
+      this.timer && clearInterval(this.timer);
+      this.endTime = 0;
+      this.props.onTimeout();
+    }
+  }
+
+  componentWillUnmount() {
+    this.timer && clearInterval(this.timer);
+  }
+
+  endTime: number = 0;
 
   tick = () => {
     this.setState({
@@ -66,35 +86,18 @@ class StopClock extends Component<Props, State> {
     });
   };
 
-  timer = null;
-  endTime = 0;
-  componentDidMount() {
-    this.timer = setInterval(this.tick, 500);
-    this.endTime = this.props.startTime + 1000 * this.props.countdown;
-  }
-
-  componentDidUpdate() {
-    if (this.endTime !== 0 && Date.now() >= this.endTime) {
-      clearInterval(this.timer);
-      this.endTime = 0;
-      this.props.history.push('/afterward');
-    }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
-
   render() {
     const { currentTime } = this.state;
     const { startTime, countdown } = this.props;
     const percentage = getPercRemaining(currentTime, startTime, countdown);
-    return this.endTime !== 0 ? (
-      <StyledCircularProgressbar
-        text={getTimeLabel(countdown - percentage * countdown)}
-        percentage={percentage * 100}
-      />
-    ) : null;
+    return (
+      this.endTime !== 0 && (
+        <StyledCircularProgressbar
+          text={getTimeLabel(countdown - percentage * countdown)}
+          percentage={percentage * 100}
+        />
+      )
+    );
   }
 }
 

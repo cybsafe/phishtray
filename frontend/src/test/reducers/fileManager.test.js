@@ -9,7 +9,7 @@ import reducer, {
   getFiles,
   getLastRefreshed,
   getModal,
-} from '../../reducers/fileManager/index';
+} from '../../reducers/fileManagerReducer';
 import { getAllFiles } from '../../data/files';
 
 import { advanceTo, clear } from 'jest-date-mock';

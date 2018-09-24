@@ -1,5 +1,6 @@
+// @flow
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, type Match, type history } from 'react-router-dom';
 import styled, { css, injectGlobal } from 'react-emotion';
 import { connect } from 'react-redux';
 import {
@@ -12,13 +13,13 @@ import {
 } from 'carbon-components-react';
 import ReactMarkdown from 'react-markdown';
 
+import type { ExerciseState } from '../../types/exerciseTypes';
 import {
-  getExerciseData,
   getLastRefreshed,
   getExercise,
-} from '../../reducers/exercise';
+} from '../../selectors/exerciseSelectors';
 
-import { startCountdown } from '../../actions/exerciseActions';
+import { getExerciseData, startCountdown } from '../../actions/exerciseActions';
 import { postFormData } from '../../utils';
 
 const Container = styled('div')({
@@ -63,8 +64,10 @@ const Number = styled(NumberInput)`
 
 type Props = {
   exercise: Object,
+  match: Match,
+  history: history,
   isLoaded: *,
-  loadExercises: (*) => void,
+  getExerciseData: (*) => void,
   startCountdown: (*) => void,
 };
 
@@ -75,9 +78,8 @@ injectGlobal`
 `;
 
 export class Exercise extends Component<Props> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
-    this.state = {};
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -87,23 +89,24 @@ export class Exercise extends Component<Props> {
   }
 
   componentDidUpdate() {
-    if (Object.keys(this.state).length === 0) {
-      this.props.exercise.profileForm.map(item =>
-        this.setState({
-          [item.id]: {
-            id: item.id,
-            value: '',
-          },
-        })
-      );
+    if (this.state && Object.keys(this.state).length === 0) {
+      this.props.exercise.profileForm &&
+        this.props.exercise.profileForm.map(item =>
+          this.setState({
+            [item.id]: {
+              id: item.id,
+              value: '',
+            },
+          })
+        );
     }
   }
 
-  nextPath(path) {
+  nextPath(path: string) {
     this.props.history.push(path);
   }
 
-  userInput = event => {
+  userInput = (event: SyntheticInputEvent<*>) => {
     this.setState({
       [event.target.id]: {
         id: event.target.name,
@@ -112,16 +115,18 @@ export class Exercise extends Component<Props> {
     });
   };
 
-  handleSubmit = event => {
+  handleSubmit = (event: SyntheticInputEvent<*>) => {
     event.preventDefault();
 
     const { exercise } = this.props;
-    this.props.startCountdown(+exercise.lengthMinutes);
+    this.props.startCountdown(exercise.lengthMinutes);
 
     const data = {
-      profileForm: Object.keys(this.state).map(
-        answerKey => this.state[answerKey]
-      ),
+      profileForm:
+        this.state &&
+        Object.keys(this.state).map(
+          answerKey => this.state && this.state[answerKey]
+        ),
     };
 
     postFormData(
@@ -132,47 +137,51 @@ export class Exercise extends Component<Props> {
     this.nextPath('/');
   };
 
-  WelcomeForm = exercise => (
+  WelcomeForm = (exercise: ExerciseState) => (
     <Container>
       <Title>{exercise.title}</Title>
       <Tile>
         <Subtitle>{exercise.description}</Subtitle>
-        <Form onSubmit={this.handleSubmit} id={`exercise-${exercise.id}`}>
-          {exercise.profileForm.map(item => {
-            switch (item.questionType) {
-              case 0: // number
-                return (
-                  <FormContainer>
-                    <Number
-                      className={css(`width: 100%`)}
-                      label={item.question}
-                      min={0}
-                      id={`${item.id}`}
-                      name={`${item.id}`}
-                      onChange={this.userInput}
-                      onClick={this.userInput}
-                      required={item.required}
-                      invalidText="Please input a number value"
-                    />
-                  </FormContainer>
-                );
+        <Form
+          onSubmit={this.handleSubmit}
+          id={exercise.id && `exercise-${exercise.id}`}
+        >
+          {exercise.profileForm &&
+            exercise.profileForm.map(item => {
+              switch (item.questionType) {
+                case 0: // number
+                  return (
+                    <FormContainer>
+                      <Number
+                        className={css(`width: 100%`)}
+                        label={item.question}
+                        min={0}
+                        id={`${item.id}`}
+                        name={`${item.id}`}
+                        onChange={this.userInput}
+                        onClick={this.userInput}
+                        required={item.required}
+                        invalidText="Please input a number value"
+                      />
+                    </FormContainer>
+                  );
 
-              case 1: // text
-                return (
-                  <FormContainer>
-                    <TextInput
-                      id={`${item.id}`}
-                      labelText={item.question}
-                      name={`${item.id}`}
-                      onChange={this.userInput}
-                      required={item.required}
-                    />
-                  </FormContainer>
-                );
-              default:
-                return {};
-            }
-          })}
+                case 1: // text
+                  return (
+                    <FormContainer>
+                      <TextInput
+                        id={`${item.id}`}
+                        labelText={item.question}
+                        name={`${item.id}`}
+                        onChange={this.userInput}
+                        required={item.required}
+                      />
+                    </FormContainer>
+                  );
+                default:
+                  return {};
+              }
+            })}
           <Button
             className={css(`display: flex !important; margin-left: auto`)}
             type="submit"

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
 
-import { showWebpage } from '../../reducers/ui';
+import { showWebpage } from '../../actions/uiActions';
 
 const Container = styled('div')({
   display: 'flex',

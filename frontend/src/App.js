@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import styled, { css, cx } from 'react-emotion';
+import { Tile } from 'carbon-components-react';
 import { Provider } from 'react-redux';
 
 import configureStore from './redux';
-import { tickTimer } from './reducers/exercise';
+import { tickTimer } from './actions/exerciseActions';
 
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
@@ -13,7 +14,6 @@ import Header from './components/Header';
 import FileManager from './pages/FileManager';
 import Web from './pages/Web';
 import WebBrowser from './components/WebBrowser';
-import { Tile } from 'carbon-components-react';
 
 const Container = styled('div')({
   display: 'flex',
@@ -105,7 +105,7 @@ class App extends Component {
   }
 
   render() {
-    const Afterward = props => <div>Thanks for taking the exercise</div>;
+    const Afterward = () => <div>Thanks for taking the exercise</div>;
     return (
       <Provider store={this.store}>
         <BrowserRouter>
@@ -152,7 +152,7 @@ class App extends Component {
               <Route path="/welcome/:exerciseUuid" component={Exercise} />
               <Route
                 path="/afterward"
-                render={props => (
+                render={() => (
                   <Tile>
                     <Afterward />
                   </Tile>

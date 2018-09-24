@@ -1,7 +1,12 @@
-import React, { Component } from 'react';
+// @flow
+import React from 'react';
 import styled, { css } from 'react-emotion';
-
+import { type Match } from 'react-router-dom';
 import { getAccount } from '../../../data/accounts';
+
+type Props = {
+  match: Match,
+};
 
 const BodyContainer = styled('div')({
   maxWidth: 880,
@@ -22,34 +27,34 @@ function AccountInfo({ credentials }) {
   );
 }
 
-export default class Account extends Component {
-  render() {
-    const { match } = this.props;
-    const {
-      params: { id },
-    } = match;
-    const account = getAccount(id);
+const Account = (props: Props) => {
+  const { match } = props;
+  const {
+    params: { id },
+  } = match;
+  const account = getAccount(id);
 
-    return (
-      <BodyContainer>
-        <h3
-          className={css({
-            marginTop: 40,
-            fontSize: 40,
-            color: '#333',
-            letterSpacing: '1.2px',
-          })}
-        >
-          {account.name}
-        </h3>
+  return (
+    <BodyContainer>
+      <h3
+        className={css({
+          marginTop: 40,
+          fontSize: 40,
+          color: '#333',
+          letterSpacing: '1.2px',
+        })}
+      >
+        {account.name}
+      </h3>
 
-        <Spacer />
-        <section className="bx--structured-list">
-          {account.data.map(credentials => (
-            <AccountInfo key={credentials.id} credentials={credentials} />
-          ))}
-        </section>
-      </BodyContainer>
-    );
-  }
-}
+      <Spacer />
+      <section className="bx--structured-list">
+        {account.data.map(credentials => (
+          <AccountInfo key={credentials.id} credentials={credentials} />
+        ))}
+      </section>
+    </BodyContainer>
+  );
+};
+
+export default Account;

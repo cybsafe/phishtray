@@ -23,14 +23,17 @@ module.exports = {
   },
 
   extends: [
+    'airbnb',
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:import/recommended',
+    'plugin:flowtype/recommended',
     'prettier',
+    'prettier/flowtype',
     'prettier/react',
   ],
 
-  plugins: ['react', 'import', 'prettier'],
+  plugins: ['react', 'import', 'flowtype', 'babel', 'prettier'],
 
   settings: {
     'import/ignore': ['node_modules'],
@@ -56,6 +59,12 @@ module.exports = {
     // Don't error on empty code blocks
     'no-empty': 'off',
 
+    // Don't require jsx extension
+    'react/jsx-filename-extension': 'off',
+
+    // Don't enforce destructuring props
+    'react/destructuring-assignment': 'off',
+
     // Don't require that react components need PropType definitions
     'react/prop-types': 'off',
 
@@ -66,5 +75,18 @@ module.exports = {
 
     // Ignore unescaped entities
     'react/no-unescaped-entities': 'off',
+
+    'react/sort-comp': [
+      2,
+      {
+        order: [
+          'type-annotations',
+          'static-methods',
+          'lifecycle',
+          'everything-else',
+          'render',
+        ],
+      },
+    ],
   },
 };
