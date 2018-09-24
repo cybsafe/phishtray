@@ -61,5 +61,4 @@ class ExerciseFactory(factory.django.DjangoModelFactory):
 
         if extracted:
             # A list of emails were passed in, use them
-            for email in extracted:
-                self.emails.add(email)
+            self.emails.add(*extracted)

@@ -29,8 +29,12 @@ class ParticipantProfileEntry(PhishtrayBaseModel):
     demographics_info = models.ForeignKey(DemographicsInfo, on_delete=models.PROTECT)
     answer = models.CharField(max_length=180, blank=True, null=True)
 
+    @property
+    def question(self):
+        return self.demographics_info.question
+
     def __str__(self):
-        return '{} - {}'.format(self.demographics_info.question, self.answer)
+        return '{} - {}'.format(self.question, self.answer)
 
 
 class Participant(PhishtrayBaseModel):

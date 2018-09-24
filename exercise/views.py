@@ -9,7 +9,6 @@ from .models import (
     ExerciseEmail,
 )
 from .serializer import (
-    EmailDetailsSerializer,
     ExerciseSerializer,
     ExerciseEmailSerializer,
     ThreadSerializer)

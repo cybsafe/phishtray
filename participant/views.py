@@ -3,8 +3,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
-from djangorestframework_camel_case.util import underscoreize
-
 from exercise.models import DemographicsInfo
 from .models import (
     ActionLog,
@@ -66,8 +64,7 @@ class ParticipantViewSet(viewsets.ModelViewSet):
                     new_entries.append(profile_entry)
 
         if new_entries:
-            for ne in new_entries:
-                participant.profile.add(ne)
+            participant.profile.add(*new_entries)
             participant.save()
 
         if invalid_demographics_ids:

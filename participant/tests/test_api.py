@@ -1,14 +1,84 @@
 import uuid
+from random import randint
 
 from django.urls import reverse
+from djangorestframework_camel_case.util import underscoreize
 from rest_framework import status
 
-from participant.models import ActionLog
+from participant.models import ActionLog, Participant
+from participant.serializer import ParticipantSerializer
 from phishtray.test.base import PhishtrayAPIBaseTest
-from ..factories import ParticipantFactory
+from ..factories import ParticipantFactory, ParticipantActionFactory, ProfileEntryFactory
 from exercise.factories import DemographicsInfoFactory
 
 
+class ParticipantAPITests(PhishtrayAPIBaseTest):
+    
+    def setUp(self):
+        super(ParticipantAPITests, self).setUp()
+    
+    def test_participant_list_block_public(self):
+        """
+        Non admin users should not be able to retrieve participant list.
+        """
+        url = reverse('api:participant-list')
+        response = self.client.get(url)
+
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        
+    def test_participant_list_allow_admin(self):
+        """
+        Admin users should be able to retrieve thread list.
+        """
+        url = reverse('api:participant-list')
+        participant_count = randint(1, 50)
+        ParticipantFactory.create_batch(participant_count)
+
+        response = self.admin_client.get(url)
+        serialized = ParticipantSerializer(Participant.objects.all(), many=True)
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(participant_count, len(response.data))
+        self.assertEqual(serialized.data, underscoreize(response.data))
+        
+    def test_participant_details(self):
+        """
+        Participant details are public.
+        """
+        participants_count = randint(1, 10)
+        ParticipantFactory.create_batch(participants_count)
+        participant = ParticipantFactory()
+        
+        # Actions
+        actions_count = randint(1, 10)
+        ParticipantActionFactory.create_batch(actions_count, participant=participant)
+        
+        # Profile Entries
+        profile_entries_count = randint(1, 10)
+        profile_entries = ProfileEntryFactory.create_batch(profile_entries_count)
+        participant.profile.add(*profile_entries)
+        participant.save()
+
+        url = reverse('api:participant-detail', args=[participant.id])
+        response = self.admin_client.get(url)
+        serialized = ParticipantSerializer(Participant.objects.get(pk=participant.id))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(serialized.data, underscoreize(response.data))
+        self.assertEqual(actions_count, len(response.data.get('actions')))
+        self.assertEqual(profile_entries_count, len(response.data.get('profile')))
+    
+    def test_get_participant_details_404(self):
+        ParticipantFactory.create_batch(5)
+        fake_id = 'fakeID'
+        url = reverse('api:participant-detail', args=[fake_id])
+
+        response = self.client.get(url)
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual('Not found.', response.data.get('detail'))
+    
+    
 class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
 
     def setUp(self):
@@ -16,8 +86,7 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
         self.participant = ParticipantFactory()
         # create questions and profile entries
         self.questions = DemographicsInfoFactory.create_batch(10)
-        for q in self.questions:
-            self.participant.exercise.demographics.add(q)
+        self.participant.exercise.demographics.add(*self.questions)
         self.participant.save()
 
     def test_update_participant_profile(self):
