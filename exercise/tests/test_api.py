@@ -56,10 +56,7 @@ class ExerciseAPITests(PhishtrayAPIBaseTest):
         exercise_1 = ExerciseFactory()
         email_count = randint(1, 15)
         emails = EmailFactory.create_batch(email_count)
-
-        for email in emails:
-            exercise_1.emails.add(email)
-
+        exercise_1.emails.add(*emails)
         exercise_1.save()
 
         url = reverse('api:exercise-detail', args=[exercise_1.id])
@@ -208,9 +205,6 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest):
         self.assertEqual(1, len(response.data.get('attachments')))
 
     def test_get_thread_details_404(self):
-        """
-        Email details are public.
-        """
         EmailFactory.create_batch(5)
         fake_id = 'fakeID'
         url = reverse('api:thread-detail', args=[fake_id])
