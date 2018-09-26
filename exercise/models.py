@@ -1,7 +1,8 @@
-from django.db import models
+from math import ceil, floor
+from random import randint, random
 
-from picklefield.fields import PickledObjectField
-from random import randint
+from django.conf import settings
+from django.db import models
 
 from phishtray.base import PhishtrayBaseModel
 
@@ -43,6 +44,7 @@ class ExerciseEmail(PhishtrayBaseModel):
         return self.subject
 
     subject = models.CharField(max_length=250, blank=True, null=True)
+    reveal_time = models.PositiveIntegerField(blank=True, null=True, help_text="Time in seconds.")
 
     # TODO: introduce new model i.e.: Account to store these info
     from_address = models.CharField(max_length=250, blank=True, null=True)
@@ -82,6 +84,11 @@ class ExerciseEmail(PhishtrayBaseModel):
         }
         return data
 
+    def set_reveal_time(self, time):
+        if self.reveal_time is None:
+            self.reveal_time = time
+            self.save()
+
 
 class DemographicsInfo(PhishtrayBaseModel):
     """
@@ -118,40 +125,26 @@ class Exercise(PhishtrayBaseModel):
     length_minutes = models.IntegerField()
     demographics = models.ManyToManyField(DemographicsInfo, blank=True)
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
-    email_reveal_times = PickledObjectField(null=True)
 
     def set_email_reveal_times(self):
-        # generate email reveal times - these are unique per exercise and are stored in seconds
-        # TODO: (TCKT-1235) minimum amount of emails that should have reveal_time 0
-        # in case the 10% of emails is less than 1 email
-        reveal_times = []
+        # Set some emails based on a threshold to zero time initially.
+        threshold_emails = int(ceil((self.emails.count() * settings.REVEAL_TIME_ZERO_THRESHOLD)))
 
-        emails = self.emails.all()
-        if not emails:
-            return
+        while threshold_emails > 0:
+            email = self.emails.all()[randint(0, self.emails.count()-1)]
+            email.set_reveal_time(0)
+            threshold_emails -= 1
 
-        for email in emails:
-            reveal_times.append(
-                {
-                    'email_id': email.id,
-                    'reveal_time':  randint(0, self.length_minutes * 60)
-                }
-            )
+        # Remaining emails without a set time to be set to a random time
+        for email in self.emails.all():
+            # This creates a random distribution that tends to drift towards the beginning of the exercise.
+            rand_time = int(floor(abs(random() - random()) * (1 + self.length_minutes * 60)))
+            email.set_reveal_time(rand_time)
 
-        # Make 10% of emails appear in inbox at the beginning of exercise
-        received_emails_count = int(emails.count() * 0.1)
-        if received_emails_count >= 1:
-            updated_reveal_times = []
-
-            while received_emails_count:
-                received_email = reveal_times.pop(randint(0, len(reveal_times)-1))
-                received_email['reveal_time'] = 0
-                updated_reveal_times.append(received_email)
-                received_emails_count -= 1
-
-            reveal_times += updated_reveal_times
-
-        self.email_reveal_times = reveal_times
+    def save(self, *args, **kwargs):
+        """Perform the setting of email reveal times."""
+        self.set_email_reveal_times()
+        super().save(*args, **kwargs)
 
 
 class ExerciseWebPages(PhishtrayBaseModel):

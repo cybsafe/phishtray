@@ -174,3 +174,7 @@ CORS_ALLOW_METHODS = (
 CORS_ALLOW_HEADERS = default_headers + (
     'access-control-allow-origin',
 )
+
+
+# Threshold for percentage number of emails that should have a reveal time of zero
+REVEAL_TIME_ZERO_THRESHOLD = 0.1
