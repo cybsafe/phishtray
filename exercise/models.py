@@ -3,6 +3,8 @@ from random import randint, random
 
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 from phishtray.base import PhishtrayBaseModel
 
@@ -44,7 +46,6 @@ class ExerciseEmail(PhishtrayBaseModel):
         return self.subject
 
     subject = models.CharField(max_length=250, blank=True, null=True)
-    reveal_time = models.PositiveIntegerField(blank=True, null=True, help_text="Time in seconds.")
 
     # TODO: introduce new model i.e.: Account to store these info
     from_address = models.CharField(max_length=250, blank=True, null=True)
@@ -84,10 +85,9 @@ class ExerciseEmail(PhishtrayBaseModel):
         }
         return data
 
-    def set_reveal_time(self, time):
-        if self.reveal_time is None:
-            self.reveal_time = time
-            self.save()
+    @property
+    def reveal_time(self):
+        return ExerciseEmailRevealTime.objects.get(email=self).reveal_time
 
 
 class DemographicsInfo(PhishtrayBaseModel):
@@ -127,24 +127,36 @@ class Exercise(PhishtrayBaseModel):
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
 
     def set_email_reveal_times(self):
+        if not self.emails.all():
+            return
         # Set some emails based on a threshold to zero time initially.
         threshold_emails = int(ceil((self.emails.count() * settings.REVEAL_TIME_ZERO_THRESHOLD)))
 
         while threshold_emails > 0:
             email = self.emails.all()[randint(0, self.emails.count()-1)]
-            email.set_reveal_time(0)
+            ExerciseEmailRevealTime.objects.get(exercise=self, email=email).set_reveal_time(0)
             threshold_emails -= 1
 
         # Remaining emails without a set time to be set to a random time
         for email in self.emails.all():
             # This creates a random distribution that tends to drift towards the beginning of the exercise.
             rand_time = int(floor(abs(random() - random()) * (1 + self.length_minutes * 60)))
-            email.set_reveal_time(rand_time)
+            ExerciseEmailRevealTime.objects.get(exercise=self, email=email).set_reveal_time(rand_time)
 
-    def save(self, *args, **kwargs):
-        """Perform the setting of email reveal times."""
-        self.set_email_reveal_times()
-        super().save(*args, **kwargs)
+
+class ExerciseEmailRevealTime(PhishtrayBaseModel):
+
+    class Meta:
+        unique_together = ('exercise', 'email',)
+
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE,)
+    email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE,)
+    reveal_time = models.PositiveIntegerField(blank=True, null=True, help_text="Time in seconds.",)
+
+    def set_reveal_time(self, time):
+        if self.reveal_time is None:
+            self.reveal_time = time
+            self.save()
 
 
 class ExerciseWebPages(PhishtrayBaseModel):
@@ -169,3 +181,19 @@ class ExerciseURL(PhishtrayBaseModel):
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
 
     web_page = models.ForeignKey(ExerciseWebPages, on_delete=models.CASCADE)
+
+
+@receiver(post_save, sender=Exercise)
+def create_email_reveal_time(sender, instance, created, **kwargs):
+    """Create email reveal times when an exercise email instance is created."""
+    for email in ExerciseEmail.objects.reverse():
+        ExerciseEmailRevealTime.objects.get_or_create(exercise=instance, email=email)
+
+    # Set the email reveal times
+    instance.set_email_reveal_times()
+
+
+@receiver(post_delete, sender=Exercise)
+def delete_email_reveal_time(sender, instance, using, **kwargs):
+    """Delete email reveal times when an exercise email instance is deleted."""
+    ExerciseEmailRevealTime.objects.get(exercise=instance).hard_delete()

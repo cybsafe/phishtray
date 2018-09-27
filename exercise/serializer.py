@@ -68,6 +68,13 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
         return email.to_account
 
 
+class EmailRevealTimeSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = ExerciseEmailRevealTime
+        fields = ('reveal_time',)
+
+
 class ThreadSerializer(serializers.ModelSerializer):
     body = serializers.CharField(source='content')
     from_account = serializers.SerializerMethodField()
@@ -75,6 +82,7 @@ class ThreadSerializer(serializers.ModelSerializer):
     replies = ExerciseEmailReplySerializer(many=True)
     attachments = ExerciseAttachmentSerializer(many=True)
     emails = serializers.SerializerMethodField()
+    reveal_time = serializers.SerializerMethodField()
 
     class Meta:
         model = ExerciseEmail
@@ -99,6 +107,9 @@ class ThreadSerializer(serializers.ModelSerializer):
 
     def get_to_account(self, email):
         return email.to_account
+
+    def get_reveal_time(self, email):
+        return email.reveal_time
 
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
