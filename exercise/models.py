@@ -87,7 +87,9 @@ class ExerciseEmail(PhishtrayBaseModel):
 
     @property
     def reveal_time(self):
-        return ExerciseEmailRevealTime.objects.get(email=self).reveal_time
+        email = ExerciseEmailRevealTime.objects.filter(email=self).first()
+        if email:
+            return email.reveal_time
 
 
 class DemographicsInfo(PhishtrayBaseModel):
@@ -191,9 +193,3 @@ def create_email_reveal_time(sender, instance, created, **kwargs):
 
     # Set the email reveal times
     instance.set_email_reveal_times()
-
-
-@receiver(post_delete, sender=Exercise)
-def delete_email_reveal_time(sender, instance, using, **kwargs):
-    """Delete email reveal times when an exercise email instance is deleted."""
-    ExerciseEmailRevealTime.objects.get(exercise=instance).hard_delete()
