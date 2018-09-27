@@ -3,7 +3,7 @@ from random import randint, random
 
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from phishtray.base import PhishtrayBaseModel
@@ -87,7 +87,7 @@ class ExerciseEmail(PhishtrayBaseModel):
 
     @property
     def reveal_time(self):
-        email = ExerciseEmailRevealTime.objects.filter(email=self).first()
+        email = ExerciseEmailRevealTime.objects.filter(email_id=self.id, exercise__emails__id=self.id).first()
         if email:
             return email.reveal_time
 
@@ -136,14 +136,14 @@ class Exercise(PhishtrayBaseModel):
 
         while threshold_emails > 0:
             email = self.emails.all()[randint(0, self.emails.count()-1)]
-            ExerciseEmailRevealTime.objects.get(exercise=self, email=email).set_reveal_time(0)
+            ExerciseEmailRevealTime.objects.get(exercise_id=self.id, email_id=email.id).set_reveal_time(0)
             threshold_emails -= 1
 
         # Remaining emails without a set time to be set to a random time
         for email in self.emails.all():
             # This creates a random distribution that tends to drift towards the beginning of the exercise.
             rand_time = int(floor(abs(random() - random()) * (1 + self.length_minutes * 60)))
-            ExerciseEmailRevealTime.objects.get(exercise=self, email=email).set_reveal_time(rand_time)
+            ExerciseEmailRevealTime.objects.get(exercise_id=self.id, email_id=email.id).set_reveal_time(rand_time)
 
 
 class ExerciseEmailRevealTime(PhishtrayBaseModel):
@@ -189,7 +189,7 @@ class ExerciseURL(PhishtrayBaseModel):
 def create_email_reveal_time(sender, instance, created, **kwargs):
     """Create email reveal times when an exercise email instance is created."""
     for email in ExerciseEmail.objects.reverse():
-        ExerciseEmailRevealTime.objects.get_or_create(exercise=instance, email=email)
+        ExerciseEmailRevealTime.objects.get_or_create(exercise_id=instance.id, email_id=email.id)
 
     # Set the email reveal times
     instance.set_email_reveal_times()

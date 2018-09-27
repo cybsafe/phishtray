@@ -28,7 +28,7 @@ class ExerciseModelTests(TestCase):
         self.assertEqual(4, exercise.emails.all().count())
         self.assertEqual(1, len(received_emails))
 
-    def test_set_email_reveal_times_with_more_then_ten_emails(self):
+    def test_set_email_reveal_times_with_more_than_ten_emails(self):
         emails = EmailFactory.create_batch(27)
         exercise = ExerciseFactory.create(emails=emails)
         exercise_reveal_times = ExerciseEmailRevealTime.objects.filter(exercise=exercise)
@@ -37,7 +37,7 @@ class ExerciseModelTests(TestCase):
         received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]
 
         self.assertEqual(27, exercise.emails.all().count())
-        self.assertEqual(3, len(received_emails))
+        self.assertAlmostEqual(3, len(received_emails))
 
     def test_sticky_received_emails(self):
         """
@@ -52,7 +52,7 @@ class ExerciseModelTests(TestCase):
         received_email_ids = [re.id for re in exercise.emails.all()]
 
         self.assertEqual(35, exercise.emails.all().count())
-        self.assertEqual(4, len(received_emails))
+        self.assertAlmostEquals(4, len(received_emails))
 
         exercise.title = 'Updated Exercise'
         exercise.save()
