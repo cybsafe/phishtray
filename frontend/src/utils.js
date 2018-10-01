@@ -21,9 +21,7 @@ export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
     )
     .catch(e => console.error(`Failed to fetch data for ${dispatchType}`, e));
 
-
 export const logAction = async (actionData: object) => {
-
   const { participantId, ...rest } = actionData;
 
   const url = `${HOST_BACKEND}/api/v1/participants/${participantId}/action/`;
@@ -57,6 +55,6 @@ export const postFormData = (apiUrl: string, data: Object) => {
     method: 'POST',
     body: JSON.stringify(data),
   })
-    .then(response => console.log(response.json()))
+    .then(response => console.log(response))
     .catch(e => console.error('Failed to post form data', e));
 };

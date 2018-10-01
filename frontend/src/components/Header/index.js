@@ -4,6 +4,8 @@ import { withRouter } from 'react-router';
 import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import StopClock from './StopClock';
+import { logAction } from '../../utils';
+import { Button, Modal } from 'carbon-components-react';
 
 const SectionHeader = styled('div')({
   display: 'flex',
@@ -27,6 +29,31 @@ const ClockContainer = styled('div')({
   textAlign: 'right',
 });
 
+const ButtonContainer = styled('div')({
+  flex: 1,
+  maxWidth: '100px',
+});
+
+const buttonProps = {
+  className: css({ display: 'flex', flexGrow: 1, marginTop: '20px' }),
+  id: 'test2',
+  kind: 'secondary',
+};
+
+const confirmationProps = {
+  shouldSubmitOnEnter: false,
+  modalHeading: 'Confirm Exit',
+  primaryButtonText: 'Yes, I would like to Exit',
+  secondaryButtonText: 'Cancel',
+  iconDescription: 'Close',
+};
+
+const ConfirmationModal = ({ visible, ...rest }) => (
+  <Modal {...confirmationProps} open={visible} {...rest}>
+    <p className="bx--modal-content__text">Are you sure you want to exit?</p>
+  </Modal>
+);
+
 type Props = {
   startTime: number,
   countdownMins: number,
@@ -36,6 +63,10 @@ type Props = {
 };
 
 class Header extends Component<Props> {
+  state = {
+    modalOpen: false,
+  };
+
   render() {
     return (
       <div
@@ -96,6 +127,34 @@ class Header extends Component<Props> {
             />
           </div>
         </ClockContainer>
+        <ButtonContainer>
+          <Button
+            {...buttonProps}
+            onClick={() => {
+              this.setState({
+                modalOpen: true,
+              });
+            }}
+          >
+            Exit
+          </Button>
+        </ButtonContainer>
+
+        <ConfirmationModal
+          visible={this.state.modalOpen}
+          onRequestClose={() => this.setState({ modalOpen: false })}
+          onSecondarySubmit={() => this.setState({ modalOpen: false })}
+          onRequestSubmit={() => {
+            logAction({
+              participantId: this.props.participantId,
+              actionType: 'experiment_completed_manually',
+              timestamp: new Date(),
+              timeDelta: Date.now() - this.props.startTime,
+            });
+            localStorage.clear(); //clear local storage todo // persistor.purge();
+            this.props.history.push('/afterward');
+          }}
+        />
       </div>
     );
   }
@@ -104,6 +163,7 @@ class Header extends Component<Props> {
 const mapStateToProps = reduxState => ({
   startTime: reduxState.exercise.startTime,
   countdownMins: reduxState.exercise.lengthMinutes,
+  participantId: reduxState.exercise.participant,
 });
 
 export default connect(
