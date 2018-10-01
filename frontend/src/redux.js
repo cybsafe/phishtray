@@ -48,4 +48,3 @@ const configureStore = initialState => {
 let store = configureStore();
 let persistor = persistStore(store);
 export { store, persistor };
-// export default configureStore;
