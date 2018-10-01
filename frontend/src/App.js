@@ -4,7 +4,7 @@ import styled, { css, cx } from 'react-emotion';
 import { Tile } from 'carbon-components-react';
 import { Provider } from 'react-redux';
 
-import configureStore from './redux';
+import { store, persistor } from './redux';
 import { tickTimer } from './actions/exerciseActions';
 
 import Inbox from './pages/Inbox';
@@ -13,7 +13,10 @@ import Exercise from './pages/Exercise';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
 import Web from './pages/Web';
+import Afterward from './pages/Afterward';
 import WebBrowser from './components/WebBrowser';
+
+import { PersistGate } from 'redux-persist/integration/react';
 
 const Container = styled('div')({
   display: 'flex',
@@ -87,16 +90,9 @@ const DefaultLayout = ({ children }) => (
 );
 
 class App extends Component {
-  constructor() {
-    super();
-
-    // TODO
-    this.store = configureStore();
-  }
-
   componentDidMount() {
     this._exerciseTick = setInterval(() => {
-      this.store.dispatch(tickTimer(100)); //this is way too high, demo purposes
+      store.dispatch(tickTimer(100)); //this is way too high, demo purposes
     }, 5 * 1000);
   }
 
@@ -105,69 +101,70 @@ class App extends Component {
   }
 
   render() {
-    const Afterward = () => <div>Thanks for taking the exercise</div>;
     return (
-      <Provider store={this.store}>
-        <BrowserRouter>
-          <div
-            className={css({
-              height: '100%',
-              minHeight: '100%',
-              overflow: 'hidden',
-            })}
-          >
-            <Switch>
-              <Route
-                path="/inbox"
-                render={props => (
-                  <DefaultLayout>
-                    <Inbox {...props} />
-                  </DefaultLayout>
-                )}
-              />
-              <Route
-                path="/accounts"
-                render={props => (
-                  <DefaultLayout>
-                    <Accounts {...props} />
-                  </DefaultLayout>
-                )}
-              />
-              <Route
-                path="/files"
-                render={props => (
-                  <DefaultLayout>
-                    <FileManager {...props} />
-                  </DefaultLayout>
-                )}
-              />
-              <Route
-                path="/web"
-                render={props => (
-                  <DefaultLayout>
-                    <Web {...props} />
-                  </DefaultLayout>
-                )}
-              />
-              <Route path="/welcome/:exerciseUuid" component={Exercise} />
-              <Route
-                path="/afterward"
-                render={() => (
-                  <Tile>
-                    <Afterward />
-                  </Tile>
-                )}
-              />
-              <Route
-                exact
-                path="/"
-                render={() => <Redirect from="/" to="/inbox" />}
-              />
-              <Route component={DefaultLayout} />
-            </Switch>
-            <WebBrowser />
-          </div>
-        </BrowserRouter>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <BrowserRouter>
+            <div
+              className={css({
+                height: '100%',
+                minHeight: '100%',
+                overflow: 'hidden',
+              })}
+            >
+              <Switch>
+                <Route
+                  path="/inbox"
+                  render={props => (
+                    <DefaultLayout>
+                      <Inbox {...props} />
+                    </DefaultLayout>
+                  )}
+                />
+                <Route
+                  path="/accounts"
+                  render={props => (
+                    <DefaultLayout>
+                      <Accounts {...props} />
+                    </DefaultLayout>
+                  )}
+                />
+                <Route
+                  path="/files"
+                  render={props => (
+                    <DefaultLayout>
+                      <FileManager {...props} />
+                    </DefaultLayout>
+                  )}
+                />
+                <Route
+                  path="/web"
+                  render={props => (
+                    <DefaultLayout>
+                      <Web {...props} />
+                    </DefaultLayout>
+                  )}
+                />
+                <Route path="/welcome/:exerciseUuid" component={Exercise} />
+                <Route
+                  path="/afterward"
+                  render={() => (
+                    <Tile>
+                      <Afterward />
+                    </Tile>
+                  )}
+                />
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Redirect from="/" to="/inbox" />}
+                />
+                <Route component={DefaultLayout} />
+              </Switch>
+              <WebBrowser />
+            </div>
+          </BrowserRouter>
+        </PersistGate>
       </Provider>
     );
   }
