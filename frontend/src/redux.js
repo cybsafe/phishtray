@@ -2,7 +2,18 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage
+
 import reducer from './reducers';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['exercise'],
+};
+
+const persistedReducer = persistReducer(persistConfig, reducer);
 
 const configureStore = initialState => {
   let middlewares = [reduxThunk];
@@ -26,11 +37,14 @@ const configureStore = initialState => {
   }
 
   const store = createStore(
-    reducer,
+    // reducer,
+    persistedReducer,
     initialState,
     composeEnhancers(applyMiddleware(...middlewares))
   );
   return store;
 };
 
-export default configureStore;
+let store = configureStore();
+let persistor = persistStore(store);
+export { store, persistor };
