@@ -5,7 +5,6 @@ import { Tile } from 'carbon-components-react';
 import { Provider } from 'react-redux';
 
 import { store, persistor } from './redux';
-import { tickTimer } from './actions/exerciseActions';
 
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
@@ -90,16 +89,6 @@ const DefaultLayout = ({ children }) => (
 );
 
 class App extends Component {
-  componentDidMount() {
-    this._exerciseTick = setInterval(() => {
-      store.dispatch(tickTimer(100)); //this is way too high, demo purposes
-    }, 5 * 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this._exerciseTick);
-  }
-
   render() {
     return (
       <Provider store={store}>

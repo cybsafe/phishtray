@@ -123,7 +123,17 @@ class Header extends Component<Props> {
             <StopClock
               startTime={this.props.startTime}
               countdown={this.props.countdownMins * 60}
-              onTimeout={() => this.props.history.push('/afterward')}
+              onTimeout={() => {
+                logAction({
+                  participantId: this.props.participantId,
+                  actionType: 'experiment_ended_timeout',
+                  timestamp: new Date(),
+                  timeDelta: Date.now() - this.props.startTime,
+                });
+                localStorage.clear(); //clear local storage todo // persistor.purge();
+                this.props.history.push('/afterward');
+                clearInterval(); //clear timers
+              }}
             />
           </div>
         </ClockContainer>
@@ -147,12 +157,13 @@ class Header extends Component<Props> {
           onRequestSubmit={() => {
             logAction({
               participantId: this.props.participantId,
-              actionType: 'experiment_completed_manually',
+              actionType: 'experiment_ended_manually',
               timestamp: new Date(),
               timeDelta: Date.now() - this.props.startTime,
             });
             localStorage.clear(); //clear local storage todo // persistor.purge();
             this.props.history.push('/afterward');
+            clearInterval(); //clear timers
           }}
         />
       </div>
