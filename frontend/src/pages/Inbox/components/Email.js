@@ -13,6 +13,7 @@ import { logAction } from '../../../utils';
 type Props = {
   email: Object,
   onReplyParams: Object,
+  addFile: () => void,
 };
 
 const ActionLink = styled('button')({
@@ -38,31 +39,6 @@ function ActionLinkwithClick({ data, title }) {
     >
       {title}
     </ActionLink>
-  );
-}
-
-function AttachmentLink({ attachment, onClickParams }) {
-  return (
-    <Link
-      to="/files"
-      onClick={() =>
-        logAction({
-          actionType: 'attachment_downloaded',
-          participantId: onClickParams.participantId,
-          timeDelta: Date.now() - onClickParams.startTime,
-          emailId: onClickParams.emailId,
-          timestamp: new Date(),
-        })
-      }
-      className={css({
-        marginRight: 20,
-        textDecoration: 'none',
-        color: '#B8B8B8',
-        letterSpacing: '1.1px',
-      })}
-    >
-      > {attachment.filename}
-    </Link>
   );
 }
 
@@ -127,7 +103,8 @@ function EmailActions({ onReplyParams }) {
   );
 }
 
-function EmailAttachments({ attachments, onClickParams }) {
+function EmailAttachments({ props }) {
+  const { email, onReplyParams, addFile } = props;
   return (
     <div
       className={css({
@@ -151,13 +128,37 @@ function EmailAttachments({ attachments, onClickParams }) {
           marginBottom: '20px',
         })}
       >
-        {attachments &&
-          attachments.map(attachment => (
-            <AttachmentLink
-              onClickParams={onClickParams}
+        {email.attachments &&
+          email.attachments.map(attachment => (
+            <Link
               key={attachment.id}
-              attachment={attachment}
-            />
+              to={{
+                pathname: '/files',
+                params: {
+                  attachment,
+                },
+              }}
+              onClick={() => {
+                logAction({
+                  actionType: 'attachment_downloaded',
+                  fileName: attachment.filename,
+                  fileId: attachment.id,
+                  participantId: onReplyParams.participantId,
+                  timeDelta: Date.now() - onReplyParams.startTime,
+                  emailId: onReplyParams.emailId,
+                  timestamp: new Date(),
+                });
+                addFile(attachment);
+              }}
+              className={css({
+                marginRight: 20,
+                textDecoration: 'none',
+                color: '#B8B8B8',
+                letterSpacing: '1.1px',
+              })}
+            >
+              > {attachment.filename}
+            </Link>
           ))}
       </div>
     </div>
@@ -300,17 +301,12 @@ const Email = (props: Props) => (
     <Markdown
       source={props.email.body}
       renderers={{
-        link: props => RouterLink({ ...props, ...props }),
+        link: linkProps => RouterLink({ ...linkProps, ...props }),
         paragraph: Paragraph,
         heading: Heading,
       }}
     />
-    {props.email.attachments && (
-      <EmailAttachments
-        onClickParams={props.onReplyParams}
-        attachments={props.email.attachments}
-      />
-    )}
+    {props.email.attachments && <EmailAttachments props={props} />}
     {props.email.replies && (
       <QuickReply
         onClickParams={props.onReplyParams}

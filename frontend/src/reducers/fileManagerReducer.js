@@ -38,6 +38,12 @@ export default function reducer(
         files: action.payload,
       };
     }
+    case 'fileManager/ADD_FILE': {
+      return {
+        ...state,
+        files: [...new Set([...state.files, action.file])],
+      };
+    }
     case 'fileManager/REMOVE_FILE': {
       return {
         ...state,
