@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import styled, { css, cx } from 'react-emotion';
-import { Tile } from 'carbon-components-react';
 import { Provider } from 'react-redux';
 
 import { store, persistor } from './redux';
@@ -135,14 +134,7 @@ class App extends Component {
                   )}
                 />
                 <Route path="/welcome/:exerciseUuid" component={Exercise} />
-                <Route
-                  path="/afterward"
-                  render={() => (
-                    <Tile>
-                      <Afterward />
-                    </Tile>
-                  )}
-                />
+                <Route path="/afterward" component={Afterward} />
                 <Route
                   exact
                   path="/"

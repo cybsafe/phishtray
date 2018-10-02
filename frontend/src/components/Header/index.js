@@ -130,9 +130,7 @@ class Header extends Component<Props> {
                   timestamp: new Date(),
                   timeDelta: Date.now() - this.props.startTime,
                 });
-                localStorage.clear(); //clear local storage todo // persistor.purge();
                 this.props.history.push('/afterward');
-                clearInterval(); //clear timers
               }}
             />
           </div>
@@ -161,9 +159,7 @@ class Header extends Component<Props> {
               timestamp: new Date(),
               timeDelta: Date.now() - this.props.startTime,
             });
-            localStorage.clear(); //clear local storage todo // persistor.purge();
             this.props.history.push('/afterward');
-            clearInterval(); //clear timers
           }}
         />
       </div>
