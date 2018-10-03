@@ -19,8 +19,12 @@ import {
   getExercise,
 } from '../../selectors/exerciseSelectors';
 
-import { getExerciseData, startCountdown } from '../../actions/exerciseActions';
-import { postFormData } from '../../utils';
+import {
+  getExerciseData,
+  startCountdown,
+  tickTimer,
+} from '../../actions/exerciseActions';
+import { postFormData, logAction } from '../../utils';
 
 const Container = styled('div')({
   margin: 'auto',
@@ -185,6 +189,18 @@ export class Exercise extends Component<Props> {
           <Button
             className={css(`display: flex !important; margin-left: auto`)}
             type="submit"
+            onClick={() => {
+              logAction({
+                participantId: this.props.participantId,
+                actionType: 'experiment_started',
+                timestamp: new Date(),
+                timeDelta: Date.now() - this.props.startTime,
+              });
+
+              setInterval(() => {
+                this.props.tickTimer(100); //this is way too high, demo purposes
+              }, 5 * 1000);
+            }}
           >
             Click here to start the E-tray
           </Button>
@@ -248,6 +264,8 @@ export default connect(
   state => ({
     exercise: getExercise(state),
     isLoaded: getLastRefreshed(state) !== null,
+    startTime: state.exercise.startTime,
+    participantId: state.exercise.participant,
   }),
-  { getExerciseData, startCountdown }
+  { getExerciseData, startCountdown, tickTimer }
 )(Exercise);

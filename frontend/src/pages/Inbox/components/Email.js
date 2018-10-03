@@ -300,7 +300,7 @@ const Email = (props: Props) => (
     <Markdown
       source={props.email.body}
       renderers={{
-        link: props => RouterLink({ ...props, ...props }),
+        link: linkProps => RouterLink({ ...linkProps, ...props }),
         paragraph: Paragraph,
         heading: Heading,
       }}
