@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { markThreadAsRead } from '../../../actions/exerciseActions';
 import { getThread } from '../../../selectors/exerciseSelectors';
 import { showWebpage } from '../../../actions/uiActions';
+import { addFile } from '../../../actions/fileManagerActions';
 
 import Email from './Email';
 
@@ -29,6 +30,7 @@ export class EmailChain extends Component {
       <Fragment key={email.id}>
         <Email
           email={email}
+          addFile={this.props.addFile}
           showWebpage={this.props.showWebpage}
           onReplyParams={{
             startTime: this.props.startTime,
@@ -52,5 +54,5 @@ export default connect(
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
   }),
-  { markThreadAsRead, showWebpage }
+  { markThreadAsRead, showWebpage, addFile }
 )(EmailChain);

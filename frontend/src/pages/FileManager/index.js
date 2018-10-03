@@ -92,7 +92,17 @@ const Loading = () => (
 
 export class FileManager extends Component {
   async componentDidMount() {
-    await this.props.loadFiles();
+    //only load files once there are no files or a file have not been deleted
+    this.props.files.length <= 0 &&
+      !this.props.fileDeleted &&
+      (await this.props.loadFiles());
+    //view files when attributes passed from Email link
+    if (this.props.location.state && this.props.location.state.attachment) {
+      this.props.location.state.attachment.fileUrl &&
+        this.displayFileModalHandler(
+          this.props.location.state.attachment.fileUrl
+        );
+    }
   }
 
   deleteFileHandler = fileToDelete => {
@@ -123,9 +133,7 @@ export class FileManager extends Component {
 
   render() {
     const { files, isLoaded, modal } = this.props;
-
     if (!isLoaded) return <Loading />;
-
     return (
       <Container>
         {modal.isOpen && (
@@ -137,28 +145,29 @@ export class FileManager extends Component {
         <Table>
           <TableHead />
           <tbody>
-            {files.map(file => (
-              <FileListItem
-                key={file.id}
-                file={file}
-                deleteFileHandler={file => {
-                  this.logActionsHandler({
-                    actionType: 'file_delete',
-                    fileId: file.id,
-                    fileName: file.fileName,
-                  }),
-                    this.deleteFileHandler(file);
-                }}
-                displayFileModalHandler={file => {
-                  this.logActionsHandler({
-                    actionType: 'file_open',
-                    fileId: file.id,
-                    fileName: file.fileName,
-                  }),
-                    this.displayFileModalHandler(file);
-                }}
-              />
-            ))}
+            {files &&
+              files.map(file => (
+                <FileListItem
+                  key={file.id}
+                  file={file}
+                  deleteFileHandler={file => {
+                    this.logActionsHandler({
+                      actionType: 'file_delete',
+                      fileId: file.id,
+                      fileName: file.fileName,
+                    }),
+                      this.deleteFileHandler(file);
+                  }}
+                  displayFileModalHandler={file => {
+                    this.logActionsHandler({
+                      actionType: 'file_open',
+                      fileId: file.id,
+                      fileName: file.fileName,
+                    }),
+                      this.displayFileModalHandler(file);
+                  }}
+                />
+              ))}
           </tbody>
         </Table>
       </Container>
@@ -172,6 +181,7 @@ export default connect(
     isLoaded: getLastRefreshed(state) !== null,
     modal: getModal(state),
     startTime: state.exercise.startTime,
+    fileDeleted: state.fileManager.fileDeleted,
     participantId: state.exercise.participant,
   }),
   {

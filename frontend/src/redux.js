@@ -10,7 +10,7 @@ import reducer from './reducers';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['exercise'],
+  whitelist: ['exercise', 'fileManager'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer);

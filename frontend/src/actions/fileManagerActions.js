@@ -10,6 +10,13 @@ export function loadFiles() {
   };
 }
 
+export function addFile(file) {
+  return {
+    type: 'fileManager/ADD_FILE',
+    file
+  };
+}
+
 export function removeFile(fileId) {
   return {
     type: 'fileManager/REMOVE_FILE',

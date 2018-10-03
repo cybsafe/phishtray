@@ -11,6 +11,7 @@ type File = {
 type State = {
   lastRefreshed: ?Date,
   files: File[],
+  fileDeleted: boolean,
   modal: {
     isOpen: boolean,
     fileUrl: string,
@@ -20,6 +21,7 @@ type State = {
 const INITIAL_STATE: State = {
   lastRefreshed: null,
   files: [],
+  fileDeleted: false,
   modal: {
     isOpen: false,
     fileUrl: '',
@@ -38,10 +40,17 @@ export default function reducer(
         files: action.payload,
       };
     }
+    case 'fileManager/ADD_FILE': {
+      return {
+        ...state,
+        files: [...new Set([...state.files, action.file])],
+      };
+    }
     case 'fileManager/REMOVE_FILE': {
       return {
         ...state,
         files: state.files.filter(file => file.id !== action.payload.fileId),
+        fileDeleted: true,
       };
     }
     case 'fileManager/DISPLAY_FILE': {
@@ -68,6 +77,7 @@ export default function reducer(
           isOpen: false,
         },
         files: state.files.filter(file => file.id !== action.payload.fileId),
+        fileDeleted: true,
       };
     }
 
