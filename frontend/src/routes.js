@@ -103,10 +103,6 @@ const loaderProps = {
 const Welcome = () => (
   <WelcomeContainer>
     <h1>Welcome to PhishTray</h1>
-    <p>
-      You need to request an exercise Id to start, please get in touch with
-      Carla at Cybsafe.
-    </p>
   </WelcomeContainer>
 );
 
