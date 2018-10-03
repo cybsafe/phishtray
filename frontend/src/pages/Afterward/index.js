@@ -28,7 +28,7 @@ type Props = {
 
 class Afterward extends React.Component<Props> {
   componentDidMount() {
-    localStorage.clear();
+    sessionStorage.clear();
     persistor.purge();
     clearInterval();
   }

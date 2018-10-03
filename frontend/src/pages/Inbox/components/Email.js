@@ -267,7 +267,7 @@ function RouterLink(props) {
           link: props.href.substring(1),
           timestamp: new Date(),
         });
-        props.showWebpage(props.href.substring(1));
+        showWebpage(props.href.substring(1));
       }}
       href="#"
     >
