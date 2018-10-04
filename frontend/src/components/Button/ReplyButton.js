@@ -18,6 +18,10 @@ const ReplyButton = styled(CarbonButton)`
     border-color: #ffb100;
     background: white;
     border-radius: 16px;
+    white-space: normal;
+    line-height: 22px;
+    height: auto;
+    text-align: left;
     :hover {
       color: white;
       background: #ffb100;
