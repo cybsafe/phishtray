@@ -84,7 +84,6 @@ const DefaultLayout = ({ children }) => (
             Inbox
           </SidebarLink>
           <SidebarLink to="/accounts">Accounts</SidebarLink>
-          <SidebarLink to="/contacts">Contacts</SidebarLink>
           <SidebarLink to="/web">Web</SidebarLink>
           <SidebarLink to="/files">Files</SidebarLink>
         </Sidebar>
