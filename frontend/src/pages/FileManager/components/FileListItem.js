@@ -37,7 +37,7 @@ export default function FileListItem({
           indeterminate={true}
           id={checkboxId}
           className={css({ fontSize: 20, fontWeight: 500, color: '#8897a2' })}
-          labelText={file.fileName}
+          labelText={file.fileName || file.filename || ''}
         />
       </Cell>
       <Cell>{file.description}</Cell>
