@@ -105,6 +105,15 @@ function EmailActions({ onReplyParams }) {
 
 function EmailAttachments({ props }) {
   const { email, onReplyParams, addFile } = props;
+  // const attachment = {
+  //   id: '009',
+  //   fileName: 'World Cup 20',
+  //   description: "It's c50",
+  //   dateCreated: '2018-12-26',
+  //   fileUrl:
+  //     'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?ixlib=rb-0.3.5&s=32e020e5b98c97af64924afa1eb76c35&auto=format&fit=crop&w=800&q=60',
+  // };
+  // test attachment file
   return (
     <div
       className={css({
@@ -157,7 +166,7 @@ function EmailAttachments({ props }) {
                 letterSpacing: '1.1px',
               })}
             >
-              > {attachment.filename}
+              > {attachment.filename || attachment.fileName}
             </Link>
           ))}
       </div>
@@ -306,7 +315,7 @@ const Email = (props: Props) => (
         heading: Heading,
       }}
     />
-    {props.email.attachments && <EmailAttachments props={props} />}
+    {props.email.attachments.length > 0 && <EmailAttachments props={props} />}
     {props.email.replies && (
       <QuickReply
         onClickParams={props.onReplyParams}

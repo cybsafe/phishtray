@@ -97,10 +97,10 @@ export class FileManager extends Component {
       !this.props.fileDeleted &&
       (await this.props.loadFiles());
     //view files when attributes passed from Email link
-    if (this.props.location.state && this.props.location.state.attachment) {
-      this.props.location.state.attachment.fileUrl &&
+    if (this.props.location.params && this.props.location.params.attachment) {
+      this.props.location.params.attachment.fileUrl &&
         this.displayFileModalHandler(
-          this.props.location.state.attachment.fileUrl
+          this.props.location.params.attachment.fileUrl
         );
     }
   }

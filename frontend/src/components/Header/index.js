@@ -68,6 +68,7 @@ class Header extends Component<Props> {
   };
 
   render() {
+    const clearSessionStorage = async () => await sessionStorage.clear();
     return (
       <div
         className={css({
@@ -130,7 +131,9 @@ class Header extends Component<Props> {
                   timestamp: new Date(),
                   timeDelta: Date.now() - this.props.startTime,
                 });
-                this.props.history.push('/afterward');
+                clearSessionStorage()
+                  .then(() => this.props.history.push('/afterward'))
+                  .catch(e => console.error('error clearing your session', e));
               }}
             />
           </div>
@@ -159,7 +162,9 @@ class Header extends Component<Props> {
               timestamp: new Date(),
               timeDelta: Date.now() - this.props.startTime,
             });
-            this.props.history.push('/afterward');
+            clearSessionStorage()
+              .then(() => this.props.history.push('/afterward'))
+              .catch(e => console.error('error clearing your session', e));
           }}
         />
       </div>

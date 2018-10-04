@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Markdown from 'react-markdown';
 import styled from 'react-emotion';
-import { persistor } from '../../redux';
 
 const Container = styled('div')({
   display: 'flex',
@@ -28,8 +27,6 @@ type Props = {
 
 class Afterward extends React.Component<Props> {
   componentDidMount() {
-    sessionStorage.clear();
-    persistor.purge();
     clearInterval();
   }
 
