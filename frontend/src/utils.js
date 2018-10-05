@@ -45,8 +45,8 @@ export const logAction = async (actionData: object) => {
   }
 };
 
-export const postFormData = (apiUrl: string, data: Object) => {
-  fetch(`${HOST_BACKEND}${apiUrl}`, {
+export const postFormData = async (apiUrl: string, data: Object) => {
+  const postResponse = () => fetch(`${HOST_BACKEND}${apiUrl}`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -55,6 +55,10 @@ export const postFormData = (apiUrl: string, data: Object) => {
     method: 'POST',
     body: JSON.stringify(data),
   })
-    .then(response => console.log(response))
-    .catch(e => console.error('Failed to post form data', e));
+
+  try {
+    const response = await postResponse()
+  } catch (e) {
+    console.error('postAction failed', e);
+  }
 };
