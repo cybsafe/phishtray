@@ -24,11 +24,22 @@ RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm \
 # Install Python 3 and OS dependencies
 RUN yum -y install \
 	gcc \
+	wget \
 	python36u \
 	python36u-pip \
 	python36u-devel \
 	mariadb-devel \
 &&  yum -y clean all
+
+# Download and install dockerize.
+# Needed so the web container will wait for MySQL to start.
+ENV DOCKERIZE_VERSION v0.4.0
+RUN wget --no-verbose https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+# Set PYTHONUNBUFFERED so output is displayed in the Docker log
+ENV PYTHONUNBUFFERED=1
 
 # Add aliases
 RUN echo "alias py3='python3.6'" >> ~/.bashrc
