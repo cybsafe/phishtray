@@ -26,6 +26,10 @@
 2. Bash in to the django container using `docker-compose exec django bash`  
 then create a superuser `py3 manage.py createsuperuser --email your@email.here`
 
+## Running tests
+Run bash inside the django container using `docker-compose exec django bash`
+then run the following test command `py3 manage.py test`
+
 ## Running Django Server
 1. **Normal** - To run the server normally `make django-run`
 2. **Debug** - To run the server in debug mode `make django-debug` (This will allow a tool like PyCharm to actually start the web server within the container)
