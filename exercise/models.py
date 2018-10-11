@@ -87,7 +87,7 @@ class ExerciseEmail(PhishtrayBaseModel):
 
     @property
     def reveal_time(self):
-        email = ExerciseEmailRevealTime.objects.filter(email_id=self.id, exercise__emails__id=self.id).first()
+        email = ExerciseEmailProperties.objects.filter(email_id=self.id, exercise__emails__id=self.id).first()
         if email:
             return email.reveal_time
 
@@ -129,24 +129,28 @@ class Exercise(PhishtrayBaseModel):
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
 
     def set_email_reveal_times(self):
-        if not self.emails.all():
+        emails = self.emails.all()
+        if not emails:
             return
-        # Set some emails based on a threshold to zero time initially.
-        threshold_emails = int(ceil((self.emails.count() * settings.REVEAL_TIME_ZERO_THRESHOLD)))
 
-        while threshold_emails > 0:
-            email = self.emails.all()[randint(0, self.emails.count()-1)]
-            ExerciseEmailRevealTime.objects.get(exercise_id=self.id, email_id=email.id).set_reveal_time(0)
-            threshold_emails -= 1
+        # Set some emails based on a threshold to zero time initially.
+        received_emails_count = int(ceil((len(emails) * settings.REVEAL_TIME_ZERO_THRESHOLD)))
+
+        while received_emails_count > 0:
+            email = emails[randint(0, len(emails)-1)]
+            email_properties = ExerciseEmailProperties.objects.filter(exercise_id=self.id, email_id=email.id).first()
+            if email_properties:
+                email_properties.set_reveal_time(0)
+            received_emails_count -= 1
 
         # Remaining emails without a set time to be set to a random time
-        for email in self.emails.all():
+        for email in emails:
             # This creates a random distribution that tends to drift towards the beginning of the exercise.
             rand_time = int(floor(abs(random() - random()) * (1 + self.length_minutes * 60)))
-            ExerciseEmailRevealTime.objects.get(exercise_id=self.id, email_id=email.id).set_reveal_time(rand_time)
+            ExerciseEmailProperties.objects.get(exercise_id=self.id, email_id=email.id).set_reveal_time(rand_time)
 
 
-class ExerciseEmailRevealTime(PhishtrayBaseModel):
+class ExerciseEmailProperties(PhishtrayBaseModel):
 
     class Meta:
         unique_together = ('exercise', 'email',)
@@ -189,7 +193,7 @@ class ExerciseURL(PhishtrayBaseModel):
 def create_email_reveal_time(sender, instance, created, **kwargs):
     """Create email reveal times when an exercise email instance is created."""
     for email in ExerciseEmail.objects.reverse():
-        ExerciseEmailRevealTime.objects.get_or_create(exercise_id=instance.id, email_id=email.id)
+        ExerciseEmailProperties.objects.get_or_create(exercise_id=instance.id, email_id=email.id)
 
     # Set the email reveal times
     instance.set_email_reveal_times()

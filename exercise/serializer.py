@@ -68,13 +68,6 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
         return email.to_account
 
 
-class EmailRevealTimeSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = ExerciseEmailRevealTime
-        fields = ('reveal_time',)
-
-
 class ThreadSerializer(serializers.ModelSerializer):
     body = serializers.CharField(source='content')
     from_account = serializers.SerializerMethodField()

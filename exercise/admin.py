@@ -6,7 +6,7 @@ from .models import (
     Exercise,
     ExerciseAttachment,
     ExerciseEmail,
-    ExerciseEmailRevealTime,
+    ExerciseEmailProperties,
     ExerciseEmailReply,
     ExerciseURL,
     ExerciseWebPages
@@ -24,14 +24,14 @@ class ExerciseAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'description', 'length_minutes')
 
 
-class ExerciseEmailRevealTimeAdmin(admin.ModelAdmin):
+class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
     list_display = ('exercise', 'email', 'reveal_time')
 
 
 admin.site.register(DemographicsInfo)
 admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(ExerciseEmail)
-admin.site.register(ExerciseEmailRevealTime, ExerciseEmailRevealTimeAdmin)
+admin.site.register(ExerciseEmailProperties, ExerciseEmailPropertiesAdmin)
 admin.site.register(ExerciseEmailReply)
 admin.site.register(ExerciseAttachment)
 admin.site.register(ExerciseURL)

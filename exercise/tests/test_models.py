@@ -5,7 +5,7 @@ from ..factories import (
     ExerciseFactory
 )
 
-from ..models import ExerciseEmailRevealTime
+from ..models import ExerciseEmailProperties
 
 
 class ExerciseModelTests(TestCase):
@@ -14,13 +14,13 @@ class ExerciseModelTests(TestCase):
         exercise = ExerciseFactory()
 
         self.assertEqual(0, exercise.emails.all().count())
-        exercise_reveal_times = ExerciseEmailRevealTime.objects.filter(exercise=exercise)
+        exercise_reveal_times = ExerciseEmailProperties.objects.filter(exercise=exercise)
         self.assertEqual(0, exercise_reveal_times.count())
 
     def test_set_email_reveal_times_with_less_than_ten_emails(self):
         emails = EmailFactory.create_batch(4)
         exercise = ExerciseFactory.create(emails=emails)
-        exercise_reveal_times = ExerciseEmailRevealTime.objects.filter(exercise=exercise)
+        exercise_reveal_times = ExerciseEmailProperties.objects.filter(exercise=exercise)
 
         exercise.set_email_reveal_times()
         received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]
@@ -31,7 +31,7 @@ class ExerciseModelTests(TestCase):
     def test_set_email_reveal_times_with_more_than_ten_emails(self):
         emails = EmailFactory.create_batch(27)
         exercise = ExerciseFactory.create(emails=emails)
-        exercise_reveal_times = ExerciseEmailRevealTime.objects.filter(exercise=exercise)
+        exercise_reveal_times = ExerciseEmailProperties.objects.filter(exercise=exercise)
 
         exercise.set_email_reveal_times()
         received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]
@@ -45,7 +45,7 @@ class ExerciseModelTests(TestCase):
         """
         emails = EmailFactory.create_batch(35)
         exercise = ExerciseFactory.create(emails=emails)
-        exercise_reveal_times = ExerciseEmailRevealTime.objects.filter(exercise=exercise)
+        exercise_reveal_times = ExerciseEmailProperties.objects.filter(exercise=exercise)
 
         exercise.set_email_reveal_times()
         received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]

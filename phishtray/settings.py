@@ -176,5 +176,6 @@ CORS_ALLOW_HEADERS = default_headers + (
 )
 
 
-# Threshold for percentage number of emails that should have a reveal time of zero
+# Threshold for percentage number of emails that should have a reveal time set to zero.
+# The value should be in this range (0.0 - 1.0).
 REVEAL_TIME_ZERO_THRESHOLD = 0.1
