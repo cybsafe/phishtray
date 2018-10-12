@@ -25,8 +25,15 @@ EXERCISE_REPLY_TYPE = (
 )
 
 
-class ExerciseAttachment(PhishtrayBaseModel):
+class ExerciseFile(PhishtrayBaseModel):
+    """
+    ExercieseFiles are not actual files but they act like one.
+    """
     filename = models.CharField(max_length=250, blank=True, null=True)
+    description = models.CharField(max_length=250, blank=True, null=True)
+    # img_url - used for file representation (e.g.: screenshot of the file)
+    # Provide default image?
+    img_url = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.filename
@@ -61,7 +68,7 @@ class ExerciseEmail(PhishtrayBaseModel):
 
     phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
-    attachments = models.ManyToManyField(ExerciseAttachment, blank=True)
+    attachments = models.ManyToManyField(ExerciseFile, blank=True)
     replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
     belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
@@ -127,6 +134,7 @@ class Exercise(PhishtrayBaseModel):
     length_minutes = models.IntegerField()
     demographics = models.ManyToManyField(DemographicsInfo, blank=True)
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
+    files = models.ManyToManyField(ExerciseFile, blank=True)
 
     def set_email_reveal_times(self):
         emails = list(self.emails.all())
@@ -151,6 +159,10 @@ class Exercise(PhishtrayBaseModel):
             rand_time = int(floor(abs(random() - random()) * (1 + self.length_minutes * 60)))
             ExerciseEmailProperties.objects.get(exercise_id=self.id, email_id=email.id).set_reveal_time(rand_time)
 
+        # Make 10% of emails appear in inbox at the beginning of exercise
+        received_emails_count = int(emails.count() * 0.1)
+        if received_emails_count >= 1:
+            updated_reveal_times = []
 
 class ExerciseEmailProperties(PhishtrayBaseModel):
 

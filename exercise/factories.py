@@ -3,7 +3,7 @@ from random import randint
 import factory
 from .models import (
     Exercise,
-    ExerciseAttachment,
+    ExerciseFile,
     ExerciseEmail,
     ExerciseEmailReply,
     DemographicsInfo
@@ -18,11 +18,13 @@ class DemographicsInfoFactory(factory.django.DjangoModelFactory):
     question_type = randint(0,1)
 
 
-class AttachmentFactory(factory.django.DjangoModelFactory):
+class ExerciseFileFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = ExerciseAttachment
+        model = ExerciseFile
 
     filename = factory.Sequence(lambda n: 'filename_{}.rnd'.format(n+1))
+    description = 'Wibble wobble.'
+    img_url = 'https://test.image.url/wibble.png'
 
 
 class EmailFactory(factory.django.DjangoModelFactory):

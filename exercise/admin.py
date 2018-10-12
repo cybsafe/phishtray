@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import (
     DemographicsInfo,
     Exercise,
-    ExerciseAttachment,
+    ExerciseFile,
     ExerciseEmail,
     ExerciseEmailProperties,
     ExerciseEmailReply,
@@ -33,6 +33,6 @@ admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(ExerciseEmail)
 admin.site.register(ExerciseEmailProperties, ExerciseEmailPropertiesAdmin)
 admin.site.register(ExerciseEmailReply)
-admin.site.register(ExerciseAttachment)
+admin.site.register(ExerciseFile)
 admin.site.register(ExerciseURL)
 admin.site.register(ExerciseWebPages)
