@@ -46,19 +46,42 @@ export const logAction = async (actionData: object) => {
 };
 
 export const postFormData = async (apiUrl: string, data: Object) => {
-  const postResponse = () => fetch(`${HOST_BACKEND}${apiUrl}`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': HOST_FRONTEND,
-    },
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
+  const postResponse = () =>
+    fetch(`${HOST_BACKEND}${apiUrl}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': HOST_FRONTEND,
+      },
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
 
   try {
-    const response = await postResponse()
+    const response = await postResponse();
   } catch (e) {
     console.error('postAction failed', e);
   }
 };
+
+export const getHeaderText = location => {
+  switch (location) {
+    case '/inbox':
+      return 'Inbox';
+    case '/accounts':
+      return 'Accounts';
+    case '/files':
+      return 'Files';
+    case '/web':
+      return 'Web';
+    case '/contacts':
+      return 'Contacts';
+    default:
+      return 'Inbox';
+  }
+};
+
+export const getRange = (start, end) =>
+  Array(end - start + 1)
+    .fill()
+    .map((_, idx) => start + idx);

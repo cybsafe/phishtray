@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
-import { withRouter } from 'react-router';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import StopClock from './StopClock';
-import { logAction } from '../../utils';
 import { Button, Modal } from 'carbon-components-react';
+import StopClock from './StopClock';
+import { logAction, getHeaderText } from '../../utils';
 
 const SectionHeader = styled('div')({
   display: 'flex',
@@ -62,6 +61,12 @@ type Props = {
   location: *,
 };
 
+const getHeader = location => (
+  <SectionHeader className={css({ backgroundColor: '#1C8BF4' })}>
+    <HeaderText>{getHeaderText(location)}</HeaderText>
+  </SectionHeader>
+);
+
 class Header extends Component<Props> {
   state = {
     modalOpen: false,
@@ -86,32 +91,7 @@ class Header extends Component<Props> {
             backgroundColor: '#1D1B1C',
           })}
         />
-        <Switch>
-          <Route
-            path="/inbox"
-            render={() => (
-              <SectionHeader className={css({ backgroundColor: '#1C8BF4' })}>
-                <HeaderText>Inbox</HeaderText>
-              </SectionHeader>
-            )}
-          />
-          <Route
-            path="/accounts"
-            render={() => (
-              <SectionHeader className={css({ backgroundColor: '#1969B8' })}>
-                <HeaderText>Accounts</HeaderText>
-              </SectionHeader>
-            )}
-          />
-          <Route
-            path="/files"
-            render={() => (
-              <SectionHeader className={css({ backgroundColor: '#1C8BF4' })}>
-                <HeaderText>Files</HeaderText>
-              </SectionHeader>
-            )}
-          />
-        </Switch>
+        {getHeader(this.props.location.pathname)}
         <ClockContainer>
           <div
             style={{
