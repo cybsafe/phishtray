@@ -16,11 +16,12 @@ class ExerciseEmailReplySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ExerciseFileSerializer(serializers.HyperlinkedModelSerializer):
+    date_created = serializers.DateTimeField(source='created_date')
     file_url = serializers.CharField(source='img_url')
 
     class Meta:
         model = ExerciseFile
-        fields = ('id', 'filename', 'description', 'file_url', 'created_date')
+        fields = ('id', 'file_name', 'description', 'date_created', 'file_url')
 
 
 class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):

@@ -29,14 +29,14 @@ class ExerciseFile(PhishtrayBaseModel):
     """
     ExercieseFiles are not actual files but they act like one.
     """
-    filename = models.CharField(max_length=250, blank=True, null=True)
+    file_name = models.CharField(max_length=250, blank=True, null=True)
     description = models.CharField(max_length=250, blank=True, null=True)
     # img_url - used for file representation (e.g.: screenshot of the file)
     # Provide default image?
     img_url = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
-        return self.filename
+        return self.file_name
 
 
 class ExerciseEmailReply(PhishtrayBaseModel):

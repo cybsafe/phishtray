@@ -22,7 +22,7 @@ class ExerciseFileFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ExerciseFile
 
-    filename = factory.Sequence(lambda n: 'filename_{}.rnd'.format(n+1))
+    file_name = factory.Sequence(lambda n: 'testfile_{}.rnd'.format(n+1))
     description = 'Wibble wobble.'
     img_url = 'https://test.image.url/wibble.png'
 
