@@ -1,5 +1,5 @@
 from math import ceil, floor
-from random import randint, random
+from random import randrange, random
 
 from django.conf import settings
 from django.db import models
@@ -129,7 +129,7 @@ class Exercise(PhishtrayBaseModel):
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
 
     def set_email_reveal_times(self):
-        emails = self.emails.all()
+        emails = list(self.emails.all())
         if not emails:
             return
 
@@ -137,8 +137,10 @@ class Exercise(PhishtrayBaseModel):
         received_emails_count = int(ceil((len(emails) * settings.REVEAL_TIME_ZERO_THRESHOLD)))
 
         while received_emails_count > 0:
-            email = emails[randint(0, len(emails)-1)]
-            email_properties = ExerciseEmailProperties.objects.filter(exercise_id=self.id, email_id=email.id).first()
+            email = emails.pop(randrange(len(emails)))
+            email_properties = ExerciseEmailProperties.objects.filter(
+                exercise_id=self.id, email_id=email.id
+            ).first()
             if email_properties:
                 email_properties.set_reveal_time(0)
             received_emails_count -= 1
