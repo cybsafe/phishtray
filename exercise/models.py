@@ -159,10 +159,6 @@ class Exercise(PhishtrayBaseModel):
             rand_time = int(floor(abs(random() - random()) * (1 + self.length_minutes * 60)))
             ExerciseEmailProperties.objects.get(exercise_id=self.id, email_id=email.id).set_reveal_time(rand_time)
 
-        # Make 10% of emails appear in inbox at the beginning of exercise
-        received_emails_count = int(emails.count() * 0.1)
-        if received_emails_count >= 1:
-            updated_reveal_times = []
 
 class ExerciseEmailProperties(PhishtrayBaseModel):
 
