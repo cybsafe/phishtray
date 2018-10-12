@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Markdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import styled from 'react-emotion';
+import { persistor } from '../../redux';
+import { getRange } from '../../utils';
 
 const Container = styled('div')({
   display: 'flex',
@@ -11,6 +13,7 @@ const Container = styled('div')({
   backgroundColor: '#fff',
   boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)',
   padding: '1rem',
+  flexDirection: 'column',
 });
 
 const Title = styled('h1')({
@@ -25,18 +28,33 @@ type Props = {
   afterwardMessage: String,
 };
 
+const clearSessionStorage = async () => await sessionStorage.clear();
+
 class Afterward extends React.Component<Props> {
+  state = {
+    message: '',
+  };
+
   componentDidMount() {
-    clearInterval();
+    this.setState(
+      {
+        message: this.props.afterwardMessage,
+      },
+      () => {
+        getRange(0, 100).map(i => clearInterval(i)); //bad habits
+        clearSessionStorage().then(() => {
+          sessionStorage.clear();
+          persistor.purge();
+        });
+      }
+    );
   }
 
   render() {
     return (
       <Container>
         <Title>Thanks for taking the exercise.</Title>
-        {this.props.afterwardMessage && (
-          <Markdown source={this.props.afterwardMessage} />
-        )}
+        {this.props.message && <ReactMarkdown source={this.state.message} />}
       </Container>
     );
   }
@@ -44,7 +62,7 @@ class Afterward extends React.Component<Props> {
 
 export default connect(
   state => ({
-    afterwardMessage: state.exercise.afterward,
+    afterwardMessage: state.exercise.afterword,
   }),
   {}
 )(Afterward);
