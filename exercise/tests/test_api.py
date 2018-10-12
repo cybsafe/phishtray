@@ -12,7 +12,7 @@ from ..serializer import (
     ThreadSerializer,
 )
 from ..factories import (
-    AttachmentFactory,
+    ExerciseFileFactory,
     EmailFactory,
     EmailReplyFactory,
     ExerciseFactory,
@@ -54,9 +54,14 @@ class ExerciseAPITests(PhishtrayAPIBaseTest):
         """
         ExerciseFactory.create_batch(5)
         exercise_1 = ExerciseFactory()
+        # add emails
         email_count = randint(1, 15)
         emails = EmailFactory.create_batch(email_count)
         exercise_1.emails.add(*emails)
+        # add files
+        file_count = randint(1, 10)
+        files = ExerciseFileFactory.create_batch(file_count)
+        exercise_1.files.add(*files)
         exercise_1.save()
 
         url = reverse('api:exercise-detail', args=[exercise_1.id])
@@ -65,6 +70,8 @@ class ExerciseAPITests(PhishtrayAPIBaseTest):
         serialized = ExerciseSerializer(Exercise.objects.get(pk=exercise_1.id))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(email_count, len(response.data.get('threads')))
+        self.assertEqual(file_count, len(response.data.get('files')))
         self.assertEqual(serialized.data, underscoreize(response.data))
 
     def test_get_exercise_details_404(self):
@@ -163,7 +170,7 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest):
 
         email_1 = emails[0]
         email_1.replies.add(EmailReplyFactory())
-        email_1.attachments.add(AttachmentFactory())
+        email_1.attachments.add(ExerciseFileFactory())
         email_1.belongs_to = emails[1]
         email_1.save()
 
@@ -182,7 +189,7 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest):
         email_1 = EmailFactory()
         email_1.replies.add(EmailReplyFactory())
         email_1.replies.add(EmailReplyFactory())
-        email_1.attachments.add(AttachmentFactory())
+        email_1.attachments.add(ExerciseFileFactory())
         email_1.save()
 
         # add some emails to email_1 to make it a thread

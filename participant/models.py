@@ -3,7 +3,7 @@ from exercise.models import (
     DemographicsInfo,
     Exercise,
     ExerciseEmail,
-    ExerciseAttachment,
+    ExerciseFile,
 )
 from phishtray.base import PhishtrayBaseModel
 
