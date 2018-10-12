@@ -5,6 +5,8 @@ from ..factories import (
     ExerciseFactory
 )
 
+from ..models import ExerciseEmailProperties
+
 
 class ExerciseModelTests(TestCase):
 
@@ -12,27 +14,30 @@ class ExerciseModelTests(TestCase):
         exercise = ExerciseFactory()
 
         self.assertEqual(0, exercise.emails.all().count())
-        self.assertIsNone(exercise.email_reveal_times)
+        exercise_reveal_times = ExerciseEmailProperties.objects.filter(exercise=exercise)
+        self.assertEqual(0, exercise_reveal_times.count())
 
-    def test_set_email_reveal_times_with_less_then_ten_emails(self):
+    def test_set_email_reveal_times_with_less_than_ten_emails(self):
         emails = EmailFactory.create_batch(4)
         exercise = ExerciseFactory.create(emails=emails)
+        exercise_reveal_times = ExerciseEmailProperties.objects.filter(exercise=exercise)
 
         exercise.set_email_reveal_times()
-        received_emails = [e for e in exercise.email_reveal_times if e['reveal_time'] is 0]
+        received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]
 
         self.assertEqual(4, exercise.emails.all().count())
-        self.assertEqual(0, len(received_emails))
+        self.assertEqual(1, len(received_emails))
 
-    def test_set_email_reveal_times_with_more_then_ten_emails(self):
+    def test_set_email_reveal_times_with_more_than_ten_emails(self):
         emails = EmailFactory.create_batch(27)
         exercise = ExerciseFactory.create(emails=emails)
+        exercise_reveal_times = ExerciseEmailProperties.objects.filter(exercise=exercise)
 
         exercise.set_email_reveal_times()
-        received_emails = [e for e in exercise.email_reveal_times if e['reveal_time'] is 0]
+        received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]
 
         self.assertEqual(27, exercise.emails.all().count())
-        self.assertEqual(2, len(received_emails))
+        self.assertAlmostEqual(3, len(received_emails))
 
     def test_sticky_received_emails(self):
         """
@@ -40,17 +45,17 @@ class ExerciseModelTests(TestCase):
         """
         emails = EmailFactory.create_batch(35)
         exercise = ExerciseFactory.create(emails=emails)
+        exercise_reveal_times = ExerciseEmailProperties.objects.filter(exercise=exercise)
 
         exercise.set_email_reveal_times()
-        received_emails = [e for e in exercise.email_reveal_times if e['reveal_time'] is 0]
-        received_email_ids = [re['email_id'] for re in received_emails]
+        received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]
+        received_email_ids = [re.id for re in exercise.emails.all()]
 
         self.assertEqual(35, exercise.emails.all().count())
-        self.assertEqual(3, len(received_emails))
+        self.assertAlmostEquals(4, len(received_emails))
 
         exercise.title = 'Updated Exercise'
         exercise.save()
 
-        received_emails_after_update = [e for e in exercise.email_reveal_times if e['reveal_time'] is 0]
-        received_email_ids_after_update = [re['email_id'] for re in received_emails_after_update]
+        received_email_ids_after_update = [re.id for re in exercise.emails.all()]
         self.assertEqual(set(received_email_ids), set(received_email_ids_after_update))

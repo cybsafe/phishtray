@@ -27,8 +27,18 @@ class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ExerciseEmail
-        fields = ('id', 'subject', 'from_address', 'from_name', 'to_address', 'to_name', 'phish_type',
-                  'content','attachments', 'replies')
+        fields = (
+            'id',
+            'subject',
+            'from_address',
+            'from_name',
+            'to_address',
+            'to_name',
+            'phish_type',
+            'content',
+            'attachments',
+            'replies',
+        )
 
 
 class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
@@ -40,8 +50,16 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ExerciseEmail
-        fields = ('id', 'subject', 'phish_type', 'from_account', 'to_account',
-                  'body', 'attachments', 'replies')
+        fields = (
+            'id',
+            'subject',
+            'phish_type',
+            'from_account',
+            'to_account',
+            'body',
+            'attachments',
+            'replies',
+        )
 
     def get_from_account(self, email):
         return email.from_account
@@ -57,10 +75,21 @@ class ThreadSerializer(serializers.ModelSerializer):
     replies = ExerciseEmailReplySerializer(many=True)
     attachments = ExerciseAttachmentSerializer(many=True)
     emails = serializers.SerializerMethodField()
+    reveal_time = serializers.SerializerMethodField()
 
     class Meta:
         model = ExerciseEmail
-        fields = ('id', 'subject', 'from_account', 'to_account', 'body', 'attachments', 'replies', 'emails')
+        fields = (
+            'id',
+            'subject',
+            'reveal_time',
+            'from_account',
+            'to_account',
+            'body',
+            'attachments',
+            'replies',
+            'emails',
+        )
 
     def get_emails(self, email):
         belonging_emails_queryset = ExerciseEmail.objects.filter(belongs_to=email.id)
@@ -72,20 +101,23 @@ class ThreadSerializer(serializers.ModelSerializer):
     def get_to_account(self, email):
         return email.to_account
 
+    def get_reveal_time(self, email):
+        return email.reveal_time
+
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     threads = ThreadSerializer(source='emails', many=True)
-    email_reveal_times = serializers.SerializerMethodField()
     profile_form = DemographicsInfoSerializer(source='demographics', many=True)
 
     class Meta:
         model = Exercise
-        fields = ('id', 'title', 'description', 'introduction', 'afterword', 'length_minutes',
-                  'profile_form', 'threads', 'email_reveal_times')
-
-    def get_email_reveal_times(self, obj):
-        # Attempt to generate reveal times if it's missing
-        if not obj.email_reveal_times:
-            obj.set_email_reveal_times()
-            obj.save()
-        return obj.email_reveal_times
+        fields = (
+            'id',
+            'title',
+            'description',
+            'introduction',
+            'afterword',
+            'length_minutes',
+            'profile_form',
+            'threads',
+        )
