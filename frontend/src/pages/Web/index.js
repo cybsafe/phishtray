@@ -44,7 +44,7 @@ class Web extends Component {
       <Container>
         <LinkContainer onClick={this.handleWebsiteClick('mypayment')}>
           <WebsiteIcon className={css({ backgroundColor: '#e84118' })} />
-          <WebsiteTitle>My Payment</WebsiteTitle>
+          <WebsiteTitle>My Money Transfer</WebsiteTitle>
         </LinkContainer>
         <LinkContainer onClick={this.handleWebsiteClick('bluestar')}>
           <WebsiteIcon className={css({ backgroundColor: '#192a56' })} />

@@ -1,14 +1,7 @@
-import MyOffice from './MyOffice';
 import MyPayment from './MyPayment';
 import Bluestar from './Bluestar';
 
 export default {
-  myoffice: {
-    isSecure: true,
-    url: 'www.myoffice.com',
-    component: MyOffice,
-    link: 'myoffice',
-  },
   mypayment: {
     isSecure: true,
     url: 'www.moneytransfer.com',
@@ -32,5 +25,17 @@ export default {
     url: 'www.bluestar.com',
     component: Bluestar,
     link: 'bluestar',
+  },
+  bluestarFalse: {
+    isSecure: true,
+    url: 'www.bluestarr.com',
+    component: Bluestar,
+    link: 'bluestarfalse',
+  },
+  bluestarFalseInsecure: {
+    isSecure: false,
+    url: 'www.bluestarr.com',
+    component: Bluestar,
+    link: 'bluestarFalseInsecure',
   },
 };
