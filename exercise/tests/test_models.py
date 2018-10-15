@@ -37,7 +37,7 @@ class ExerciseModelTests(TestCase):
         received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]
 
         self.assertEqual(27, exercise.emails.all().count())
-        self.assertAlmostEqual(3, len(received_emails))
+        self.assertTrue(2 <= len(received_emails) <= 4)
 
     def test_sticky_received_emails(self):
         """
@@ -52,7 +52,7 @@ class ExerciseModelTests(TestCase):
         received_email_ids = [re.id for re in exercise.emails.all()]
 
         self.assertEqual(35, exercise.emails.all().count())
-        self.assertAlmostEquals(4, len(received_emails))
+        self.assertTrue(3 <= len(received_emails) <= 5)
 
         exercise.title = 'Updated Exercise'
         exercise.save()
