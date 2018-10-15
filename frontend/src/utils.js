@@ -77,7 +77,7 @@ export const getHeaderText = location => {
     case '/contacts':
       return 'Contacts';
     default:
-      return 'Inbox';
+      return location.split('/')[1];
   }
 };
 

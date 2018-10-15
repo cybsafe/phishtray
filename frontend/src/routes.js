@@ -4,6 +4,7 @@ import styled, { css, cx } from 'react-emotion';
 import { connect } from 'react-redux';
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
+import Contacts from './pages/Contacts';
 import Exercise from './pages/Exercise';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
@@ -144,6 +145,11 @@ class PhishTray extends Component {
               path="/inbox"
               isAllowed={this.props.isAllowed}
               component={Inbox}
+            />
+            <PrivateRoute
+              path="/contacts"
+              isAllowed={this.props.isAllowed}
+              component={Contacts}
             />
             <PrivateRoute
               path="/accounts"
