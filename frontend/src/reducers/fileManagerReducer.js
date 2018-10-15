@@ -43,7 +43,11 @@ export default function reducer(
     case 'fileManager/ADD_FILE': {
       return {
         ...state,
-        files: [...new Set([...state.files, action.file])],
+        files: new Set([...state.files.map(item => item.id)]).has(
+          action.file.id
+        )
+          ? [...state.files]
+          : [...state.files, action.file],
       };
     }
     case 'fileManager/REMOVE_FILE': {

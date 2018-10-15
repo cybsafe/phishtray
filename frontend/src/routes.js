@@ -1,7 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import styled, { css, cx } from 'react-emotion';
-import { Tile, Loading } from 'carbon-components-react';
 import { connect } from 'react-redux';
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
@@ -11,7 +10,7 @@ import FileManager from './pages/FileManager';
 import Web from './pages/Web';
 import Afterward from './pages/Afterward';
 import WebBrowser from './components/WebBrowser';
-import { DEFAULT_VERSION } from 'redux-persist';
+import { getHeaderText } from './utils';
 
 const Container = styled('div')({
   display: 'flex',
@@ -67,38 +66,30 @@ function SidebarLink({ to, children, ...rest }) {
   );
 }
 
-const DefaultLayout = ({ children }) => (
-  <Fragment>
-    <div
-      className={css({
-        height: '100%',
-        minHeight: '100%',
-        overflow: 'hidden',
-        backgroundColor: '#f5f7fa',
-      })}
-    >
-      <Header />
-      <Container>
-        <Sidebar>
-          <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
-            Inbox
-          </SidebarLink>
-          <SidebarLink to="/accounts">Accounts</SidebarLink>
-          <SidebarLink to="/contacts">Contacts</SidebarLink>
-          <SidebarLink to="/web">Web</SidebarLink>
-          <SidebarLink to="/files">Files</SidebarLink>
-        </Sidebar>
-        <div className={css({ flex: 1 })}>{children}</div>
-      </Container>
-    </div>
-  </Fragment>
+const DefaultLayout = ({ children, renderProps }) => (
+  <div
+    className={css({
+      height: '100%',
+      minHeight: '100%',
+      overflow: 'hidden',
+      backgroundColor: '#f5f7fa',
+    })}
+  >
+    <Header renderProps={renderProps} />
+    <Container>
+      <Sidebar>
+        <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
+          Inbox
+        </SidebarLink>
+        <SidebarLink to="/contacts">Contacts</SidebarLink>
+        <SidebarLink to="/accounts">Accounts</SidebarLink>
+        <SidebarLink to="/web">Web</SidebarLink>
+        <SidebarLink to="/files">Files</SidebarLink>
+      </Sidebar>
+      <div className={css({ flex: 1 })}>{children}</div>
+    </Container>
+  </div>
 );
-
-const loaderProps = {
-  active: true,
-  withOverlay: true,
-  small: false,
-};
 
 const Welcome = () => (
   <WelcomeContainer>
@@ -106,20 +97,26 @@ const Welcome = () => (
   </WelcomeContainer>
 );
 
-const Entry = param => (
-  <div>
-    <Loading
-      {...loaderProps}
-      className={css({
-        stroke: '#161415!important',
-      })}
-    />
-    {param ? (
-      <Redirect from="/" to="/inbox" />
-    ) : (
-      <Redirect from="/" to="/welcome" />
-    )}
-  </div>
+const PrivateRoute = ({ component: Component, isAllowed, ...rest }) => (
+  <Route
+    {...rest}
+    render={props => {
+      if (isAllowed)
+        document.title = `Phishtray | ${getHeaderText(props.match.path)}`;
+      return isAllowed ? (
+        <DefaultLayout renderProps={props}>
+          <Component {...props} />
+        </DefaultLayout>
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/welcome',
+            state: { from: props.location },
+          }}
+        />
+      );
+    }}
+  />
 );
 
 class PhishTray extends Component {
@@ -134,43 +131,36 @@ class PhishTray extends Component {
           })}
         >
           <Switch>
-            <Route
-              path="/inbox"
-              render={props => (
-                <DefaultLayout>
-                  <Inbox {...props} />
-                </DefaultLayout>
-              )}
-            />
-            <Route
-              path="/accounts"
-              render={props => (
-                <DefaultLayout>
-                  <Accounts {...props} />
-                </DefaultLayout>
-              )}
-            />
-            <Route
-              path="/files"
-              render={props => (
-                <DefaultLayout>
-                  <FileManager {...props} />
-                </DefaultLayout>
-              )}
-            />
-            <Route
-              path="/web"
-              render={props => (
-                <DefaultLayout>
-                  <Web {...props} />
-                </DefaultLayout>
-              )}
-            />
             <Route exact path="/welcome" component={Welcome} />
             <Route path="/welcome/:exerciseUuid" component={Exercise} />
             <Route path="/afterward" component={Afterward} />
-            <Route exact path="/" render={() => Entry(this.props.appCheck)} />
-            <Route component={DefaultLayout} />
+            <PrivateRoute
+              exact
+              path="/"
+              isAllowed={this.props.isAllowed}
+              component={Inbox}
+            />
+            <PrivateRoute
+              path="/inbox"
+              isAllowed={this.props.isAllowed}
+              component={Inbox}
+            />
+            <PrivateRoute
+              path="/accounts"
+              isAllowed={this.props.isAllowed}
+              component={Accounts}
+            />
+            <PrivateRoute
+              path="/files"
+              isAllowed={this.props.isAllowed}
+              component={FileManager}
+            />
+            <PrivateRoute
+              path="/web"
+              isAllowed={this.props.isAllowed}
+              component={Web}
+            />
+            <Route component={Welcome} />
           </Switch>
           <WebBrowser />
         </div>
@@ -181,7 +171,7 @@ class PhishTray extends Component {
 
 export default connect(
   state => ({
-    appCheck: state.exercise.id,
+    isAllowed: state.exercise.id,
   }),
   {}
 )(PhishTray);

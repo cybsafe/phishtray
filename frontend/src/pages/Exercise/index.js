@@ -151,11 +151,11 @@ export class Exercise extends Component<Props> {
           id={exercise.id && `exercise-${exercise.id}`}
         >
           {exercise.profileForm &&
-            exercise.profileForm.map(item => {
+            exercise.profileForm.map((item, index) => {
               switch (item.questionType) {
                 case 0: // number
                   return (
-                    <FormContainer>
+                    <FormContainer key={index}>
                       <Number
                         className={css(`width: 100%`)}
                         label={item.question}
@@ -172,7 +172,7 @@ export class Exercise extends Component<Props> {
 
                 case 1: // text
                   return (
-                    <FormContainer>
+                    <FormContainer key={index}>
                       <TextInput
                         id={`${item.id}`}
                         labelText={item.question}

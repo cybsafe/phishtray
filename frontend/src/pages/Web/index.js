@@ -42,17 +42,13 @@ class Web extends Component {
   render() {
     return (
       <Container>
-        <LinkContainer onClick={this.handleWebsiteClick('myoffice')}>
+        <LinkContainer onClick={this.handleWebsiteClick('mypayment')}>
           <WebsiteIcon className={css({ backgroundColor: '#e84118' })} />
-          <WebsiteTitle>My Office</WebsiteTitle>
+          <WebsiteTitle>My Money Transfer</WebsiteTitle>
         </LinkContainer>
-        <LinkContainer onClick={this.handleWebsiteClick('fileshare')}>
+        <LinkContainer onClick={this.handleWebsiteClick('bluestar')}>
           <WebsiteIcon className={css({ backgroundColor: '#192a56' })} />
-          <WebsiteTitle>Fileshare</WebsiteTitle>
-        </LinkContainer>
-        <LinkContainer onClick={this.handleWebsiteClick('bank')}>
-          <WebsiteIcon className={css({ backgroundColor: '#e84118' })} />
-          <WebsiteTitle>Bank</WebsiteTitle>
+          <WebsiteTitle>Bluestar</WebsiteTitle>
         </LinkContainer>
       </Container>
     );
