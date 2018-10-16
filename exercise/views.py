@@ -11,12 +11,16 @@ from .models import (
 from .serializer import (
     ExerciseSerializer,
     ExerciseEmailSerializer,
-    ThreadSerializer)
+    ExerciseReportSerializer,
+    ExerciseReportListSerializer,
+    ThreadSerializer,
+)
 
 
 class ExerciseViewSet(viewsets.ModelViewSet):
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
+    http_method_names = ('get', 'head', 'options')
 
     def get_permissions(self):
         """
@@ -27,8 +31,6 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = []
         return [permission() for permission in permission_classes]
-
-    http_method_names = ['get', 'head', 'options']
 
     @action(methods=['get'], detail=True, permission_classes=[])
     def init(self, request, *args, **kwargs):
@@ -45,6 +47,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 class ExerciseEmailViewSet(viewsets.ModelViewSet):
     queryset = ExerciseEmail.objects.all()
     serializer_class = ExerciseEmailSerializer
+    http_method_names = ('get', 'head', 'options')
 
     def get_permissions(self):
         """
@@ -55,8 +58,6 @@ class ExerciseEmailViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = []
         return [permission() for permission in permission_classes]
-
-    http_method_names = ['get', 'head', 'options']
 
 
 class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
@@ -65,6 +66,7 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
     """
     queryset = ExerciseEmail.objects.all()
     serializer_class = ThreadSerializer
+    http_method_names = ('get', 'head', 'options')
 
     def get_permissions(self):
         """
@@ -76,4 +78,13 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
             permission_classes = []
         return [permission() for permission in permission_classes]
 
-    http_method_names = ['get', 'head', 'options']
+
+class ExerciseReportViewSet(viewsets.ModelViewSet):
+    queryset = Exercise.objects.all()
+    http_method_names = ('get', 'head', 'options')
+    permission_classes = (IsAuthenticated, IsAdminUser)
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ExerciseReportListSerializer
+        return ExerciseReportSerializer
