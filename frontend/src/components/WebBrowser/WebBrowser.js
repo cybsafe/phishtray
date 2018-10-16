@@ -119,6 +119,7 @@ export class WebBrowser extends Component {
       website: this.props.webpage.link,
       websiteURL: this.props.webpage.url,
       isSecure: this.props.webpage.isSecure,
+      emailId: this.props.emailId,
       ...params,
     });
   };
@@ -157,6 +158,7 @@ export class WebBrowser extends Component {
 
 export default connect(
   state => ({
+    emailId: state.ui.webBrowser ? state.ui.webBrowser.emailId : '',
     webpage: getWebpage(state),
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,

@@ -268,7 +268,7 @@ function RouterLink(props) {
           link: props.href.substring(1),
           timestamp: new Date(),
         });
-        showWebpage(props.href.substring(1));
+        showWebpage(props.href.substring(1), onReplyParams.emailId);
       }}
       href="#"
     >
