@@ -1,6 +1,6 @@
 const ACCOUNTS = [
   {
-    name: 'PayFriend',
+    name: 'My Payment',
     id: 'fa59b235-184f-40ba-aae7-daaf48689d22',
     data: [
       {
@@ -16,7 +16,7 @@ const ACCOUNTS = [
     ],
   },
   {
-    name: 'FaceContacts',
+    name: 'Bluestar',
     id: 'fa59b235-284f-40ba-aae7-dtf48689d22',
     data: [
       {

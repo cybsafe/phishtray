@@ -111,27 +111,34 @@ const PrivateRoute = ({
   <Route
     {...rest}
     render={props => {
-      if (isAllowed)
-        document.title = `Phishtray | ${getHeaderText(props.match.path)}`;
-      return isAllowed ? (
-        <DefaultLayout renderProps={{ countUnread, ...props }}>
-          <Component {...props} />
-        </DefaultLayout>
-      ) : (
-        <Redirect
-          to={{
-            pathname: '/welcome',
-            state: { from: props.location },
-          }}
-        />
-      );
+      if (isAllowed) {
+        document.title = `Phishtray ${
+          getHeaderText(props.match.path)
+            ? ' | ' + getHeaderText(props.match.path)
+            : ''
+        }`;
+        return (
+          <DefaultLayout renderProps={{ countUnread, ...props }}>
+            <Component {...props} />
+          </DefaultLayout>
+        );
+      } else {
+        return (
+          <Redirect
+            to={{
+              pathname: '/welcome',
+              state: { from: props.location },
+            }}
+          />
+        );
+      }
     }}
   />
 );
 
 class PhishTray extends PureComponent {
   render() {
-    const { countUnread } = this.props;
+    const { countUnread, isAllowed } = this.props;
     return (
       <BrowserRouter>
         <div
@@ -148,37 +155,37 @@ class PhishTray extends PureComponent {
             <PrivateRoute
               exact
               path="/"
-              isAllowed
+              isAllowed={isAllowed}
               countUnread={countUnread}
               component={Inbox}
             />
             <PrivateRoute
               path="/inbox"
-              isAllowed
+              isAllowed={isAllowed}
               countUnread={countUnread}
               component={Inbox}
             />
             <PrivateRoute
               path="/accounts"
-              isAllowed
+              isAllowed={isAllowed}
               countUnread={countUnread}
               component={Accounts}
             />
             <PrivateRoute
               path="/contacts"
-              isAllowed
+              isAllowed={isAllowed}
               countUnread={countUnread}
               component={Contacts}
             />
             <PrivateRoute
               path="/files"
-              isAllowed
+              isAllowed={isAllowed}
               countUnread={countUnread}
               component={FileManager}
             />
             <PrivateRoute
               path="/web"
-              isAllowed
+              isAllowed={isAllowed}
               countUnread={countUnread}
               component={Web}
             />
