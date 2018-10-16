@@ -1,3 +1,4 @@
+from django.db.models import F
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -64,7 +65,7 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
     """
     This view retrieves emails in thread style
     """
-    queryset = ExerciseEmail.objects.all()
+    queryset = ExerciseEmail.objects.filter(pk=F('belongs_to_id'))
     serializer_class = ThreadSerializer
     http_method_names = ('get', 'head', 'options')
 
