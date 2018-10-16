@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
 import Exercise from './pages/Exercise';
+import Contacts from './pages/Contacts';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
 import Web from './pages/Web';
@@ -162,6 +163,12 @@ class PhishTray extends PureComponent {
               isAllowed
               countUnread={countUnread}
               component={Accounts}
+            />
+            <PrivateRoute
+              path="/contacts"
+              isAllowed
+              countUnread={countUnread}
+              component={Contacts}
             />
             <PrivateRoute
               path="/files"
