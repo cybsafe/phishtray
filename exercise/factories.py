@@ -6,7 +6,9 @@ from .models import (
     ExerciseFile,
     ExerciseEmail,
     ExerciseEmailReply,
-    DemographicsInfo
+    DemographicsInfo,
+    ExerciseTask,
+    EmailReplyTaskScore,
 )
 
 
@@ -15,7 +17,7 @@ class DemographicsInfoFactory(factory.django.DjangoModelFactory):
         model = DemographicsInfo
 
     question = factory.Sequence(lambda n: 'Question {}'.format(n + 1))
-    question_type = randint(0,1)
+    question_type = randint(0, 1)
 
 
 class ExerciseFileFactory(factory.django.DjangoModelFactory):
@@ -64,3 +66,15 @@ class ExerciseFactory(factory.django.DjangoModelFactory):
         if extracted:
             # A list of emails were passed in, use them
             self.emails.add(*extracted)
+
+
+class ExerciseTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ExerciseTask
+
+
+class EmailReplyTaskScoreFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = EmailReplyTaskScore
+
+    email_reply = factory.SubFactory(EmailReplyFactory)

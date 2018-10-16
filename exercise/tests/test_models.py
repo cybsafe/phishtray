@@ -2,7 +2,10 @@ from django.test import TestCase
 
 from ..factories import (
     EmailFactory,
-    ExerciseFactory
+    ExerciseFactory,
+    EmailReplyFactory,
+    EmailReplyTaskScoreFactory,
+    ExerciseTaskFactory,
 )
 
 from ..models import ExerciseEmailProperties
@@ -59,3 +62,30 @@ class ExerciseModelTests(TestCase):
 
         received_email_ids_after_update = [re.id for re in exercise.emails.all()]
         self.assertEqual(set(received_email_ids), set(received_email_ids_after_update))
+
+    def test_email_reply_scoring(self):
+        """
+        Test the EmailReply.score()
+        """
+        task = ExerciseTaskFactory(
+            name="Legend Score",
+            debrief_over_threshold="Well done for being a legend",
+            debrief_under_threshold="Try harder to reach legend status",
+            score_threshold=3,
+        )
+
+        email_reply = EmailReplyFactory()
+
+        score_one = EmailReplyTaskScoreFactory(
+            task=task,
+            value=4,
+            email_reply=email_reply,
+        )
+
+        score_two = EmailReplyTaskScoreFactory(
+            task=task,
+            value=2,
+        )
+
+        self.assertTrue(score_one in email_reply.scores)
+        self.assertFalse(score_two in email_reply.scores)

@@ -55,9 +55,14 @@ class ExerciseFile(PhishtrayBaseModel):
 class ExerciseEmailReply(PhishtrayBaseModel):
     reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
     message = models.TextField(null=True, blank=True)
+    score = models.ManyToManyField(ExerciseTask, through='EmailReplyTaskScore')
 
     class Meta:
         verbose_name_plural = "Exercise email replies "
+
+    @property
+    def scores(self):
+        return EmailReplyTaskScore.objects.all().filter(email_reply=self)
 
     def __str__(self):
         return self.message
