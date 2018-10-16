@@ -61,6 +61,10 @@ class ExerciseEmailReply(PhishtrayBaseModel):
 
     @property
     def scores(self):
+        """
+        EmailReplies can carry Tasks with a corresponding score.
+        This is irrespective of which exercise and emailreply is used.
+        """
         return EmailReplyTaskScore.objects.all().filter(email_reply=self)
 
     def __str__(self):
