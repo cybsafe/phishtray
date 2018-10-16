@@ -90,8 +90,8 @@ class ExerciseEmail(PhishtrayBaseModel):
     def __str__(self):
         return self.subject
 
-        class Meta:
-            ordering = ['sort_order']
+    class Meta:
+        ordering = ['sort_order']
 
     subject = models.CharField(max_length=250, blank=True, null=True)
 

@@ -225,7 +225,7 @@ function EmailInfo({ email }) {
           <EmailCard
             name="You"
             photoUrl="https://randomuser.me/api/portraits/women/83.jpg"
-            email="you@yourcompany.com"
+            email="geoff@bluestar.com"
             triggerText={
               <a
                 className={css({

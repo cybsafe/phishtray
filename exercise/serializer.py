@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.relations import HyperlinkedIdentityField
+from django.db.models import F
 
 from participant.models import Participant
 from participant.serializer import ParticipantSerializer, ParticipantCSVReportSerializer
@@ -112,7 +113,7 @@ class ThreadSerializer(serializers.ModelSerializer):
 
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
-    threads = ThreadSerializer(source='emails', many=True)
+    threads = serializers.SerializerMethodField()
     profile_form = DemographicsInfoSerializer(source='demographics', many=True)
     files = ExerciseFileSerializer(many=True)
 
@@ -130,9 +131,14 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
             'files'
         )
 
+    def get_threads(self, exercise):
+        queryset = ExerciseEmail.objects.filter(pk=F('belongs_to'))
+        return ThreadSerializer(queryset, many=True).data
+
 
 class ExerciseReportListSerializer(serializers.ModelSerializer):
-    exercise_reports_url = HyperlinkedIdentityField(view_name='api:exercise-report-detail', lookup_field='pk')
+    exercise_reports_url = HyperlinkedIdentityField(
+        view_name='api:exercise-report-detail', lookup_field='pk')
 
     class Meta:
         model = Exercise
