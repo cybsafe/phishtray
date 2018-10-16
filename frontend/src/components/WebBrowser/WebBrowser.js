@@ -7,6 +7,7 @@ import { getWebpage } from '../../selectors/uiSelectors';
 import { closeWebpage } from '../../actions/uiActions';
 
 import { logAction } from '../../utils';
+import actionTypes from '../../config/actionTypes';
 
 const BrowserChrome = styled('div')({
   position: 'absolute',
@@ -27,7 +28,7 @@ const BrowserHeaderButton = styled('div')({
   cursor: 'pointer',
 });
 
-function UnLocked(props) {
+function UnLocked() {
   return (
     <svg width="12" height="16">
       <path d="M2.5 7V3.5a3.5 3.5 0 0 1 7 0V4h-1v-.5a2.5 2.5 0 0 0-5 0V7h7A1.5 1.5 0 0 1 12 8.5v6a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 0 14.5v-6A1.5 1.5 0 0 1 1.5 7h1zm-1 1a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-6a.5.5 0 0 0-.5-.5h-9z" />
@@ -35,7 +36,7 @@ function UnLocked(props) {
   );
 }
 
-function Locked(props) {
+function Locked() {
   return (
     <svg
       width="16"
@@ -118,7 +119,6 @@ export class WebBrowser extends Component {
       website: this.props.webpage.link,
       websiteURL: this.props.webpage.url,
       isSecure: this.props.webpage.isSecure,
-      actionType: `webpage_click`,
       ...params,
     });
   };
@@ -137,7 +137,7 @@ export class WebBrowser extends Component {
         <BrowserHeader
           onClose={() => {
             this.logBrowserActions({
-              actionType: 'closedBrowser',
+              actionType: actionTypes.browserClose,
             });
             closeWebpage();
           }}
@@ -145,7 +145,10 @@ export class WebBrowser extends Component {
           url={webpage.url}
         />
         <MemoryRouter>
-          <ContentComponent logBrowserActions={this.logBrowserActions} />
+          <ContentComponent
+            logBrowserActions={this.logBrowserActions}
+            actionTypes={actionTypes}
+          />
         </MemoryRouter>
       </BrowserChrome>
     );

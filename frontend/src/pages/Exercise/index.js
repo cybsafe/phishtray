@@ -12,12 +12,11 @@ import {
   Tile,
 } from 'carbon-components-react';
 import ReactMarkdown from 'react-markdown';
-
-import type { ExerciseState } from '../../types/exerciseTypes';
 import {
   getLastRefreshed,
   getExercise,
 } from '../../selectors/exerciseSelectors';
+import type { ExerciseState } from '../../types/exerciseTypes';
 
 import {
   getExerciseData,
@@ -25,6 +24,7 @@ import {
   tickTimer,
 } from '../../actions/exerciseActions';
 import { postFormData, logAction } from '../../utils';
+import actionTypes from '../../config/actionTypes';
 
 const Container = styled('div')({
   margin: 'auto',
@@ -151,11 +151,11 @@ export class Exercise extends Component<Props> {
           id={exercise.id && `exercise-${exercise.id}`}
         >
           {exercise.profileForm &&
-            exercise.profileForm.map((item, index) => {
+            exercise.profileForm.map(item => {
               switch (item.questionType) {
                 case 0: // number
                   return (
-                    <FormContainer key={index}>
+                    <FormContainer key={item.id}>
                       <Number
                         className={css(`width: 100%`)}
                         label={item.question}
@@ -172,7 +172,7 @@ export class Exercise extends Component<Props> {
 
                 case 1: // text
                   return (
-                    <FormContainer key={index}>
+                    <FormContainer key={item.id}>
                       <TextInput
                         id={`${item.id}`}
                         labelText={item.question}
@@ -192,7 +192,7 @@ export class Exercise extends Component<Props> {
             onClick={() => {
               logAction({
                 participantId: this.props.participantId,
-                actionType: 'experiment_started',
+                actionType: actionTypes.experimentStarted,
                 timestamp: new Date(),
                 timeDelta: Date.now() - this.props.startTime,
               });

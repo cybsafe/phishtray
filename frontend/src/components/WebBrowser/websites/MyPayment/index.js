@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { TextInput, Button } from 'carbon-components-react';
@@ -41,66 +41,63 @@ const ButtonAlternateProps = () => ({
   kind: 'secondary',
 });
 
-export default class MyPayment extends Component {
-  render() {
-    return (
-      <Switch>
-        <Route
-          path="/congrats"
-          render={() => (
-            <LoginContainer>
-              <h1>
-                Thank you for checking. Your recent transactions have been
-                verified.
-              </h1>
-            </LoginContainer>
-          )}
-        />
-        <Route
-          path="/"
-          render={({ history }) => (
-            <LoginContainer>
-              <img src={Logo} width={323} height={58} alt="logo" />
-              <FieldWrapper>
-                <TextInput
-                  {...TextInputProps()}
-                  onClick={() => {
-                    this.props.logBrowserActions({
-                      event: `clicked_input_email`,
-                    });
-                  }}
-                />
-              </FieldWrapper>
-              <FieldWrapper>
-                <Button
-                  {...ButtonProps()}
-                  onClick={() => {
-                    this.props.logBrowserActions({
-                      event: `clicked_${ButtonProps().kind}_button_next`,
-                    });
-                    history.push('/congrats');
-                  }}
-                >
-                  Next
-                </Button>
-              </FieldWrapper>
-              <FieldWrapper>Having trouble logging in?</FieldWrapper>
-              <FieldWrapper>
-                <Button
-                  {...ButtonAlternateProps()}
-                  onClick={() =>
-                    this.props.logBrowserActions({
-                      event: `clicked_${ButtonProps().kind}_button_signup`,
-                    })
-                  }
-                >
-                  Sign Up
-                </Button>
-              </FieldWrapper>
-            </LoginContainer>
-          )}
-        />
-      </Switch>
-    );
-  }
-}
+const MyPayment = ({ logBrowserActions, actionTypes }) => (
+  <Switch>
+    <Route
+      path="/congrats"
+      render={() => (
+        <LoginContainer>
+          <h1>
+            Thank you for checking. Your recent transactions have been verified.
+          </h1>
+        </LoginContainer>
+      )}
+    />
+    <Route
+      path="/"
+      render={({ history }) => (
+        <LoginContainer>
+          <img src={Logo} width={323} height={58} alt="logo" />
+          <FieldWrapper>
+            <TextInput
+              {...TextInputProps()}
+              onChange={() => {
+                logBrowserActions({
+                  actionType: `${actionTypes.browserInputChange}_email`,
+                });
+              }}
+            />
+          </FieldWrapper>
+          <FieldWrapper>
+            <Button
+              {...ButtonProps()}
+              onClick={() => {
+                logBrowserActions({
+                  actionType: `${actionTypes.browserSubmittedDetails}`,
+                });
+                history.push('/congrats');
+              }}
+            >
+              Next
+            </Button>
+          </FieldWrapper>
+          <FieldWrapper>Having trouble logging in?</FieldWrapper>
+          <FieldWrapper>
+            <Button
+              {...ButtonAlternateProps()}
+              onClick={() =>
+                logBrowserActions({
+                  actionsType: `${actionTypes.browserClick}_signup`,
+                })
+              }
+            >
+              Sign Up
+            </Button>
+          </FieldWrapper>
+        </LoginContainer>
+      )}
+    />
+  </Switch>
+);
+
+export default MyPayment;

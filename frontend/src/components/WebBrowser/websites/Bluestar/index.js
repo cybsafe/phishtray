@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { TextInput, Button, Checkbox, Icon } from 'carbon-components-react';
@@ -79,108 +79,110 @@ const ButtonProps = () => ({
   kind: 'primary',
 });
 
-export default class MyPayment extends Component {
-  render() {
-    return (
-      <Switch>
-        <Route
-          path="/congrats"
-          render={() => (
-            <LoginContainer>
-              <h1>Thanks for visiting Bluestar Technologies.</h1>
-            </LoginContainer>
-          )}
-        />
-        <Route
-          path="/"
-          render={({ history }) => (
-            <div>
-              <LoginBanner>
-                <Icon
-                  icon={iconStarOutline}
-                  name="iconStart"
-                  fill="#4285F4"
-                  height="40px"
-                  width="150px"
-                  className={css({
-                    position: 'absolute',
-                  })}
+const MyBluestar = ({ logBrowserActions, actionTypes }) => (
+  <Switch>
+    <Route
+      path="/congrats"
+      render={() => (
+        <LoginContainer>
+          <h1>Thanks for visiting Bluestar Technologies.</h1>
+        </LoginContainer>
+      )}
+    />
+    <Route
+      path="/"
+      render={({ history }) => (
+        <div>
+          <LoginBanner>
+            <Icon
+              icon={iconStarOutline}
+              name="iconStart"
+              fill="#4285F4"
+              height="40px"
+              width="150px"
+              className={css({
+                position: 'absolute',
+              })}
+            />
+            <LoginBannerText>BlueStar Technologies</LoginBannerText>
+          </LoginBanner>
+          <LoginContainer>
+            <LoginContainerImage>
+              <img src={Bg} alt="background" />
+            </LoginContainerImage>
+            <LoginContainerForm>
+              <FieldWrapper>
+                <LoginHeaderText>Login</LoginHeaderText>
+              </FieldWrapper>
+              <FieldWrapper>
+                <TextInput
+                  {...TextInputProps()}
+                  id="email"
+                  placeholder="Email"
+                  type="email"
+                  onChange={() => {
+                    logBrowserActions({
+                      actionType: `${actionTypes.browserInputChange}_email`,
+                    });
+                  }}
                 />
-                <LoginBannerText>BlueStar Technologies</LoginBannerText>
-              </LoginBanner>
-              <LoginContainer>
-                <LoginContainerImage>
-                  <img src={Bg} alt="background" />
-                </LoginContainerImage>
-                <LoginContainerForm>
-                  <FieldWrapper>
-                    <LoginHeaderText>Login</LoginHeaderText>
-                  </FieldWrapper>
-                  <FieldWrapper>
-                    <TextInput
-                      {...TextInputProps()}
-                      id="email"
-                      placeholder="Email"
-                      type="email"
-                      onClick={() => {
-                        this.props.logBrowserActions({
-                          event: `clicked_input_email`,
-                        });
-                      }}
-                    />
-                  </FieldWrapper>
-                  <FieldWrapper>
-                    <TextInput
-                      {...TextInputProps()}
-                      id="password"
-                      placeholder="Password"
-                      type="password"
-                      onClick={() => {
-                        this.props.logBrowserActions({
-                          event: `clicked_input_password`,
-                        });
-                      }}
-                    />
-                  </FieldWrapper>
-                  <FieldWrapper>
-                    <Checkbox
-                      labelText="Remember Me"
-                      onChange={value =>
-                        this.props.logBrowserActions({
-                          event: `set_remember_${value}`,
-                        })
-                      }
-                      id="checkbox-label-1"
-                    />
-                    <Button
-                      {...ButtonProps()}
-                      onClick={() => {
-                        this.props.logBrowserActions({
-                          event: `clicked_${ButtonProps().kind}_button_next`,
-                        });
-                        history.push('/congrats');
-                      }}
-                    >
-                      Login
-                    </Button>
-                  </FieldWrapper>
-                  <FieldWrapper>
-                    <ForgotPassLink
-                      onClick={() =>
-                        this.props.logBrowserActions({
-                          event: `clicked_forgotten_password`,
-                        })
-                      }
-                    >
-                      Forgotten your password?
-                    </ForgotPassLink>
-                  </FieldWrapper>
-                </LoginContainerForm>
-              </LoginContainer>
-            </div>
-          )}
-        />
-      </Switch>
-    );
-  }
-}
+              </FieldWrapper>
+              <FieldWrapper>
+                <TextInput
+                  {...TextInputProps()}
+                  id="password"
+                  placeholder="Password"
+                  type="password"
+                  onChange={() => {
+                    logBrowserActions({
+                      actionType: `${actionTypes.browserInputChange}_password`,
+                    });
+                  }}
+                />
+              </FieldWrapper>
+              <FieldWrapper>
+                <Checkbox
+                  labelText="Remember Me"
+                  onChange={value =>
+                    logBrowserActions({
+                      actionType: `${
+                        actionTypes.browserInputChange
+                      }_set_remember_${value}`,
+                    })
+                  }
+                  id="checkbox-label-1"
+                />
+                <Button
+                  {...ButtonProps()}
+                  onClick={() => {
+                    logBrowserActions({
+                      actionsType: actionTypes.browserSubmittedDetails,
+                    });
+                    history.push('/congrats');
+                  }}
+                >
+                  Login
+                </Button>
+              </FieldWrapper>
+              <FieldWrapper>
+                <ForgotPassLink
+                  onClick={() =>
+                    logBrowserActions({
+                      actionsType: `${
+                        actionTypes.browserClick
+                      }_forgottenPassword`,
+                    })
+                  }
+                >
+                  Forgotten your password?
+                </ForgotPassLink>
+              </FieldWrapper>
+            </LoginContainerForm>
+          </LoginContainer>
+        </div>
+      )}
+    />
+  </Switch>
+);
+
+export default MyBluestar;

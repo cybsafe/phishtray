@@ -7,7 +7,7 @@ import { getAllContacts } from '../../data/contacts';
 
 import ContactDetail from './components/ContactDetail';
 import ContactListItem from './components/ContactListItem';
-
+import actionTypes from '../../config/actionTypes';
 import { logAction } from '../../utils';
 
 const Container = styled('div')({
@@ -55,7 +55,7 @@ class Contacts extends Component {
       participantId: this.props.participantId,
       timeDelta: Date.now() - this.props.startTime,
       timestamp: new Date(),
-      actionType: 'contact_open',
+      actionType: actionTypes.contactOpen,
       ...params,
     });
   };

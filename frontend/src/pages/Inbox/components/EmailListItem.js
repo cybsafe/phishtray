@@ -3,6 +3,7 @@ import { Route, Link } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 
 import { logAction } from '../../../utils';
+import actionTypes from '../../../config/actionTypes';
 
 const Container = styled('div')(
   {
@@ -39,7 +40,7 @@ export default function EmailListItem({ email, onOpenParams }) {
           onClick={() => {
             logAction({
               participantId,
-              actionType: 'emailOpen',
+              actionType: actionTypes.emailOpen,
               emailId: email.id,
               timestamp: new Date(),
               timeDelta: Date.now() - startTime,
