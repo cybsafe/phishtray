@@ -21,6 +21,7 @@ import {
 } from '../../actions/fileManagerActions';
 
 import { logAction } from '../../utils';
+import actionTypes from '../../config/actionTypes';
 
 const columns = [
   {
@@ -152,7 +153,7 @@ export class FileManager extends Component {
                   file={file}
                   deleteFileHandler={file => {
                     this.logActionsHandler({
-                      actionType: 'file_delete',
+                      actionType: actionTypes.fileDelete,
                       fileId: file.id,
                       fileName: file.fileName,
                     }),
@@ -160,7 +161,7 @@ export class FileManager extends Component {
                   }}
                   displayFileModalHandler={file => {
                     this.logActionsHandler({
-                      actionType: 'file_open',
+                      actionType: actionTypes.fileOpen,
                       fileId: file.id,
                       fileName: file.fileName,
                     }),

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { TextInput, Button, Checkbox, Icon } from 'carbon-components-react';
@@ -79,8 +79,19 @@ const ButtonProps = () => ({
   kind: 'primary',
 });
 
-export default class MyPayment extends Component {
+class MyBluestar extends React.Component {
+  state = {
+    logged: {},
+  };
+
+  _changed = () => {
+    this.state({
+      logged: {},
+    });
+  };
+
   render() {
+    const { logBrowserActions, actionTypes } = this.props;
     return (
       <Switch>
         <Route
@@ -122,10 +133,23 @@ export default class MyPayment extends Component {
                       id="email"
                       placeholder="Email"
                       type="email"
-                      onClick={() => {
-                        this.props.logBrowserActions({
-                          event: `clicked_input_email`,
-                        });
+                      onChange={event => {
+                        if (!this.state.logged[event.target.id]) {
+                          this.setState(
+                            {
+                              logged: {
+                                ...this.state.logged,
+                                [event.target.id]: true,
+                              },
+                            },
+                            () =>
+                              logBrowserActions({
+                                actionType: `${
+                                  actionTypes.browserInputChange
+                                }_email`,
+                              })
+                          );
+                        }
                       }}
                     />
                   </FieldWrapper>
@@ -135,10 +159,23 @@ export default class MyPayment extends Component {
                       id="password"
                       placeholder="Password"
                       type="password"
-                      onClick={() => {
-                        this.props.logBrowserActions({
-                          event: `clicked_input_password`,
-                        });
+                      onChange={event => {
+                        if (!this.state.logged[event.target.id]) {
+                          this.setState(
+                            {
+                              logged: {
+                                ...this.state.logged,
+                                [event.target.id]: true,
+                              },
+                            },
+                            () =>
+                              logBrowserActions({
+                                actionType: `${
+                                  actionTypes.browserInputChange
+                                }_password`,
+                              })
+                          );
+                        }
                       }}
                     />
                   </FieldWrapper>
@@ -146,8 +183,10 @@ export default class MyPayment extends Component {
                     <Checkbox
                       labelText="Remember Me"
                       onChange={value =>
-                        this.props.logBrowserActions({
-                          event: `set_remember_${value}`,
+                        logBrowserActions({
+                          actionType: `${
+                            actionTypes.browserInputChange
+                          }_set_remember_${value}`,
                         })
                       }
                       id="checkbox-label-1"
@@ -155,8 +194,8 @@ export default class MyPayment extends Component {
                     <Button
                       {...ButtonProps()}
                       onClick={() => {
-                        this.props.logBrowserActions({
-                          event: `clicked_${ButtonProps().kind}_button_next`,
+                        logBrowserActions({
+                          actionsType: actionTypes.browserSubmittedDetails,
                         });
                         history.push('/congrats');
                       }}
@@ -167,8 +206,10 @@ export default class MyPayment extends Component {
                   <FieldWrapper>
                     <ForgotPassLink
                       onClick={() =>
-                        this.props.logBrowserActions({
-                          event: `clicked_forgotten_password`,
+                        logBrowserActions({
+                          actionsType: `${
+                            actionTypes.browserClick
+                          }_forgottenPassword`,
                         })
                       }
                     >
@@ -184,3 +225,5 @@ export default class MyPayment extends Component {
     );
   }
 }
+
+export default MyBluestar;

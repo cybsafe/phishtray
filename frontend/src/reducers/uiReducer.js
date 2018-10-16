@@ -9,6 +9,7 @@ type WebPage = $Keys<typeof websites>;
 type State = {
   webBrowser: ?{
     page: WebPage,
+    emailId: String,
   },
 };
 
@@ -25,6 +26,7 @@ export default function reducer(
       return produce(state, draft => {
         draft.webBrowser = {
           page: action.payload,
+          emailId: action.emailId,
         };
       });
     }

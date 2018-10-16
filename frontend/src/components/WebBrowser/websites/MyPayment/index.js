@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { TextInput, Button } from 'carbon-components-react';
@@ -41,8 +41,19 @@ const ButtonAlternateProps = () => ({
   kind: 'secondary',
 });
 
-export default class MyPayment extends Component {
+class MyPayment extends React.Component {
+  state = {
+    logged: {},
+  };
+
+  _changed = () => {
+    this.state({
+      logged: {},
+    });
+  };
+
   render() {
+    const { logBrowserActions, actionTypes } = this.props;
     return (
       <Switch>
         <Route
@@ -64,10 +75,23 @@ export default class MyPayment extends Component {
               <FieldWrapper>
                 <TextInput
                   {...TextInputProps()}
-                  onClick={() => {
-                    this.props.logBrowserActions({
-                      event: `clicked_input_email`,
-                    });
+                  onChange={event => {
+                    if (!this.state.logged[event.target.id]) {
+                      this.setState(
+                        {
+                          logged: {
+                            ...this.state.logged,
+                            [event.target.id]: true,
+                          },
+                        },
+                        () =>
+                          logBrowserActions({
+                            actionType: `${
+                              actionTypes.browserInputChange
+                            }_email`,
+                          })
+                      );
+                    }
                   }}
                 />
               </FieldWrapper>
@@ -75,8 +99,8 @@ export default class MyPayment extends Component {
                 <Button
                   {...ButtonProps()}
                   onClick={() => {
-                    this.props.logBrowserActions({
-                      event: `clicked_${ButtonProps().kind}_button_next`,
+                    logBrowserActions({
+                      actionType: `${actionTypes.browserSubmittedDetails}`,
                     });
                     history.push('/congrats');
                   }}
@@ -89,8 +113,8 @@ export default class MyPayment extends Component {
                 <Button
                   {...ButtonAlternateProps()}
                   onClick={() =>
-                    this.props.logBrowserActions({
-                      event: `clicked_${ButtonProps().kind}_button_signup`,
+                    logBrowserActions({
+                      actionsType: `${actionTypes.browserClick}_signup`,
                     })
                   }
                 >
@@ -104,3 +128,5 @@ export default class MyPayment extends Component {
     );
   }
 }
+
+export default MyPayment;

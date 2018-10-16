@@ -1,8 +1,10 @@
+// @flow
 import React from 'react';
 
-import Button from './../../../components/Button/ReplyButton';
+import Button from '../../../components/Button/ReplyButton';
 
 import { logAction } from '../../../utils';
+import actionTypes from '../../../config/actionTypes';
 
 type Props = {
   replies: Array<*>,
@@ -18,7 +20,7 @@ const QuickReply = ({ replies, onClickParams }: Props) => {
       content={reply.message}
       onClick={() =>
         logAction({
-          actionType: 'email_quickreply',
+          actionType: actionTypes.emailQuickReply,
           participantId: participantId,
           timeDelta: Date.now() - startTime,
           emailId: emailId,

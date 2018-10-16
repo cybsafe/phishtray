@@ -1,10 +1,12 @@
+// @flow
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Button, Modal } from 'carbon-components-react';
 import StopClock from './StopClock';
 import { logAction, getHeaderText } from '../../utils';
+import actionTypes from '../../config/actionTypes';
 
 const SectionHeader = styled('div')({
   display: 'flex',
@@ -107,7 +109,7 @@ class Header extends Component<Props> {
               onTimeout={() => {
                 logAction({
                   participantId: this.props.participantId,
-                  actionType: 'experiment_ended_timeout',
+                  actionType: actionTypes.experimentEndTimeout,
                   timestamp: new Date(),
                   timeDelta: Date.now() - this.props.startTime,
                 });
@@ -138,7 +140,7 @@ class Header extends Component<Props> {
           onRequestSubmit={() => {
             logAction({
               participantId: this.props.participantId,
-              actionType: 'experiment_ended_manually',
+              actionType: actionTypes.experimentEndManual,
               timestamp: new Date(),
               timeDelta: Date.now() - this.props.startTime,
             });

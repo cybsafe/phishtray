@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
-
+import { connect } from 'react-redux';
 import { getAllAccounts } from '../../data/accounts';
-
 import AccountDetail from './components/AccountDetail';
 import AccountListItem from './components/AccountListItem';
-
-import { connect } from 'react-redux';
 import { logAction } from '../../utils';
+import actionTypes from '../../config/actionTypes';
 
 const Container = styled('div')({
   display: 'flex',
@@ -55,7 +53,7 @@ class Accounts extends Component {
       participantId: this.props.participantId,
       timeDelta: Date.now() - this.props.startTime,
       timestamp: new Date(),
-      actionType: 'account_open',
+      actionType: actionTypes.accountOpen,
       ...params,
     });
   };
