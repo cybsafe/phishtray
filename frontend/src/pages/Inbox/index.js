@@ -23,6 +23,7 @@ const EmailList = styled('div')({
   flexBasis: 280,
   backgroundColor: '#1B87EC',
   minHeight: '100%',
+  overflow: 'auto',
 });
 
 const EmailContainer = styled('div')({
