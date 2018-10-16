@@ -9,7 +9,9 @@ from .models import (
     ExerciseEmailProperties,
     ExerciseEmailReply,
     ExerciseURL,
-    ExerciseWebPages
+    ExerciseWebPages,
+	ExerciseTask,
+	EmailReplyTaskScore,
 )
 
 
@@ -31,6 +33,8 @@ class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
 admin.site.register(DemographicsInfo)
 admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(ExerciseEmail)
+admin.site.register(ExerciseTask)
+admin.site.register(EmailReplyTaskScore)
 admin.site.register(ExerciseEmailProperties, ExerciseEmailPropertiesAdmin)
 admin.site.register(ExerciseEmailReply)
 admin.site.register(ExerciseFile)

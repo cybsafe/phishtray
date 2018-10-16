@@ -25,6 +25,19 @@ EXERCISE_REPLY_TYPE = (
 )
 
 
+class ExerciseTask(PhishtrayBaseModel):
+    """
+    Tasks are a way to define a metric for scoring in the psychometric evaluation
+    """
+    name = models.CharField(max_length=250, blank=True, null=True)
+    debrief_over_threshold = models.TextField(null=True, blank=True)
+    debrief_under_threshold = models.TextField(null=True, blank=True)
+    score_threshold = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
 class ExerciseFile(PhishtrayBaseModel):
     """
     ExercieseFiles are not actual files but they act like one.
@@ -43,8 +56,25 @@ class ExerciseEmailReply(PhishtrayBaseModel):
     reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
     message = models.TextField(null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = "Exercise email replies "
+
     def __str__(self):
         return self.message
+
+
+class EmailReplyTaskScore(PhishtrayBaseModel):
+    """
+    A method to associate scores to email replies.
+    """
+
+    value = models.IntegerField()
+    email_reply = models.ForeignKey(
+        ExerciseEmailReply, on_delete=models.CASCADE, null=True, blank=True)
+    task = models.ForeignKey(ExerciseTask, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return "Reply: {self.email_reply} - {self.task} - {self.value}".format(self=self)
 
 
 class ExerciseEmail(PhishtrayBaseModel):
@@ -94,7 +124,8 @@ class ExerciseEmail(PhishtrayBaseModel):
 
     @property
     def reveal_time(self):
-        email = ExerciseEmailProperties.objects.filter(email_id=self.id, exercise__emails__id=self.id).first()
+        email = ExerciseEmailProperties.objects.filter(
+            email_id=self.id, exercise__emails__id=self.id).first()
         if email:
             return email.reveal_time
 
@@ -157,7 +188,8 @@ class Exercise(PhishtrayBaseModel):
         for email in emails:
             # This creates a random distribution that tends to drift towards the beginning of the exercise.
             rand_time = int(floor(abs(random() - random()) * (1 + self.length_minutes * 60)))
-            ExerciseEmailProperties.objects.get(exercise_id=self.id, email_id=email.id).set_reveal_time(rand_time)
+            ExerciseEmailProperties.objects.get(
+                exercise_id=self.id, email_id=email.id).set_reveal_time(rand_time)
 
 
 class ExerciseEmailProperties(PhishtrayBaseModel):
