@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import styled, { css, cx } from 'react-emotion';
 import { connect } from 'react-redux';
 import Inbox from './pages/Inbox';
 import Accounts from './pages/Accounts';
-import Contacts from './pages/Contacts';
 import Exercise from './pages/Exercise';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
@@ -12,6 +11,7 @@ import Web from './pages/Web';
 import Afterward from './pages/Afterward';
 import WebBrowser from './components/WebBrowser';
 import { getHeaderText } from './utils';
+import { getUnreadThreads } from './selectors/exerciseSelectors';
 
 const Container = styled('div')({
   display: 'flex',
@@ -67,30 +67,33 @@ function SidebarLink({ to, children, ...rest }) {
   );
 }
 
-const DefaultLayout = ({ children, renderProps }) => (
-  <div
-    className={css({
-      height: '100%',
-      minHeight: '100%',
-      overflow: 'hidden',
-      backgroundColor: '#f5f7fa',
-    })}
-  >
-    <Header renderProps={renderProps} />
-    <Container>
-      <Sidebar>
-        <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
-          Inbox
-        </SidebarLink>
-        <SidebarLink to="/contacts">Contacts</SidebarLink>
-        <SidebarLink to="/accounts">Accounts</SidebarLink>
-        <SidebarLink to="/web">Web</SidebarLink>
-        <SidebarLink to="/files">Files</SidebarLink>
-      </Sidebar>
-      <div className={css({ flex: 1 })}>{children}</div>
-    </Container>
-  </div>
-);
+const DefaultLayout = ({ children, renderProps }) => {
+  const { countUnread } = renderProps;
+  return (
+    <div
+      className={css({
+        height: '100%',
+        minHeight: '100%',
+        overflow: 'hidden',
+        backgroundColor: '#f5f7fa',
+      })}
+    >
+      <Header renderProps={renderProps} />
+      <Container>
+        <Sidebar>
+          <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
+            {countUnread ? `Inbox [${countUnread}]` : 'Inbox'}
+          </SidebarLink>
+          <SidebarLink to="/contacts">Contacts</SidebarLink>
+          <SidebarLink to="/accounts">Accounts</SidebarLink>
+          <SidebarLink to="/web">Web</SidebarLink>
+          <SidebarLink to="/files">Files</SidebarLink>
+        </Sidebar>
+        <div className={css({ flex: 1 })}>{children}</div>
+      </Container>
+    </div>
+  );
+};
 
 const Welcome = () => (
   <WelcomeContainer>
@@ -98,14 +101,19 @@ const Welcome = () => (
   </WelcomeContainer>
 );
 
-const PrivateRoute = ({ component: Component, isAllowed, ...rest }) => (
+const PrivateRoute = ({
+  component: Component,
+  isAllowed,
+  countUnread,
+  ...rest
+}) => (
   <Route
     {...rest}
     render={props => {
       if (isAllowed)
         document.title = `Phishtray | ${getHeaderText(props.match.path)}`;
       return isAllowed ? (
-        <DefaultLayout renderProps={props}>
+        <DefaultLayout renderProps={{ countUnread, ...props }}>
           <Component {...props} />
         </DefaultLayout>
       ) : (
@@ -120,8 +128,9 @@ const PrivateRoute = ({ component: Component, isAllowed, ...rest }) => (
   />
 );
 
-class PhishTray extends Component {
+class PhishTray extends PureComponent {
   render() {
+    const { countUnread } = this.props;
     return (
       <BrowserRouter>
         <div
@@ -138,32 +147,32 @@ class PhishTray extends Component {
             <PrivateRoute
               exact
               path="/"
-              isAllowed={this.props.isAllowed}
+              isAllowed
+              countUnread={countUnread}
               component={Inbox}
             />
             <PrivateRoute
               path="/inbox"
-              isAllowed={this.props.isAllowed}
+              isAllowed
+              countUnread={countUnread}
               component={Inbox}
             />
             <PrivateRoute
-              path="/contacts"
-              isAllowed={this.props.isAllowed}
-              component={Contacts}
-            />
-            <PrivateRoute
               path="/accounts"
-              isAllowed={this.props.isAllowed}
+              isAllowed
+              countUnread={countUnread}
               component={Accounts}
             />
             <PrivateRoute
               path="/files"
-              isAllowed={this.props.isAllowed}
+              isAllowed
+              countUnread={countUnread}
               component={FileManager}
             />
             <PrivateRoute
               path="/web"
-              isAllowed={this.props.isAllowed}
+              isAllowed
+              countUnread={countUnread}
               component={Web}
             />
             <Route component={Welcome} />
@@ -178,6 +187,7 @@ class PhishTray extends Component {
 export default connect(
   state => ({
     isAllowed: state.exercise.id,
+    countUnread: getUnreadThreads(state),
   }),
   {}
 )(PhishTray);
