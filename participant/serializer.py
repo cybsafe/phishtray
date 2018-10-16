@@ -1,6 +1,6 @@
 from rest_framework import serializers
-
-from exercise.models import ExerciseEmail, EXERCISE_EMAIL_PHISH
+import json
+from exercise.models import ExerciseEmail, EXERCISE_EMAIL_PHISH, ExerciseEmailReply
 from .models import (
     Participant,
     ParticipantAction,
@@ -139,3 +139,36 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
             output += '\n'
 
         return output
+
+
+
+class ParticipantScoreSerializer(serializers.HyperlinkedModelSerializer):
+    scores = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Participant
+        fields = ('id', 'scores')
+
+    def get_scores(self, participant):
+        participant_actions_queryset = ParticipantAction.objects.filter(participant=participant)
+        serialized_actions = ParticipantActionSerializer(participant_actions_queryset, many=True).data
+
+        reply_actions = [
+            action['action_details'] for action in serialized_actions
+            if action['action_details']['action_type'] == 'email_quick_reply'
+        ]
+
+        task_score = {}
+
+        for action in reply_actions:
+            if('reply_id' in action):
+                tasks = ExerciseEmailReply.objects.get(pk=action['reply_id'])
+                email_task_scores = tasks.scores
+                for email_score in email_task_scores:
+                    score = email_score.value
+                    task = email_score.task
+                    task_score.setdefault(str(task.id), []).append(score)
+
+        
+
+        return json.dumps(task_score)

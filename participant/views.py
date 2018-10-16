@@ -10,7 +10,7 @@ from .models import (
     ParticipantAction,
     ParticipantProfileEntry,
 )
-from .serializer import ParticipantSerializer
+from .serializer import (ParticipantSerializer, ParticipantScoreSerializer)
 
 from utils.fancy_print import FancyPrint
 
@@ -127,3 +127,13 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
         resp['action_id'] = str(participant_action.id)
         return Response(data=resp)
+
+
+class ParticipantScoreViewSet(viewsets.ModelViewSet):
+    queryset = Participant.objects.all()
+    http_method_names = ('get', 'head', 'options')
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ParticipantScoreSerializer
+        return ParticipantScoreSerializer
