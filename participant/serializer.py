@@ -139,8 +139,3 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
             output += '\n'
 
         return output
-
-
-
-
-
