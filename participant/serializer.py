@@ -1,11 +1,17 @@
 from rest_framework import serializers
 import json
-from exercise.models import ExerciseEmail, EXERCISE_EMAIL_PHISH, ExerciseEmailReply
+from exercise.models import (
+    ExerciseEmail,
+    EXERCISE_EMAIL_PHISH,
+    ExerciseEmailReply,
+    ExerciseTask
+)
 from .models import (
     Participant,
     ParticipantAction,
     ParticipantProfileEntry,
-    ActionLog)
+    ActionLog,
+)
 
 
 class ParticipantActionSerializer(serializers.ModelSerializer):
@@ -58,7 +64,8 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
 
     def get_csv(self, participant):
         participant_actions_queryset = ParticipantAction.objects.filter(participant=participant)
-        serialized_actions = ParticipantActionSerializer(participant_actions_queryset, many=True).data
+        serialized_actions = ParticipantActionSerializer(
+            participant_actions_queryset, many=True).data
 
         email_uuids = {
             action['action_details']['email_id'] for action in serialized_actions
@@ -123,10 +130,14 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
             csv_row['deleted'] = recorded('email_deleted', related_actions)
             csv_row['deleted_time'] = get_value('email_deleted', 'time_delta', related_actions)
             csv_row['clicked_link'] = recorded('email_link_clicked', related_actions)
-            csv_row['entered_details'] = recorded('webpage_login_credentials_entered', related_actions)
-            csv_row['entered_details_time'] = get_value('webpage_login_credentials_entered', 'time_delta', related_actions)
-            csv_row['submitted_details'] = recorded('webpage_login_credentials_submitted', related_actions)
-            csv_row['submitted_details_time'] = get_value('webpage_login_credentials_submitted', 'time_delta', related_actions)
+            csv_row['entered_details'] = recorded(
+                'webpage_login_credentials_entered', related_actions)
+            csv_row['entered_details_time'] = get_value(
+                'webpage_login_credentials_entered', 'time_delta', related_actions)
+            csv_row['submitted_details'] = recorded(
+                'webpage_login_credentials_submitted', related_actions)
+            csv_row['submitted_details_time'] = get_value(
+                'webpage_login_credentials_submitted', 'time_delta', related_actions)
 
             csv_rows.append(csv_row)
 
@@ -141,7 +152,6 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
         return output
 
 
-
 class ParticipantScoreSerializer(serializers.HyperlinkedModelSerializer):
     scores = serializers.SerializerMethodField()
 
@@ -151,7 +161,8 @@ class ParticipantScoreSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_scores(self, participant):
         participant_actions_queryset = ParticipantAction.objects.filter(participant=participant)
-        serialized_actions = ParticipantActionSerializer(participant_actions_queryset, many=True).data
+        serialized_actions = ParticipantActionSerializer(
+            participant_actions_queryset, many=True).data
 
         reply_actions = [
             action['action_details'] for action in serialized_actions
@@ -169,6 +180,15 @@ class ParticipantScoreSerializer(serializers.HyperlinkedModelSerializer):
                     task = email_score.task
                     task_score.setdefault(str(task.id), []).append(score)
 
-        
+        response = []
+        for key, score_data in task_score.items():
 
-        return json.dumps(task_score)
+            task = ExerciseTask.objects.get(id=key)
+            score = sum(score_data)
+            response.append({
+                'task': task.name,
+				'score': score,
+				'debrief': task.evaluate(score)
+            })
+
+        return response
