@@ -123,7 +123,7 @@ export class Exercise extends Component<Props> {
     event.preventDefault();
 
     const { exercise } = this.props;
-    this.props.startCountdown(exercise.lengthMinutes);
+    exercise.startTime || this.props.startCountdown(exercise.lengthMinutes);
 
     const data = {
       profileForm:
@@ -198,7 +198,7 @@ export class Exercise extends Component<Props> {
               });
 
               setInterval(() => {
-                this.props.tickTimer(100); //this is way too high, demo purposes
+                this.props.tickTimer(5); //this is way too high, demo purposes
               }, 5 * 1000);
             }}
           >
