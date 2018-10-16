@@ -10,8 +10,8 @@ from .models import (
     ExerciseEmailReply,
     ExerciseURL,
     ExerciseWebPages,
-	ExerciseTask,
-	EmailReplyTaskScore,
+    ExerciseTask,
+    EmailReplyTaskScore,
 )
 
 
