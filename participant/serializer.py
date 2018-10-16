@@ -1,7 +1,3 @@
-import csv
-import tempfile
-from operator import itemgetter
-
 from rest_framework import serializers
 
 from exercise.models import ExerciseEmail, EXERCISE_EMAIL_PHISH
@@ -134,18 +130,15 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
 
             csv_rows.append(csv_row)
 
-        # with tempfile.TemporaryFile(mode='w') as fp:
-        #     writer = csv.DictWriter(fp, fieldnames=csv_headers)
-        #     writer.writeheader()
-        #     for row in csv_rows:
-        #         writer.writerow(row)
+        # Basic CSV output for now
+        output = ','.join(csv_headers)
+        output += '\n'
 
-        data = {
-            'headers': csv_headers,
-            'rows': csv_rows
-        }
+        for row in csv_rows:
+            output += ','.join(str(v) for v in row.values())
+            output += '\n'
 
-        return data
+        return output
 
 
 

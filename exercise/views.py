@@ -12,7 +12,8 @@ from .serializer import (
     ExerciseSerializer,
     ExerciseEmailSerializer,
     ExerciseReportSerializer,
-    ThreadSerializer
+    ExerciseReportListSerializer,
+    ThreadSerializer,
 )
 
 
@@ -80,6 +81,10 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
 
 class ExerciseReportViewSet(viewsets.ModelViewSet):
     queryset = Exercise.objects.all()
-    serializer_class = ExerciseReportSerializer
     http_method_names = ('get', 'head', 'options')
     permission_classes = (IsAuthenticated, IsAdminUser)
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ExerciseReportListSerializer
+        return ExerciseReportSerializer

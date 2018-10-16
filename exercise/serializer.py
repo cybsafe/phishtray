@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.relations import HyperlinkedIdentityField
 
 from participant.models import Participant
 from participant.serializer import ParticipantSerializer, ParticipantCSVReportSerializer
@@ -128,6 +129,14 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
             'threads',
             'files'
         )
+
+
+class ExerciseReportListSerializer(serializers.ModelSerializer):
+    exercise_reports_url = HyperlinkedIdentityField(view_name='api:exercise-report-detail', lookup_field='pk')
+
+    class Meta:
+        model = Exercise
+        fields = ('id', 'title', 'exercise_reports_url',)
 
 
 class ExerciseReportSerializer(serializers.HyperlinkedModelSerializer):
