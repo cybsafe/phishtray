@@ -41,63 +41,92 @@ const ButtonAlternateProps = () => ({
   kind: 'secondary',
 });
 
-const MyPayment = ({ logBrowserActions, actionTypes }) => (
-  <Switch>
-    <Route
-      path="/congrats"
-      render={() => (
-        <LoginContainer>
-          <h1>
-            Thank you for checking. Your recent transactions have been verified.
-          </h1>
-        </LoginContainer>
-      )}
-    />
-    <Route
-      path="/"
-      render={({ history }) => (
-        <LoginContainer>
-          <img src={Logo} width={323} height={58} alt="logo" />
-          <FieldWrapper>
-            <TextInput
-              {...TextInputProps()}
-              onChange={() => {
-                logBrowserActions({
-                  actionType: `${actionTypes.browserInputChange}_email`,
-                });
-              }}
-            />
-          </FieldWrapper>
-          <FieldWrapper>
-            <Button
-              {...ButtonProps()}
-              onClick={() => {
-                logBrowserActions({
-                  actionType: `${actionTypes.browserSubmittedDetails}`,
-                });
-                history.push('/congrats');
-              }}
-            >
-              Next
-            </Button>
-          </FieldWrapper>
-          <FieldWrapper>Having trouble logging in?</FieldWrapper>
-          <FieldWrapper>
-            <Button
-              {...ButtonAlternateProps()}
-              onClick={() =>
-                logBrowserActions({
-                  actionsType: `${actionTypes.browserClick}_signup`,
-                })
-              }
-            >
-              Sign Up
-            </Button>
-          </FieldWrapper>
-        </LoginContainer>
-      )}
-    />
-  </Switch>
-);
+class MyPayment extends React.Component {
+  state = {
+    logged: {},
+  };
+
+  _changed = () => {
+    this.state({
+      logged: {},
+    });
+  };
+
+  render() {
+    const { logBrowserActions, actionTypes } = this.props;
+    return (
+      <Switch>
+        <Route
+          path="/congrats"
+          render={() => (
+            <LoginContainer>
+              <h1>
+                Thank you for checking. Your recent transactions have been
+                verified.
+              </h1>
+            </LoginContainer>
+          )}
+        />
+        <Route
+          path="/"
+          render={({ history }) => (
+            <LoginContainer>
+              <img src={Logo} width={323} height={58} alt="logo" />
+              <FieldWrapper>
+                <TextInput
+                  {...TextInputProps()}
+                  onChange={event => {
+                    if (!this.state.logged[event.target.id]) {
+                      this.setState(
+                        {
+                          logged: {
+                            ...this.state.logged,
+                            [event.target.id]: true,
+                          },
+                        },
+                        () =>
+                          logBrowserActions({
+                            actionType: `${
+                              actionTypes.browserInputChange
+                            }_email`,
+                          })
+                      );
+                    }
+                  }}
+                />
+              </FieldWrapper>
+              <FieldWrapper>
+                <Button
+                  {...ButtonProps()}
+                  onClick={() => {
+                    logBrowserActions({
+                      actionType: `${actionTypes.browserSubmittedDetails}`,
+                    });
+                    history.push('/congrats');
+                  }}
+                >
+                  Next
+                </Button>
+              </FieldWrapper>
+              <FieldWrapper>Having trouble logging in?</FieldWrapper>
+              <FieldWrapper>
+                <Button
+                  {...ButtonAlternateProps()}
+                  onClick={() =>
+                    logBrowserActions({
+                      actionsType: `${actionTypes.browserClick}_signup`,
+                    })
+                  }
+                >
+                  Sign Up
+                </Button>
+              </FieldWrapper>
+            </LoginContainer>
+          )}
+        />
+      </Switch>
+    );
+  }
+}
 
 export default MyPayment;
