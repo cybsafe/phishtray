@@ -1,11 +1,15 @@
 from rest_framework import serializers
 
-from exercise.models import ExerciseEmail, EXERCISE_EMAIL_PHISH
+from exercise.models import (
+    ExerciseEmail,
+    EXERCISE_EMAIL_PHISH
+)
 from .models import (
+    ActionLog,
     Participant,
     ParticipantAction,
     ParticipantProfileEntry,
-    ActionLog)
+)
 
 
 class ParticipantActionSerializer(serializers.ModelSerializer):
@@ -49,7 +53,20 @@ class ParticipantSerializer(serializers.ModelSerializer):
         return ParticipantActionSerializer(participant_actions_queryset, many=True).data
 
 
-class ParticipantCSVReportSerializer(serializers.ModelSerializer):
+class ParticipantActionLogDownloadCSVSerializer(serializers.ModelSerializer):
+    download_csv_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Participant
+        fields = ('id', 'download_csv_url',)
+
+    def get_download_csv_url(self, participant):
+        req = self.context.get('request')
+        url = '{0}://{1}{2}download-csv?participant={3}'.format(req.scheme, req.get_host(), req.path, participant.id)
+        return url
+
+
+class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
     csv = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -64,6 +81,46 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
             action['action_details']['email_id'] for action in serialized_actions
             if action['action_details'].get('email_id')
         }
+
+        def recorded(action_type, actions):
+            """
+            Helps to identify if an action has been logged.
+            :param action_type: string
+                - action type to search for
+            :param actions: list
+                - list of action dicts
+            :return: bool
+                - whether action_type was found in actions
+            """
+            records = [
+                action for action in actions
+                if action['action_details'].get('action_type') == action_type
+            ]
+            return len(records) > 0
+
+        def get_value(action_type, key, actions):
+            """
+            Helps to retrieve a value from actions.
+            :param action_type: string
+                - action type to search for
+            :param key: string
+                - dict key to look up
+            :param actions: list
+                - list of action dicts
+            :return: value
+                - returns the value of the dictionary key or None
+            """
+            records = [
+                action for action in actions
+                if action['action_details'].get('action_type') == action_type
+            ]
+            # TODO: always get the latest entry of the given action_type?
+            # records = sorted(records, key=itemgetter('time_delta'), reverse=True)
+
+            if not records:
+                return None
+
+            return records[0]['action_details'].get(key)
 
         csv_row_master = {
             'email_subject': None,
@@ -82,28 +139,7 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
             'submitted_details': None,
             'submitted_details_time': None
         }
-        csv_headers = list(csv_row_master.keys())
-        csv_rows = []
-
-        def recorded(action_type, actions):
-            records = [
-                action for action in actions
-                if action['action_details'].get('action_type') == action_type
-            ]
-            return (len(records) > 0)
-
-        def get_value(action_type, key, actions):
-            records = [
-                action for action in actions
-                if action['action_details'].get('action_type') == action_type
-            ]
-            # # always get the latest entry ?
-            # records = sorted(records, key=itemgetter('time_delta'), reverse=True)
-
-            if not records:
-                return None
-
-            return records[0]['action_details'].get(key)
+        csv_row_dicts = []
 
         for email_uuid in email_uuids:
             related_actions = [
@@ -128,14 +164,19 @@ class ParticipantCSVReportSerializer(serializers.ModelSerializer):
             csv_row['submitted_details'] = recorded('webpage_login_credentials_submitted', related_actions)
             csv_row['submitted_details_time'] = get_value('webpage_login_credentials_submitted', 'time_delta', related_actions)
 
-            csv_rows.append(csv_row)
+            csv_row_dicts.append(csv_row)
 
-        # Basic CSV output for now
-        output = ','.join(csv_headers)
-        output += '\n'
+        csv_headers = list(csv_row_master.keys())
+        csv_rows = []
 
-        for row in csv_rows:
-            output += ','.join(str(v) for v in row.values())
-            output += '\n'
+        for row in csv_row_dicts:
+            csv_rows.append(
+                [str(v) for v in row.values()]
+            )
 
-        return output
+        data = {
+            'headers': csv_headers,
+            'rows': csv_rows
+        }
+
+        return data
