@@ -1,7 +1,5 @@
-import csv
 import uuid
 
-from django.http import HttpResponse
 from django.utils import timezone
 
 from django.db import models
