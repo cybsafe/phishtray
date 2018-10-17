@@ -44,12 +44,32 @@ const Title = styled('h1')({
 
 const MarkdownContainer = styled('div')`
   display: flex;
-  & p {
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 10px 0;
+    font-weight: bold;
+  }
+  p {
     padding: 10px 0px;
     line-height: 2;
   }
-  & li {
-    padding: 10px 0px;
+  ol {
+    list-style: decimal;
+  }
+  ul {
+    list-style: disc;
+  }
+  li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    line-height: 2;
+  }
+  img {
+    width: 100%;
+    margin: 20px 0;
   }
 `;
 
@@ -160,7 +180,9 @@ export class Exercise extends Component<Props> {
     <Container>
       <Title>{exercise.title}</Title>
       <Tile>
-        <Subtitle>{exercise.description}</Subtitle>
+        <MarkdownContainer>
+          <ReactMarkdown>{exercise.description}</ReactMarkdown>
+        </MarkdownContainer>
         <Form
           onSubmit={this.handleSubmit}
           id={exercise.id && `exercise-${exercise.id}`}
