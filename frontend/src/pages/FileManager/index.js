@@ -140,6 +140,7 @@ export class FileManager extends Component {
         {modal.isOpen && (
           <FileModal
             fileUrl={modal.fileUrl}
+            isOpen={modal.isOpen}
             hideFileModalHandler={this.hideFileModalHandler}
           />
         )}

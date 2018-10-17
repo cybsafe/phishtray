@@ -1,3 +1,7 @@
+
+[![Build Status](https://travis-ci.com/cybsafe/phishtray.svg?branch=master)](https://travis-ci.com/cybsafe/phishtray)
+
+
 # Running The Demo
 
 0. make sure you've completed the prereqs
@@ -9,7 +13,6 @@
 
 # Phishtray Installation
 
-[![Build Status](https://travis-ci.com/cybsafe/phishtray.svg?branch=master)](https://travis-ci.com/cybsafe/phishtray)
 
 ## Prerequisites
 

@@ -24,6 +24,7 @@ const QuickReply = ({ replies, onClickParams }: Props) => {
           participantId: participantId,
           timeDelta: Date.now() - startTime,
           emailId: emailId,
+          replyId: reply.id,
           message: reply.message,
           timestamp: new Date(),
         })

@@ -1,20 +1,12 @@
 import React from 'react';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
+import { Modal } from 'carbon-components-react';
 
-const ImageContainer = styled('div')({
-  position: 'absolute',
-  top: '50%',
-  left: '55%',
-  transform: 'translate(-50%, -50%)',
-  border: '1px solid #e6e6e6',
-  background: '#ffffff',
-  borderRadius: 4,
-  padding: 10,
-  zIndex: 99,
-  maxHeight: 400,
-  maxWidth: 500,
-  textAlign: 'center',
-});
+const ModalContainer = styled('div')`
+  & .bx--modal-footer {
+    display: none;
+  }
+`;
 
 const FileImage = styled('img')({
   maxHeight: '100%',
@@ -22,22 +14,12 @@ const FileImage = styled('img')({
   paddingBottom: 5,
 });
 
-export default function FileModal({ fileUrl, hideFileModalHandler }) {
-  return (
-    <ImageContainer>
+const FileModal = ({ fileUrl, isOpen, hideFileModalHandler }) => (
+  <ModalContainer>
+    <Modal open={isOpen} onRequestClose={hideFileModalHandler}>
       <FileImage src={fileUrl} />
-      <a
-        className={css({
-          fontSize: 16,
-          fontWeight: 400,
-          textDecoration: 'none',
-          color: '#5596e6',
-          cursor: 'pointer',
-        })}
-        onClick={hideFileModalHandler}
-      >
-        Close
-      </a>
-    </ImageContainer>
-  );
-}
+    </Modal>
+  </ModalContainer>
+);
+
+export default FileModal;
