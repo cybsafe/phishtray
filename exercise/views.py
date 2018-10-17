@@ -1,9 +1,14 @@
-from rest_framework import viewsets
+import csv
+
+from django.db.models import F
+from django.http import HttpResponse
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from participant.models import Participant
+from participant.serializer import ParticipantActionLogToCSVSerializer
 from .models import (
     Exercise,
     ExerciseEmail,
@@ -64,7 +69,7 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
     """
     This view retrieves emails in thread style
     """
-    queryset = ExerciseEmail.objects.all()
+    queryset = ExerciseEmail.objects.filter(pk=F('belongs_to_id'))
     serializer_class = ThreadSerializer
     http_method_names = ('get', 'head', 'options')
 
@@ -80,7 +85,7 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
 
 
 class ExerciseReportViewSet(viewsets.ModelViewSet):
-    queryset = Exercise.objects.all()
+    queryset = Exercise.objects.all().order_by('-created_date')
     http_method_names = ('get', 'head', 'options')
     permission_classes = (IsAuthenticated, IsAdminUser)
 
@@ -88,3 +93,37 @@ class ExerciseReportViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return ExerciseReportListSerializer
         return ExerciseReportSerializer
+
+    def get_serializer_context(self):
+        context = super(ExerciseReportViewSet, self).get_serializer_context()
+        context.update({
+            'request': self.request
+        })
+        return context
+
+    @action(
+        methods=['get'], detail=True,
+        permission_classes=[IsAuthenticated, IsAdminUser],
+        url_path='download-csv', url_name='download_csv'
+    )
+    def download_csv(self, *args, **kwargs):
+        participant_id = self.request.query_params.get('participant')
+        participant = Participant.objects.filter(pk=participant_id).first()
+
+        if not participant:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ParticipantActionLogToCSVSerializer(participant)
+        csv_data = serializer.data.get('csv')
+
+        file_name = 'participant_{}.csv'.format(participant_id)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
+
+        writer = csv.writer(response)
+        writer.writerow(csv_data['headers'])
+
+        for row in csv_data['rows']:
+            writer.writerow(row)
+
+        return response

@@ -96,6 +96,9 @@ class ExerciseEmail(PhishtrayBaseModel):
     def __str__(self):
         return self.subject
 
+        class Meta:
+            ordering = ['sort_order']
+
     subject = models.CharField(max_length=250, blank=True, null=True)
 
     # TODO: introduce new model i.e.: Account to store these info
@@ -115,6 +118,7 @@ class ExerciseEmail(PhishtrayBaseModel):
     attachments = models.ManyToManyField(ExerciseFile, blank=True)
     replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
     belongs_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    sort_order = models.IntegerField(default=0)
 
     @property
     def from_account(self):
