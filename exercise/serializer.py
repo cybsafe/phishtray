@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.relations import HyperlinkedIdentityField
 
 from participant.models import Participant
-from participant.serializer import ParticipantSerializer, ParticipantCSVReportSerializer
+from participant.serializer import ParticipantActionLogDownloadCSVSerializer
 from .models import *
 
 
@@ -136,10 +136,10 @@ class ExerciseReportListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Exercise
-        fields = ('id', 'title', 'exercise_reports_url',)
+        fields = ('id', 'title', 'created_date', 'exercise_reports_url',)
 
 
-class ExerciseReportSerializer(serializers.HyperlinkedModelSerializer):
+class ExerciseReportSerializer(serializers.ModelSerializer):
     participants = serializers.SerializerMethodField()
 
     class Meta:
@@ -147,5 +147,10 @@ class ExerciseReportSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'title', 'participants')
 
     def get_participants(self, exercise):
+        serializer_context = {'request': self.context.get('request')}
         participants_queryset = Participant.objects.filter(exercise=exercise)
-        return ParticipantCSVReportSerializer(participants_queryset, many=True).data
+        serializer = ParticipantActionLogDownloadCSVSerializer(
+            participants_queryset, many=True,
+            context=serializer_context
+        )
+        return serializer.data
