@@ -66,7 +66,6 @@ class ExerciseEmailThreadViewSet(viewsets.ModelViewSet):
     This view retrieves emails in thread style
     """
     queryset = ExerciseEmail.objects.filter(pk=F('belongs_to'))
-    print(queryset)
     serializer_class = ThreadSerializer
     http_method_names = ('get', 'head', 'options')
 
