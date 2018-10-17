@@ -132,4 +132,4 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 class ParticipantScoreViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
     http_method_names = ('get', 'head', 'options')
-    serializer = ParticipantScoreSerializer
+    serializer_class = ParticipantScoreSerializer
