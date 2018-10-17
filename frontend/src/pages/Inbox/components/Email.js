@@ -95,8 +95,6 @@ function EmailActions({ props }) {
           actionType: actionTypes.emailReply,
         }}
         title="Reply"
-        markThreadAsDeleted={markThreadAsDeleted}
-        threadId={threadId}
       />
       <ActionLinkwithClick
         data={{
@@ -104,8 +102,6 @@ function EmailActions({ props }) {
           actionType: actionTypes.emailForward,
         }}
         title="Forward"
-        markThreadAsDeleted={markThreadAsDeleted}
-        threadId={threadId}
       />
       <ActionLinkwithClick
         data={{
