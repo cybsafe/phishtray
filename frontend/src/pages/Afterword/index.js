@@ -84,13 +84,13 @@ class Afterword extends React.Component<Props, State> {
     });
     const { participantUuid } = this.props.match.params;
     const apiUrl = `${HOST_BACKEND}/api/v1/participant-scores/${participantUuid}`;
-    fetch(apiUrl).then((response: ParticipantScores) => {
-      if ('scores' in response) {
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(json => {
         this.setState({
-          scores: response.scores,
+          scores: json.scores,
         });
-      }
-    });
+      });
   }
 
   getHeaders = () => [
@@ -100,6 +100,7 @@ class Afterword extends React.Component<Props, State> {
   ];
 
   render() {
+    console.log(this.state.scores);
     return (
       <Container>
         <ContentContainer>
