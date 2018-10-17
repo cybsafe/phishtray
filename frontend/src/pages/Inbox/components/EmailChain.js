@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import {
   markThreadAsRead,
   markThreadAsDeleted,
@@ -14,7 +15,7 @@ import Email from './Email';
 export class EmailChain extends Component {
   componentDidMount() {
     const { thread } = this.props;
-    if (!thread.idRead) {
+    if (thread && !thread.idRead) {
       this.props.markThreadAsRead(thread.id);
     }
   }
@@ -29,8 +30,7 @@ export class EmailChain extends Component {
 
   render() {
     const { thread } = this.props;
-    return (
-      thread &&
+    return thread ? (
       thread.emails.map(email => (
         <Fragment key={email.id}>
           <Email
@@ -52,6 +52,8 @@ export class EmailChain extends Component {
           />
         </Fragment>
       ))
+    ) : (
+      <Redirect to="/inbox" />
     );
   }
 }
