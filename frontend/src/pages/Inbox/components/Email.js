@@ -19,6 +19,11 @@ type Props = {
   markThreadAsDeleted: () => void,
 };
 
+const Divider = styled('p')({
+  borderBottom: '1px solid #CCC',
+  margin: '20px 0px 20px',
+});
+
 const ActionLink = styled(Link)({
   marginRight: 20,
   textDecoration: 'none',
