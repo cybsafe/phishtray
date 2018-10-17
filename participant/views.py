@@ -96,10 +96,10 @@ class ParticipantViewSet(viewsets.ModelViewSet):
         participant_action.save()
         complex_keys = []
 
-        for key, value in request.data.items():
+        for task_id, value in request.data.items():
             # Skip complex structures
             if isinstance(value, dict) or isinstance(value, list):
-                complex_keys.append(key)
+                complex_keys.append(task_id)
                 continue
 
             log_entry = ActionLog(
@@ -132,8 +132,4 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 class ParticipantScoreViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
     http_method_names = ('get', 'head', 'options')
-
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return ParticipantScoreSerializer
-        return ParticipantScoreSerializer
+    serializer = ParticipantScoreSerializer
