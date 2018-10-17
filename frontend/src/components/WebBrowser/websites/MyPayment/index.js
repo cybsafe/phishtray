@@ -86,9 +86,8 @@ class MyPayment extends React.Component {
                         },
                         () =>
                           logBrowserActions({
-                            actionType: `${
-                              actionTypes.browserInputChange
-                            }_email`,
+                            actionType: actionTypes.browserInputLoginCrendentials,
+                            modifiedField: 'email'
                           })
                       );
                     }
@@ -100,7 +99,7 @@ class MyPayment extends React.Component {
                   {...ButtonProps()}
                   onClick={() => {
                     logBrowserActions({
-                      actionType: `${actionTypes.browserSubmittedDetails}`,
+                      actionType: actionTypes.browserSubmittedDetails,
                     });
                     history.push('/congrats');
                   }}
@@ -114,7 +113,7 @@ class MyPayment extends React.Component {
                   {...ButtonAlternateProps()}
                   onClick={() =>
                     logBrowserActions({
-                      actionsType: `${actionTypes.browserClick}_signup`,
+                      actionType: actionTypes.browserUserSignUp,
                     })
                   }
                 >
