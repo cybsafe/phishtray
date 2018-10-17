@@ -17,6 +17,7 @@ type Props = {
   threadId: string,
   addFile: () => void,
   markThreadAsDeleted: () => void,
+  addReplyToEmail: () => void,
 };
 
 const ActionLink = styled(Link)({
@@ -305,6 +306,35 @@ function RouterLink(props) {
   );
 }
 
+function ReturnReplies({ props }) {
+  return !props.email.isReplied ? (
+    <Fragment>
+      <h3>You have {props.email.replies.length} option(s) to reply:</h3>
+      <QuickReply
+        logActionParams={props.onReplyParams}
+        setSelectedReply={props.setSelectedReply}
+        setSelectedReplyParams={{
+          threadId: props.threadId,
+          emailid: props.email.id,
+        }}
+        replies={props.email.replies}
+      />
+    </Fragment>
+  ) : (
+    <Fragment>
+      <h3>You replied to this email:</h3>
+      <Markdown
+        source={props.email.replies[0].message}
+        renderers={{
+          paragraph: Paragraph,
+          heading: Heading,
+        }}
+        className={css({ marginTop: '1em' })}
+      />
+    </Fragment>
+  );
+}
+
 const Email = (props: Props) => (
   <div
     className={css({
@@ -339,11 +369,7 @@ const Email = (props: Props) => (
     {props.email.replies.length > 0 && (
       <Fragment>
         <Divider />
-        <h3>You have {props.email.replies.length} option(s) to reply:</h3>
-        <QuickReply
-          onClickParams={props.onReplyParams}
-          replies={props.email.replies}
-        />
+        <ReturnReplies props={props} />
       </Fragment>
     )}
   </div>

@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import {
   markThreadAsRead,
   markThreadAsDeleted,
+  setSelectedReply,
 } from '../../../actions/exerciseActions';
 import { getThread } from '../../../selectors/exerciseSelectors';
 import { showWebpage } from '../../../actions/uiActions';
@@ -44,6 +45,7 @@ export class EmailChain extends Component {
               participantId: this.props.participantId,
               emailId: email.id,
             }}
+            setSelectedReply={this.props.setSelectedReply}
           />
           <hr
             className={css({
@@ -64,5 +66,11 @@ export default connect(
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
   }),
-  { markThreadAsRead, showWebpage, addFile, markThreadAsDeleted }
+  {
+    markThreadAsRead,
+    showWebpage,
+    addFile,
+    markThreadAsDeleted,
+    setSelectedReply,
+  }
 )(EmailChain);

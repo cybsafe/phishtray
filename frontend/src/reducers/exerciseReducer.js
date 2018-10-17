@@ -52,6 +52,17 @@ export default function reducer(
         startTime: action.payload.startTime,
       };
 
+    case 'exercise/SET_SELECTED_REPLY':
+      return produce(state, draft => {
+        const { threadId, selectedReplyid, emailid } = action.payload;
+        const thread = draft.threads.find(thread => thread.id === threadId);
+        const email = thread.emails.find(email => email.id === emailid);
+        email.replies = email.replies.filter(
+          reply => reply.id === selectedReplyid
+        );
+        email.isReplied = true;
+      });
+
     default:
       return state;
   }
