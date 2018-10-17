@@ -9,7 +9,7 @@ import Contacts from './pages/Contacts';
 import Header from './components/Header';
 import FileManager from './pages/FileManager';
 import Web from './pages/Web';
-import Afterward from './pages/Afterward';
+import Afterword from './pages/Afterword';
 import WebBrowser from './components/WebBrowser';
 import { getHeaderText } from './utils';
 import { getUnreadThreads } from './selectors/exerciseSelectors';
@@ -151,7 +151,7 @@ class PhishTray extends PureComponent {
           <Switch>
             <Route exact path="/welcome" component={Welcome} />
             <Route path="/welcome/:exerciseUuid" component={Exercise} />
-            <Route path="/afterward" component={Afterward} />
+            <Route path="/afterword/:participantUuid" component={Afterword} />
             <PrivateRoute
               exact
               path="/"

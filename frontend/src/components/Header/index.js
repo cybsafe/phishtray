@@ -61,6 +61,8 @@ type Props = {
   match: *,
   history: *,
   location: *,
+  exerciseId: string,
+  participantId: string,
 };
 
 const getHeader = location => (
@@ -114,7 +116,11 @@ class Header extends Component<Props> {
                   timeDelta: Date.now() - this.props.startTime,
                 });
                 clearSessionStorage()
-                  .then(() => this.props.history.push('/afterward'))
+                  .then(() =>
+                    this.props.history.push(
+                      `/afterword/${this.props.participantId}`
+                    )
+                  )
                   .catch(e => console.error('error clearing your session', e));
               }}
             />
@@ -145,7 +151,11 @@ class Header extends Component<Props> {
               timeDelta: Date.now() - this.props.startTime,
             });
             clearSessionStorage()
-              .then(() => this.props.history.push('/afterward'))
+              .then(() =>
+                this.props.history.push(
+                  `/afterword/${this.props.participantId}`
+                )
+              )
               .catch(e => console.error('error clearing your session', e));
           }}
         />
@@ -158,6 +168,7 @@ const mapStateToProps = reduxState => ({
   startTime: reduxState.exercise.startTime,
   countdownMins: reduxState.exercise.lengthMinutes,
   participantId: reduxState.exercise.participant,
+  exerciseId: reduxState.exercise.id,
 });
 
 export default connect(
