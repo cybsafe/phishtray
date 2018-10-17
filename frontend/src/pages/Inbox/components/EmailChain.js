@@ -59,11 +59,9 @@ function EmailActions({ threadId, markThreadAsDeleted, onReplyParams }) {
       className={css({
         flexShrink: '0',
         display: 'flex',
-        flexDirection: 'row',
         justifyContent: 'flex-end',
         paddingTop: '20px',
         paddingBottom: '20px',
-
         background: 'white',
       })}
     >
@@ -127,8 +125,6 @@ export class EmailChain extends Component {
       <div
         className={css({
           height: '100%',
-          overflow: 'hidden',
-          // margin: '0px',
           display: 'flex',
           boxSizing: 'border-box',
           flexDirection: 'column',
