@@ -1,5 +1,5 @@
 // @flow
-import React, { Fragment } from 'react';
+import React from 'react';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -14,10 +14,17 @@ import actionTypes from '../../../config/actionTypes';
 type Props = {
   email: Object,
   onReplyParams: Object,
+  threadId: string,
   addFile: () => void,
+  markThreadAsDeleted: () => void,
 };
 
-const ActionLink = styled('button')({
+const Divider = styled('p')({
+  borderBottom: '1px solid #CCC',
+  margin: '20px 0px 20px',
+});
+
+const ActionLink = styled(Link)({
   marginRight: 20,
   textDecoration: 'none',
   color: '#B8B8B8',
@@ -25,23 +32,32 @@ const ActionLink = styled('button')({
   letterSpacing: '1.1px',
 });
 
-const Divider = styled('p')({
-  borderBottom: '1px solid #CCC',
-  margin: '20px 0px 20px',
-});
-
-function ActionLinkwithClick({ data, title }) {
+function ActionLinkwithClick({
+  data,
+  title,
+  markThreadAsDeleted,
+  threadId,
+  remove,
+}) {
   return (
     <ActionLink
-      onClick={() =>
+      to={
+        remove
+          ? {
+              pathname: '/inbox',
+            }
+          : {}
+      }
+      onClick={() => {
         logAction({
           actionType: data.actionType,
           participantId: data.participantId,
           timeDelta: Date.now() - data.startTime,
           emailId: data.emailId,
           timestamp: new Date(),
-        })
-      }
+        });
+        remove && markThreadAsDeleted(threadId);
+      }}
     >
       {title}
     </ActionLink>
@@ -67,7 +83,8 @@ const Paragraph = styled('p')({
   fontSize: 20,
 });
 
-function EmailActions({ onReplyParams }) {
+function EmailActions({ props }) {
+  const { markThreadAsDeleted, threadId, onReplyParams } = props;
   return (
     <div
       className={css({
@@ -97,6 +114,9 @@ function EmailActions({ onReplyParams }) {
           actionType: actionTypes.emailDelete,
         }}
         title="Delete"
+        markThreadAsDeleted={markThreadAsDeleted}
+        threadId={threadId}
+        remove
       />
       <ActionLinkwithClick
         data={{
@@ -104,6 +124,9 @@ function EmailActions({ onReplyParams }) {
           actionType: actionTypes.emailReport,
         }}
         title="Report"
+        markThreadAsDeleted={markThreadAsDeleted}
+        threadId={threadId}
+        remove
       />
     </div>
   );
@@ -230,7 +253,7 @@ function EmailInfo({ email }) {
           <EmailCard
             name="You"
             photoUrl="https://randomuser.me/api/portraits/women/83.jpg"
-            email="geoff@bluestar.com"
+            email="you@yourcompany.com"
             triggerText={
               <a
                 className={css({
@@ -290,7 +313,7 @@ const Email = (props: Props) => (
       padding: '0 40px',
     })}
   >
-    <EmailActions onReplyParams={props.onReplyParams} />
+    <EmailActions props={props} />
     <EmailInfo email={props.email} />
 
     <h3
@@ -313,15 +336,11 @@ const Email = (props: Props) => (
       }}
     />
     {props.email.attachments.length > 0 && <EmailAttachments props={props} />}
-    {props.email.replies.length > 0 && (
-      <Fragment>
-        <Divider />
-        <h3>You have {props.email.replies.length} option(s) to reply:</h3>
-        <QuickReply
-          onClickParams={props.onReplyParams}
-          replies={props.email.replies}
-        />
-      </Fragment>
+    {props.email.replies && (
+      <QuickReply
+        onClickParams={props.onReplyParams}
+        replies={props.email.replies}
+      />
     )}
   </div>
 );
