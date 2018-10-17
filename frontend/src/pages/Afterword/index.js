@@ -100,7 +100,6 @@ class Afterword extends React.Component<Props, State> {
   ];
 
   render() {
-    console.log(this.state.scores);
     return (
       <Container>
         <ContentContainer>
