@@ -35,24 +35,59 @@ const Container = styled('div')({
 });
 
 const Title = styled('h1')({
-  display: 'block',
+  display: 'flex',
   fontSize: ' 2.25rem',
   lineHeight: 1.25,
   marginBottom: '35px',
   fontWeight: 300,
 });
 
-const Subtitle = styled('h1')({
-  display: 'block',
+const MarkdownContainer = styled('div')`
+  display: flex;
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 10px 0;
+    font-weight: bold;
+  }
+  p {
+    padding: 10px 0px;
+    line-height: 2;
+  }
+  ol {
+    list-style: decimal;
+  }
+  ul {
+    list-style: disc;
+  }
+  li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    line-height: 2;
+  }
+  img {
+    width: 100%;
+    margin: 20px 0;
+  }
+`;
+
+const Divider = styled('p')({
+  borderBottom: '1px solid #CCC',
+  margin: '20px 0px 20px',
+});
+
+const Subtitle = styled('p')({
+  display: 'flex',
   fontSize: ' 1.25rem',
   lineHeight: 1,
   paddingBottom: '15px',
   fontWeight: 300,
-  borderBottom: '1px solid grey',
 });
 
 const FormContainer = styled('div')({
-  display: 'block',
+  display: 'flex',
   margin: 'auto',
   width: '384px',
   lineHeight: 1,
@@ -145,7 +180,9 @@ export class Exercise extends Component<Props> {
     <Container>
       <Title>{exercise.title}</Title>
       <Tile>
-        <Subtitle>{exercise.description}</Subtitle>
+        <MarkdownContainer>
+          <ReactMarkdown>{exercise.description}</ReactMarkdown>
+        </MarkdownContainer>
         <Form
           onSubmit={this.handleSubmit}
           id={exercise.id && `exercise-${exercise.id}`}
@@ -236,10 +273,16 @@ export class Exercise extends Component<Props> {
             <Container>
               <Title>{exercise.title}</Title>
               <Tile>
-                <Subtitle>{exercise.description}</Subtitle>
-
-                <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
-                <hr />
+                <Subtitle>Description</Subtitle>
+                <MarkdownContainer>
+                  <ReactMarkdown>{exercise.description}</ReactMarkdown>
+                </MarkdownContainer>
+                <Divider />
+                <Subtitle>Introduction</Subtitle>
+                <MarkdownContainer>
+                  <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
+                </MarkdownContainer>
+                <Divider />
                 <p>This exercise will take: {exercise.lengthMinutes} mins</p>
                 <Button
                   className={css(`display: flex !important; margin-left: auto`)}

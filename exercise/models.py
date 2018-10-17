@@ -34,6 +34,12 @@ class ExerciseTask(PhishtrayBaseModel):
     debrief_under_threshold = models.TextField(null=True, blank=True)
     score_threshold = models.IntegerField()
 
+    def evaluate(self, score):
+        if score > self.score_threshold:
+            return self.debrief_over_threshold
+        else:
+            return self.debrief_under_threshold
+
     def __str__(self):
         return self.name
 
@@ -90,8 +96,8 @@ class ExerciseEmail(PhishtrayBaseModel):
     def __str__(self):
         return self.subject
 
-        class Meta:
-            ordering = ['sort_order']
+    class Meta:
+        ordering = ['sort_order']
 
     subject = models.CharField(max_length=250, blank=True, null=True)
 
