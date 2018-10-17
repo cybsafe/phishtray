@@ -9,7 +9,7 @@ const FILES = [
   {
     id: '002',
     fileName: 'Computer unit',
-    description: 'Trip to Peru',
+    description: 'Computer unit',
     dateCreated: '2018-04-19',
     fileUrl: `https://s3-eu-west-1.amazonaws.com/project-shower/computer+unit.jpg`,
   },
