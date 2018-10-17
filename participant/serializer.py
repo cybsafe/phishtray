@@ -220,9 +220,9 @@ class ParticipantScoreSerializer(serializers.HyperlinkedModelSerializer):
                     task_score.setdefault(str(task.id), []).append(score)
 
         response = []
-        for key, score_data in task_score.items():
+        for task_id, score_data in task_score.items():
 
-            task = ExerciseTask.objects.get(id=key)
+            task = ExerciseTask.objects.get(id=task_id)
             score = sum(score_data)
             response.append({
                 'task': task.name,

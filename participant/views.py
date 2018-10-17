@@ -96,10 +96,10 @@ class ParticipantViewSet(viewsets.ModelViewSet):
         participant_action.save()
         complex_keys = []
 
-        for task_id, value in request.data.items():
+        for key, value in request.data.items():
             # Skip complex structures
             if isinstance(value, dict) or isinstance(value, list):
-                complex_keys.append(task_id)
+                complex_keys.append(key)
                 continue
 
             log_entry = ActionLog(
