@@ -8,17 +8,28 @@ import actionTypes from '../../../config/actionTypes';
 
 type Props = {
   replies: Array<*>,
-  onClickParams: *,
+  logActionParams: Object,
+  setSelectedReplyParams: Object,
+  setSelectedReply: () => void,
 };
 
-const QuickReply = ({ replies, onClickParams }: Props) => {
-  const { participantId, startTime, emailId } = onClickParams;
+const QuickReply = ({
+  replies,
+  logActionParams,
+  setSelectedReply,
+  setSelectedReplyParams,
+}: Props) => {
+  const { participantId, startTime, emailId } = logActionParams;
   return replies.map(reply => (
     <Button
       key={reply.id}
       type={reply.type}
       content={reply.message}
-      onClick={() =>
+      onClick={() => {
+        setSelectedReply({
+          selectedReplyid: reply.id,
+          ...setSelectedReplyParams,
+        });
         logAction({
           actionType: actionTypes.emailQuickReply,
           participantId: participantId,
@@ -27,8 +38,8 @@ const QuickReply = ({ replies, onClickParams }: Props) => {
           replyId: reply.id,
           message: reply.message,
           timestamp: new Date(),
-        })
-      }
+        });
+      }}
     />
   ));
 };
