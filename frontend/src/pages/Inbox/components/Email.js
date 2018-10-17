@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -23,6 +23,11 @@ const ActionLink = styled('button')({
   color: '#B8B8B8',
   fontWeight: 'bold',
   letterSpacing: '1.1px',
+});
+
+const Divider = styled('p')({
+  borderBottom: '1px solid #CCC',
+  margin: '20px 0px 20px',
 });
 
 function ActionLinkwithClick({ data, title }) {
@@ -308,11 +313,15 @@ const Email = (props: Props) => (
       }}
     />
     {props.email.attachments.length > 0 && <EmailAttachments props={props} />}
-    {props.email.replies && (
-      <QuickReply
-        onClickParams={props.onReplyParams}
-        replies={props.email.replies}
-      />
+    {props.email.replies.length > 0 && (
+      <Fragment>
+        <Divider />
+        <h3>You have {props.email.replies.length} option(s) to reply:</h3>
+        <QuickReply
+          onClickParams={props.onReplyParams}
+          replies={props.email.replies}
+        />
+      </Fragment>
     )}
   </div>
 );

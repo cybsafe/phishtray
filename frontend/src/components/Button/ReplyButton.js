@@ -9,22 +9,28 @@ export type Props = {
   onClick?: (*) => void,
 };
 
+const ReplyButtonContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'center',
+});
+
 const ReplyButton = styled(CarbonButton)`
   &&& {
-    color: #ffb100;
+    color: #3d70b2;
     border-width: 1px;
     font-size: 1em;
-    margin: 1em;
-    border-color: #ffb100;
+    border-color: #3d70b2;
     background: white;
     border-radius: 16px;
     white-space: normal;
     line-height: 22px;
     height: auto;
     text-align: left;
+    padding: 15px;
+    margin: 1em 0;
     :hover {
       color: white;
-      background: #ffb100;
+      background: #3d70b2;
     }
     div {
       max-width: 500px;
@@ -35,9 +41,11 @@ const ReplyButton = styled(CarbonButton)`
 `;
 
 const Button = (props: Props) => (
-  <ReplyButton onClick={props.onClick || {}}>
-    <div>{props.content}</div>
-  </ReplyButton>
+  <ReplyButtonContainer>
+    <ReplyButton onClick={props.onClick || {}}>
+      <div>{props.content}</div>
+    </ReplyButton>
+  </ReplyButtonContainer>
 );
 
 export default Button;
