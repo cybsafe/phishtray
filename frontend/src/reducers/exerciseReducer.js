@@ -37,6 +37,15 @@ export default function reducer(
       });
     }
 
+    case 'exercise/MARK_THREAD_AS_DELETED': {
+      return {
+        ...state,
+        threads: state.threads.filter(
+          thread => thread.id !== action.payload.threadId
+        ),
+      };
+    }
+
     case 'exercise/SET_START_TIME':
       return {
         ...state,

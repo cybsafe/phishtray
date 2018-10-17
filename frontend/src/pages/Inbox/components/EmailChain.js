@@ -1,7 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
 import { connect } from 'react-redux';
-import { markThreadAsRead } from '../../../actions/exerciseActions';
+import {
+  markThreadAsRead,
+  markThreadAsDeleted,
+} from '../../../actions/exerciseActions';
 import { getThread } from '../../../selectors/exerciseSelectors';
 import { showWebpage } from '../../../actions/uiActions';
 import { addFile } from '../../../actions/fileManagerActions';
@@ -26,25 +29,30 @@ export class EmailChain extends Component {
 
   render() {
     const { thread } = this.props;
-    return thread.emails.map(email => (
-      <Fragment key={email.id}>
-        <Email
-          email={email}
-          addFile={this.props.addFile}
-          showWebpage={this.props.showWebpage}
-          onReplyParams={{
-            startTime: this.props.startTime,
-            participantId: this.props.participantId,
-            emailId: email.id,
-          }}
-        />
-        <hr
-          className={css({
-            width: '100%',
-          })}
-        />
-      </Fragment>
-    ));
+    return (
+      thread &&
+      thread.emails.map(email => (
+        <Fragment key={email.id}>
+          <Email
+            email={email}
+            threadId={thread.id}
+            addFile={this.props.addFile}
+            markThreadAsDeleted={this.props.markThreadAsDeleted}
+            showWebpage={this.props.showWebpage}
+            onReplyParams={{
+              startTime: this.props.startTime,
+              participantId: this.props.participantId,
+              emailId: email.id,
+            }}
+          />
+          <hr
+            className={css({
+              width: '100%',
+            })}
+          />
+        </Fragment>
+      ))
+    );
   }
 }
 
@@ -54,5 +62,5 @@ export default connect(
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
   }),
-  { markThreadAsRead, showWebpage, addFile }
+  { markThreadAsRead, showWebpage, addFile, markThreadAsDeleted }
 )(EmailChain);

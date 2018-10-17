@@ -28,6 +28,15 @@ export function markThreadAsRead(threadId: string) {
   };
 }
 
+export function markThreadAsDeleted(threadId: string) {
+  return {
+    type: 'exercise/MARK_THREAD_AS_DELETED',
+    payload: {
+      threadId,
+    },
+  };
+}
+
 export const getExerciseData = (exerciseUuid: string) =>
   fetchAndDispatch(
     `/api/v1/exercises/${exerciseUuid}/init`,
