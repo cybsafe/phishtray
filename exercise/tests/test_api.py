@@ -1,5 +1,6 @@
 from random import randint
 
+from django.db.models import F
 from django.urls import reverse
 from rest_framework.views import status
 from djangorestframework_camel_case.util import underscoreize
@@ -19,7 +20,14 @@ from ..factories import (
 )
 
 
-class ExerciseAPITests(PhishtrayAPIBaseTest):
+class ThreadTestsMixin:
+
+    def threadify(self, email):
+        email.belongs_to = email
+        email.save()
+
+
+class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
     def setUp(self):
         super(ExerciseAPITests, self).setUp()
@@ -55,8 +63,10 @@ class ExerciseAPITests(PhishtrayAPIBaseTest):
         ExerciseFactory.create_batch(5)
         exercise_1 = ExerciseFactory()
         # add emails
-        email_count = randint(1, 15)
+        email_count = randint(2, 15)
         emails = EmailFactory.create_batch(email_count)
+        self.threadify(emails[0])
+        self.threadify(emails[1])
         exercise_1.emails.add(*emails)
         # add files
         file_count = randint(1, 10)
@@ -70,7 +80,7 @@ class ExerciseAPITests(PhishtrayAPIBaseTest):
         serialized = ExerciseSerializer(Exercise.objects.get(pk=exercise_1.id))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(email_count, len(response.data.get('threads')))
+        self.assertEqual(2, len(response.data.get('threads')))
         self.assertEqual(file_count, len(response.data.get('files')))
         self.assertEqual(serialized.data, underscoreize(response.data))
 
@@ -146,7 +156,7 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
         self.assertEqual('Not found.', response.data.get('detail'))
 
 
-class ThreadAPITestCase(PhishtrayAPIBaseTest):
+class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
     def setUp(self):
         super(ThreadAPITestCase, self).setUp()
@@ -165,20 +175,26 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest):
         Admin users should be able to retrieve thread list.
         """
         url = reverse('api:thread-list')
-        email_count = randint(2, 50)
+        email_count = randint(3, 50)
         emails = EmailFactory.create_batch(email_count)
 
-        email_1 = emails[0]
+        self.threadify(emails[0])
+        self.threadify(emails[1])
+
+        email_1 = emails[2]
         email_1.replies.add(EmailReplyFactory())
         email_1.attachments.add(ExerciseFileFactory())
-        email_1.belongs_to = emails[1]
+        email_1.belongs_to = emails[0]
         email_1.save()
 
         response = self.admin_client.get(url)
-        serialized = ThreadSerializer(ExerciseEmail.objects.all(), many=True)
+        serialized = ThreadSerializer(
+            ExerciseEmail.objects.filter(pk=F('belongs_to')), many=True
+        )
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(email_count, len(response.data))
+        # There should be only 2 threads
+        self.assertEqual(2, len(response.data))
         self.assertEqual(serialized.data, underscoreize(response.data))
 
     def test_get_thread_details(self):
@@ -190,6 +206,8 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest):
         email_1.replies.add(EmailReplyFactory())
         email_1.replies.add(EmailReplyFactory())
         email_1.attachments.add(ExerciseFileFactory())
+        # This is how the email becomes a thread (for now...)
+        email_1.belongs_to = email_1
         email_1.save()
 
         # add some emails to email_1 to make it a thread
@@ -207,7 +225,8 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(serialized.data, underscoreize(response.data))
-        self.assertEqual(email_count, len(response.data.get('emails')))
+        #  +1 because itself will be listed in emails too
+        self.assertEqual(email_count + 1, len(response.data.get('emails')))
         self.assertEqual(2, len(response.data.get('replies')))
         self.assertEqual(1, len(response.data.get('attachments')))
 
