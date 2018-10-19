@@ -42,3 +42,15 @@ export const getExerciseData = (exerciseUuid: string) =>
     `/api/v1/exercises/${exerciseUuid}/init`,
     'exercise/LOAD_DATA'
   );
+
+export function setSelectedReply(params: Object) {
+  const { threadId, selectedReplyid, emailid } = params;
+  return {
+    type: 'exercise/SET_SELECTED_REPLY',
+    payload: {
+      threadId,
+      selectedReplyid,
+      emailid,
+    },
+  };
+}
