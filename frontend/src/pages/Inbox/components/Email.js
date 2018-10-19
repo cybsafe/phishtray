@@ -20,50 +20,10 @@ type Props = {
   addReplyToEmail: () => void,
 };
 
-const ActionLink = styled(Link)({
-  marginRight: 20,
-  textDecoration: 'none',
-  color: '#B8B8B8',
-  fontWeight: 'bold',
-  letterSpacing: '1.1px',
-});
-
 const Divider = styled('p')({
   borderBottom: '1px solid #CCC',
   margin: '20px 0px 20px',
 });
-
-function ActionLinkwithClick({
-  data,
-  title,
-  markThreadAsDeleted,
-  threadId,
-  remove,
-}) {
-  return (
-    <ActionLink
-      to={
-        remove
-          ? {
-              pathname: '/inbox',
-            }
-          : {}
-      }
-      onClick={() => {
-        logAction({
-          actionType: data.actionType,
-          participantId: data.participantId,
-          timeDelta: Date.now() - data.startTime,
-          emailId: data.emailId,
-          timestamp: new Date(),
-        });
-        remove && markThreadAsDeleted(threadId);
-      }}
-    >
-      {title}
-    </ActionLink>
-  );
-}
 
 const EmailField = styled('div')({
   color: '#B8B8B8',
@@ -83,55 +43,6 @@ const Paragraph = styled('p')({
   marginBottom: 20,
   fontSize: 20,
 });
-
-function EmailActions({ props }) {
-  const { markThreadAsDeleted, threadId, onReplyParams } = props;
-  return (
-    <div
-      className={css({
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        marginTop: '20px',
-      })}
-    >
-      <ActionLinkwithClick
-        data={{
-          ...onReplyParams,
-          actionType: actionTypes.emailReply,
-        }}
-        title="Reply"
-      />
-      <ActionLinkwithClick
-        data={{
-          ...onReplyParams,
-          actionType: actionTypes.emailForward,
-        }}
-        title="Forward"
-      />
-      <ActionLinkwithClick
-        data={{
-          ...onReplyParams,
-          actionType: actionTypes.emailDelete,
-        }}
-        title="Delete"
-        markThreadAsDeleted={markThreadAsDeleted}
-        threadId={threadId}
-        remove
-      />
-      <ActionLinkwithClick
-        data={{
-          ...onReplyParams,
-          actionType: actionTypes.emailReport,
-        }}
-        title="Report"
-        markThreadAsDeleted={markThreadAsDeleted}
-        threadId={threadId}
-        remove
-      />
-    </div>
-  );
-}
 
 function EmailAttachments({ props }) {
   const { email, onReplyParams, addFile } = props;
@@ -343,7 +254,6 @@ const Email = (props: Props) => (
       padding: '0 40px',
     })}
   >
-    <EmailActions props={props} />
     <EmailInfo email={props.email} />
 
     <h3
