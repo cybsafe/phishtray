@@ -155,7 +155,18 @@ export class Exercise extends Component<Props> {
   };
 
   handleSubmit = (event: SyntheticInputEvent<*>) => {
-    event.preventDefault();
+    event && event.preventDefault();
+
+    logAction({
+      participantId: this.props.participantId,
+      actionType: actionTypes.experimentStarted,
+      timestamp: new Date(),
+      timeDelta: Date.now() - this.props.startTime,
+    });
+
+    setInterval(() => {
+      this.props.tickTimer(5); //this is way too high, demo purposes
+    }, 5 * 1000);
 
     const { exercise } = this.props;
     exercise.startTime || this.props.startCountdown(exercise.lengthMinutes);
@@ -173,7 +184,7 @@ export class Exercise extends Component<Props> {
       data
     );
 
-    this.nextPath('/');
+    this.props.history.replace('/');
   };
 
   WelcomeForm = (exercise: ExerciseState) => (
@@ -183,12 +194,13 @@ export class Exercise extends Component<Props> {
         <MarkdownContainer>
           <ReactMarkdown>{exercise.description}</ReactMarkdown>
         </MarkdownContainer>
-        <Form
-          onSubmit={this.handleSubmit}
-          id={exercise.id && `exercise-${exercise.id}`}
-        >
-          {exercise.profileForm &&
-            exercise.profileForm.map(item => {
+
+        {exercise.profileForm ? (
+          <Form
+            onSubmit={this.handleSubmit}
+            id={exercise.id && `exercise-${exercise.id}`}
+          >
+            {exercise.profileForm.map(item => {
               switch (item.questionType) {
                 case 0: // number
                   return (
@@ -223,25 +235,16 @@ export class Exercise extends Component<Props> {
                   return {};
               }
             })}
-          <Button
-            className={css(`display: flex !important; margin-left: auto`)}
-            type="submit"
-            onClick={() => {
-              logAction({
-                participantId: this.props.participantId,
-                actionType: actionTypes.experimentStarted,
-                timestamp: new Date(),
-                timeDelta: Date.now() - this.props.startTime,
-              });
-
-              setInterval(() => {
-                this.props.tickTimer(5); //this is way too high, demo purposes
-              }, 5 * 1000);
-            }}
-          >
-            Click here to start the E-tray
-          </Button>
-        </Form>
+            <Button
+              className={css(`display: flex !important; margin-left: auto`)}
+              type="submit"
+            >
+              Click here to start the E-tray
+            </Button>
+          </Form>
+        ) : (
+          this.handleSubmit()
+        )}
       </Tile>
     </Container>
   );
