@@ -21,7 +21,7 @@ const Container = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: '100%',
+  minHeight: '100%',
   backgroundColor: '#fff',
   boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)',
   padding: '1rem',
