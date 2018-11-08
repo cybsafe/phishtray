@@ -15,6 +15,10 @@ stop:
 django-run:
 	docker-compose exec django bash -c "python3.6 /usr/src/app/manage.py runserver 0:9000"
 
+.PHONY: django-run-detached
+django-run-detached:
+	docker-compose exec -d django bash -c "python3.6 /usr/src/app/manage.py runserver 0:9000"
+
 .PHONY: django-test
 django-test:
 	docker-compose exec django bash -c "python3.6 /usr/src/app/manage.py test"
