@@ -61,8 +61,7 @@ class MyPayment extends React.Component {
           render={() => (
             <LoginContainer>
               <h1>
-                Thank you for checking. Your recent transactions have been
-                verified.
+                Thank you for reaching out to the Money Transfer service. We'll be in touch shortly to arrange your payment.
               </h1>
             </LoginContainer>
           )}
