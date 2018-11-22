@@ -85,7 +85,7 @@ const DefaultLayout = ({ children, renderProps }) => {
           <SidebarLink className={css({ marginTop: 30 })} to="/inbox">
             {countUnread ? `Inbox [${countUnread}]` : 'Inbox'}
           </SidebarLink>
-          <SidebarLink to="/contacts">Contacts</SidebarLink>
+          <SidebarLink to="/staff-profiles">Staff Profiles</SidebarLink>
           <SidebarLink to="/accounts">Accounts</SidebarLink>
           <SidebarLink to="/web">Web</SidebarLink>
           <SidebarLink to="/files">Files</SidebarLink>
@@ -172,7 +172,7 @@ class PhishTray extends PureComponent {
               component={Accounts}
             />
             <PrivateRoute
-              path="/contacts"
+              path="/staff-profiles"
               isAllowed={isAllowed}
               countUnread={countUnread}
               component={Contacts}
