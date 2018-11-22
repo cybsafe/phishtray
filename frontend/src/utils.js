@@ -74,8 +74,8 @@ export const getHeaderText = location => {
       return 'Files';
     case '/web':
       return 'Web';
-    case '/staff-content':
-      return 'Contacts';
+    case '/staff-profiles':
+      return 'Staff Profiles';
     default:
       return location.split('/')[1] || 'Inbox';
   }
