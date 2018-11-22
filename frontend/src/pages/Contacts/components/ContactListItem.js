@@ -28,13 +28,13 @@ const Text = styled('div')(
 
 export default function ContactListItem({ contact, logAction }) {
   return (
-    <Route path={`/contacts/${contact.id}`}>
+    <Route path={`/staff-profiles/${contact.id}`}>
       {({ match, history }) => (
         <Link
           to=""
           className={css({ textDecoration: 'none', display: 'block' })}
           onClick={e => {
-            history.push(`/contacts/${contact.id}`);
+            history.push(`/staff-profiles/${contact.id}`);
             logAction({ contactId: contact.id, contactName: contact.name });
             e.preventDefault();
           }}
