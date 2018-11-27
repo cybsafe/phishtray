@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'phishtray',
         'USER': 'root',
         'PASSWORD': 'admin',
-        'HOST': 'phishtray_db_1',
+        'HOST': 'db',
         'PORT': '3306',
     }
 }
