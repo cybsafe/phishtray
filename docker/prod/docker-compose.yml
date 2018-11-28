@@ -2,7 +2,7 @@ version: '2'
 
 services:
 
-  db:
+  phishtray_db:
     image: mysql:5.7
     volumes:
     - ./db:/var/lib/mysql
@@ -14,18 +14,19 @@ services:
     networks:
     - webnet
 
-  django:
-    build: .
-    command: dockerize -wait tcp://db:3306 -timeout 60s bash -c "python3.6 manage.py makemigrations; python3.6 manage.py migrate; tail -f /dev/null"
+  phishtray_apps:
+    build:
+      context: ../..
+      dockerfile: prod.Dockerfile
     ports:
     - "9000:9000"
     - "9022:22"
-    volumes:
-    - .:/usr/src/app
+    environment:
+    - DATABASE_HOST=phishtray_db
     networks:
     - webnet
     depends_on:
-    - db
+    - phishtray_db
 
 networks:
   webnet:
