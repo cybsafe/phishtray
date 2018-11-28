@@ -79,14 +79,14 @@ WSGI_APPLICATION = 'phishtray.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
+DATABASE_HOST = os.environ.get('DATABASE_HOST', 'unset')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'phishtray',
         'USER': 'root',
         'PASSWORD': 'admin',
-        'HOST': 'db',
+        'HOST': DATABASE_HOST,
         'PORT': '3306',
     }
 }
