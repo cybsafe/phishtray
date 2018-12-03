@@ -6,6 +6,7 @@ const INITIAL_STATE: ExerciseState = {
   timer: 0, // exercise time elapsed in seconds
   startTime: 0, // Date.now() when form submitted,
   threads: [],
+  activeThread: '',
 };
 
 export default function reducer(
@@ -62,6 +63,18 @@ export default function reducer(
         );
         email.isReplied = true;
       });
+
+    case 'exercise/MARK_THREAD_AS_ACTIVE':
+      return {
+        ...state,
+        activeThread: action.payload.threadId,
+      };
+
+    case 'exercise/MARK_THREAD_AS_INACTIVE':
+      return {
+        ...state,
+        activeThread: action.payload.threadId,
+      };
 
     default:
       return state;

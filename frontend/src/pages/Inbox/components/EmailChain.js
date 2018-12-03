@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
   markThreadAsRead,
+  markThreadAsInactive,
   markThreadAsDeleted,
   setSelectedReply,
 } from '../../../actions/exerciseActions';
@@ -26,6 +27,7 @@ function ActionLinkwithClick({
   data,
   title,
   markThreadAsDeleted,
+  markThreadAsInactive,
   threadId,
   remove,
 }) {
@@ -46,7 +48,7 @@ function ActionLinkwithClick({
           emailId: data.emailId,
           timestamp: new Date(),
         });
-        remove && markThreadAsDeleted(threadId);
+        remove && markThreadAsDeleted(threadId) && markThreadAsInactive();
       }}
     >
       {title}
@@ -54,7 +56,12 @@ function ActionLinkwithClick({
   );
 }
 
-function EmailActions({ threadId, markThreadAsDeleted, onReplyParams }) {
+function EmailActions({
+  threadId,
+  markThreadAsDeleted,
+  onReplyParams,
+  markThreadAsInactive,
+}) {
   return (
     <div
       className={css({
@@ -87,6 +94,7 @@ function EmailActions({ threadId, markThreadAsDeleted, onReplyParams }) {
         }}
         title="Delete"
         markThreadAsDeleted={markThreadAsDeleted}
+        markThreadAsInactive={markThreadAsInactive}
         threadId={threadId}
         remove
       />
@@ -97,6 +105,7 @@ function EmailActions({ threadId, markThreadAsDeleted, onReplyParams }) {
         }}
         title="Report"
         markThreadAsDeleted={markThreadAsDeleted}
+        markThreadAsInactive={markThreadAsInactive}
         threadId={threadId}
         remove
       />
@@ -134,6 +143,7 @@ export class EmailChain extends Component {
       >
         <EmailActions
           markThreadAsDeleted={this.props.markThreadAsDeleted}
+          markThreadAsInactive={this.props.markThreadAsInactive}
           threadId={thread.id}
           onReplyParams={{
             startTime: this.props.startTime,
@@ -185,6 +195,7 @@ export default connect(
   }),
   {
     markThreadAsRead,
+    markThreadAsInactive,
     showWebpage,
     addFile,
     markThreadAsDeleted,

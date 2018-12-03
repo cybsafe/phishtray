@@ -37,6 +37,24 @@ export function markThreadAsDeleted(threadId: string) {
   };
 }
 
+export function markThreadAsActive(threadId: string) {
+  return {
+    type: 'exercise/MARK_THREAD_AS_ACTIVE',
+    payload: {
+      threadId,
+    },
+  };
+}
+
+export function markThreadAsInactive() {
+  return {
+    type: 'exercise/MARK_THREAD_AS_INACTIVE',
+    payload: {
+      threadId: '',
+    },
+  };
+}
+
 export const getExerciseData = (exerciseUuid: string) =>
   fetchAndDispatch(
     `/api/v1/exercises/${exerciseUuid}/init`,
