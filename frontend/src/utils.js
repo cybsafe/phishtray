@@ -1,7 +1,9 @@
 // @flow
 
-export const HOST_BACKEND = 'http://phishtray.local:9000';
-export const HOST_FRONTEND = 'http://phishtray.local:3000';
+export const HOST_BACKEND =
+  process.env.REACT_APP_HOST_BACKEND || 'http://phishtray.local:9000';
+export const HOST_FRONTEND =
+  process.env.REACT_APP_HOST_FRONTEND || 'http://phishtray.local:3000';
 
 export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
   dispatch: *
