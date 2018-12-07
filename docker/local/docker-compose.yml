@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
 
@@ -23,7 +23,10 @@ services:
     - "9000:9000"
     - "9022:22"
     environment:
-    - DATABASE_HOST=db
+    - ALLOWED_HOSTS=*
+    - DATABASE_URL=mysql://root:admin@db:3306/phishtray
+    - REACT_APP_HOST_BACKEND=http://cybsafe.local:9000
+    - REACT_APP_HOST_FRONTEND=http://cybsafe.local:3000
     volumes:
     - ../../.:/usr/src/app
     networks:
