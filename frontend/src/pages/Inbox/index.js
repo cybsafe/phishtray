@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { connect } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
-
+import { markThreadAsActive } from '../../actions/exerciseActions';
 import {
   getThreads,
   getLastRefreshed,
@@ -33,6 +33,12 @@ const EmailContainer = styled('div')({
 });
 
 export class Inbox extends Component {
+  componentDidMount() {
+    const { match, activeThread, history } = this.props;
+    if (Object.keys(match.params).length === 0 && activeThread !== '') {
+      history.push(`/inbox/${activeThread}`);
+    }
+  }
   render() {
     const { match, threads } = this.props;
 
@@ -66,6 +72,7 @@ export class Inbox extends Component {
                 startTime: this.props.startTime,
                 participantId: this.props.participantId,
               }}
+              markThreadAsActive={this.props.markThreadAsActive}
             />
           ))}
         </EmailList>
@@ -83,6 +90,9 @@ export default connect(
     isLoaded: getLastRefreshed(state) !== null,
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
+    activeThread: state.exercise.activeThread,
   }),
-  {}
+  {
+    markThreadAsActive,
+  }
 )(Inbox);

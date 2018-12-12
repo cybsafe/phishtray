@@ -29,7 +29,11 @@ const Text = styled('div')(
   })
 );
 
-export default function EmailListItem({ email, onOpenParams }) {
+export default function EmailListItem({
+  email,
+  onOpenParams,
+  markThreadAsActive,
+}) {
   const { startTime, participantId } = onOpenParams;
   return (
     <Route path={`/inbox/${email.id}`}>
@@ -38,6 +42,7 @@ export default function EmailListItem({ email, onOpenParams }) {
           to={`/inbox/${email.id}`}
           className={css({ textDecoration: 'none', display: 'block' })}
           onClick={() => {
+            markThreadAsActive(email.id);
             logAction({
               participantId,
               actionType: actionTypes.emailOpen,
