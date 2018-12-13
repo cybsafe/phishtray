@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'phishtray.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 DATABASES = {
-    'default': dj_database_url.config(default='mysql://localhost')
+    'default': dj_database_url.config(env='DB_URL', default='mysql://localhost')
 }
 
 
