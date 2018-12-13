@@ -30,7 +30,7 @@ class ThreadTestsMixin:
 class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
     def setUp(self):
-        super(ExerciseAPITests, self).setUp()
+        super().setUp()
 
     def test_exercise_list_block_public(self):
         """
@@ -101,7 +101,7 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
 class EmailAPITestCase(PhishtrayAPIBaseTest):
 
     def setUp(self):
-        super(EmailAPITestCase, self).setUp()
+        super().setUp()
 
     def test_email_list_block_public(self):
         """
@@ -159,7 +159,7 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
 class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
     def setUp(self):
-        super(ThreadAPITestCase, self).setUp()
+        super().setUp()
 
     def test_thread_list_block_public(self):
         """
