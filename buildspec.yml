@@ -41,7 +41,7 @@ phases:
 # --File = docker compose file in the code directory
 # --ecs-params = the parameters file which defines the container and the networking.
 # --region = Region the definition needs to be spun up in.
-# --launch-type FARGATE / EC2 cluster type
+# --launch-type FARGATE / EC2 cluster type #
 
 #FOR EC2 LAUNCH TYPE
 
