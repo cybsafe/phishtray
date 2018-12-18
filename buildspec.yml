@@ -33,7 +33,7 @@ phases:
 # @ build , tag and push the images to the repo
       # - docker build -t cybsafe/phishtray:latest -f prod.Dockerfile .
       # - docker tag cybsafe/phishtray:latest $aws_account_id.dkr.ecr.eu-west-2.amazonaws.com/phishtray/django:newlatest
-      # - docker push $aws_account_id.dkr.ecr.eu-west-2.amazonaws.com/phishtray/django:newlatest
+      # - docker push $aws_account_id.dkr.ecr.aws_default_region.amazonaws.com/phishtray/django:newlatest
 
   post_build:
     commands:
@@ -45,13 +45,13 @@ phases:
 
 #FOR EC2 LAUNCH TYPE
 
-     # - ecs-cli compose --project-name demo-django-compose --file docker-compose.yml --ecs-params ecs-params.yml --region $aws_default_region create --launch-type EC2
-     # - ecs-cli compose up --region $aws_default_region --cluster Dev-Phishtray-101 --launch-type EC2
+     # - ecs-cli compose --project-name demo-django-compose --file docker-compose.yml --ecs-params ecs-params.yml --region $aws_default_region create --launch-type $launchtype
+     # - ecs-cli compose up --region $aws_default_region --cluster $dev --launch-type $launchtype
 
 
 
 #FOR FARGATE***
 #     - cd ./docker/prod
-     - ecs-cli compose --file docker-compose.yml --ecs-params ecs-paramsEC2.yml --task-role-arn ecsTaskExecutionRole --region $aws_default_region create --launch-type EC2
-     - ecs-cli compose up --region $aws_default_region --cluster PreProd-Phishtray-101 --launch-type EC2
-#     - ecs-cli compose --region $aws_default_region --cluster dev-201 --launch-type EC2 --file docker-compose.yml service up
+     - ecs-cli compose --file docker-compose.yml --ecs-params ecs-paramsEC2.yml --task-role-arn ecsTaskExecutionRole --region $aws_default_region create --launch-type $launchtype
+     - ecs-cli compose up --region $aws_default_region --cluster $Pre --launch-type $launchtype
+#     - ecs-cli compose --region $aws_default_region --cluster $dev --launch-type $launchtype --file docker-compose.yml service up
