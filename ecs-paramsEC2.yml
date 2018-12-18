@@ -1,0 +1,7 @@
+version: 1
+task_definition:
+  services:
+    phishtray_apps:
+      cpu_shares: 256
+      mem_limit: 0.5GB
+      mem_reservation: 0.5GB
