@@ -53,5 +53,5 @@ phases:
 #FOR FARGATE***
 #     - cd ./docker/prod
      - ecs-cli compose --file docker-compose.yml --ecs-params ecs-paramsEC2.yml --task-role-arn ecsTaskExecutionRole --region $aws_default_region create --launch-type $launchtype
-     - ecs-cli compose up --region $aws_default_region --cluster $Pre --launch-type $launchtype
+     - ecs-cli compose up --region $aws_default_region --cluster $dev --launch-type $launchtype
 #     - ecs-cli compose --region $aws_default_region --cluster $dev --launch-type $launchtype --file docker-compose.yml service up
