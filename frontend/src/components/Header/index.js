@@ -7,6 +7,7 @@ import { Button, Modal } from 'carbon-components-react';
 import StopClock from './StopClock';
 import { logAction, getHeaderText } from '../../utils';
 import actionTypes from '../../config/actionTypes';
+import { resetCountdown } from '../../actions/exerciseActions';
 
 const SectionHeader = styled('div')({
   display: 'flex',
@@ -63,6 +64,7 @@ type Props = {
   location: *,
   exerciseId: string,
   participantId: string,
+  resetCountdown: () => void,
 };
 
 const getHeader = location => (
@@ -116,11 +118,12 @@ class Header extends Component<Props> {
                   timeDelta: Date.now() - this.props.startTime,
                 });
                 clearSessionStorage()
-                  .then(() =>
+                  .then(() => {
+                    this.props.resetCountdown();
                     this.props.history.push(
                       `/afterword/${this.props.participantId}`
-                    )
-                  )
+                    );
+                  })
                   .catch(e => console.error('error clearing your session', e));
               }}
             />
@@ -151,11 +154,12 @@ class Header extends Component<Props> {
               timeDelta: Date.now() - this.props.startTime,
             });
             clearSessionStorage()
-              .then(() =>
+              .then(() => {
+                this.props.resetCountdown();
                 this.props.history.push(
                   `/afterword/${this.props.participantId}`
-                )
-              )
+                );
+              })
               .catch(e => console.error('error clearing your session', e));
           }}
         />
@@ -173,5 +177,5 @@ const mapStateToProps = reduxState => ({
 
 export default connect(
   mapStateToProps,
-  {}
+  { resetCountdown }
 )(withRouter(Header));

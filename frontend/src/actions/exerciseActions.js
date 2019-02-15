@@ -10,6 +10,16 @@ export const startCountdown = () => async (dispatch: *) => {
   });
 };
 
+export const resetCountdown = () => (dispatch: *) => {
+  dispatch({
+    type: 'exercise/RESET_COUNTDOWN',
+    payload: {
+      startTime: 0,
+      timer: 0,
+    },
+  });
+};
+
 export function tickTimer(amount: number = 10) {
   return {
     type: 'exercise/TIMER_TICK',

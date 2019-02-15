@@ -53,6 +53,13 @@ export default function reducer(
         startTime: action.payload.startTime,
       };
 
+    case 'exercise/RESET_COUNTDOWN':
+      return {
+        ...state,
+        startTime: action.payload.startTime,
+        timer: action.payload.timer,
+      };
+
     case 'exercise/SET_SELECTED_REPLY':
       return produce(state, draft => {
         const { threadId, selectedReplyid, emailid } = action.payload;
