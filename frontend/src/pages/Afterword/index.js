@@ -53,10 +53,6 @@ type Props = {
 
 const clearSessionStorage = async () => await sessionStorage.clear();
 
-const MarginBottomParagraph = styled('p')`
-  margin-bottom: 30px;
-`;
-
 type State = {
   scores: Array<any>,
 };
@@ -104,13 +100,6 @@ class Afterword extends React.Component<Props, State> {
       <Container>
         <ContentContainer>
           <Title>Thanks for taking the exercise.</Title>
-          <MarginBottomParagraph>
-            The exercise you have just taken part in is designed to assess the
-            decision-making process of planning, coordinating and uncertainty
-            management. If you have completed the exercise in full you will find
-            an automated report below which describes your strengths and areas
-            for improvements associated with these skills.
-          </MarginBottomParagraph>
           {this.props.afterwordMessage && (
             <MarkdownContainer>
               <ReactMarkdown source={this.props.afterwordMessage} />
