@@ -73,21 +73,27 @@ class Afterword extends React.Component<Props, State> {
     scores: [],
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     getRange(0, 100).map(i => clearInterval(i)); //not the best solution
     clearSessionStorage().then(() => {
       persistor.purge();
     });
     const { participantUuid } = this.props.match.params;
     const apiUrl = `${HOST_BACKEND}/api/v1/participant-scores/${participantUuid}`;
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(json => {
-        this.setState({
-          scores: json.scores,
-        });
-      });
+    const response = await fetch(apiUrl);
+    const json = await response.json();
+    const scores =
+      json.scores && json.scores.length > 0
+        ? this.generateRows(json.scores)
+        : [];
+    this.setState({ scores });
   }
+
+  generateRows = (data: []) =>
+    data.map(row => {
+      row.id = row.task;
+      return row;
+    });
 
   getHeaders = () => [
     { key: 'task', header: 'Task' },
@@ -127,9 +133,9 @@ class Afterword extends React.Component<Props, State> {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {rows.map((row, index) => (
+                        {rows.map(row => (
                           // eslint-disable-next-line react/no-array-index-key
-                          <TableRow key={index}>
+                          <TableRow key={row.id}>
                             {row.cells.map(cell => (
                               <TableCell key={cell.id}>{cell.value}</TableCell>
                             ))}
