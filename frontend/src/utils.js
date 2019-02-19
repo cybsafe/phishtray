@@ -1,4 +1,5 @@
 // @flow
+import Cookies from 'js-cookie';
 
 export const HOST_BACKEND = process.env.REACT_APP_HOST_BACKEND || process.env.REACT_APP_HOST;
 export const HOST_FRONTEND = process.env.REACT_APP_HOST_FRONTEND || process.env.REACT_APP_HOST;
@@ -32,6 +33,7 @@ export const logAction = async (actionData: object) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken'),
       },
       body: JSON.stringify({
         ...rest,
@@ -39,7 +41,7 @@ export const logAction = async (actionData: object) => {
     });
 
   try {
-    const res = await rawResponse();
+    await rawResponse();
   } catch (e) {
     console.error('logAction failed', e);
   }
@@ -52,13 +54,14 @@ export const postFormData = async (apiUrl: string, data: Object) => {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': HOST_FRONTEND,
+        'X-CSRFToken': Cookies.get('csrftoken'),
       },
       method: 'POST',
       body: JSON.stringify(data),
     });
 
   try {
-    const response = await postResponse();
+    await postResponse();
   } catch (e) {
     console.error('postAction failed', e);
   }
