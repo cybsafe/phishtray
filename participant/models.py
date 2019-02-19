@@ -100,11 +100,12 @@ class Participant(PhishtrayBaseModel):
         # 3. Update recorded scores based on participant actions
 
         for action in reply_actions:
-            email_reply = exercise_replies.get(id=action['reply_id'])
-            for reply_score in email_reply.scores:
-                score = reply_score.value
-                task = reply_score.task
-                tasks[str(task.id)].append(score)
+            email_reply = exercise_replies.filter(id=action['reply_id'])
+            if email_reply:
+                for reply_score in email_reply.first().scores:
+                    score = reply_score.value
+                    task = reply_score.task
+                    tasks[str(task.id)].append(score)
 
         # 4. prepare the response by looping through the previous dict we prepared
         # returning the name of the task, the score and debrief which gets picked by score evaluation
@@ -138,4 +139,4 @@ class ActionLog(PhishtrayBaseModel):
     """
     action = models.ForeignKey(ParticipantAction, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
-    value = models.CharField(max_length=500, blank=False, null=False)
+    value = models.CharField(max_length=2000, blank=False, null=False)
