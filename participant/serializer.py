@@ -188,7 +188,7 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
         return data
 
 
-class ParticipantScoreSerializer(serializers.HyperlinkedModelSerializer):
+class ParticipantScoreSerializer(serializers.ModelSerializer):
     scores = serializers.SerializerMethodField()
 
     class Meta:

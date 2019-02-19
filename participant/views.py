@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -129,7 +129,6 @@ class ParticipantViewSet(viewsets.ModelViewSet):
         return Response(data=resp)
 
 
-class ParticipantScoreViewSet(viewsets.ModelViewSet):
+class ParticipantScoreViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Participant.objects.all()
-    http_method_names = ('get', 'head', 'options')
     serializer_class = ParticipantScoreSerializer
