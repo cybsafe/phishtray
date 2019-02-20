@@ -35,7 +35,18 @@ class ExerciseTask(PhishtrayBaseModel):
     score_threshold = models.IntegerField()
 
     def evaluate(self, score):
-        if score > self.score_threshold:
+        """
+        Constraints:
+            1. Scores should only range from 1 to 4.
+            2. Tasks should be unique in an exercise.
+            2. Tasks should not be shared between exercises.
+            3. Threshold is set percentage based with range 1-100.
+        :param score: INT / FLOAT
+            - this is calculated from a list of numbers with mean()
+        :return: STRING
+        """
+        acceptance_threshold = 4 * (self.score_threshold / 100)
+        if score >= acceptance_threshold:
             return self.debrief_over_threshold
         else:
             return self.debrief_under_threshold

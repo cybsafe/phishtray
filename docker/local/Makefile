@@ -19,6 +19,10 @@ django-run:
 django-run-detached:
 	docker-compose exec -d django bash -c "python3.6 /usr/src/app/manage.py runserver 0:9000"
 
+.PHONY: django-shell
+django-shell:
+	docker-compose exec django bash -c "pip install ipython &&  python3.6 ./manage.py shell_plus"
+
 .PHONY: django-test
 django-test:
 	docker-compose exec django bash -c "python3.6 /usr/src/app/manage.py test"
