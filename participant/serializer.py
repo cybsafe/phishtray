@@ -56,10 +56,11 @@ class ParticipantSerializer(serializers.ModelSerializer):
 
 class ParticipantActionLogDownloadCSVSerializer(serializers.ModelSerializer):
     download_csv_url = serializers.SerializerMethodField()
+    profile = ParticipantProfileEntrySerializer(read_only=True, many=True)
 
     class Meta:
         model = Participant
-        fields = ('id', 'download_csv_url',)
+        fields = ('id', 'download_csv_url', 'profile')
 
     def get_download_csv_url(self, participant):
         req = self.context.get('request')

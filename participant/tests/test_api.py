@@ -14,9 +14,6 @@ from exercise.factories import DemographicsInfoFactory
 
 class ParticipantAPITests(PhishtrayAPIBaseTest):
 
-    def setUp(self):
-        super().setUp()
-
     def test_participant_list_block_public(self):
         """
         Non admin users should not be able to retrieve participant list.
