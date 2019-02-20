@@ -28,7 +28,7 @@ class ParticipantAPITests(PhishtrayAPIBaseTest):
         Admin users should be able to retrieve thread list.
         """
         url = reverse('api:participant-list')
-        participant_count = randint(1, 50)
+        participant_count = 5
         ParticipantFactory.create_batch(participant_count)
 
         response = self.admin_client.get(url)
@@ -42,16 +42,16 @@ class ParticipantAPITests(PhishtrayAPIBaseTest):
         """
         Participant details are public.
         """
-        participants_count = randint(1, 10)
+        participants_count = 2
         ParticipantFactory.create_batch(participants_count)
         participant = ParticipantFactory()
 
         # Actions
-        actions_count = randint(1, 10)
+        actions_count = 2
         ParticipantActionFactory.create_batch(actions_count, participant=participant)
 
         # Profile Entries
-        profile_entries_count = randint(1, 10)
+        profile_entries_count = 2
         profile_entries = ProfileEntryFactory.create_batch(profile_entries_count)
         participant.profile.add(*profile_entries)
         participant.save()
@@ -66,7 +66,6 @@ class ParticipantAPITests(PhishtrayAPIBaseTest):
         self.assertEqual(profile_entries_count, len(response.data.get('profile')))
 
     def test_get_participant_details_404(self):
-        ParticipantFactory.create_batch(5)
         fake_id = 'fakeID'
         url = reverse('api:participant-detail', args=[fake_id])
 
@@ -82,7 +81,7 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
         super().setUp()
         self.participant = ParticipantFactory()
         # create questions and profile entries
-        self.questions = DemographicsInfoFactory.create_batch(10)
+        self.questions = DemographicsInfoFactory.create_batch(5)
         self.participant.exercise.demographics.add(*self.questions)
         self.participant.save()
 

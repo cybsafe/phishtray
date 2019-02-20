@@ -18,7 +18,8 @@ from ..factories import (
     EmailFactory,
     EmailReplyFactory,
     ExerciseFactory,
-    DemographicsInfoFactory)
+    DemographicsInfoFactory
+)
 
 
 class ThreadTestsMixin:
@@ -57,16 +58,15 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
         """
         Exercise details are public.
         """
-        ExerciseFactory.create_batch(5)
         exercise_1 = ExerciseFactory()
         # add emails
-        email_count = randint(2, 15)
+        email_count = 3
         emails = EmailFactory.create_batch(email_count)
         self.threadify(emails[0])
         self.threadify(emails[1])
         exercise_1.emails.add(*emails)
         # add files
-        file_count = randint(1, 10)
+        file_count = 2
         files = ExerciseFileFactory.create_batch(file_count)
         exercise_1.files.add(*files)
         exercise_1.save()
@@ -85,7 +85,6 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
         """
         Exercise details are public.
         """
-        ExerciseFactory.create_batch(5)
         fake_id = 'fakeID'
         url = reverse('api:exercise-detail', args=[fake_id])
 
@@ -111,7 +110,7 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
         Admin users should be able to retrieve the email list.
         """
         url = reverse('api:email-list')
-        email_count = randint(1, 50)
+        email_count = 3
         EmailFactory.create_batch(email_count)
 
         response = self.admin_client.get(url)
@@ -126,7 +125,6 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
         Email details are public.
         """
         email_1 = EmailFactory()
-        EmailFactory.create_batch(5)
         url = reverse('api:email-detail', args=[email_1.id])
 
         response = self.client.get(url)
@@ -140,7 +138,6 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
         """
         Email details are public.
         """
-        EmailFactory.create_batch(5)
         fake_id = 'fakeID'
         url = reverse('api:email-detail', args=[fake_id])
 
@@ -166,7 +163,7 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
         Admin users should be able to retrieve thread list.
         """
         url = reverse('api:thread-list')
-        email_count = randint(3, 50)
+        email_count = randint(3, 5)
         emails = EmailFactory.create_batch(email_count)
 
         self.threadify(emails[0])
@@ -202,7 +199,7 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
         email_1.save()
 
         # add some emails to email_1 to make it a thread
-        email_count = randint(1, 15)
+        email_count = randint(1, 3)
         emails = EmailFactory.create_batch(email_count)
 
         for email in emails:
@@ -222,14 +219,12 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
         self.assertEqual(1, len(response.data.get('attachments')))
 
     def test_get_thread_details_404(self):
-        EmailFactory.create_batch(5)
         fake_id = 'fakeID'
         url = reverse('api:thread-detail', args=[fake_id])
 
         response = self.client.get(url)
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual('Not found.', response.data.get('detail'))
 
 
 class ExerciseReportsTestCase(PhishtrayAPIBaseTest):
@@ -247,7 +242,7 @@ class ExerciseReportsTestCase(PhishtrayAPIBaseTest):
         """
         Non admin users should not be able to retrieve exercise reports.
         """
-        exercise = ExerciseFactory.create_batch(2)
+        ExerciseFactory.create_batch(2)
 
         url = reverse('api:exercise-report-list')
         response = self.admin_client.get(url)
