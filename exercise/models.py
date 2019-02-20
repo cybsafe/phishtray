@@ -45,7 +45,6 @@ class ExerciseTask(PhishtrayBaseModel):
             - this is calculated from a list of numbers with mean()
         :return: STRING
         """
-        scores = EmailReplyTaskScore.objects.filter(task=self)
         acceptance_threshold = 4 * (self.score_threshold / 100)
         if score >= acceptance_threshold:
             return self.debrief_over_threshold
