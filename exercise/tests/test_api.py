@@ -5,6 +5,7 @@ from django.urls import reverse
 from rest_framework.views import status
 from djangorestframework_camel_case.util import underscoreize
 
+from participant.factories import ParticipantFactory, ProfileEntryFactory
 from phishtray.test.base import PhishtrayAPIBaseTest
 from ..models import Exercise, ExerciseEmail
 from ..serializer import (
@@ -17,7 +18,7 @@ from ..factories import (
     EmailFactory,
     EmailReplyFactory,
     ExerciseFactory,
-)
+    DemographicsInfoFactory)
 
 
 class ThreadTestsMixin:
@@ -28,10 +29,6 @@ class ThreadTestsMixin:
 
 
 class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
-
-    def setUp(self):
-        super().setUp()
-
     def test_exercise_list_block_public(self):
         """
         Non admin users should not be able to retrieve the exercise list.
@@ -46,7 +43,7 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
         Admin users should be able to retrieve the exercise list.
         """
         url = reverse('api:exercise-list')
-        exercises_count = randint(1, 50)
+        exercises_count = 3
         ExerciseFactory.create_batch(exercises_count)
 
         response = self.admin_client.get(url)
@@ -99,9 +96,6 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
 
 class EmailAPITestCase(PhishtrayAPIBaseTest):
-
-    def setUp(self):
-        super().setUp()
 
     def test_email_list_block_public(self):
         """
@@ -157,9 +151,6 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
 
 
 class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
-
-    def setUp(self):
-        super().setUp()
 
     def test_thread_list_block_public(self):
         """
@@ -239,3 +230,92 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual('Not found.', response.data.get('detail'))
+
+
+class ExerciseReportsTestCase(PhishtrayAPIBaseTest):
+
+    def test_exercise_reports_list_block_public(self):
+        """
+        Non admin users should not be able to retrieve exercise reports.
+        """
+        url = reverse('api:exercise-report-list')
+        response = self.client.get(url)
+
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+    def test_exercise_reports_list_allow_admin(self):
+        """
+        Non admin users should not be able to retrieve exercise reports.
+        """
+        exercise = ExerciseFactory.create_batch(2)
+
+        url = reverse('api:exercise-report-list')
+        response = self.admin_client.get(url)
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(2, len(response.data))
+
+    def test_exercise_report_details_block_public(self):
+        """
+        Non admin users should not be able to retrieve exercise reports.
+        """
+        url = reverse('api:exercise-report-detail', args=['some-uuid-1234'])
+        response = self.client.get(url)
+
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+    def test_exercise_report_details_allow_admin(self):
+        """
+        An exercise report should list the exercise ID, title
+        and the participants who took the exercise.
+        Each participant object contains its demographic profile and a url to download
+        their action as CSV.
+        """
+        # Set up an exercise with some demographic questions
+        question_1 = DemographicsInfoFactory()
+        question_2 = DemographicsInfoFactory()
+        exercise = ExerciseFactory()
+        exercise.demographics.add(*[question_1, question_2])
+        exercise.save()
+
+        # Participant 1
+        entry_1_1 = ProfileEntryFactory(demographics_info=question_1)
+        entry_1_2 = ProfileEntryFactory(demographics_info=question_2)
+        participant_1 = ParticipantFactory(exercise=exercise)
+        participant_1.profile.add(*[entry_1_1, entry_1_2])
+        participant_1.save()
+
+        # Participant 2
+        entry_2_1 = ProfileEntryFactory(demographics_info=question_1)
+        entry_2_2 = ProfileEntryFactory(demographics_info=question_2)
+        participant_2 = ParticipantFactory(exercise=exercise)
+        participant_2.profile.add(*[entry_2_1, entry_2_2])
+        participant_2.save()
+
+        url = reverse('api:exercise-report-detail', args=[exercise.id.hex])
+        response = self.admin_client.get(url)
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(str(exercise.id), response.data['id'])
+        self.assertEqual(exercise.title, response.data['title'])
+        self.assertEqual(2, len(response.data['participants']))
+
+        # Check that participants have the correct answer
+        def get_participant_by_id(participant_id):
+            participants = response.data["participants"]
+            for p in participants:
+                if p["id"] == str(participant_id):
+                    return p
+            return None
+
+        # Participant 1
+        expected_profile_entries_1 = [str(e.id) for e in participant_1.profile.all()]
+        response_participant_1 = get_participant_by_id(participant_1.id)
+        response_profile_entries_1 = [e["id"] for e in response_participant_1["profile"]]
+        self.assertSetEqual({*expected_profile_entries_1}, {*response_profile_entries_1})
+
+        # Participant 2
+        expected_profile_entries_2 = [str(e.id) for e in participant_2.profile.all()]
+        response_participant_2 = get_participant_by_id(participant_2.id)
+        response_profile_entries_2 = [e["id"] for e in response_participant_2["profile"]]
+        self.assertSetEqual({*expected_profile_entries_2}, {*response_profile_entries_2})
