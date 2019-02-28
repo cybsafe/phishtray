@@ -132,10 +132,15 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
             'opened_time': None,
             'phish': None,
             'response_option': None,
-            'reported': None,
+            'response_time': None,
+            'reply_button_clicked': None,
+            'replied_time': None,
+            'report_button_clicked': None,
             'reported_time': None,
-            'deleted': None,
+            'delete_button_clicked': None,
             'deleted_time': None,
+            'forward_button_clicked': None,
+            'forwarded_time': None,
             'clicked_link': None,
             'entered_details': None,
             'entered_details_time': None,
@@ -158,14 +163,14 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
             csv_row['phish'] = (email.phish_type == EXERCISE_EMAIL_PHISH)
             csv_row['response_option'] = get_value('email_quick_reply', 'message', related_actions)
             csv_row['response_time'] = get_value('email_quick_reply', 'time_delta', related_actions)
-            csv_row['reply_button_clicked'] = get_value('email_replied', related_actions)
+            csv_row['reply_button_clicked'] = recorded('email_replied', related_actions)
             csv_row['replied_time'] = get_value('email_replied', 'time_delta', related_actions)
             csv_row['report_button_clicked'] = recorded('email_reported', related_actions)
             csv_row['reported_time'] = get_value('email_reported', 'time_delta', related_actions)
             csv_row['delete_button_clicked'] = recorded('email_deleted', related_actions)
             csv_row['deleted_time'] = get_value('email_deleted', 'time_delta', related_actions)
             # forwarded
-            csv_row['forward_button_clicked'] = get_value('email_forwarded', related_actions)
+            csv_row['forward_button_clicked'] = recorded('email_forwarded', related_actions)
             csv_row['forwarded_time'] = get_value('email_forwarded', 'time_delta', related_actions)
             csv_row['clicked_link'] = recorded('email_link_clicked', related_actions)
             csv_row['entered_details'] = recorded(
