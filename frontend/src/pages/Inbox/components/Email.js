@@ -107,7 +107,6 @@ function EmailAttachments({ props }) {
 }
 
 function EmailInfo({ email }) {
-  console.log(email);
   return (
     <div
       className={css({
