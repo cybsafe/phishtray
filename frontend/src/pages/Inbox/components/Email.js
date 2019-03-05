@@ -163,9 +163,10 @@ function EmailInfo({ email }) {
         <EmailField>
           <p>To: </p>
           <EmailCard
-            name="You"
-            photoUrl="https://randomuser.me/api/portraits/women/83.jpg"
-            email="geoff@bluestar.com"
+            name={email.toAccount.name}
+            photoUrl={email.toAccount.photoUrl}
+            email={email.toAccount.email}
+            role={email.toAccount.role}
             triggerText={
               <a
                 className={css({
@@ -173,7 +174,7 @@ function EmailInfo({ email }) {
                   display: 'inline-block',
                 })}
               >
-                {'You '}
+                {email.toAccount.name ? email.toAccount.name + ' ' : ' '}
                 {String.fromCharCode(8744)}
               </a>
             }
