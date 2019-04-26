@@ -132,7 +132,7 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
         )
 
     def get_threads(self, exercise):
-        queryset = ExerciseEmail.objects.filter(pk=F('belongs_to'))
+        queryset = exercise.emails.all().filter(pk=F('belongs_to'))
         return ThreadSerializer(queryset, many=True).data
 
 
