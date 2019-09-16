@@ -24,9 +24,9 @@
 
 
 ## Install
-
-1. Build and bring up the images running `docker-compose up -d --build`
-2. Bash in to the django container using `docker-compose exec django bash`  
+1. Go into the local docker directory `cd docker/local`
+2. Build and bring up the images running `docker-compose up -d --build`
+3. Bash in to the django container using `docker-compose exec django bash`  
 then create a superuser `py3 manage.py createsuperuser --email your@email.here`
 
 ## Running tests
