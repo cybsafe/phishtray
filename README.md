@@ -28,6 +28,7 @@
 2. Build and bring up the images running `docker-compose up -d --build`
 3. Bash in to the django container using `docker-compose exec django bash`  
 then create a superuser `py3 manage.py createsuperuser --email your@email.here`
+4. Run the static files command `py3 manage.py collectstatic`
 
 ## Running tests
 Run bash inside the django container using `docker-compose exec django bash`
