@@ -133,7 +133,7 @@ class ParticipantProfileAPITests(PhishtrayAPIBaseTest):
                          response.data.get('message'))
         self.assertEqual('Missing or invalid demographics IDs.',
                          response.data['errors'][0]['message'])
-        self.assertListEqual([bad_id_1, bad_id_2], response.data['errors'][0]['idList'])
+        self.assertListEqual([bad_id_1, bad_id_2], response.data['errors'][0]['id_list'])
         self.assertEqual(1, self.participant.profile.all().count())
 
     def test_update_participant_profile_missing_profile_form_data(self):
