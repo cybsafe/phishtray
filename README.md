@@ -21,7 +21,7 @@
 
         # Phishtray
         127.0.0.1               phishtray.local
-
+3. Create two env files in the frontend. One called `.env.development.local` and the other called `.env.local`. You should then ask one of the devs for the content of the files.
 
 ## Install
 1. Go into the local docker directory `cd docker/local`
