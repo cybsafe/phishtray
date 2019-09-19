@@ -178,6 +178,9 @@ class DemographicsInfo(PhishtrayBaseModel):
         default=False
     )
 
+    class Meta:
+        verbose_name_plural = "Demographic Info"
+
     def __str__(self):
         return self.question
 
@@ -225,6 +228,7 @@ class ExerciseEmailProperties(PhishtrayBaseModel):
 
     class Meta:
         unique_together = ('exercise', 'email',)
+        verbose_name_plural = "Exercise email properties"
 
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE,)
     email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE,)
@@ -245,6 +249,9 @@ class ExerciseWebPages(PhishtrayBaseModel):
     url = models.CharField(max_length=250, blank=True, null=True)
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
     content = models.TextField(null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Exercise web pages"
 
 
 class ExerciseURL(PhishtrayBaseModel):
