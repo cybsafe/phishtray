@@ -20,6 +20,10 @@ from .serializer import (
     ExerciseReportListSerializer,
     ThreadSerializer,
 )
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
+TWO_HOURS = 60 * 60 * 2
 
 
 class ExerciseViewSet(viewsets.ModelViewSet):
@@ -37,7 +41,8 @@ class ExerciseViewSet(viewsets.ModelViewSet):
             permission_classes = []
         return [permission() for permission in permission_classes]
 
-    @action(methods=['get'], detail=True, permission_classes=[])
+    @action(methods=['GET'], detail=True, permission_classes=[])
+    @method_decorator(cache_page(TWO_HOURS))
     def init(self, request, *args, **kwargs):
         exercise = self.get_object()
         participant = Participant(exercise=exercise)

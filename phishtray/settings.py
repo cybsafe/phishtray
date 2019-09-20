@@ -179,3 +179,10 @@ CORS_ALLOW_HEADERS = default_headers + (
 REVEAL_TIME_ZERO_THRESHOLD = 0.1
 
 SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", False)
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
+    }
+}
