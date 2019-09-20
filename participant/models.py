@@ -50,6 +50,9 @@ class Participant(PhishtrayBaseModel):
 
     exercise = models.ForeignKey(Exercise, on_delete=models.PROTECT)
     profile = models.ManyToManyField(ParticipantProfileEntry)
+    organization = models.ForeignKey(
+        'participant.Organization', null=True, blank=True, on_delete=models.DO_NOTHING
+    )
 
     @property
     def actions(self):
@@ -144,3 +147,10 @@ class ActionLog(PhishtrayBaseModel):
     action = models.ForeignKey(ParticipantAction, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
     value = models.CharField(max_length=2000, blank=False, null=False)
+
+
+class Organization(models.Model):
+    """
+    Organization Model.
+    """
+    name = models.CharField(max_length=100)
