@@ -11,4 +11,3 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     list_display = ['email', 'username', ]
     fieldsets = UserAdmin.fieldsets + ( (None, {'fields': ('organization',)}), )
-    # ( (None, {'fields': ('bio',)}), )
