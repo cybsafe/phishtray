@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Participant
+from .models import Participant, Organization
 from django.http import HttpResponse
 import csv
 
@@ -27,3 +27,16 @@ class ExportCsvMixin:
 class ParticipantList(admin.ModelAdmin, ExportCsvMixin):
     list_filter = ("exercise",)
     actions = ["download_csv"]
+
+    def get_queryset(self, request, *args, **kwargs):
+        queryset = super().get_queryset(request)
+        if not request.user.is_superuser:
+            organization = request.user.organization
+            queryset = queryset.filter(organization=organization)
+        return queryset
+
+
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    list_filter = ("name",)
+    list_display = ("id", "name",)
