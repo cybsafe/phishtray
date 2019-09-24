@@ -10,22 +10,22 @@ from .models import *
 class DemographicsInfoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = DemographicsInfo
-        fields = ('id', 'question', 'question_type', 'required')
+        fields = ("id", "question", "question_type", "required")
 
 
 class ExerciseEmailReplySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ExerciseEmailReply
-        fields = ('id', 'reply_type', 'message')
+        fields = ("id", "reply_type", "message")
 
 
 class ExerciseFileSerializer(serializers.HyperlinkedModelSerializer):
-    date_created = serializers.DateTimeField(source='created_date')
-    file_url = serializers.CharField(source='img_url')
+    date_created = serializers.DateTimeField(source="created_date")
+    file_url = serializers.CharField(source="img_url")
 
     class Meta:
         model = ExerciseFile
-        fields = ('id', 'file_name', 'description', 'date_created', 'file_url')
+        fields = ("id", "file_name", "description", "date_created", "file_url")
 
 
 class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
@@ -35,16 +35,17 @@ class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ExerciseEmail
         fields = (
-            'id',
-            'subject',
-            'from_address',
-            'from_name',
-            'to_address',
-            'to_name',
-            'phish_type',
-            'content',
-            'attachments',
-            'replies',
+            "id",
+            "subject",
+            "from_address",
+            "from_name",
+            "to_address",
+            "to_name",
+            "phish_type",
+            "content",
+            "attachments",
+            "replies",
+            "phishing_explained",
         )
 
 
@@ -53,19 +54,20 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
     attachments = ExerciseFileSerializer(many=True)
     from_account = serializers.SerializerMethodField()
     to_account = serializers.SerializerMethodField()
-    body = serializers.CharField(source='content')
+    body = serializers.CharField(source="content")
 
     class Meta:
         model = ExerciseEmail
         fields = (
-            'id',
-            'subject',
-            'phish_type',
-            'from_account',
-            'to_account',
-            'body',
-            'attachments',
-            'replies',
+            "id",
+            "subject",
+            "phish_type",
+            "from_account",
+            "to_account",
+            "body",
+            "attachments",
+            "replies",
+            "phishing_explained",
         )
 
     def get_from_account(self, email):
@@ -76,7 +78,7 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ThreadSerializer(serializers.ModelSerializer):
-    body = serializers.CharField(source='content')
+    body = serializers.CharField(source="content")
     from_account = serializers.SerializerMethodField()
     to_account = serializers.SerializerMethodField()
     replies = ExerciseEmailReplySerializer(many=True)
@@ -87,15 +89,16 @@ class ThreadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExerciseEmail
         fields = (
-            'id',
-            'subject',
-            'reveal_time',
-            'from_account',
-            'to_account',
-            'body',
-            'attachments',
-            'replies',
-            'emails',
+            "id",
+            "subject",
+            "reveal_time",
+            "from_account",
+            "to_account",
+            "body",
+            "attachments",
+            "replies",
+            "emails",
+            "phishing_explained",
         )
 
     def get_emails(self, email):
@@ -114,35 +117,36 @@ class ThreadSerializer(serializers.ModelSerializer):
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     threads = serializers.SerializerMethodField()
-    profile_form = DemographicsInfoSerializer(source='demographics', many=True)
+    profile_form = DemographicsInfoSerializer(source="demographics", many=True)
     files = ExerciseFileSerializer(many=True)
 
     class Meta:
         model = Exercise
         fields = (
-            'id',
-            'title',
-            'description',
-            'introduction',
-            'afterword',
-            'length_minutes',
-            'profile_form',
-            'threads',
-            'files'
+            "id",
+            "title",
+            "description",
+            "introduction",
+            "afterword",
+            "length_minutes",
+            "profile_form",
+            "threads",
+            "files",
         )
 
     def get_threads(self, exercise):
-        queryset = exercise.emails.all().filter(pk=F('belongs_to'))
+        queryset = exercise.emails.all().filter(pk=F("belongs_to"))
         return ThreadSerializer(queryset, many=True).data
 
 
 class ExerciseReportListSerializer(serializers.ModelSerializer):
     exercise_reports_url = HyperlinkedIdentityField(
-        view_name='api:exercise-report-detail', lookup_field='pk')
+        view_name="api:exercise-report-detail", lookup_field="pk"
+    )
 
     class Meta:
         model = Exercise
-        fields = ('id', 'title', 'created_date', 'exercise_reports_url',)
+        fields = ("id", "title", "created_date", "exercise_reports_url")
 
 
 class ExerciseReportSerializer(serializers.ModelSerializer):
@@ -150,13 +154,12 @@ class ExerciseReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Exercise
-        fields = ('id', 'title', 'participants')
+        fields = ("id", "title", "participants")
 
     def get_participants(self, exercise):
-        serializer_context = {'request': self.context.get('request')}
+        serializer_context = {"request": self.context.get("request")}
         participants_queryset = Participant.objects.filter(exercise=exercise)
         serializer = ParticipantActionLogDownloadCSVSerializer(
-            participants_queryset, many=True,
-            context=serializer_context
+            participants_queryset, many=True, context=serializer_context
         )
         return serializer.data
