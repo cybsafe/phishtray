@@ -226,7 +226,7 @@ class ParticipantActionsAPITests(PhishtrayAPIBaseTest):
 
 class ParticipantScoresAPI(APITestCase):
     def setUp(self):
-        exercise = ExerciseFactory()
+        exercise = ExerciseFactory(debrief=True)
         phishing_email_1 = EmailFactory(
             subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
         )
@@ -248,6 +248,7 @@ class ParticipantScoresAPI(APITestCase):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(2, len(response.data["phishing_emails"]))
+        self.assertEqual(True, response.data["debrief"])
         self.assertEqual(
             "Phishing Email", response.data["phishing_emails"][0]["subject"]
         )
