@@ -8,7 +8,7 @@ from exercise.models import (
     ExerciseEmail,
     ExerciseFile,
     ExerciseEmailReply,
-    ExerciseTask
+    ExerciseTask,
 )
 
 from phishtray.base import PhishtrayBaseModel
@@ -20,11 +20,11 @@ OPENED_UNSAFE_EMAIL_LINK = 3
 DOWNLOADED_UNSAFE_EMAIL_ATTACHMENT = 4
 
 EVENT_TYPES = (
-    (STARTED_EXPERIMENT, 'started'),
-    (COMPLETED_EXPERIMENT, 'completed'),
-    (OPENED_EMAIL, 'opened'),
-    (OPENED_UNSAFE_EMAIL_LINK, 'unsafe_link'),
-    (DOWNLOADED_UNSAFE_EMAIL_ATTACHMENT, 'unsafe_attachment'),
+    (STARTED_EXPERIMENT, "started"),
+    (COMPLETED_EXPERIMENT, "completed"),
+    (OPENED_EMAIL, "opened"),
+    (OPENED_UNSAFE_EMAIL_LINK, "unsafe_link"),
+    (DOWNLOADED_UNSAFE_EMAIL_ATTACHMENT, "unsafe_attachment"),
 )
 
 
@@ -32,6 +32,7 @@ class ParticipantProfileEntry(PhishtrayBaseModel):
     """
     Aggregates Demographic Info
     """
+
     demographics_info = models.ForeignKey(DemographicsInfo, on_delete=models.PROTECT)
     answer = models.CharField(max_length=180, blank=True, null=True)
 
@@ -40,13 +41,12 @@ class ParticipantProfileEntry(PhishtrayBaseModel):
         return self.demographics_info.question
 
     def __str__(self):
-        return '{} - {}'.format(self.question, self.answer)
+        return "{} - {}".format(self.question, self.answer)
 
 
 class Participant(PhishtrayBaseModel):
-
     def __str__(self):
-        return 'Participant: {} For: {}'.format(self.id, self.exercise)
+        return "Participant: {} For: {}".format(self.id, self.exercise)
 
     exercise = models.ForeignKey(Exercise, on_delete=models.PROTECT)
     profile = models.ManyToManyField(ParticipantProfileEntry)
@@ -58,8 +58,9 @@ class Participant(PhishtrayBaseModel):
         :return: DICT
         """
         actions = {}
-        entries = ActionLog.objects.filter(
-            action__participant=self).order_by('created_date')
+        entries = ActionLog.objects.filter(action__participant=self).order_by(
+            "created_date"
+        )
 
         for entry in entries:
             action_details = actions.setdefault(str(entry.action_id), {})
@@ -67,11 +68,11 @@ class Participant(PhishtrayBaseModel):
 
         return actions
 
-
     @property
     def scores(self):
         exercise_replies = ExerciseEmailReply.objects.filter(
-            exerciseemail__in=self.exercise.emails.all()).distinct()
+            exerciseemail__in=self.exercise.emails.all()
+        ).distinct()
 
         scores = []
         tasks = {}
@@ -92,15 +93,17 @@ class Participant(PhishtrayBaseModel):
 
         reply_actions = []
         for action_id, action_details in self.actions.items():
-            if ('reply_id' in action_details and
-                    action_details.get('action_type') == 'email_quick_reply'):
+            if (
+                "reply_id" in action_details
+                and action_details.get("action_type") == "email_quick_reply"
+            ):
                 # The participant has sent a respone so let's add
                 reply_actions.append(self.actions[action_id])
 
         # 3. Update recorded scores based on participant actions
 
         for action in reply_actions:
-            email_reply = exercise_replies.filter(id=action['reply_id'])
+            email_reply = exercise_replies.filter(id=action["reply_id"])
             if email_reply:
                 for reply_score in email_reply.first().scores:
                     score = reply_score.value
@@ -112,24 +115,24 @@ class Participant(PhishtrayBaseModel):
 
         # pre-fetch all tasks that belong to the exercise
         exercise_tasks = ExerciseTask.objects.filter(
-            emailreplytaskscore__email_reply__in=exercise_replies).distinct()
+            emailreplytaskscore__email_reply__in=exercise_replies
+        ).distinct()
 
         for task_id, score_data in tasks.items():
             task = exercise_tasks.get(id=task_id)
             score = mean(score_data or [0])
-            scores.append({
-                'task': task.name,
-                'score': score,
-                'debrief': task.evaluate(score)
-            })
+            scores.append(
+                {"task": task.name, "score": score, "debrief": task.evaluate(score)}
+            )
 
-        return sorted(scores, key=itemgetter('task'))
+        return sorted(scores, key=itemgetter("task"))
 
 
 class ParticipantAction(PhishtrayBaseModel):
     """
     Groups a set of ActionLogs together.
     """
+
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
 
 
@@ -137,6 +140,7 @@ class ActionLog(PhishtrayBaseModel):
     """
     Simple key/value entries representing Participant actions.
     """
+
     action = models.ForeignKey(ParticipantAction, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
     value = models.CharField(max_length=2000, blank=False, null=False)
