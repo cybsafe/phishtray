@@ -45,6 +45,7 @@ class ExerciseEmailSerializer(serializers.HyperlinkedModelSerializer):
             "content",
             "attachments",
             "replies",
+            "phishing_explained",
         )
 
 
@@ -66,6 +67,7 @@ class EmailDetailsSerializer(serializers.HyperlinkedModelSerializer):
             "body",
             "attachments",
             "replies",
+            "phishing_explained",
         )
 
     def get_from_account(self, email):
@@ -96,6 +98,7 @@ class ThreadSerializer(serializers.ModelSerializer):
             "attachments",
             "replies",
             "emails",
+            "phishing_explained",
         )
 
     def get_emails(self, email):

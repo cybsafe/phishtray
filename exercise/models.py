@@ -128,6 +128,7 @@ class ExerciseEmail(PhishtrayBaseModel):
     to_role = models.CharField(max_length=50, blank=True, null=True)
 
     phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
+    phishing_explained = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
     attachments = models.ManyToManyField(ExerciseFile, blank=True)
     replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
