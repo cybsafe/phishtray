@@ -308,3 +308,12 @@ def create_email_reveal_time(sender, instance, created, **kwargs):
 
     # Set the email reveal times
     instance.set_email_reveal_times()
+
+
+class Trial(PhishtrayBaseModel):
+
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=100)
+    experiment = models.ForeignKey(Exercise, on_delete=models.CASCADE,)
