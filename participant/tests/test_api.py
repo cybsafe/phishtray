@@ -1,5 +1,4 @@
 import uuid
-from random import randint
 
 from django.urls import reverse
 from djangorestframework_camel_case.util import underscoreize
@@ -13,7 +12,9 @@ from ..factories import (
     ParticipantActionFactory,
     ProfileEntryFactory,
 )
-from exercise.factories import DemographicsInfoFactory
+from exercise.factories import DemographicsInfoFactory, EmailFactory, ExerciseFactory
+from rest_framework.test import APITestCase
+from exercise.models import EXERCISE_EMAIL_PHISH, EXERCISE_EMAIL_REGULAR
 
 
 class ParticipantAPITests(PhishtrayAPIBaseTest):
@@ -221,3 +222,35 @@ class ParticipantActionsAPITests(PhishtrayAPIBaseTest):
         response = self.client.post(url, data)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("Nothing to log.", response.data.get("message"))
+
+
+class ParticipantScoresAPI(APITestCase):
+    def setUp(self):
+        exercise = ExerciseFactory()
+        phishing_email_1 = EmailFactory(
+            subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
+        )
+        phishing_email_2 = EmailFactory(
+            subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
+        )
+        non_phishing_email = EmailFactory(
+            subject="Non Phishing Email Test", phish_type=EXERCISE_EMAIL_REGULAR
+        )
+        exercise.emails.add(phishing_email_1)
+        exercise.emails.add(non_phishing_email)
+        exercise.emails.add(phishing_email_2)
+
+        self.participant = ParticipantFactory(exercise=exercise)
+        self.url = reverse("api:participant-score-detail", args=[self.participant.id])
+
+    def test_participant_scores_debrief_has_only_phishing_emails(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(2, len(response.data["phishing_emails"]))
+        self.assertEqual(
+            "Phishing Email", response.data["phishing_emails"][0]["subject"]
+        )
+        self.assertEqual(
+            "Phishing Email", response.data["phishing_emails"][1]["subject"]
+        )
