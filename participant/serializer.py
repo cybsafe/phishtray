@@ -224,17 +224,6 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
 
 class ParticipantScoreSerializer(serializers.ModelSerializer):
     scores = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Participant
-        fields = ("id", "scores")
-
-    def get_scores(self, participant):
-        return participant.scores
-
-
-class ParticipantScoreSerializer(serializers.ModelSerializer):
-    scores = serializers.SerializerMethodField()
     phishing_emails = serializers.SerializerMethodField()
 
     def get_phishing_emails(self, participant):
