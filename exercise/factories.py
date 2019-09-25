@@ -16,7 +16,7 @@ class DemographicsInfoFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = DemographicsInfo
 
-    question = factory.Sequence(lambda n: 'Question {}'.format(n + 1))
+    question = factory.Sequence(lambda n: "Question {}".format(n + 1))
     question_type = randint(0, 1)
 
 
@@ -24,21 +24,23 @@ class ExerciseFileFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ExerciseFile
 
-    file_name = factory.Sequence(lambda n: 'testfile_{}.rnd'.format(n+1))
-    description = 'Wibble wobble.'
-    img_url = 'https://test.image.url/wibble.png'
+    file_name = factory.Sequence(lambda n: "testfile_{}.rnd".format(n + 1))
+    description = "Wibble wobble."
+    img_url = "https://test.image.url/wibble.png"
 
 
 class EmailFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ExerciseEmail
 
-    subject = factory.Sequence(lambda n: 'Email {}'.format(n + 1))
-    from_address = 'admin@cybsafe.com'
-    from_name = 'Cybsafe Admin'
-    to_address = factory.Sequence(lambda n: 'test+{}@cybsafe.com'.format(n + 1))
-    to_name = factory.Sequence(lambda n: 'Some Test User {}'.format(n + 1))
-    content = factory.Sequence(lambda n: 'Hi, this is email No. {}. Cheers'.format(n + 1))
+    subject = factory.Sequence(lambda n: "Email {}".format(n + 1))
+    from_address = "admin@cybsafe.com"
+    from_name = "Cybsafe Admin"
+    to_address = factory.Sequence(lambda n: "test+{}@cybsafe.com".format(n + 1))
+    to_name = factory.Sequence(lambda n: "Some Test User {}".format(n + 1))
+    content = factory.Sequence(
+        lambda n: "Hi, this is email No. {}. Cheers".format(n + 1)
+    )
     phish_type = 0
 
     @factory.post_generation
@@ -56,7 +58,7 @@ class EmailReplyFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ExerciseEmailReply
 
-    message = factory.Sequence(lambda n: 'Email Reply {}'.format(n + 1))
+    message = factory.Sequence(lambda n: "Email Reply {}".format(n + 1))
     reply_type = 0
 
 
@@ -64,7 +66,7 @@ class ExerciseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Exercise
 
-    title = factory.Sequence(lambda n: 'Exercise {}'.format(n + 1))
+    title = factory.Sequence(lambda n: "Exercise {}".format(n + 1))
     length_minutes = 10
 
     @factory.post_generation

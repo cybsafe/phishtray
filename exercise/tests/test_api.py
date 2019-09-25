@@ -8,22 +8,17 @@ from djangorestframework_camel_case.util import underscoreize
 from participant.factories import ParticipantFactory, ProfileEntryFactory
 from phishtray.test.base import PhishtrayAPIBaseTest
 from ..models import Exercise, ExerciseEmail
-from ..serializer import (
-    ExerciseSerializer,
-    ExerciseEmailSerializer,
-    ThreadSerializer,
-)
+from ..serializer import ExerciseSerializer, ExerciseEmailSerializer, ThreadSerializer
 from ..factories import (
     ExerciseFileFactory,
     EmailFactory,
     EmailReplyFactory,
     ExerciseFactory,
-    DemographicsInfoFactory
+    DemographicsInfoFactory,
 )
 
 
 class ThreadTestsMixin:
-
     def threadify(self, email):
         email.belongs_to = email
         email.save()
@@ -34,7 +29,7 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
         """
         Non admin users should not be able to retrieve the exercise list.
         """
-        url = reverse('api:exercise-list')
+        url = reverse("api:exercise-list")
         response = self.client.get(url)
 
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
@@ -43,7 +38,7 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
         """
         Admin users should be able to retrieve the exercise list.
         """
-        url = reverse('api:exercise-list')
+        url = reverse("api:exercise-list")
         exercises_count = 3
         ExerciseFactory.create_batch(exercises_count)
 
@@ -71,36 +66,35 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
         exercise_1.files.add(*files)
         exercise_1.save()
 
-        url = reverse('api:exercise-detail', args=[exercise_1.id])
+        url = reverse("api:exercise-detail", args=[exercise_1.id])
 
         response = self.client.get(url)
         serialized = ExerciseSerializer(Exercise.objects.get(pk=exercise_1.id))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data.get('threads')))
-        self.assertEqual(file_count, len(response.data.get('files')))
+        self.assertEqual(2, len(response.data.get("threads")))
+        self.assertEqual(file_count, len(response.data.get("files")))
         self.assertEqual(serialized.data, underscoreize(response.data))
 
     def test_get_exercise_details_404(self):
         """
         Exercise details are public.
         """
-        fake_id = 'fakeID'
-        url = reverse('api:exercise-detail', args=[fake_id])
+        fake_id = "fakeID"
+        url = reverse("api:exercise-detail", args=[fake_id])
 
         response = self.client.get(url)
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual('Not found.', response.data.get('detail'))
+        self.assertEqual("Not found.", response.data.get("detail"))
 
 
 class EmailAPITestCase(PhishtrayAPIBaseTest):
-
     def test_email_list_block_public(self):
         """
         Non admin users should not be able to retrieve the email list.
         """
-        url = reverse('api:email-list')
+        url = reverse("api:email-list")
         response = self.client.get(url)
 
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
@@ -109,7 +103,7 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
         """
         Admin users should be able to retrieve the email list.
         """
-        url = reverse('api:email-list')
+        url = reverse("api:email-list")
         email_count = 3
         EmailFactory.create_batch(email_count)
 
@@ -125,7 +119,7 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
         Email details are public.
         """
         email_1 = EmailFactory()
-        url = reverse('api:email-detail', args=[email_1.id])
+        url = reverse("api:email-detail", args=[email_1.id])
 
         response = self.client.get(url)
 
@@ -138,22 +132,21 @@ class EmailAPITestCase(PhishtrayAPIBaseTest):
         """
         Email details are public.
         """
-        fake_id = 'fakeID'
-        url = reverse('api:email-detail', args=[fake_id])
+        fake_id = "fakeID"
+        url = reverse("api:email-detail", args=[fake_id])
 
         response = self.client.get(url)
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual('Not found.', response.data.get('detail'))
+        self.assertEqual("Not found.", response.data.get("detail"))
 
 
 class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
-
     def test_thread_list_block_public(self):
         """
         Non admin users should not be able to retrieve thread list.
         """
-        url = reverse('api:thread-list')
+        url = reverse("api:thread-list")
         response = self.client.get(url)
 
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
@@ -162,7 +155,7 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
         """
         Admin users should be able to retrieve thread list.
         """
-        url = reverse('api:thread-list')
+        url = reverse("api:thread-list")
         email_count = randint(3, 5)
         emails = EmailFactory.create_batch(email_count)
 
@@ -177,7 +170,7 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
         response = self.admin_client.get(url)
         serialized = ThreadSerializer(
-            ExerciseEmail.objects.filter(pk=F('belongs_to')), many=True
+            ExerciseEmail.objects.filter(pk=F("belongs_to")), many=True
         )
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -206,7 +199,7 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
             email.belongs_to = email_1
             email.save()
 
-        url = reverse('api:thread-detail', args=[email_1.id])
+        url = reverse("api:thread-detail", args=[email_1.id])
 
         response = self.client.get(url)
         serialized = ThreadSerializer(ExerciseEmail.objects.get(pk=email_1.id))
@@ -214,13 +207,13 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(serialized.data, underscoreize(response.data))
         #  +1 because itself will be listed in emails too
-        self.assertEqual(email_count + 1, len(response.data.get('emails')))
-        self.assertEqual(2, len(response.data.get('replies')))
-        self.assertEqual(1, len(response.data.get('attachments')))
+        self.assertEqual(email_count + 1, len(response.data.get("emails")))
+        self.assertEqual(2, len(response.data.get("replies")))
+        self.assertEqual(1, len(response.data.get("attachments")))
 
     def test_get_thread_details_404(self):
-        fake_id = 'fakeID'
-        url = reverse('api:thread-detail', args=[fake_id])
+        fake_id = "fakeID"
+        url = reverse("api:thread-detail", args=[fake_id])
 
         response = self.client.get(url)
 
@@ -228,12 +221,11 @@ class ThreadAPITestCase(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
 
 class ExerciseReportsTestCase(PhishtrayAPIBaseTest):
-
     def test_exercise_reports_list_block_public(self):
         """
         Non admin users should not be able to retrieve exercise reports.
         """
-        url = reverse('api:exercise-report-list')
+        url = reverse("api:exercise-report-list")
         response = self.client.get(url)
 
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
@@ -244,7 +236,7 @@ class ExerciseReportsTestCase(PhishtrayAPIBaseTest):
         """
         ExerciseFactory.create_batch(2)
 
-        url = reverse('api:exercise-report-list')
+        url = reverse("api:exercise-report-list")
         response = self.admin_client.get(url)
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -254,7 +246,7 @@ class ExerciseReportsTestCase(PhishtrayAPIBaseTest):
         """
         Non admin users should not be able to retrieve exercise reports.
         """
-        url = reverse('api:exercise-report-detail', args=['some-uuid-1234'])
+        url = reverse("api:exercise-report-detail", args=["some-uuid-1234"])
         response = self.client.get(url)
 
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
@@ -287,13 +279,13 @@ class ExerciseReportsTestCase(PhishtrayAPIBaseTest):
         participant_2.profile.add(*[entry_2_1, entry_2_2])
         participant_2.save()
 
-        url = reverse('api:exercise-report-detail', args=[exercise.id.hex])
+        url = reverse("api:exercise-report-detail", args=[exercise.id.hex])
         response = self.admin_client.get(url)
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(str(exercise.id), response.data['id'])
-        self.assertEqual(exercise.title, response.data['title'])
-        self.assertEqual(2, len(response.data['participants']))
+        self.assertEqual(str(exercise.id), response.data["id"])
+        self.assertEqual(exercise.title, response.data["title"])
+        self.assertEqual(2, len(response.data["participants"]))
 
         # Check that participants have the correct answer
         def get_participant_by_id(participant_id):
@@ -306,11 +298,19 @@ class ExerciseReportsTestCase(PhishtrayAPIBaseTest):
         # Participant 1
         expected_profile_entries_1 = [str(e.id) for e in participant_1.profile.all()]
         response_participant_1 = get_participant_by_id(participant_1.id)
-        response_profile_entries_1 = [e["id"] for e in response_participant_1["profile"]]
-        self.assertSetEqual({*expected_profile_entries_1}, {*response_profile_entries_1})
+        response_profile_entries_1 = [
+            e["id"] for e in response_participant_1["profile"]
+        ]
+        self.assertSetEqual(
+            {*expected_profile_entries_1}, {*response_profile_entries_1}
+        )
 
         # Participant 2
         expected_profile_entries_2 = [str(e.id) for e in participant_2.profile.all()]
         response_participant_2 = get_participant_by_id(participant_2.id)
-        response_profile_entries_2 = [e["id"] for e in response_participant_2["profile"]]
-        self.assertSetEqual({*expected_profile_entries_2}, {*response_profile_entries_2})
+        response_profile_entries_2 = [
+            e["id"] for e in response_participant_2["profile"]
+        ]
+        self.assertSetEqual(
+            {*expected_profile_entries_2}, {*response_profile_entries_2}
+        )

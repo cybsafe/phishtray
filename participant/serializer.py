@@ -1,16 +1,8 @@
 from rest_framework import serializers
 
-from exercise.models import (
-    ExerciseEmail,
-    EXERCISE_EMAIL_PHISH,
-)
+from exercise.models import ExerciseEmail, EXERCISE_EMAIL_PHISH
 
-from .models import (
-    ActionLog,
-    Participant,
-    ParticipantAction,
-    ParticipantProfileEntry,
-)
+from .models import ActionLog, Participant, ParticipantAction, ParticipantProfileEntry
 
 
 class ParticipantActionSerializer(serializers.ModelSerializer):
@@ -18,7 +10,7 @@ class ParticipantActionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ParticipantAction
-        fields = ('id', 'action_details',)
+        fields = ("id", "action_details")
 
     def get_action_details(self, participant_action):
         log_entries_queryset = ActionLog.objects.filter(action=participant_action)
@@ -35,7 +27,7 @@ class ParticipantProfileEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ParticipantProfileEntry
-        fields = ('id', 'question', 'answer',)
+        fields = ("id", "question", "answer")
 
     def get_question(self, profile_entry):
         return profile_entry.question
@@ -47,10 +39,12 @@ class ParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
-        fields = ('id', 'exercise', 'profile', 'actions',)
+        fields = ("id", "exercise", "profile", "actions")
 
     def get_actions(self, participant):
-        participant_actions_queryset = ParticipantAction.objects.filter(participant=participant)
+        participant_actions_queryset = ParticipantAction.objects.filter(
+            participant=participant
+        )
         return ParticipantActionSerializer(participant_actions_queryset, many=True).data
 
 
@@ -60,11 +54,13 @@ class ParticipantActionLogDownloadCSVSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
-        fields = ('id', 'download_csv_url', 'profile')
+        fields = ("id", "download_csv_url", "profile")
 
     def get_download_csv_url(self, participant):
-        req = self.context.get('request')
-        url = '{0}://{1}{2}download-csv?participant={3}'.format(req.scheme, req.get_host(), req.path, participant.id)
+        req = self.context.get("request")
+        url = "{0}://{1}{2}download-csv?participant={3}".format(
+            req.scheme, req.get_host(), req.path, participant.id
+        )
         return url
 
 
@@ -73,16 +69,20 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
-        fields = ('id', 'exercise', 'csv')
+        fields = ("id", "exercise", "csv")
 
     def get_csv(self, participant):
-        participant_actions_queryset = ParticipantAction.objects.filter(participant=participant)
+        participant_actions_queryset = ParticipantAction.objects.filter(
+            participant=participant
+        )
         serialized_actions = ParticipantActionSerializer(
-            participant_actions_queryset, many=True).data
+            participant_actions_queryset, many=True
+        ).data
 
         email_uuids = {
-            action['action_details']['email_id'] for action in serialized_actions
-            if action['action_details'].get('email_id')
+            action["action_details"]["email_id"]
+            for action in serialized_actions
+            if action["action_details"].get("email_id")
         }
 
         def recorded(action_type, actions):
@@ -96,8 +96,9 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
                 - whether action_type was found in actions
             """
             records = [
-                action for action in actions
-                if action['action_details'].get('action_type') == action_type
+                action
+                for action in actions
+                if action["action_details"].get("action_type") == action_type
             ]
             return len(records) > 0
 
@@ -114,8 +115,9 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
                 - returns the value of the dictionary key or None
             """
             records = [
-                action for action in actions
-                if action['action_details'].get('action_type') == action_type
+                action
+                for action in actions
+                if action["action_details"].get("action_type") == action_type
             ]
             # TODO: always get the latest entry of the given action_type?
             # records = sorted(records, key=itemgetter('time_delta'), reverse=True)
@@ -123,64 +125,89 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
             if not records:
                 return None
 
-            return records[0]['action_details'].get(key)
+            return records[0]["action_details"].get(key)
 
         csv_row_master = {
-            'email_subject': None,
-            'email_id': None,
-            'opened': None,
-            'opened_time': None,
-            'phish': None,
-            'response_option': None,
-            'response_time': None,
-            'reply_button_clicked': None,
-            'replied_time': None,
-            'report_button_clicked': None,
-            'reported_time': None,
-            'delete_button_clicked': None,
-            'deleted_time': None,
-            'forward_button_clicked': None,
-            'forwarded_time': None,
-            'clicked_link': None,
-            'entered_details': None,
-            'entered_details_time': None,
-            'submitted_details': None,
-            'submitted_details_time': None
+            "email_subject": None,
+            "email_id": None,
+            "opened": None,
+            "opened_time": None,
+            "phish": None,
+            "response_option": None,
+            "response_time": None,
+            "reply_button_clicked": None,
+            "replied_time": None,
+            "report_button_clicked": None,
+            "reported_time": None,
+            "delete_button_clicked": None,
+            "deleted_time": None,
+            "forward_button_clicked": None,
+            "forwarded_time": None,
+            "clicked_link": None,
+            "entered_details": None,
+            "entered_details_time": None,
+            "submitted_details": None,
+            "submitted_details_time": None,
         }
         csv_row_dicts = []
 
         for email_uuid in email_uuids:
             related_actions = [
-                action for action in serialized_actions
-                if action['action_details'].get('email_id') == email_uuid
+                action
+                for action in serialized_actions
+                if action["action_details"].get("email_id") == email_uuid
             ]
             csv_row = csv_row_master.copy()
             email = ExerciseEmail.objects.get(pk=email_uuid)
-            csv_row['email_subject'] = email.subject
-            csv_row['email_id'] = email_uuid
-            csv_row['opened'] = recorded('email_opened', related_actions)
-            csv_row['opened_time'] = get_value('email_opened', 'time_delta', related_actions)
-            csv_row['phish'] = (email.phish_type == EXERCISE_EMAIL_PHISH)
-            csv_row['response_option'] = get_value('email_quick_reply', 'message', related_actions)
-            csv_row['response_time'] = get_value('email_quick_reply', 'time_delta', related_actions)
-            csv_row['reply_button_clicked'] = recorded('email_replied', related_actions)
-            csv_row['replied_time'] = get_value('email_replied', 'time_delta', related_actions)
-            csv_row['report_button_clicked'] = recorded('email_reported', related_actions)
-            csv_row['reported_time'] = get_value('email_reported', 'time_delta', related_actions)
-            csv_row['delete_button_clicked'] = recorded('email_deleted', related_actions)
-            csv_row['deleted_time'] = get_value('email_deleted', 'time_delta', related_actions)
+            csv_row["email_subject"] = email.subject
+            csv_row["email_id"] = email_uuid
+            csv_row["opened"] = recorded("email_opened", related_actions)
+            csv_row["opened_time"] = get_value(
+                "email_opened", "time_delta", related_actions
+            )
+            csv_row["phish"] = email.phish_type == EXERCISE_EMAIL_PHISH
+            csv_row["response_option"] = get_value(
+                "email_quick_reply", "message", related_actions
+            )
+            csv_row["response_time"] = get_value(
+                "email_quick_reply", "time_delta", related_actions
+            )
+            csv_row["reply_button_clicked"] = recorded("email_replied", related_actions)
+            csv_row["replied_time"] = get_value(
+                "email_replied", "time_delta", related_actions
+            )
+            csv_row["report_button_clicked"] = recorded(
+                "email_reported", related_actions
+            )
+            csv_row["reported_time"] = get_value(
+                "email_reported", "time_delta", related_actions
+            )
+            csv_row["delete_button_clicked"] = recorded(
+                "email_deleted", related_actions
+            )
+            csv_row["deleted_time"] = get_value(
+                "email_deleted", "time_delta", related_actions
+            )
             # forwarded
-            csv_row['forward_button_clicked'] = recorded('email_forwarded', related_actions)
-            csv_row['forwarded_time'] = get_value('email_forwarded', 'time_delta', related_actions)
-            csv_row['clicked_link'] = recorded('email_link_clicked', related_actions)
-            csv_row['entered_details'] = recorded(
-                'webpage_login_credentials_entered', related_actions)
-            csv_row['entered_details_time'] = get_value(
-                'webpage_login_credentials_entered', 'time_delta', related_actions)
-            csv_row['submitted_details'] = recorded(
-                'webpage_login_credentials_submitted', related_actions)
-            csv_row['submitted_details_time'] = get_value(
-                'webpage_login_credentials_submitted', 'time_delta', related_actions)
+            csv_row["forward_button_clicked"] = recorded(
+                "email_forwarded", related_actions
+            )
+            csv_row["forwarded_time"] = get_value(
+                "email_forwarded", "time_delta", related_actions
+            )
+            csv_row["clicked_link"] = recorded("email_link_clicked", related_actions)
+            csv_row["entered_details"] = recorded(
+                "webpage_login_credentials_entered", related_actions
+            )
+            csv_row["entered_details_time"] = get_value(
+                "webpage_login_credentials_entered", "time_delta", related_actions
+            )
+            csv_row["submitted_details"] = recorded(
+                "webpage_login_credentials_submitted", related_actions
+            )
+            csv_row["submitted_details_time"] = get_value(
+                "webpage_login_credentials_submitted", "time_delta", related_actions
+            )
 
             csv_row_dicts.append(csv_row)
 
@@ -188,14 +215,9 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
         csv_rows = []
 
         for row in csv_row_dicts:
-            csv_rows.append(
-                [str(v) for v in row.values()]
-            )
+            csv_rows.append([str(v) for v in row.values()])
 
-        data = {
-            'headers': csv_headers,
-            'rows': csv_rows
-        }
+        data = {"headers": csv_headers, "rows": csv_rows}
 
         return data
 
@@ -205,7 +227,7 @@ class ParticipantScoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
-        fields = ('id', 'scores')
+        fields = ("id", "scores")
 
     def get_scores(self, participant):
         return participant.scores

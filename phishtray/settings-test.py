@@ -1,4 +1,4 @@
-from phishtray.settings import * # noqa
+from phishtray.settings import *  # noqa
 
 """
 Django settings for phishtray project travis CI.
@@ -14,12 +14,12 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "test",
+        "USER": "root",
+        "PASSWORD": "",
+        "HOST": "localhost",
+        "PORT": "3306",
     }
 }

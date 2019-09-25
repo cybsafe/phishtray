@@ -1,15 +1,7 @@
 import factory
 
-from exercise.factories import (
-    DemographicsInfoFactory,
-    ExerciseFactory
-)
-from .models import (
-    ActionLog,
-    Participant,
-    ParticipantAction,
-    ParticipantProfileEntry
-)
+from exercise.factories import DemographicsInfoFactory, ExerciseFactory
+from .models import ActionLog, Participant, ParticipantAction, ParticipantProfileEntry
 
 
 class ProfileEntryFactory(factory.django.DjangoModelFactory):
@@ -17,7 +9,7 @@ class ProfileEntryFactory(factory.django.DjangoModelFactory):
         model = ParticipantProfileEntry
 
     demographics_info = factory.SubFactory(DemographicsInfoFactory)
-    answer = factory.Sequence(lambda n: 'Answer {}'.format(n + 1))
+    answer = factory.Sequence(lambda n: "Answer {}".format(n + 1))
 
 
 class ParticipantFactory(factory.django.DjangoModelFactory):
