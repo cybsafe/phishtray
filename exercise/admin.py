@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib import admin
-
 from .models import (
     DemographicsInfo,
     Exercise,
@@ -23,11 +22,11 @@ class ExerciseAdminForm(forms.ModelForm):
 
 class ExerciseAdmin(admin.ModelAdmin):
     form = ExerciseAdminForm
-    list_display = ('id', 'title', 'description', 'length_minutes')
+    list_display = ("id", "title", "description", "length_minutes")
 
 
 class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
-    list_display = ('exercise', 'email', 'reveal_time')
+    list_display = ("exercise", "email", "reveal_time")
 
 
 admin.site.register(DemographicsInfo)

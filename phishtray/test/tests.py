@@ -5,7 +5,6 @@ from exercise.models import Exercise
 
 
 class PhishtrayBaseModelTest(TestCase):
-
     def setUp(self):
         self.exercise_1 = ExerciseFactory()
         self.exercise_2 = ExerciseFactory()
@@ -20,7 +19,7 @@ class PhishtrayBaseModelTest(TestCase):
         self.assertEqual(1, Exercise.objects.all().count())
 
         # However the record should still be present in the DB
-        raw_exercises = Exercise.objects.raw('SELECT * FROM exercise_exercise')
+        raw_exercises = Exercise.objects.raw("SELECT * FROM exercise_exercise")
 
         all_exercises = [e for e in raw_exercises]
         deleted_exercises = [e for e in raw_exercises if e.deleted_at]
@@ -48,7 +47,7 @@ class PhishtrayBaseModelTest(TestCase):
         self.assertEqual(1, Exercise.objects.all().count())
 
         # Get all records from the DB
-        raw_exercises = Exercise.objects.raw('SELECT * FROM exercise_exercise')
+        raw_exercises = Exercise.objects.raw("SELECT * FROM exercise_exercise")
         all_exercises = [e for e in raw_exercises]
         deleted_exercises = [e for e in raw_exercises if e.deleted_at]
         undeleted_exercises = [e for e in raw_exercises if not e.deleted_at]
