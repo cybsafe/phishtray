@@ -201,6 +201,7 @@ class Exercise(PhishtrayBaseModel):
     demographics = models.ManyToManyField(DemographicsInfo, blank=True)
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
     files = models.ManyToManyField(ExerciseFile, blank=True)
+    training_link = models.CharField(max_length=200, blank=True)
 
     def set_email_reveal_times(self):
         emails = list(self.emails.all())
