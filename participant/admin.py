@@ -28,15 +28,11 @@ class ParticipantList(admin.ModelAdmin, ExportCsvMixin):
     list_filter = ("exercise",)
     actions = ["download_csv"]
 
-    def get_queryset(self, request, *args, **kwargs):
-        queryset = super().get_queryset(request)
-        if not request.user.is_superuser:
-            organization = request.user.organization
-            queryset = queryset.filter(organization=organization)
-        return queryset
+    def get_queryset(self, request):
+        return Participant.objects.filter_by_user(user=request.user)
 
 
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ("name",)
-    list_display = ("id", "name",)
+    list_display = ("id", "name")
