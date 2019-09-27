@@ -1,4 +1,4 @@
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet
 
 
 class OrganizationQuerySet(QuerySet):
@@ -9,10 +9,7 @@ class OrganizationQuerySet(QuerySet):
         if user.is_superuser:
             return self
 
-        conditions = Q()
-        conditions.add(Q(id=user.organization_id), Q.AND)
-
-        return self.filter(conditions)
+        return self.filter(id=user.organization_id)
 
 
 class ParticipantQuerySet(QuerySet):
