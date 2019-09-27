@@ -15,6 +15,7 @@ EXERCISE_EMAIL_REGULAR = 1
 EXERCISE_PHISH_TYPES = (
     (EXERCISE_EMAIL_PHISH, "phishing"),
     (EXERCISE_EMAIL_REGULAR, "regular"),
+    (EXERCISE_EMAIL_ETRAY, "etray"),
 )
 
 EXERCISE_REPLY_TYPE = ((0, "reply"), (1, "forward"))
@@ -310,10 +311,9 @@ def create_email_reveal_time(sender, instance, created, **kwargs):
     instance.set_email_reveal_times()
 
 
-class Trial(PhishtrayBaseModel):
-
+class Trial(models.Model):
     def __str__(self):
         return self.name
 
     name = models.CharField(max_length=100)
-    experiment = models.ForeignKey(Exercise, on_delete=models.CASCADE,)
+    experiment = models.ForeignKey(Exercise, on_delete=models.CASCADE)
