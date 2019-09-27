@@ -11,12 +11,10 @@ from phishtray.base import PhishtrayBaseModel
 
 EXERCISE_EMAIL_PHISH = 0
 EXERCISE_EMAIL_REGULAR = 1
-EXERCISE_EMAIL_ETRAY = 2
 
 EXERCISE_PHISH_TYPES = (
     (EXERCISE_EMAIL_PHISH, "phishing"),
     (EXERCISE_EMAIL_REGULAR, "regular"),
-    (EXERCISE_EMAIL_ETRAY, "etray"),
 )
 
 EXERCISE_REPLY_TYPE = ((0, "reply"), (1, "forward"))
