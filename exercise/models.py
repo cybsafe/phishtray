@@ -199,6 +199,10 @@ class Exercise(PhishtrayBaseModel):
     demographics = models.ManyToManyField(DemographicsInfo, blank=True)
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
     files = models.ManyToManyField(ExerciseFile, blank=True)
+    debrief = models.BooleanField(
+        help_text="Should user receive a phishing debrief at the end of the exercise?",
+        default=False,
+    )
 
     def set_email_reveal_times(self):
         emails = list(self.emails.all())
