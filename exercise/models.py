@@ -11,12 +11,10 @@ from phishtray.base import PhishtrayBaseModel
 
 EXERCISE_EMAIL_PHISH = 0
 EXERCISE_EMAIL_REGULAR = 1
-EXERCISE_EMAIL_ETRAY = 2
 
 EXERCISE_PHISH_TYPES = (
     (EXERCISE_EMAIL_PHISH, "phishing"),
     (EXERCISE_EMAIL_REGULAR, "regular"),
-    (EXERCISE_EMAIL_ETRAY, "etray"),
 )
 
 EXERCISE_REPLY_TYPE = ((0, "reply"), (1, "forward"))
@@ -202,6 +200,10 @@ class Exercise(PhishtrayBaseModel):
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
     files = models.ManyToManyField(ExerciseFile, blank=True)
     training_link = models.CharField(max_length=200, blank=True)
+    debrief = models.BooleanField(
+        help_text="Should user receive a phishing debrief at the end of the exercise?",
+        default=False,
+    )
 
     def set_email_reveal_times(self):
         emails = list(self.emails.all())

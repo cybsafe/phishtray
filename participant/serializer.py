@@ -226,6 +226,7 @@ class ParticipantScoreSerializer(serializers.ModelSerializer):
     scores = serializers.SerializerMethodField()
     phishing_emails = serializers.SerializerMethodField()
     training_link = serializers.SerializerMethodField()
+    debrief = serializers.SerializerMethodField()
 
     def get_phishing_emails(self, participant):
         return list(
@@ -236,10 +237,13 @@ class ParticipantScoreSerializer(serializers.ModelSerializer):
 
     def get_training_link(self, participant):
         return participant.exercise.training_link
-
-    class Meta:
-        model = Participant
-        fields = ("id", "scores", "phishing_emails", "training_link")
+        
+    def get_debrief(self, participant):
+        return participant.exercise.debrief
 
     def get_scores(self, participant):
         return participant.scores
+    
+    class Meta:
+        model = Participant
+        fields = ("id", "scores", "phishing_emails", "debrief", "training_link")
