@@ -199,6 +199,7 @@ class Exercise(PhishtrayBaseModel):
     demographics = models.ManyToManyField(DemographicsInfo, blank=True)
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
     files = models.ManyToManyField(ExerciseFile, blank=True)
+    training_link = models.CharField(max_length=200, blank=True)
     debrief = models.BooleanField(
         help_text="Should user receive a phishing debrief at the end of the exercise?",
         default=False,
