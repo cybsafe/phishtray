@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "exercise",
     "participant",
     "frontend",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -164,3 +165,5 @@ CACHES = {
         "LOCATION": "/var/tmp/django_cache",
     }
 }
+
+AUTH_USER_MODEL = "users.User"
