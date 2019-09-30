@@ -58,6 +58,9 @@ class Participant(PhishtrayBaseModel):
     organization = models.ForeignKey(
         "participant.Organization", null=True, blank=True, on_delete=models.DO_NOTHING
     )
+    trial = models.ForeignKey(
+        "exercise.Trial", null=True, blank=True, on_delete=models.DO_NOTHING
+    )
 
     @property
     def actions(self):

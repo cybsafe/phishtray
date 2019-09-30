@@ -2,6 +2,8 @@ import csv
 
 from django.db.models import F
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -9,6 +11,7 @@ from rest_framework.response import Response
 
 from participant.models import Participant
 from participant.serializer import ParticipantActionLogToCSVSerializer
+from participant.helpers import create_participant
 from .models import Exercise, ExerciseEmail
 from .serializer import (
     ExerciseSerializer,
@@ -42,10 +45,27 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(TWO_HOURS))
     def init(self, request, *args, **kwargs):
         exercise = self.get_object()
-        participant = Participant(exercise=exercise)
-        participant.save()
+        participant = create_participant(exercise, None)
         resp = {
             "participant": str(participant.id),
+            "exercise": ExerciseSerializer(exercise).data,
+        }
+        return Response(data=resp)
+
+    @action(
+        methods=["GET"],
+        detail=False,
+        permission_classes=[],
+        url_path="(?P<exercise_id>.+)/init/(?P<trial_id>.+)",
+    )
+    @method_decorator(cache_page(TWO_HOURS))
+    def trial(self, request, *args, **kwargs):
+        exercise = get_object_or_404(Exercise, id=kwargs["exercise_id"])
+        participant = create_participant(exercise, kwargs["trial_id"])
+
+        resp = {
+            "participant": str(participant.id),
+            "trial": str(participant.trial),
             "exercise": ExerciseSerializer(exercise).data,
         }
         return Response(data=resp)
