@@ -29,6 +29,7 @@ RUN yum -y install \
 	python36u-pip \
 	python36u-devel \
 	mariadb-devel \
+	mariadb-server \
 &&  yum -y clean all
 
 # Download and install dockerize.
