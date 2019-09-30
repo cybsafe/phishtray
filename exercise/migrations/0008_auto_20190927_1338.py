@@ -5,24 +5,28 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('exercise', '0007_merge_20190927_1326'),
-    ]
+    dependencies = [("exercise", "0007_trial")]
 
     operations = [
         migrations.AlterField(
-            model_name='exerciseemail',
-            name='phish_type',
-            field=models.IntegerField(choices=[(0, 'phishing'), (1, 'regular'), (2, 'etray')]),
+            model_name="exerciseemail",
+            name="phish_type",
+            field=models.IntegerField(
+                choices=[(0, "phishing"), (1, "regular"), (2, "etray")]
+            ),
         ),
         migrations.AlterField(
-            model_name='exerciseurl',
-            name='type',
-            field=models.IntegerField(choices=[(0, 'phishing'), (1, 'regular'), (2, 'etray')]),
+            model_name="exerciseurl",
+            name="type",
+            field=models.IntegerField(
+                choices=[(0, "phishing"), (1, "regular"), (2, "etray")]
+            ),
         ),
         migrations.AlterField(
-            model_name='exercisewebpages',
-            name='type',
-            field=models.IntegerField(choices=[(0, 'phishing'), (1, 'regular'), (2, 'etray')]),
+            model_name="exercisewebpages",
+            name="type",
+            field=models.IntegerField(
+                choices=[(0, "phishing"), (1, "regular"), (2, "etray")]
+            ),
         ),
     ]

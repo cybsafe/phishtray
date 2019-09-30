@@ -5,34 +5,35 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('exercise', '0005_auto_20190924_1055'),
-    ]
+    dependencies = [("exercise", "0005_auto_20190924_1055")]
 
     operations = [
         migrations.AddField(
-            model_name='exercise',
-            name='debrief',
-            field=models.BooleanField(default=False, help_text='Should user receive a phishing debrief at the end of the exercise?'),
+            model_name="exercise",
+            name="debrief",
+            field=models.BooleanField(
+                default=False,
+                help_text="Should user receive a phishing debrief at the end of the exercise?",
+            ),
         ),
         migrations.AddField(
-            model_name='exercise',
-            name='training_link',
+            model_name="exercise",
+            name="training_link",
             field=models.CharField(blank=True, max_length=200),
         ),
         migrations.AlterField(
-            model_name='exerciseemail',
-            name='phish_type',
-            field=models.IntegerField(choices=[(0, 'phishing'), (1, 'regular')]),
+            model_name="exerciseemail",
+            name="phish_type",
+            field=models.IntegerField(choices=[(0, "phishing"), (1, "regular")]),
         ),
         migrations.AlterField(
-            model_name='exerciseurl',
-            name='type',
-            field=models.IntegerField(choices=[(0, 'phishing'), (1, 'regular')]),
+            model_name="exerciseurl",
+            name="type",
+            field=models.IntegerField(choices=[(0, "phishing"), (1, "regular")]),
         ),
         migrations.AlterField(
-            model_name='exercisewebpages',
-            name='type',
-            field=models.IntegerField(choices=[(0, 'phishing'), (1, 'regular')]),
+            model_name="exercisewebpages",
+            name="type",
+            field=models.IntegerField(choices=[(0, "phishing"), (1, "regular")]),
         ),
     ]
