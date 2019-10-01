@@ -6,10 +6,7 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ("exercise", "0008_auto_20190927_1338"),
-        ("participant", "0003_auto_20190920_1504"),
-    ]
+    dependencies = [("participant", "0003_auto_20190920_1504")]
 
     operations = [
         migrations.AddField(
