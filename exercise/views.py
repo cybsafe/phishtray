@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from participant.models import Participant
 from participant.serializer import ParticipantActionLogToCSVSerializer
 from participant.helpers import create_participant
-from .models import Exercise, ExerciseEmail
+from .models import Exercise, ExerciseEmail, Trial
 from .serializer import (
     ExerciseSerializer,
     ExerciseEmailSerializer,
@@ -61,7 +61,8 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(TWO_HOURS))
     def trial(self, request, *args, **kwargs):
         exercise = get_object_or_404(Exercise, id=kwargs["exercise_id"])
-        participant = create_participant(exercise, kwargs["trial_id"])
+        trial = get_object_or_404(Trial, id=kwargs["trial_id"])
+        participant = create_participant(exercise, trial)
 
         resp = {
             "participant": str(participant.id),
