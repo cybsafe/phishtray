@@ -9,6 +9,7 @@ from .models import (
     DemographicsInfo,
     ExerciseTask,
     EmailReplyTaskScore,
+    Trial,
 )
 
 
@@ -90,3 +91,8 @@ class EmailReplyTaskScoreFactory(factory.django.DjangoModelFactory):
         model = EmailReplyTaskScore
 
     email_reply = factory.SubFactory(EmailReplyFactory)
+
+
+class TrialFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Trial

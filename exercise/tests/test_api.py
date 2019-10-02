@@ -15,6 +15,7 @@ from ..factories import (
     EmailReplyFactory,
     ExerciseFactory,
     DemographicsInfoFactory,
+    TrialFactory,
 )
 
 
@@ -87,6 +88,59 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("Not found.", response.data.get("detail"))
+
+    def test_get_exercise_init_with_valid_trial(self):
+        """
+        Exercise init with valid trial.
+        """
+        exercise_1 = ExerciseFactory()
+        # add emails
+        email_count = 3
+        emails = EmailFactory.create_batch(email_count)
+        self.threadify(emails[0])
+        self.threadify(emails[1])
+        exercise_1.emails.add(*emails)
+        # add files
+        file_count = 2
+        files = ExerciseFileFactory.create_batch(file_count)
+        exercise_1.files.add(*files)
+        exercise_1.save()
+
+        trial = TrialFactory(experiment=exercise_1, name="Trial 1")
+        url = reverse("api:exercise-init", args=[exercise_1.id]) + f"{trial.id}/"
+
+        response = self.client.get(url)
+        serialized = ExerciseSerializer(Exercise.objects.get(pk=exercise_1.id))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(2, len(response.data["exercise"]["threads"]))
+        self.assertIsNotNone(response.data.get("participant"))
+        self.assertEqual(file_count, len(response.data["exercise"]["files"]))
+        self.assertEqual(serialized.data, response.data["exercise"])
+        self.assertEqual("Trial 1", response.data["trial"])
+
+    def test_get_exercise_init_with_invalid_trial(self):
+        """
+        Exercise init with invalid trial.
+        """
+        exercise_1 = ExerciseFactory()
+        # add emails
+        email_count = 3
+        emails = EmailFactory.create_batch(email_count)
+        self.threadify(emails[0])
+        self.threadify(emails[1])
+        exercise_1.emails.add(*emails)
+        # add files
+        file_count = 2
+        files = ExerciseFileFactory.create_batch(file_count)
+        exercise_1.files.add(*files)
+        exercise_1.save()
+
+        trial_id = 99
+        url = reverse("api:exercise-init", args=[exercise_1.id]) + f"{trial_id}/"
+
+        response = self.client.get(url)
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
 
 class EmailAPITestCase(PhishtrayAPIBaseTest):
