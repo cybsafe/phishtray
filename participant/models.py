@@ -60,7 +60,6 @@ class Participant(PhishtrayBaseModel):
     @property
     def actions(self):
         """
-
         :return: DICT
         """
         actions = {}
@@ -73,6 +72,82 @@ class Participant(PhishtrayBaseModel):
             action_details.setdefault(entry.name, entry.value)
 
         return actions
+
+    @property
+    def phishing_email_reactions(self):
+        """
+        Return a dict of all actions
+        Marking Results as a "Negative" or a "Positive" reaction
+        """
+
+        negative_reactions = [
+            "email_attachment_download",
+            "email_forwarded",
+            "email_link_clicked",
+            "email_quick_reply",
+            "email_replied",
+        ]
+        positive_reactions = ["email_reported", "email_deleted"]
+        actions = {}
+        entries = ActionLog.objects.filter(action__participant=self).order_by(
+            "created_date"
+        )
+
+        for entry in entries:
+            result = None
+
+            # To have a result, we need both in this action: action_type and email_id
+            if entry.name == "action_type":
+                if entry.value in negative_reactions:
+                    result = "Negative"
+                elif entry.value in positive_reactions:
+                    result = "Positive"
+
+                if result is not None:
+                    try:
+                        action_email = ActionLog.objects.get(
+                            action_id=entry.action_id, name="email_id"
+                        )
+                    except ActionLog.DoesNotExist:
+                        continue
+
+                    action_details = actions.setdefault(str(entry.action_id), {})
+                    action_details.setdefault("reaction", entry.value)
+                    action_details.setdefault("result", result)
+                    action_details.setdefault("created", entry.created_date)
+
+                    action_details.setdefault(
+                        "email_id", getattr(action_email, "value")
+                    )
+
+        return actions
+
+    @property
+    def phishing_email_reactions_first_ones(self):
+        """
+        This property will use the phishing_email_reactions property
+        And filter and return the First Reaction Per Email
+        But if the first one is 'Positive', any following 'Negative' reaction will replace it
+        """
+
+        top_reactions = {}
+
+        for reaction in self.phishing_email_reactions:
+            this_reaction = self.phishing_email_reactions[reaction]
+
+            if (
+                this_reaction["email_id"] in top_reactions
+                and top_reactions[this_reaction["email_id"]] == "Negative"
+            ):
+                continue  # 'Negative' already recorded
+            else:
+                top_reactions[this_reaction["email_id"]] = {
+                    "reaction": this_reaction["reaction"],
+                    "result": this_reaction["result"],
+                    "created": this_reaction["created"],
+                }
+
+        return top_reactions
 
     @property
     def scores(self):
