@@ -199,9 +199,13 @@ class Exercise(PhishtrayBaseModel):
     demographics = models.ManyToManyField(DemographicsInfo, blank=True)
     emails = models.ManyToManyField(ExerciseEmail, blank=True)
     files = models.ManyToManyField(ExerciseFile, blank=True)
-    training_link = models.CharField(max_length=200, blank=True)
+    training_link = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Defaults to a training URI provided by Cybsafe.",
+    )
     debrief = models.BooleanField(
-        help_text="Should user receive a phishing debrief at the end of the exercise?",
+        help_text="Should participants receive a phishing debrief at the end of the exercise?",
         default=False,
     )
 
