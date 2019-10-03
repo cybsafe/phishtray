@@ -56,8 +56,12 @@ django-migrate:
 django-showmigrations:
 	docker-compose exec django bash -c "python3.6 /usr/src/app/manage.py showmigrations"
 
-.PHONY: django-prepdb-multitenancy
-django-prepdb-multitenancy:
+.PHONY: django-fake-users-0001
+django-fake-users-0001:
 	docker-compose exec django bash -c "echo \"INSERT INTO django_migrations (app, name, applied) VALUES ('users', '0001_initial', CURRENT_TIMESTAMP);\" | python3.6 manage.py dbshell"
 	docker-compose exec django bash -c "echo \"UPDATE django_content_type SET app_label = 'users' WHERE app_label = 'auth' and model = 'user';\" | python3.6 manage.py dbshell"
+
+.PHONY: django-fake-users-0002
+django-fake-users-0002:
+	docker-compose exec django bash -c "echo \"INSERT INTO django_migrations (app, name, applied) VALUES ('users', '0002_auto_20190930_1718', CURRENT_TIMESTAMP);\" | python3.6 manage.py dbshell"
 # ==================================================
