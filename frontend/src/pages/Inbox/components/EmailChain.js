@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import styled, { css } from 'react-emotion';
-import { Link, Redirect } from 'react-router-dom';
+import { css } from 'react-emotion';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
   markThreadAsRead,
@@ -13,48 +13,7 @@ import { showWebpage } from '../../../actions/uiActions';
 import { addFile } from '../../../actions/fileManagerActions';
 import actionTypes from '../../../config/actionTypes';
 import Email from './Email';
-import { logAction } from '../../../utils';
-
-const ActionLink = styled(Link)({
-  marginRight: 20,
-  textDecoration: 'none',
-  color: '#B8B8B8',
-  fontWeight: 'bold',
-  letterSpacing: '1.1px',
-});
-
-function ActionLinkwithClick({
-  data,
-  title,
-  markThreadAsDeleted,
-  markThreadAsInactive,
-  threadId,
-  remove,
-}) {
-  return (
-    <ActionLink
-      to={
-        remove
-          ? {
-              pathname: '/inbox',
-            }
-          : {}
-      }
-      onClick={() => {
-        logAction({
-          actionType: data.actionType,
-          participantId: data.participantId,
-          timeDelta: Date.now() - data.startTime,
-          emailId: data.emailId,
-          timestamp: new Date(),
-        });
-        remove && markThreadAsDeleted(threadId) && markThreadAsInactive();
-      }}
-    >
-      {title}
-    </ActionLink>
-  );
-}
+import ActionLinkwithClick from '../../../components/ActionLink/ActionLinkwithClick';
 
 function EmailActions({
   threadId,
@@ -97,6 +56,7 @@ function EmailActions({
         markThreadAsInactive={markThreadAsInactive}
         threadId={threadId}
         remove
+        secondary="true"
       />
       <ActionLinkwithClick
         data={{
