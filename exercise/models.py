@@ -209,6 +209,23 @@ class Exercise(PhishtrayBaseModel):
         default=False,
     )
 
+    @property
+    def phishing_emails(self):
+        return self.emails.filter(phish_type=EXERCISE_EMAIL_PHISH)
+
+    @property
+    def phishing_email_ids(self, uuid=False):
+        """
+        Returns an iterable with phishing email IDs.
+        :param uuid: BOOL - when True the function returns UUIDs
+        :return: MAP of the email ids as STRING
+        """
+        phishing_email_ids = self.phishing_emails.values_list('id', flat=True)
+        if uuid:
+            return phishing_email_ids
+        else:
+            return map(lambda x: str(x), phishing_email_ids)
+
     def set_email_reveal_times(self):
         emails = list(self.emails.all())
         if not emails:
