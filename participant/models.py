@@ -1,5 +1,7 @@
 from operator import itemgetter
 from statistics import mean
+
+from participant.constants import ParticipantBehaviour, POSITIVE_ACTIONS, NEGATIVE_ACTIONS
 from .managers import OrganizationManager, ParticipantManager
 
 from django.db import models
@@ -73,6 +75,31 @@ class Participant(PhishtrayBaseModel):
             action_details.setdefault(entry.name, entry.value)
 
         return actions
+
+    def phishing_email_behaviour_and_actions(self, email_id):
+        """
+        Aggregates actions related to a phishing email and determines behaviour.
+
+        :param email_id: UUID - id of an email
+        :return: (STRING, LIST) - returns a tuple of participant behaviour and actions
+        """
+
+        def participant_behaviour(actions):
+            pb = ParticipantBehaviour.NEUTRAL
+            if [a for a in actions if a.get('action_type') in POSITIVE_ACTIONS]:
+                pb = ParticipantBehaviour.POSITIVE
+            if [a for a in actions if a.get('action_type') in NEGATIVE_ACTIONS]:
+                pb = ParticipantBehaviour.NEGATIVE
+            return pb
+
+        actions = []
+
+        if email_id in self.exercise.phishing_email_ids:
+            for action_id, action_details in self.actions.items():
+                if email_id == action_details.get('email_id'):
+                    actions.append(action_details)
+
+        return participant_behaviour(actions), actions
 
     @property
     def scores(self):
