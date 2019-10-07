@@ -7,8 +7,6 @@ env:
   -DJANGO=2.0.5 DB=mysql
 install:
   - pip install -r requirements.txt
-before_script:
-  - mysql -e 'create database test;' -u root
 script:
   - coverage run --source='.' manage.py test
   - coverage report
