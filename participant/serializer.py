@@ -227,16 +227,20 @@ class ParticipantScoreSerializer(serializers.ModelSerializer):
     phishing_emails = serializers.SerializerMethodField()
     training_link = serializers.SerializerMethodField()
     debrief = serializers.SerializerMethodField()
-    per_email_reactions = serializers.SerializerMethodField()
-    reactions_list = serializers.SerializerMethodField()
-    reactions = []
 
     def get_phishing_emails(self, participant):
-        return list(
+        emails_list = list(
             ExerciseEmail.objects.filter(
                 exercise__participant=participant, phish_type=EXERCISE_EMAIL_PHISH
-            ).values("subject", "from_address", "content")
+            ).values("id", "subject", "from_address", "content")
         )
+
+        for email in emails_list:
+            email["participant_behaviour"], email[
+                "participant_actions"
+            ] = participant.phishing_email_behaviour_and_actions(str(email["id"]))
+
+        return emails_list
 
     def get_training_link(self, participant):
         return participant.exercise.training_link
@@ -247,32 +251,6 @@ class ParticipantScoreSerializer(serializers.ModelSerializer):
     def get_scores(self, participant):
         return participant.scores
 
-    def get_per_email_reactions(self, participant):
-        actions = {}
-        self.reactions = []
-        for email in participant.exercise.phishing_email_ids:
-            actions[email] = participant.phishing_email_behaviour_and_actions(email)
-            for act in participant.phishing_email_behaviour_and_actions(email)[1]:
-                self.reactions.append(
-                    {
-                        "reaction": act.get("action_type", None),
-                        "created": act.get("timestamp", None),
-                    }
-                )
-
-        return actions
-
-    def get_reactions_list(self, participant):
-        return self.reactions
-
     class Meta:
         model = Participant
-        fields = (
-            "id",
-            "scores",
-            "phishing_emails",
-            "debrief",
-            "training_link",
-            "per_email_reactions",
-            "reactions_list",
-        )
+        fields = ("id", "scores", "phishing_emails", "debrief", "training_link")

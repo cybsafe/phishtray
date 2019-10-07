@@ -260,7 +260,7 @@ class ParticipantScoresAPI(APITestCase):
             "Phishing Email", response.data["phishing_emails"][1]["subject"]
         )
 
-    def test_participant_scores_debrief_has_negative_reactions_list(self):
+    def test_participant_scores_debrief_negative_reactions(self):
         action = ParticipantActionFactory(participant=self.participant)
         ActionLogFactory(
             action=action, name="email_id", value=str(self.phishing_email_1.id)
@@ -273,47 +273,18 @@ class ParticipantScoresAPI(APITestCase):
         ActionLogFactory(
             action=action2, name="email_id", value=str(self.phishing_email_2.id)
         )
-        ActionLogFactory(
-            action=action2, name="action_type", value="email_attachment_download"
-        )
+        ActionLogFactory(action=action2, name="action_type", value="email_quick_reply")
 
         response = self.client.get(self.url)
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data["per_email_reactions"]))
-        self.assertEqual(2, len(response.data["reactions_list"]))
+        self.assertEqual(2, len(response.data["phishing_emails"]))
         self.assertEqual(
-            "negative",
-            response.data["per_email_reactions"][str(self.phishing_email_1.id)][0],
+            1, len(response.data["phishing_emails"][0]["participant_actions"])
         )
         self.assertEqual(
-            "negative",
-            response.data["per_email_reactions"][str(self.phishing_email_2.id)][0],
-        )
-
-    def test_participant_scores_debrief_has_positive_reactions_list(self):
-        action = ParticipantActionFactory(participant=self.participant)
-        ActionLogFactory(
-            action=action, name="email_id", value=str(self.phishing_email_1.id)
-        )
-        ActionLogFactory(action=action, name="action_type", value="email_reported")
-
-        action2 = ParticipantActionFactory(participant=self.participant)
-        ActionLogFactory(
-            action=action2, name="email_id", value=str(self.phishing_email_2.id)
-        )
-        ActionLogFactory(action=action2, name="action_type", value="email_deleted")
-
-        response = self.client.get(self.url)
-
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data["per_email_reactions"]))
-        self.assertEqual(2, len(response.data["reactions_list"]))
-        self.assertEqual(
-            "positive",
-            response.data["per_email_reactions"][str(self.phishing_email_1.id)][0],
+            "negative", response.data["phishing_emails"][0]["participant_behaviour"]
         )
         self.assertEqual(
-            "positive",
-            response.data["per_email_reactions"][str(self.phishing_email_2.id)][0],
+            "negative", response.data["phishing_emails"][1]["participant_behaviour"]
         )
