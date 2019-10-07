@@ -146,7 +146,7 @@ STATICFILES_DIRS = (
 
 HASHID_FIELD_SALT = "4k8+fl6moadlr=z*ix170o(%(116z88kep@_0%o%)6kf(t7(j!"
 
-CORS_ORIGIN_WHITELIST = "phishtray.local:3000"
+CORS_ORIGIN_WHITELIST = ("http://phishtray.local:3000",)
 
 CORS_ALLOW_METHODS = ("DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT")
 
