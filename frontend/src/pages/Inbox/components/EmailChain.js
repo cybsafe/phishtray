@@ -33,6 +33,7 @@ function EmailActions({
       })}
     >
       <ActionLinkwithClick
+        // to="#reply_options"
         data={{
           ...onReplyParams,
           actionType: actionTypes.emailReply,
@@ -56,7 +57,7 @@ function EmailActions({
         markThreadAsInactive={markThreadAsInactive}
         threadId={threadId}
         remove
-        secondary="true"
+        secondary={1}
       />
       <ActionLinkwithClick
         data={{
