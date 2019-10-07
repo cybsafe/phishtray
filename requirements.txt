@@ -1,3 +1,4 @@
+coverage==4.5.4
 dj-database-url==0.5.0
 Django==2.2.5
 django-cors-headers==2.4.0
@@ -10,6 +11,7 @@ factory-boy==2.11.1
 gunicorn==19.9.0
 Markdown==2.6.11
 mysqlclient==1.4.4
+python-coveralls==2.9.3
 psycopg2-binary==2.7.6.1
 pytz==2018.4
 six==1.11.0

@@ -26,6 +26,11 @@ django-shell:
 .PHONY: django-test
 django-test:
 	docker-compose exec django bash -c "python3.6 /usr/src/app/manage.py test"
+
+.PHONY: django-tests-coverage
+django-tests-coverage:
+	docker-compose exec django bash -c "coverage run --source='.' manage.py test"
+	docker-compose exec django bash -c "coverage report"
 # ==================================================
 
 
