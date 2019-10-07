@@ -1,6 +1,6 @@
 
 [![Build Status](https://travis-ci.com/cybsafe/phishtray.svg?branch=master)](https://travis-ci.com/cybsafe/phishtray)
-
+[![Coverage Status](https://coveralls.io/repos/github/cybsafe/phishtray/badge.svg?branch=master)](https://coveralls.io/github/cybsafe/phishtray?branch=master)
 
 # Running The Demo
 
