@@ -1,4 +1,9 @@
 [run]
 omit =
  */migrations/*
-  manage.py
+ */__init__.py
+ */apps.py
+ phishtray/wsgi.py
+ phishtray/settings.py
+ phishtray/settings-test.py
+ manage.py
