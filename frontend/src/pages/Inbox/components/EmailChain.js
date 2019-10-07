@@ -33,7 +33,6 @@ function EmailActions({
       })}
     >
       <ActionLinkwithClick
-        // to="#reply_options"
         data={{
           ...onReplyParams,
           actionType: actionTypes.emailReply,

@@ -4,7 +4,7 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import { logAction } from '../../utils';
 
-export type Props = {
+type Props = {
   data: {
     actionType: String,
     emailId: String,
@@ -12,11 +12,11 @@ export type Props = {
     startTime: number,
   },
   title: string,
-  markThreadAsDeleted: ?(threadId: string) => void,
-  markThreadAsInactive: ?() => void,
+  markThreadAsDeleted: (threadId: string) => void,
+  markThreadAsInactive: () => void,
   threadId: string,
-  remove: ?string,
-  secondary: ?string,
+  remove?: string,
+  secondary?: string,
 };
 
 const ActionLink = styled(Link)`
