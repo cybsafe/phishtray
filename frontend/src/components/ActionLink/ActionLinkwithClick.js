@@ -1,7 +1,23 @@
+// @flow
 import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import { logAction } from '../../utils';
+
+export type Props = {
+  data: {
+    actionType: String,
+    emailId: String,
+    participantId: String,
+    startTime: number,
+  },
+  title: string,
+  markThreadAsDeleted: ?(threadId: string) => void,
+  markThreadAsInactive: ?() => void,
+  threadId: string,
+  remove: ?string,
+  secondary: ?string,
+};
 
 const ActionLink = styled(Link)`
   display: block;
@@ -33,7 +49,7 @@ function ActionLinkwithClick({
   threadId,
   remove,
   ...restProps
-}) {
+}: Props) {
   return (
     <ActionLink
       to={
