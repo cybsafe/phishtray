@@ -195,7 +195,7 @@ class DemographicsInfo(PhishtrayBaseModel):
 
 class Exercise(PhishtrayBaseModel):
     def __str__(self):
-        return self.title
+        return f"{self.id} - {self.title}"
 
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -213,6 +213,9 @@ class Exercise(PhishtrayBaseModel):
     debrief = models.BooleanField(
         help_text="Should participants receive a phishing debrief at the end of the exercise?",
         default=False,
+    )
+    copied_from = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True
     )
 
     @property
