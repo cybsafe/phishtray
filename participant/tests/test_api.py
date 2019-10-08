@@ -269,7 +269,22 @@ class ParticipantScoresAPI(APITestCase):
 
         for act, behaviour in test_data:
             with self.subTest(act):
-                response = self.behaviour_response(act)
+                exercise = ExerciseFactory(debrief=True)
+                phishing_email = EmailFactory(
+                    subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
+                )
+                exercise.emails.add(phishing_email)
+
+                participant = ParticipantFactory(exercise=exercise)
+                url = reverse("api:participant-score-detail", args=[participant.id])
+
+                action = ParticipantActionFactory(participant=participant)
+                ActionLogFactory(
+                    action=action, name="email_id", value=str(phishing_email.id)
+                )
+                ActionLogFactory(action=action, name="action_type", value=act)
+
+                response = self.client.get(url)
                 self.assertEqual(status.HTTP_200_OK, response.status_code)
                 self.assertEqual(1, len(response.data["phishing_emails"]))
                 self.assertEqual(
@@ -279,19 +294,3 @@ class ParticipantScoresAPI(APITestCase):
                     behaviour,
                     response.data["phishing_emails"][0]["participant_behaviour"],
                 )
-
-    def behaviour_response(self, act):
-        exercise = ExerciseFactory(debrief=True)
-        phishing_email = EmailFactory(
-            subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
-        )
-        exercise.emails.add(phishing_email)
-
-        participant = ParticipantFactory(exercise=exercise)
-        url = reverse("api:participant-score-detail", args=[participant.id])
-
-        action = ParticipantActionFactory(participant=participant)
-        ActionLogFactory(action=action, name="email_id", value=str(phishing_email.id))
-        ActionLogFactory(action=action, name="action_type", value=act)
-
-        return self.client.get(url)
