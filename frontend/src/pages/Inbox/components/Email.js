@@ -1,5 +1,5 @@
 // @flow
-import React, { Fragment } from 'react';
+import React, { Fragment, createRef } from 'react';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -10,6 +10,7 @@ import QuickReply from './QuickReply';
 
 import { logAction } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
+import Button from '../../../components/Button/ReplyButton';
 
 type Props = {
   email: Object,
@@ -221,7 +222,9 @@ function RouterLink(props) {
 function ReturnReplies({ props }) {
   return !props.email.isReplied ? (
     <Fragment>
-      <h3>You have {props.email.replies.length} option(s) to reply:</h3>
+      <h3 ref={props.myRef}>
+        You have {props.email.replies.length} option(s) to reply:
+      </h3>
       <QuickReply
         logActionParams={props.onReplyParams}
         setSelectedReply={props.setSelectedReply}

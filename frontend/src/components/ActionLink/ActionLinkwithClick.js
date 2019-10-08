@@ -48,6 +48,7 @@ function ActionLinkwithClick({
   markThreadAsInactive,
   threadId,
   remove,
+  onReplyPress,
   ...restProps
 }: Props) {
   return (
@@ -68,6 +69,7 @@ function ActionLinkwithClick({
           timestamp: new Date(),
         });
         remove && markThreadAsDeleted(threadId) && markThreadAsInactive();
+        onReplyPress();
       }}
       {...restProps}
     >

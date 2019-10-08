@@ -152,22 +152,22 @@ export class FileManager extends Component {
                 <FileListItem
                   key={file.id}
                   file={file}
-                  deleteFileHandler={file => {
+                  deleteFileHandler={file => (
                     this.logActionsHandler({
                       actionType: actionTypes.fileDelete,
                       fileId: file.id,
                       fileName: file.fileName,
                     }),
-                      this.deleteFileHandler(file);
-                  }}
-                  displayFileModalHandler={file => {
+                    this.deleteFileHandler(file)
+                  )}
+                  displayFileModalHandler={file => (
                     this.logActionsHandler({
                       actionType: actionTypes.fileOpen,
                       fileId: file.id,
                       fileName: file.fileName,
                     }),
-                      this.displayFileModalHandler(file);
-                  }}
+                    this.displayFileModalHandler(file)
+                  )}
                 />
               ))}
           </tbody>

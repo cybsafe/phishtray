@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, createRef } from 'react';
 import { css } from 'react-emotion';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -14,6 +14,13 @@ import { addFile } from '../../../actions/fileManagerActions';
 import actionTypes from '../../../config/actionTypes';
 import Email from './Email';
 import ActionLinkwithClick from '../../../components/ActionLink/ActionLinkwithClick';
+
+const repliesRef = createRef();
+const onReplyClick = () =>
+  repliesRef.current.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
 
 function EmailActions({
   threadId,
@@ -38,6 +45,7 @@ function EmailActions({
           actionType: actionTypes.emailReply,
         }}
         title="Reply"
+        onReplyPress={onReplyClick}
       />
       <ActionLinkwithClick
         data={{
@@ -131,6 +139,7 @@ export class EmailChain extends Component {
                   emailId: email.id,
                 }}
                 setSelectedReply={this.props.setSelectedReply}
+                myRef={repliesRef}
               />
               <hr
                 className={css({

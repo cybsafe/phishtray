@@ -86,8 +86,9 @@ class MyPayment extends React.Component {
                         },
                         () =>
                           logBrowserActions({
-                            actionType: actionTypes.browserInputLoginCrendentials,
-                            modifiedField: 'email'
+                            actionType:
+                              actionTypes.browserInputLoginCrendentials,
+                            modifiedField: 'email',
                           })
                       );
                     }
