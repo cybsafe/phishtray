@@ -16,7 +16,7 @@ import Email from './Email';
 import ActionLinkwithClick from '../../../components/ActionLink/ActionLinkwithClick';
 
 const repliesRef = createRef();
-const onReplyClick = () =>
+const onReplyPress = () =>
   repliesRef.current.scrollIntoView({
     behavior: 'smooth',
     block: 'start',
@@ -45,7 +45,7 @@ function EmailActions({
           actionType: actionTypes.emailReply,
         }}
         title="Reply"
-        onReplyPress={onReplyClick}
+        onReplyPress={onReplyPress}
       />
       <ActionLinkwithClick
         data={{
@@ -139,7 +139,7 @@ export class EmailChain extends Component {
                   emailId: email.id,
                 }}
                 setSelectedReply={this.props.setSelectedReply}
-                myRef={repliesRef}
+                repliesRef={repliesRef}
               />
               <hr
                 className={css({

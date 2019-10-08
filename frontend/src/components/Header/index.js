@@ -83,6 +83,8 @@ class Header extends Component<Props> {
     return (
       <div
         className={css({
+          position: 'absolute',
+          width: '100%',
           display: 'flex',
           flexDirection: 'row',
           height: 80,
