@@ -34,7 +34,7 @@
     "format": "prettier \"src/**/*.js\" --write"
   },
   "devDependencies": {
-    "babel-cli": "6.26.0",
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.5",
     "babel-preset-flow": "^6.23.0",
     "eslint": "^5.0.0",
