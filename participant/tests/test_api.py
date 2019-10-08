@@ -268,7 +268,7 @@ class ParticipantScoresAPI(APITestCase):
         ]
 
         for act, behaviour in test_data:
-            with self.subTest(act):
+            with self.subTest(act=act, behaviour=behaviour):
                 exercise = ExerciseFactory(debrief=True)
                 phishing_email = EmailFactory(
                     subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
