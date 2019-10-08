@@ -268,15 +268,17 @@ class ParticipantScoresAPI(APITestCase):
         ]
 
         for act, behaviour in test_data:
-            response = self.behaviour_response(act)
-            self.assertEqual(status.HTTP_200_OK, response.status_code)
-            self.assertEqual(1, len(response.data["phishing_emails"]))
-            self.assertEqual(
-                1, len(response.data["phishing_emails"][0]["participant_actions"])
-            )
-            self.assertEqual(
-                behaviour, response.data["phishing_emails"][0]["participant_behaviour"]
-            )
+            with self.subTest(act):
+                response = self.behaviour_response(act)
+                self.assertEqual(status.HTTP_200_OK, response.status_code)
+                self.assertEqual(1, len(response.data["phishing_emails"]))
+                self.assertEqual(
+                    1, len(response.data["phishing_emails"][0]["participant_actions"])
+                )
+                self.assertEqual(
+                    behaviour,
+                    response.data["phishing_emails"][0]["participant_behaviour"],
+                )
 
     def behaviour_response(self, act):
         exercise = ExerciseFactory(debrief=True)
