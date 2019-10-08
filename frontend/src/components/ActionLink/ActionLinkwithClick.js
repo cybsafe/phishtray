@@ -17,6 +17,7 @@ type Props = {
   threadId: string,
   remove?: string,
   secondary?: string,
+  onReplyPress: () => void,
 };
 
 const ActionLink = styled(Link)`

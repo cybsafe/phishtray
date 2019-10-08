@@ -16,6 +16,7 @@ import Email from './Email';
 import ActionLinkwithClick from '../../../components/ActionLink/ActionLinkwithClick';
 
 const repliesRef = createRef();
+
 const onReplyPress = () =>
   repliesRef.current.scrollIntoView({
     behavior: 'smooth',

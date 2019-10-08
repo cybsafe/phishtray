@@ -15,6 +15,7 @@ type Props = {
   email: Object,
   onReplyParams: Object,
   threadId: string,
+  repliesRef: Object,
   addFile: () => void,
   markThreadAsDeleted: () => void,
   addReplyToEmail: () => void,
