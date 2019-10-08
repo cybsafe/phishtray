@@ -260,31 +260,36 @@ class ParticipantScoresAPI(APITestCase):
             "Phishing Email", response.data["phishing_emails"][1]["subject"]
         )
 
-    def test_participant_scores_debrief_negative_reactions(self):
-        action = ParticipantActionFactory(participant=self.participant)
-        ActionLogFactory(
-            action=action, name="email_id", value=str(self.phishing_email_1.id)
-        )
-        ActionLogFactory(
-            action=action, name="action_type", value="email_attachment_download"
-        )
+    def test_participant_scores_debrief_behaviour_responses(self):
+        test_data = [
+            ["email_attachment_download", "negative"],
+            ["email_reported", "positive"],
+            ["something_not_postive_or_negative", "neutral"],
+        ]
 
-        action2 = ParticipantActionFactory(participant=self.participant)
-        ActionLogFactory(
-            action=action2, name="email_id", value=str(self.phishing_email_2.id)
-        )
-        ActionLogFactory(action=action2, name="action_type", value="email_quick_reply")
+        for act, behaviour in test_data:
+            response = self.behaviour_response(act)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(1, len(response.data["phishing_emails"]))
+            self.assertEqual(
+                1, len(response.data["phishing_emails"][0]["participant_actions"])
+            )
+            self.assertEqual(
+                behaviour, response.data["phishing_emails"][0]["participant_behaviour"]
+            )
 
-        response = self.client.get(self.url)
+    def behaviour_response(self, act):
+        exercise = ExerciseFactory(debrief=True)
+        phishing_email = EmailFactory(
+            subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
+        )
+        exercise.emails.add(phishing_email)
 
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data["phishing_emails"]))
-        self.assertEqual(
-            1, len(response.data["phishing_emails"][0]["participant_actions"])
-        )
-        self.assertEqual(
-            "negative", response.data["phishing_emails"][0]["participant_behaviour"]
-        )
-        self.assertEqual(
-            "negative", response.data["phishing_emails"][1]["participant_behaviour"]
-        )
+        participant = ParticipantFactory(exercise=exercise)
+        url = reverse("api:participant-score-detail", args=[participant.id])
+
+        action = ParticipantActionFactory(participant=participant)
+        ActionLogFactory(action=action, name="email_id", value=str(phishing_email.id))
+        ActionLogFactory(action=action, name="action_type", value=act)
+
+        return self.client.get(url)
