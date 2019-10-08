@@ -229,21 +229,28 @@ class ParticipantScoreSerializer(serializers.ModelSerializer):
     debrief = serializers.SerializerMethodField()
 
     def get_phishing_emails(self, participant):
-        return list(
+        emails_list = list(
             ExerciseEmail.objects.filter(
                 exercise__participant=participant, phish_type=EXERCISE_EMAIL_PHISH
-            ).values("subject", "from_address", "content")
+            ).values("id", "subject", "from_address", "content")
         )
+
+        for email in emails_list:
+            email["participant_behaviour"], email[
+                "participant_actions"
+            ] = participant.phishing_email_behaviour_and_actions(str(email["id"]))
+
+        return emails_list
 
     def get_training_link(self, participant):
         return participant.exercise.training_link
-        
+
     def get_debrief(self, participant):
         return participant.exercise.debrief
 
     def get_scores(self, participant):
         return participant.scores
-    
+
     class Meta:
         model = Participant
         fields = ("id", "scores", "phishing_emails", "debrief", "training_link")

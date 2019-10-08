@@ -11,6 +11,7 @@ from ..factories import (
     ParticipantFactory,
     ParticipantActionFactory,
     ProfileEntryFactory,
+    ActionLogFactory,
 )
 from exercise.factories import DemographicsInfoFactory, EmailFactory, ExerciseFactory
 from rest_framework.test import APITestCase
@@ -226,19 +227,21 @@ class ParticipantActionsAPITests(PhishtrayAPIBaseTest):
 
 class ParticipantScoresAPI(APITestCase):
     def setUp(self):
-        exercise = ExerciseFactory(debrief=True, training_link="https://app.cybsafe.com")
-        phishing_email_1 = EmailFactory(
+        exercise = ExerciseFactory(
+            debrief=True, training_link="https://app.cybsafe.com"
+        )
+        self.phishing_email_1 = EmailFactory(
             subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
         )
-        phishing_email_2 = EmailFactory(
+        self.phishing_email_2 = EmailFactory(
             subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
         )
         non_phishing_email = EmailFactory(
             subject="Non Phishing Email Test", phish_type=EXERCISE_EMAIL_REGULAR
         )
-        exercise.emails.add(phishing_email_1)
+        exercise.emails.add(self.phishing_email_1)
         exercise.emails.add(non_phishing_email)
-        exercise.emails.add(phishing_email_2)
+        exercise.emails.add(self.phishing_email_2)
 
         self.participant = ParticipantFactory(exercise=exercise)
         self.url = reverse("api:participant-score-detail", args=[self.participant.id])
@@ -256,3 +259,38 @@ class ParticipantScoresAPI(APITestCase):
         self.assertEqual(
             "Phishing Email", response.data["phishing_emails"][1]["subject"]
         )
+
+    def test_participant_scores_debrief_behaviour_responses(self):
+        test_data = [
+            ["email_attachment_download", "negative"],
+            ["email_reported", "positive"],
+            ["something_not_postive_or_negative", "neutral"],
+        ]
+
+        for act, behaviour in test_data:
+            with self.subTest(act=act, behaviour=behaviour):
+                exercise = ExerciseFactory(debrief=True)
+                phishing_email = EmailFactory(
+                    subject="Phishing Email", phish_type=EXERCISE_EMAIL_PHISH
+                )
+                exercise.emails.add(phishing_email)
+
+                participant = ParticipantFactory(exercise=exercise)
+                url = reverse("api:participant-score-detail", args=[participant.id])
+
+                action = ParticipantActionFactory(participant=participant)
+                ActionLogFactory(
+                    action=action, name="email_id", value=str(phishing_email.id)
+                )
+                ActionLogFactory(action=action, name="action_type", value=act)
+
+                response = self.client.get(url)
+                self.assertEqual(status.HTTP_200_OK, response.status_code)
+                self.assertEqual(1, len(response.data["phishing_emails"]))
+                self.assertEqual(
+                    1, len(response.data["phishing_emails"][0]["participant_actions"])
+                )
+                self.assertEqual(
+                    behaviour,
+                    response.data["phishing_emails"][0]["participant_behaviour"],
+                )
