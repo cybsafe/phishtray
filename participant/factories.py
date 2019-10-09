@@ -43,4 +43,4 @@ class OrganizationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Organization
 
-    name = "Test Organization"
+    name = factory.Sequence(lambda n: "Test Organization {}".format(n + 1))

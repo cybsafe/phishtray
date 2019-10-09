@@ -7,4 +7,4 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = "test user"
+    username = factory.Sequence(lambda n: "username{0:0=2d}".format(n + 1))
