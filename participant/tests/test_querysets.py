@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
-from participant.models import Organization
-from participant.factories import OrganizationFactory
+from participant.models import Organization, Participant
+from participant.factories import OrganizationFactory, ParticipantFactory
 from users.factories import UserFactory
 
 
@@ -19,7 +19,7 @@ class OrganizationQuerysetTests(APITestCase):
             username="user_without_organization"
         )
 
-    def test_org_filter__user_with_organization(self):
+    def test_org_filter_user_with_organization(self):
         organization = Organization.objects.filter_by_user(user=self.user)
         self.assertEqual(1, organization.count())
         self.assertEqual("this_test_organization", self.organization.name)
@@ -45,3 +45,60 @@ class OrganizationQuerysetTests(APITestCase):
             user="a string or not a user instance"
         )
         self.assertFalse(organization.exists())
+
+
+class ParticipantQuerysetTests(APITestCase):
+    def setUp(self):
+        organization = OrganizationFactory(name="this_test_organization")
+        self.participant1 = ParticipantFactory(organization=organization)
+        self.participant2 = ParticipantFactory(organization=organization)
+        self.participant3 = ParticipantFactory(organization=organization)
+
+        other_organization = OrganizationFactory(name="other_organization")
+        self.participant4 = ParticipantFactory(organization=other_organization)
+
+        self.user = UserFactory(
+            username="user_with_organization", organization=organization
+        )
+        self.superuser = UserFactory(
+            organization=organization, is_superuser=True, username="test_superuser"
+        )
+        self.user_without_participant = UserFactory(
+            username="user_without_organization"
+        )
+
+    def test_org_filter_user_with_participant(self):
+        participants = Participant.objects.filter_by_user(user=self.user)
+        self.assertEqual(3, participants.count())
+
+        organization_participants = [
+            self.participant1,
+            self.participant2,
+            self.participant3,
+        ]
+
+        for participant in organization_participants:
+            with self.subTest(participant_organization=participant.organization.name):
+                self.assertTrue(participant in participants)
+
+    def test_when_superuser(self):
+        all_participants = Participant.objects.all()
+        participants = Participant.objects.filter_by_user(user=self.superuser)
+
+        self.assertEqual(list(all_participants), list(participants))
+
+    def test_when_user_without_participant(self):
+        participant = Participant.objects.filter_by_user(
+            user=self.user_without_participant
+        )
+        self.assertFalse(participant.exists())
+
+    def test_when_user_is_none(self):
+        participant = Participant.objects.filter_by_user(user=None)
+        self.assertFalse(participant.exists())
+
+    def test_when_user_is_not_user_instance(self):
+        participant = Participant.objects.filter_by_user(
+            user="a string or not a user instance"
+        )
+        self.assertFalse(participant.exists())
