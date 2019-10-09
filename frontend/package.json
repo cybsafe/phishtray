@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/react-fontawesome": "^0.1.5",
     "carbon-components": "^9.1.1",
     "carbon-components-react": "^6.6.3",
     "carbon-icons": "^7.0.7",
@@ -12,6 +15,7 @@
     "js-cookie": "^2.2.0",
     "react": "^16.4.1",
     "react-circular-progressbar": "^1.0.0",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.4.1",
     "react-emotion": "^9.2.4",
     "react-markdown": "^3.6.0",
