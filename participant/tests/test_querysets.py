@@ -57,29 +57,21 @@ class ParticipantQuerysetTests(APITestCase):
         other_organization = OrganizationFactory(name="other_organization")
         self.participant4 = ParticipantFactory(organization=other_organization)
 
-        self.user = UserFactory(
-            username="user_with_organization", organization=organization
-        )
-        self.superuser = UserFactory(
-            organization=organization, is_superuser=True, username="test_superuser"
-        )
-        self.user_without_participant = UserFactory(
-            username="user_without_organization"
-        )
+        self.user = UserFactory(organization=organization)
+        self.superuser = UserFactory(organization=organization, is_superuser=True)
+        self.user_without_organization = UserFactory()
 
-    def test_org_filter_user_with_participant(self):
-        participants = Participant.objects.filter_by_user(user=self.user)
-        self.assertEqual(3, participants.count())
-
-        organization_participants = [
-            self.participant1,
-            self.participant2,
-            self.participant3,
+    def test_participant_filter_by_user_with_organisation(self):
+        expected_ids = [
+            self.participant1.id,
+            self.participant2.id,
+            self.participant3.id,
         ]
+        filtered_ids = Participant.objects.filter_by_user(user=self.user).values_list(
+            "id", flat=True
+        )
 
-        for participant in organization_participants:
-            with self.subTest(participant_organization=participant.organization.name):
-                self.assertTrue(participant in participants)
+        self.assertEqual(set(expected_ids), set(filtered_ids))
 
     def test_when_superuser(self):
         all_participants = Participant.objects.all()
@@ -87,9 +79,9 @@ class ParticipantQuerysetTests(APITestCase):
 
         self.assertEqual(list(all_participants), list(participants))
 
-    def test_when_user_without_participant(self):
+    def test_when_user_without_organization(self):
         participant = Participant.objects.filter_by_user(
-            user=self.user_without_participant
+            user=self.user_without_organization
         )
         self.assertFalse(participant.exists())
 
