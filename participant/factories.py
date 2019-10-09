@@ -1,7 +1,13 @@
 import factory
 
 from exercise.factories import DemographicsInfoFactory, ExerciseFactory
-from .models import ActionLog, Participant, ParticipantAction, ParticipantProfileEntry
+from .models import (
+    ActionLog,
+    Participant,
+    ParticipantAction,
+    ParticipantProfileEntry,
+    Organization,
+)
 
 
 class ProfileEntryFactory(factory.django.DjangoModelFactory):
@@ -31,3 +37,10 @@ class ActionLogFactory(factory.django.DjangoModelFactory):
         model = ActionLog
 
     action = factory.SubFactory(ParticipantActionFactory)
+
+
+class OrganizationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Organization
+
+    name = "Test Organization"
