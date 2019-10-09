@@ -51,16 +51,5 @@
     "prettier": "^1.13.5",
     "redux-mock-store": "^1.5.3"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": "last 2 versions, ie 10"
 }
