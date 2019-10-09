@@ -3,6 +3,9 @@ import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import { logAction } from '../../utils';
+import { connect } from 'react-redux';
+
+import { setInlineNotification } from '../../actions/exerciseActions';
 
 type Props = {
   data: {
@@ -14,6 +17,7 @@ type Props = {
   title: string,
   markThreadAsDeleted: (threadId: string) => void,
   markThreadAsInactive: () => void,
+  setInlineNotification: (term: string) => void,
   threadId: string,
   remove?: string,
   secondary?: string,
@@ -50,6 +54,7 @@ function ActionLinkwithClick({
   threadId,
   remove,
   onReplyPress,
+  setInlineNotification,
   ...restProps
 }: Props) {
   return (
@@ -71,6 +76,7 @@ function ActionLinkwithClick({
         });
         remove && markThreadAsDeleted(threadId) && markThreadAsInactive();
         onReplyPress && onReplyPress();
+        setInlineNotification && setInlineNotification(title);
       }}
       {...restProps}
     >
@@ -79,4 +85,9 @@ function ActionLinkwithClick({
   );
 }
 
-export default ActionLinkwithClick;
+export default connect(
+  state => ({}),
+  {
+    setInlineNotification,
+  }
+)(ActionLinkwithClick);

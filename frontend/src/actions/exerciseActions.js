@@ -82,3 +82,16 @@ export function setSelectedReply(params: Object) {
     },
   };
 }
+
+export function setInlineNotification(term: string) {
+  return {
+    type: 'exercise/SET_INLINE_NOTIFICATION',
+    payload: { term },
+  };
+}
+
+export function unsetInlineNotification() {
+  return {
+    type: 'exercise/UNSET_INLINE_NOTIFICATION',
+  };
+}
