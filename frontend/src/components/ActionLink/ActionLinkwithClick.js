@@ -70,7 +70,7 @@ function ActionLinkwithClick({
           timestamp: new Date(),
         });
         remove && markThreadAsDeleted(threadId) && markThreadAsInactive();
-        onReplyPress();
+        onReplyPress && onReplyPress();
       }}
       {...restProps}
     >
