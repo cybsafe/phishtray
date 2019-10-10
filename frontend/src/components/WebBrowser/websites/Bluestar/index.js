@@ -1,11 +1,9 @@
 import React from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { TextInput, Button, Checkbox, Icon } from 'carbon-components-react';
 import { iconStarOutline } from 'carbon-icons';
 import { getAllAccounts } from '../../../../data/accounts';
-
-import { closeWebpage } from '../../../../actions/uiActions';
 
 import Bg from './assets/bg.png';
 
@@ -55,13 +53,6 @@ const LoginBannerText = styled('div')({
   fontFamily: 'Open Sans',
   letterSpacing: '3.6px',
   lineHeight: '40px',
-});
-
-const ForgotPassLink = styled(Link)({
-  color: '#4285F4',
-  fontSize: '15px',
-  textDecoration: 'none',
-  cursor: 'pointer',
 });
 
 const LoginHeaderText = styled('h2')({
