@@ -1,8 +1,11 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { TextInput, Button, Checkbox, Icon } from 'carbon-components-react';
 import { iconStarOutline } from 'carbon-icons';
+import { getAllAccounts } from '../../../../data/accounts';
+
+import { closeWebpage } from '../../../../actions/uiActions';
 
 import Bg from './assets/bg.png';
 
@@ -54,10 +57,11 @@ const LoginBannerText = styled('div')({
   lineHeight: '40px',
 });
 
-const ForgotPassLink = styled('a')({
+const ForgotPassLink = styled(Link)({
   color: '#4285F4',
   fontSize: '15px',
   textDecoration: 'none',
+  cursor: 'pointer',
 });
 
 const LoginHeaderText = styled('h2')({
@@ -92,6 +96,8 @@ class MyBluestar extends React.Component {
 
   render() {
     const { logBrowserActions, actionTypes } = this.props;
+    const accounts = getAllAccounts();
+
     return (
       <Switch>
         <Route
@@ -131,8 +137,10 @@ class MyBluestar extends React.Component {
                     <TextInput
                       {...TextInputProps()}
                       id="email"
+                      disabled
                       placeholder="Email"
                       type="email"
+                      value={accounts[1].data[0].value}
                       onChange={event => {
                         if (!this.state.logged[event.target.id]) {
                           this.setState(
@@ -202,17 +210,6 @@ class MyBluestar extends React.Component {
                     >
                       Login
                     </Button>
-                  </FieldWrapper>
-                  <FieldWrapper>
-                    <ForgotPassLink
-                      onClick={() =>
-                        logBrowserActions({
-                          actionType: actionTypes.browserForgottenPassword,
-                        })
-                      }
-                    >
-                      Forgotten your password?
-                    </ForgotPassLink>
                   </FieldWrapper>
                 </LoginContainerForm>
               </LoginContainer>

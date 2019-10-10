@@ -21,8 +21,8 @@ const ACCOUNTS = [
     data: [
       {
         id: '1',
-        label: 'Username',
-        value: 'biggeoff@gmail.com',
+        label: 'E-mail address',
+        value: 'geoff@bluestar.com',
       },
       {
         id: '4',
