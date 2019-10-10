@@ -273,18 +273,17 @@ class ExerciseEmailProperties(PhishtrayBaseModel):
             self.save()
 
 
-class ExerciseWebPages(PhishtrayBaseModel):
+class ExerciseWebPage(PhishtrayBaseModel):
+    PAGE_REGULAR = 0
+    PAGE_TYPES = ((PAGE_REGULAR, "regular"),)
+
     def __str__(self):
-        return self.subject
+        return self.title
 
-    subject = models.CharField(max_length=250, blank=True, null=True)
-    url = models.CharField(max_length=250, blank=True, null=True)
-    type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
+    title = models.CharField(max_length=250, blank=True, null=True)
+    url = models.CharField(max_length=250, blank=True, null=True, unique=True)
+    type = models.IntegerField(choices=PAGE_TYPES, default=PAGE_REGULAR)
     content = models.TextField(null=True, blank=True)
-
-    class Meta:
-        verbose_name_plural = "Exercise web pages"
-
 
 @receiver(post_save, sender=Exercise)
 def create_email_reveal_time(sender, instance, created, **kwargs):
