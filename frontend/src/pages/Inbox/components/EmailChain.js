@@ -100,6 +100,7 @@ export class EmailChain extends Component {
 
   render() {
     const { thread } = this.props;
+
     return thread ? (
       <div
         className={css({

@@ -8,6 +8,9 @@ import StopClock from './StopClock';
 import { logAction, getHeaderText } from '../../utils';
 import actionTypes from '../../config/actionTypes';
 import { resetCountdown } from '../../actions/exerciseActions';
+import InlineNotification from '../../components/InlineNotification';
+
+import { unsetInlineNotification } from '../../actions/exerciseActions';
 
 const SectionHeader = styled('div')({
   display: 'flex',
@@ -64,7 +67,9 @@ type Props = {
   location: *,
   exerciseId: string,
   participantId: string,
+  inlineNotification: string,
   resetCountdown: () => void,
+  unsetInlineNotification: () => void,
 };
 
 const getHeader = location => (
@@ -73,13 +78,28 @@ const getHeader = location => (
   </SectionHeader>
 );
 
+let time;
+
 class Header extends Component<Props> {
   state = {
     modalOpen: false,
   };
 
+  componentWillUpdate(prevProps, prevState) {
+    if (prevProps.inlineNotification !== this.props.inlineNotification) {
+      time = setTimeout(() => {
+        this.props.unsetInlineNotification();
+      }, 5000);
+    }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(time);
+  }
+
   render() {
     const clearSessionStorage = async () => await sessionStorage.clear();
+    const { inlineNotification, unsetInlineNotification } = this.props;
     return (
       <div
         className={css({
@@ -99,6 +119,37 @@ class Header extends Component<Props> {
             backgroundColor: '#1D1B1C',
           })}
         />
+
+        {inlineNotification &&
+          inlineNotification.toLowerCase() === 'forward' && (
+            <InlineNotification
+              kind="success"
+              title="Success!"
+              subtitle="Email has been forwarded."
+              onClick={() => unsetInlineNotification()}
+            />
+          )}
+
+        {inlineNotification &&
+          inlineNotification.toLowerCase() === 'delete' && (
+            <InlineNotification
+              kind="success"
+              title="Deleted!"
+              subtitle="Email has been deleted."
+              onClick={() => unsetInlineNotification()}
+            />
+          )}
+
+        {inlineNotification &&
+          inlineNotification.toLowerCase() === 'report' && (
+            <InlineNotification
+              kind="success"
+              title="Reported and Deleted!"
+              subtitle="Email has been reported and deleted."
+              onClick={() => unsetInlineNotification()}
+            />
+          )}
+
         {getHeader(this.props.location.pathname)}
         <ClockContainer>
           <div
@@ -175,9 +226,10 @@ const mapStateToProps = reduxState => ({
   countdownMins: reduxState.exercise.lengthMinutes,
   participantId: reduxState.exercise.participant,
   exerciseId: reduxState.exercise.id,
+  inlineNotification: reduxState.exercise.inlineNotification,
 });
 
 export default connect(
   mapStateToProps,
-  { resetCountdown }
+  { resetCountdown, unsetInlineNotification }
 )(withRouter(Header));
