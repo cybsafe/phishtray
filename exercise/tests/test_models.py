@@ -8,7 +8,8 @@ from ..factories import (
     ExerciseTaskFactory,
 )
 
-from ..models import ExerciseEmailProperties
+from ..models import ExerciseEmailProperties, ExerciseWebPage
+from django.db import IntegrityError
 
 
 class ExerciseModelTests(TestCase):
@@ -91,3 +92,15 @@ class ExerciseModelTests(TestCase):
 
         self.assertTrue(score_one in email_reply.scores)
         self.assertFalse(score_two in email_reply.scores)
+
+
+class ExerciseWebPageModelTests(TestCase):
+    def test_url_uniqueness(self):
+        ExerciseWebPage.objects.create(url="https://www.emtray.com/welcome")
+
+        with self.assertRaises(IntegrityError):
+            ExerciseWebPage.objects.create(url="https://www.emtray.com/welcome")
+
+    def test_default_page_type(self):
+        page = ExerciseWebPage.objects.create(url="https://www.emtray.com/welcome")
+        self.assertEqual(ExerciseWebPage.PAGE_REGULAR, page.type)
