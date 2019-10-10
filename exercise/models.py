@@ -220,7 +220,7 @@ class Exercise(PhishtrayBaseModel):
         :param uuid: BOOL - when True the function returns UUIDs
         :return: MAP of the email ids as STRING
         """
-        phishing_email_ids = self.phishing_emails.values_list('id', flat=True)
+        phishing_email_ids = self.phishing_emails.values_list("id", flat=True)
         if uuid:
             return phishing_email_ids
         else:
@@ -273,17 +273,17 @@ class ExerciseEmailProperties(PhishtrayBaseModel):
             self.save()
 
 
-class ExerciseWebPages(PhishtrayBaseModel):
+class ExerciseWebPage(PhishtrayBaseModel):
+    PAGE_REGULAR = 0
+    PAGE_TYPES = ((PAGE_REGULAR, "regular"),)
+
     def __str__(self):
-        return self.subject
+        return self.title
 
-    subject = models.CharField(max_length=250, blank=True, null=True)
-    url = models.CharField(max_length=250, blank=True, null=True)
-    type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
+    title = models.CharField(max_length=250, blank=True, null=True)
+    url = models.CharField(max_length=250, blank=True, null=True, unique=True)
+    type = models.IntegerField(choices=PAGE_TYPES, default=PAGE_REGULAR)
     content = models.TextField(null=True, blank=True)
-
-    class Meta:
-        verbose_name_plural = "Exercise web pages"
 
 
 class ExerciseURL(PhishtrayBaseModel):
@@ -295,7 +295,7 @@ class ExerciseURL(PhishtrayBaseModel):
     real_url = models.CharField(max_length=250, blank=True, null=True)
     type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
 
-    web_page = models.ForeignKey(ExerciseWebPages, on_delete=models.CASCADE)
+    web_page = models.ForeignKey(ExerciseWebPage, on_delete=models.CASCADE)
 
 
 @receiver(post_save, sender=Exercise)
