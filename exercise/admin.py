@@ -7,7 +7,6 @@ from .models import (
     ExerciseEmail,
     ExerciseEmailProperties,
     ExerciseEmailReply,
-    ExerciseURL,
     ExerciseWebPages,
     ExerciseTask,
     EmailReplyTaskScore,
@@ -37,5 +36,4 @@ admin.site.register(EmailReplyTaskScore)
 admin.site.register(ExerciseEmailProperties, ExerciseEmailPropertiesAdmin)
 admin.site.register(ExerciseEmailReply)
 admin.site.register(ExerciseFile)
-admin.site.register(ExerciseURL)
 admin.site.register(ExerciseWebPages)
