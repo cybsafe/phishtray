@@ -215,7 +215,7 @@ class Exercise(PhishtrayBaseModel):
         default=False,
     )
     copied_from = models.ForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True
+        "self", on_delete=models.PROTECT, null=True, blank=True
     )
 
     @property
