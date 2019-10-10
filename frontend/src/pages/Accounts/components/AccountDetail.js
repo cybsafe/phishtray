@@ -2,6 +2,7 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
 import { type Match } from 'react-router-dom';
+import CopyButton from '../../../components/Button/CopyButton';
 import { getAccount } from '../../../data/accounts';
 
 type Props = {
@@ -23,6 +24,9 @@ function AccountInfo({ credentials }) {
         {credentials.label}
       </div>
       <div className="bx--structured-list-td">{credentials.value}</div>
+      <div className="bx--structured-list-td">
+        <CopyButton copyText={credentials.value} />
+      </div>
     </div>
   );
 }
