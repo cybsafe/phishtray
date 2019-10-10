@@ -37,7 +37,7 @@ class ExerciseAdmin(admin.ModelAdmin):
             obj.save()
 
             self.message_user(request, f"Exercise {obj.title} created successfully.")
-            return HttpResponseRedirect(".")
+            return redirect(reverse('admin:exercise_exercise_change', args=[obj.id]))
         return super().response_change(request, obj)
 
 
