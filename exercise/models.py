@@ -195,7 +195,7 @@ class DemographicsInfo(PhishtrayBaseModel):
 
 class Exercise(PhishtrayBaseModel):
     def __str__(self):
-        return f"{self.id} - {self.title}"
+        return f"{self.title} - {self.id}"
 
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
