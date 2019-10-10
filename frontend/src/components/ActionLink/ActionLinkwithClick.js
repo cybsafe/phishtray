@@ -17,6 +17,7 @@ type Props = {
   threadId: string,
   remove?: string,
   secondary?: string,
+  onReplyPress: () => void,
 };
 
 const ActionLink = styled(Link)`
@@ -48,6 +49,7 @@ function ActionLinkwithClick({
   markThreadAsInactive,
   threadId,
   remove,
+  onReplyPress,
   ...restProps
 }: Props) {
   return (
@@ -68,6 +70,7 @@ function ActionLinkwithClick({
           timestamp: new Date(),
         });
         remove && markThreadAsDeleted(threadId) && markThreadAsInactive();
+        onReplyPress && onReplyPress();
       }}
       {...restProps}
     >

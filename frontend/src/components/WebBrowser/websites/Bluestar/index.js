@@ -144,8 +144,9 @@ class MyBluestar extends React.Component {
                             },
                             () =>
                               logBrowserActions({
-                                actionType: actionTypes.browserInputLoginCrendentials,
-                                modifiedField: 'email'
+                                actionType:
+                                  actionTypes.browserInputLoginCrendentials,
+                                modifiedField: 'email',
                               })
                           );
                         }
@@ -169,8 +170,9 @@ class MyBluestar extends React.Component {
                             },
                             () =>
                               logBrowserActions({
-                                actionType: actionTypes.browserInputLoginCrendentials,
-                                modifiedField: 'password'
+                                actionType:
+                                  actionTypes.browserInputLoginCrendentials,
+                                modifiedField: 'password',
                               })
                           );
                         }
@@ -184,7 +186,7 @@ class MyBluestar extends React.Component {
                         logBrowserActions({
                           actionType: actionTypes.browserInputChange,
                           modifiedField: 'remember_me',
-                          fieldValue: value
+                          fieldValue: value,
                         })
                       }
                       id="checkbox-label-1"
@@ -205,7 +207,7 @@ class MyBluestar extends React.Component {
                     <ForgotPassLink
                       onClick={() =>
                         logBrowserActions({
-                          actionType: actionTypes.browserForgottenPassword
+                          actionType: actionTypes.browserForgottenPassword,
                         })
                       }
                     >

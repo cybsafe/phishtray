@@ -19,6 +19,9 @@ const Container = styled('div')({
   flexDirection: 'row',
   minHeight: '100%',
   height: '100%',
+  position: 'fixed',
+  width: '100%',
+  top: '80px',
 });
 
 const WelcomeContainer = styled('div')({
@@ -75,7 +78,6 @@ const DefaultLayout = ({ children, renderProps }) => {
       className={css({
         height: '100%',
         minHeight: '100%',
-        overflow: 'hidden',
         backgroundColor: '#f5f7fa',
       })}
     >

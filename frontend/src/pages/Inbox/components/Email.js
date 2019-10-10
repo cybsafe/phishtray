@@ -15,6 +15,7 @@ type Props = {
   email: Object,
   onReplyParams: Object,
   threadId: string,
+  repliesRef: Object,
   addFile: () => void,
   markThreadAsDeleted: () => void,
   addReplyToEmail: () => void,
@@ -221,7 +222,9 @@ function RouterLink(props) {
 function ReturnReplies({ props }) {
   return !props.email.isReplied ? (
     <Fragment>
-      <h3>You have {props.email.replies.length} option(s) to reply:</h3>
+      <h3 ref={props.repliesRef}>
+        You have {props.email.replies.length} option(s) to reply:
+      </h3>
       <QuickReply
         logActionParams={props.onReplyParams}
         setSelectedReply={props.setSelectedReply}
