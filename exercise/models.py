@@ -285,19 +285,6 @@ class ExerciseWebPage(PhishtrayBaseModel):
     type = models.IntegerField(choices=PAGE_TYPES, default=PAGE_REGULAR)
     content = models.TextField(null=True, blank=True)
 
-
-class ExerciseURL(PhishtrayBaseModel):
-    def __str__(self):
-        return self.subject
-
-    subject = models.CharField(max_length=250, blank=True, null=True)
-    actual_url = models.CharField(max_length=250, blank=True, null=True)
-    real_url = models.CharField(max_length=250, blank=True, null=True)
-    type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
-
-    web_page = models.ForeignKey(ExerciseWebPage, on_delete=models.CASCADE)
-
-
 @receiver(post_save, sender=Exercise)
 def create_email_reveal_time(sender, instance, created, **kwargs):
     """Create email reveal times when an exercise email instance is created."""
