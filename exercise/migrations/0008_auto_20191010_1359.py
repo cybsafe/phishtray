@@ -7,33 +7,38 @@ import uuid
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('exercise', '0007_auto_20191003_0946'),
-    ]
+    dependencies = [("exercise", "0007_auto_20191003_0946")]
 
     operations = [
         migrations.CreateModel(
-            name='ExerciseWebPage',
+            name="ExerciseWebPage",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, editable=False, null=True)),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('modified_date', models.DateTimeField(auto_now=True)),
-                ('title', models.CharField(blank=True, max_length=250, null=True)),
-                ('url', models.CharField(blank=True, max_length=250, null=True, unique=True)),
-                ('type', models.IntegerField(choices=[(0, 'regular')], default=0)),
-                ('content', models.TextField(blank=True, null=True)),
+                (
+                    "deleted_at",
+                    models.DateTimeField(blank=True, editable=False, null=True),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                ("modified_date", models.DateTimeField(auto_now=True)),
+                ("title", models.CharField(blank=True, max_length=250, null=True)),
+                (
+                    "url",
+                    models.CharField(
+                        blank=True, max_length=250, null=True, unique=True
+                    ),
+                ),
+                ("type", models.IntegerField(choices=[(0, "regular")], default=0)),
+                ("content", models.TextField(blank=True, null=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
-        migrations.AlterField(
-            model_name='exerciseurl',
-            name='web_page',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='exercise.ExerciseWebPage'),
-        ),
-        migrations.DeleteModel(
-            name='ExerciseWebPages',
-        ),
+        migrations.DeleteModel(name="ExerciseWebPages"),
     ]
