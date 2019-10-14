@@ -5,27 +5,21 @@ from ..helpers import copy_exercise
 
 
 class ExerciseHelperTests(TestCase):
-    def setUp(self):
-        self.exercise_1 = ExerciseFactory()
-        self.exercise_2 = ExerciseFactory()
-
     def test_copy_exercise(self):
         """
         Testing helper method that copies an exercise
         """
+        exercise_1 = ExerciseFactory()
+        copied_exercise = copy_exercise(exercise_1)
 
-        copied_exercise = copy_exercise(self.exercise_1)
-        self.assertIsNotNone(copied_exercise)
-
-        print(f"Exercise 1: {self.exercise_1.id}")
+        # To see what's going on
+        print(f"\n Exercise 1: {exercise_1.id}")
         print(f"Copied Exercise: {copied_exercise.id}")
         print(
-            f"Copied from exercise (Should be exercise1): {copied_exercise.copied_from.id}"
+            f"Copied from exercise (Should be exercise1's id'): {copied_exercise.copied_from.id}"
         )
-        # print(f"Exercise 1: {self.exercise_1.id}")
 
-        self.assertEqual(copied_exercise.copied_from, self.exercise_1)
+        self.assertIsNotNone(copied_exercise)
+        self.assertEqual(str(exercise_1.id), str(copied_exercise.copied_from.id))
         self.assertEqual(3, Exercise.objects.all().count())
-        self.assertEqual(
-            1, Exercise.objects.filter(copied_from=self.exercise_1).count()
-        )
+        self.assertEqual(1, Exercise.objects.filter(copied_from=exercise_1).count())
