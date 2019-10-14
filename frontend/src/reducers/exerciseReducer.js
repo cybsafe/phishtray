@@ -7,6 +7,7 @@ const INITIAL_STATE: ExerciseState = {
   startTime: 0, // Date.now() when form submitted,
   threads: [],
   activeThread: '',
+  inlineNotification: null,
 };
 
 export default function reducer(
@@ -81,6 +82,18 @@ export default function reducer(
       return {
         ...state,
         activeThread: action.payload.threadId,
+      };
+
+    case 'exercise/SET_INLINE_NOTIFICATION':
+      return {
+        ...state,
+        inlineNotification: action.payload.term,
+      };
+
+    case 'exercise/UNSET_INLINE_NOTIFICATION':
+      return {
+        ...state,
+        inlineNotification: null,
       };
 
     default:

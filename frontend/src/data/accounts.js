@@ -5,13 +5,8 @@ const ACCOUNTS = [
     data: [
       {
         id: '2',
-        label: 'Username',
+        label: 'Email Address',
         value: 'biggeoff@gmail.com',
-      },
-      {
-        id: '3',
-        label: 'Password',
-        value: 'someSeriouslySecure3Password',
       },
     ],
   },
@@ -25,7 +20,7 @@ const ACCOUNTS = [
         value: 'geoff@bluestar.com',
       },
       {
-        id: '4',
+        id: '3',
         label: 'Password',
         value: 'someSeriouslySecure3Password',
       },
@@ -36,17 +31,17 @@ const ACCOUNTS = [
     id: 'fa59b235-384f-40ba-aae7-d3tf48689d22',
     data: [
       {
-        id: '6',
+        id: '4',
         label: 'PIN',
         value: '1234',
       },
       {
-        id: '7',
+        id: '5',
         label: 'Username',
         value: 'bg5678',
       },
       {
-        id: '9',
+        id: '6',
         label: 'Password',
         value: 'someSeriouslySecure3Password',
       },
