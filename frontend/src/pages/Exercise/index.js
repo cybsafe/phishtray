@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { Route, Switch, type Match, type history } from 'react-router-dom';
 import styled, { css, injectGlobal } from 'react-emotion';
@@ -109,6 +110,10 @@ type Props = {
   startCountdown: (*) => void,
 };
 
+type State = {
+  validAge: boolean,
+};
+
 injectGlobal`
   #root > div:first-child {
     overflow-y: scroll !important;
@@ -158,9 +163,7 @@ export class Exercise extends Component<State, Props> {
 
   invalid = age => {
     const validAge = age >= 15 ? true : false;
-    this.setState((state, props) => {
-      return { validAge };
-    });
+    this.setState({ validAge });
   };
 
   handleSubmit = (event: SyntheticInputEvent<*>) => {
