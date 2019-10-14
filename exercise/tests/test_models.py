@@ -8,7 +8,11 @@ from ..factories import (
     ExerciseTaskFactory,
 )
 
-from ..models import ExerciseEmailProperties, ExerciseWebPage
+from ..models import (
+    ExerciseEmailProperties,
+    ExerciseWebPage,
+    ExerciseWebPageReleaseCode,
+)
 from django.db import IntegrityError
 
 
@@ -92,6 +96,58 @@ class ExerciseModelTests(TestCase):
 
         self.assertTrue(score_one in email_reply.scores)
         self.assertFalse(score_two in email_reply.scores)
+
+    def test_exercise_specific_properties(self):
+        emails = EmailFactory.create_batch(5)
+        exercise = ExerciseFactory.create(emails=emails)
+        exercise_emails = ExerciseEmailProperties.objects.filter(exercise=exercise)
+        self.assertEqual(5, exercise_emails.count())
+
+        for cnt, email in enumerate(exercise_emails, 1):
+            email.web_page = ExerciseWebPage.objects.create(url="url_{}".format(cnt))
+            email.release_codes.add(
+                ExerciseWebPageReleaseCode.objects.create(
+                    release_code="Release Code {}".format(cnt)
+                )
+            )
+
+            if cnt == 4:
+                email.intercept_exercise = False
+            else:
+                email.intercept_exercise = True
+
+            email.save()
+
+        exercise_emails_updated = ExerciseEmailProperties.objects.filter(
+            exercise=exercise
+        )
+
+        self.assertEqual(set(exercise_emails), set(exercise_emails_updated))
+
+        # Test Specific Properties
+        self.assertEqual("url_1", exercise_emails_updated[0].web_page.url)
+        self.assertEqual(
+            "Release Code 2",
+            exercise_emails_updated[1].release_codes.first().release_code,
+        )
+        self.assertTrue(exercise_emails_updated[2].intercept_exercise)
+        self.assertFalse(exercise_emails_updated[3].intercept_exercise)
+        self.assertTrue(exercise_emails_updated[4].intercept_exercise)
+
+    def test_when_no_exercise_specific_properties(self):
+        emails = EmailFactory.create_batch(5)
+        exercise = ExerciseFactory.create(emails=emails)
+        exercise_emails = ExerciseEmailProperties.objects.filter(
+            exercise=exercise, email=emails[0]
+        )
+
+        other_email = EmailFactory()
+        properties_with_invalid_email = ExerciseEmailProperties.objects.filter(
+            exercise=exercise, email=other_email
+        )
+
+        self.assertEqual(1, exercise_emails.count())
+        self.assertEqual(0, properties_with_invalid_email.count())
 
 
 class ExerciseWebPageModelTests(TestCase):
