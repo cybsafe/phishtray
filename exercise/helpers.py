@@ -1,26 +1,30 @@
 from .models import Exercise
 
 
-def copy_exercise(obj):
+def copy_exercise(original_exercise):
     """
     Create a copy of an Exercise
-    :param obj: An Exercise instance
+    :param original_exercise: An Exercise instance
     :return: Another Exercise instance copied from the original one
 
     """
-    original_exercise = Exercise.objects.get(pk=obj.id)
+    new_exercise = Exercise(
+        title=original_exercise.title + " Copy",
+        description=original_exercise.description,
+        introduction=original_exercise.introduction,
+        afterword=original_exercise.afterword,
+        length_minutes=original_exercise.length_minutes,
+        training_link=original_exercise.training_link,
+        debrief=original_exercise.debrief,
+        copied_from=original_exercise.copied_from,
+    )
 
-    obj.title = obj.title + " Copy"
+    if not original_exercise.copied_from:
+        new_exercise.copied_from = original_exercise
+    new_exercise.save()
 
-    if not obj.copied_from:
-        obj.copied_from = original_exercise
+    new_exercise.demographics.add(*original_exercise.demographics.all())
+    new_exercise.emails.add(*original_exercise.emails.all())
+    new_exercise.files.add(*original_exercise.files.all())
 
-    obj.id = None
-    obj.save()
-
-    # Add ManyToMany connections
-    obj.demographics.add(*original_exercise.demographics.all())
-    obj.emails.add(*original_exercise.emails.all())
-    obj.files.add(*original_exercise.files.all())
-
-    return obj
+    return new_exercise

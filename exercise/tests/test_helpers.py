@@ -12,14 +12,19 @@ class ExerciseHelperTests(TestCase):
         exercise_1 = ExerciseFactory()
         copied_exercise = copy_exercise(exercise_1)
 
-        # To see what's going on
-        print(f"\n Exercise 1: {exercise_1.id}")
-        print(f"Copied Exercise: {copied_exercise.id}")
-        print(
-            f"Copied from exercise (Should be exercise1's id'): {copied_exercise.copied_from.id}"
+        self.assertIsNotNone(copied_exercise)
+        self.assertEqual(2, Exercise.objects.all().count())
+
+        self.assertEqual(str(exercise_1.id), str(copied_exercise.copied_from.id))
+        self.assertEqual(
+            exercise_1.demographics.all().count(),
+            copied_exercise.demographics.all().count(),
+        )
+        self.assertEqual(
+            exercise_1.emails.all().count(), copied_exercise.emails.all().count()
+        )
+        self.assertEqual(
+            exercise_1.files.all().count(), copied_exercise.files.all().count()
         )
 
-        self.assertIsNotNone(copied_exercise)
-        self.assertEqual(str(exercise_1.id), str(copied_exercise.copied_from.id))
-        self.assertEqual(3, Exercise.objects.all().count())
         self.assertEqual(1, Exercise.objects.filter(copied_from=exercise_1).count())
