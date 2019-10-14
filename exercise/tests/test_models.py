@@ -6,6 +6,8 @@ from ..factories import (
     EmailReplyFactory,
     EmailReplyTaskScoreFactory,
     ExerciseTaskFactory,
+    ExerciseWebPageFactory,
+    ExerciseWebPageReleaseCodeFactory,
 )
 
 from ..models import (
@@ -103,39 +105,32 @@ class ExerciseModelTests(TestCase):
         email_properties = ExerciseEmailProperties.objects.filter(exercise=exercise)
         self.assertEqual(5, email_properties.count())
 
-        for cnt, email in enumerate(email_properties, 1):
-            email.web_page = ExerciseWebPage.objects.create(url="url_{}".format(cnt))
-            email.release_codes.add(
-                ExerciseWebPageReleaseCode.objects.create(
-                    release_code="Release Code {}".format(cnt)
+        # for cnt, prop in enumerate(email_properties, 1):
+        for cnt, prop in enumerate(email_properties, 1):
+            prop.web_page = ExerciseWebPageFactory()
+            prop.release_codes.add(ExerciseWebPageReleaseCodeFactory())
+
+            prop.intercept_exercise = False if cnt == 4 else True
+
+            prop.save()
+
+            with self.subTest(cnt=cnt):
+                test_email_properties = prop.email.exercise_specific_properties
+                self.assertEqual(
+                    "Page URL {}".format(cnt), test_email_properties.web_page.url
                 )
-            )
+                self.assertEqual(
+                    "Release Code {}".format(cnt),
+                    test_email_properties.release_codes.first().release_code,
+                )
 
-            if cnt == 4:
-                email.intercept_exercise = False
-            else:
-                email.intercept_exercise = True
-
-            email.save()
-
-        email_properties_updated = ExerciseEmailProperties.objects.filter(
-            exercise=exercise
-        )
-
-        self.assertEqual(set(email_properties), set(email_properties_updated))
-
-        # Test Specific Properties
-        self.assertEqual("url_1", email_properties_updated[0].web_page.url)
-        self.assertEqual(
-            "Release Code 2",
-            email_properties_updated[1].release_codes.first().release_code,
-        )
-        self.assertTrue(email_properties_updated[2].intercept_exercise)
-        self.assertFalse(email_properties_updated[3].intercept_exercise)
-        self.assertTrue(email_properties_updated[4].intercept_exercise)
+                if cnt == 4:
+                    self.assertFalse(test_email_properties.intercept_exercise)
+                else:
+                    self.assertTrue(test_email_properties.intercept_exercise)
 
     def test_when_no_exercise_specific_properties(self):
-        emails = EmailFactory.create_batch(5)
+        emails = EmailFactory.create_batch(1)
         exercise = ExerciseFactory.create(emails=emails)
         email_properties = ExerciseEmailProperties.objects.filter(
             exercise=exercise, email=emails[0]

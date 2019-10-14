@@ -157,9 +157,7 @@ class ExerciseEmail(PhishtrayBaseModel):
 
     @property
     def reveal_time(self):
-        email_properties = ExerciseEmailProperties.objects.filter(
-            email_id=self.id, exercise__emails__id=self.id
-        ).first()
+        email_properties = self.exercise_specific_properties
         if email_properties:
             return email_properties.reveal_time
 
