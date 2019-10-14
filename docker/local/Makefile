@@ -70,3 +70,7 @@ django-fake-users-0001:
 django-fake-users-0002:
 	docker-compose exec django bash -c "echo \"INSERT INTO django_migrations (app, name, applied) VALUES ('users', '0002_auto_20190930_1718', CURRENT_TIMESTAMP);\" | python3.6 manage.py dbshell"
 # ==================================================
+
+.PHONY: mysqldump-local
+mysqldump-local:
+	docker-compose exec django bash -c "mysqldump -h db -P 3306 -u root -padmin phishtray > \"docker/local/db/dump_phishtray_local_$$(date +%F_%H-%M-%S).sql\""
