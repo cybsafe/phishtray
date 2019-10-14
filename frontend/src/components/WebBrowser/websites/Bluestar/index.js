@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { TextInput, Button, Checkbox, Icon } from 'carbon-components-react';
 import { iconStarOutline } from 'carbon-icons';
-import { getAllAccounts } from '../../../../data/accounts';
+import { getAccount } from '../../../../data/accounts';
 
 import Bg from './assets/bg.png';
 
@@ -87,7 +87,7 @@ class MyBluestar extends React.Component {
 
   render() {
     const { logBrowserActions, actionTypes } = this.props;
-    const accounts = getAllAccounts();
+    const account = getAccount('fa59b235-284f-40ba-aae7-dtf48689d22');
 
     return (
       <Switch>
@@ -131,7 +131,7 @@ class MyBluestar extends React.Component {
                       disabled
                       placeholder="Email"
                       type="email"
-                      value={accounts[1].data[0].value}
+                      value={account.data[0].value}
                       onChange={event => {
                         if (!this.state.logged[event.target.id]) {
                           this.setState(
