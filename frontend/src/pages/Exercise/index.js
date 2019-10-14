@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { Route, Switch, type Match, type history } from 'react-router-dom';
 import styled, { css, injectGlobal } from 'react-emotion';
@@ -116,10 +115,13 @@ injectGlobal`
   }
 `;
 
-export class Exercise extends Component<Props> {
+export class Exercise extends Component<State, Props> {
   constructor(props: Props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = {
+      validAge: true,
+    };
   }
 
   componentDidMount() {
@@ -151,6 +153,13 @@ export class Exercise extends Component<Props> {
         id: event.target.name,
         value: event.target.value,
       },
+    });
+  };
+
+  invalid = age => {
+    const validAge = age >= 15 ? true : false;
+    this.setState((state, props) => {
+      return { validAge };
     });
   };
 
@@ -208,13 +217,15 @@ export class Exercise extends Component<Props> {
                       <Number
                         className={css(`width: 100%`)}
                         label={item.question}
-                        min={0}
+                        min={15}
                         id={`${item.id}`}
                         name={`${item.id}`}
                         onChange={this.userInput}
                         onClick={this.userInput}
                         required={item.required}
-                        invalidText="Please input a number value"
+                        invalidText="You must be 15 or older"
+                        onBlur={e => this.invalid(e.target.value)}
+                        invalid={!this.state.validAge}
                       />
                     </FormContainer>
                   );
