@@ -6,9 +6,15 @@ from ..factories import (
     EmailReplyFactory,
     EmailReplyTaskScoreFactory,
     ExerciseTaskFactory,
+    ExerciseWebPageFactory,
+    ExerciseWebPageReleaseCodeFactory,
 )
 
-from ..models import ExerciseEmailProperties, ExerciseWebPage
+from ..models import (
+    ExerciseEmailProperties,
+    ExerciseWebPage,
+    ExerciseWebPageReleaseCode,
+)
 from django.db import IntegrityError
 
 
@@ -92,6 +98,43 @@ class ExerciseModelTests(TestCase):
 
         self.assertTrue(score_one in email_reply.scores)
         self.assertFalse(score_two in email_reply.scores)
+
+    def test_exercise_specific_properties(self):
+        emails = EmailFactory.create_batch(1)
+        exercise = ExerciseFactory.create(emails=emails)
+        email_properties = ExerciseEmailProperties.objects.filter(
+            exercise=exercise
+        ).first()
+
+        email_properties.web_page = ExerciseWebPageFactory()
+        email_properties.release_codes.add(ExerciseWebPageReleaseCodeFactory())
+        email_properties.save()
+
+        exercise_specific_properties = (
+            email_properties.email.exercise_specific_properties
+        )
+
+        self.assertEqual("Page URL 1", exercise_specific_properties.web_page.url)
+        self.assertEqual(
+            "Release Code 1",
+            exercise_specific_properties.release_codes.first().release_code,
+        )
+        self.assertFalse(exercise_specific_properties.intercept_exercise)
+
+    def test_when_no_exercise_specific_properties(self):
+        emails = EmailFactory.create_batch(1)
+        exercise = ExerciseFactory.create(emails=emails)
+        email_properties = ExerciseEmailProperties.objects.filter(
+            exercise=exercise, email=emails[0]
+        )
+
+        other_email = EmailFactory()
+        properties_with_invalid_email = ExerciseEmailProperties.objects.filter(
+            exercise=exercise, email=other_email
+        )
+
+        self.assertEqual(1, email_properties.count())
+        self.assertEqual(0, properties_with_invalid_email.count())
 
 
 class ExerciseWebPageModelTests(TestCase):

@@ -9,6 +9,8 @@ from .models import (
     DemographicsInfo,
     ExerciseTask,
     EmailReplyTaskScore,
+    ExerciseWebPage,
+    ExerciseWebPageReleaseCode,
 )
 
 
@@ -90,3 +92,19 @@ class EmailReplyTaskScoreFactory(factory.django.DjangoModelFactory):
         model = EmailReplyTaskScore
 
     email_reply = factory.SubFactory(EmailReplyFactory)
+
+
+class ExerciseWebPageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ExerciseWebPage
+
+    title = factory.Sequence(lambda n: "Page Title {}".format(n + 1))
+    url = factory.Sequence(lambda n: "Page URL {}".format(n + 1))
+    content = factory.Sequence(lambda n: "Page Content {}".format(n + 1))
+
+
+class ExerciseWebPageReleaseCodeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ExerciseWebPageReleaseCode
+
+    release_code = factory.Sequence(lambda n: "Release Code {}".format(n + 1))
