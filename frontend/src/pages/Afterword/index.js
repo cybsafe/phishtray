@@ -1,76 +1,92 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import ReactMarkdown from 'react-markdown';
+import { withRouter } from 'react-router-dom';
 import styled from 'react-emotion';
-import { DataTable } from 'carbon-components-react';
+import {
+  StructuredListWrapper,
+  StructuredListHead,
+  StructuredListBody,
+  StructuredListRow,
+  StructuredListCell,
+  Button as CarbonButton,
+} from 'carbon-components-react';
+import WideHeader from '../../components/Header/WideHeader';
 import { persistor } from '../../redux';
 import { getRange, HOST_BACKEND } from '../../utils';
-
-const {
-  Table,
-  TableHead,
-  TableHeader,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-} = DataTable;
 
 const Container = styled('div')({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
   minHeight: '100%',
   backgroundColor: '#fff',
-  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)',
-  padding: '1rem',
   flexDirection: 'column',
 });
 
-const MarkdownContainer = styled('div')({
-  margin: '0px 0px 15px',
-});
-
 const ContentContainer = styled('div')({
+  maxWidth: '1000px',
   width: '60%',
-  maxWidth: '800px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  marginTop: '3rem',
+  marginBottom: '3rem',
 });
 
-const Title = styled('h1')({
-  display: 'block',
-  fontSize: ' 2.25rem',
-  lineHeight: 1.25,
-  marginBottom: '35px',
-  fontWeight: 300,
-  margin: '0px 0px 15px',
+const DebriefTitle = styled('h5')({
+  fontSize: '1.2rem',
+  paddingLeft: '2rem',
+  marginBottom: '1rem',
 });
+
+const Description = styled('p')({
+  fontSize: '1rem',
+  paddingLeft: '2rem',
+  marginBottom: '2rem',
+});
+
+const List = styled(StructuredListWrapper)({
+  marginBottom: '3rem',
+});
+
+const ListBody = styled(StructuredListBody)({});
+
+const ListRow = styled(StructuredListRow)`
+  border: 0px !important;
+  &:hover {
+    background-color: ${({ head }) => (head ? 'none' : 'rgba(13,121,205,0.1)')};
+    box-shadow: ${({ head }) => (head ? 'none' : 'inset 0 0 2px #0D79CD')};
+  }
+`;
+
+const ListCell = styled(StructuredListCell)`
+  padding-left: 2rem !important;
+  font-size: ${({ head }) => (head ? '1.2rem' : 'inherit')};
+`;
+
+const Button = styled(CarbonButton)`
+  margin-right: 2rem;
+  align-self: flex-end;
+`;
 
 type Props = {
   afterwordMessage: string,
   match: any,
+  history: *,
+  participantId: string,
 };
 
 const clearSessionStorage = async () => await sessionStorage.clear();
 
 type State = {
   scores: Array<any>,
-};
-
-type ParticipantScore = {
-  task: string,
-  score: number,
-  debrief: string,
-};
-
-type ParticipantScores = {
-  id: string,
-  scores: ParticipantScore[],
+  debrief: boolean,
 };
 
 class Afterword extends React.Component<Props, State> {
   state: State = {
     scores: [],
+    debrief: false,
   };
 
   async componentDidMount() {
@@ -82,11 +98,13 @@ class Afterword extends React.Component<Props, State> {
     const apiUrl = `${HOST_BACKEND}/api/v1/participant-scores/${participantUuid}`;
     const response = await fetch(apiUrl);
     const json = await response.json();
+    const debrief = json.debrief;
     const scores =
       json.scores && json.scores.length > 0
         ? this.generateRows(json.scores)
         : [];
     this.setState({ scores });
+    this.setState({ debrief });
   }
 
   generateRows = (data: []) =>
@@ -102,51 +120,49 @@ class Afterword extends React.Component<Props, State> {
   ];
 
   render() {
+    const { afterwordMessage, participantId } = this.props;
+    const { scores } = this.state;
+
     return (
       <Container>
+        <WideHeader title="Thanks for taking the exercise." />
         <ContentContainer>
-          <Title>Thanks for taking the exercise.</Title>
-          {this.props.afterwordMessage && (
-            <MarkdownContainer>
-              <ReactMarkdown source={this.props.afterwordMessage} />
-            </MarkdownContainer>
+          {afterwordMessage && (
+            <>
+              <DebriefTitle>Debrief</DebriefTitle>
+              <Description>{afterwordMessage}</Description>
+            </>
           )}
-          {this.state.scores && (
-            <DataTable
-              rows={this.state.scores}
-              headers={this.getHeaders()}
-              render={({ rows, headers, getHeaderProps }) => {
-                return (
-                  <TableContainer title="Debrief">
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          {headers.map((header, index) => (
-                            <TableHeader
-                              // eslint-disable-next-line react/no-array-index-key
-                              key={`${index}-${header.header}`}
-                              {...getHeaderProps({ header })}
-                            >
-                              {header.header}
-                            </TableHeader>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {rows.map(row => (
-                          // eslint-disable-next-line react/no-array-index-key
-                          <TableRow key={row.id}>
-                            {row.cells.map(cell => (
-                              <TableCell key={cell.id}>{cell.value}</TableCell>
-                            ))}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                );
-              }}
-            />
+          {scores && (
+            <List>
+              <StructuredListHead>
+                <ListRow head>
+                  {this.getHeaders().map((header, index) => (
+                    <ListCell key={`${index}-${header.header}`} head>
+                      {header.header}
+                    </ListCell>
+                  ))}
+                </ListRow>
+              </StructuredListHead>
+              <ListBody>
+                {scores.map((row, index) => (
+                  <ListRow key={`${index}-${row.task}`}>
+                    <ListCell>{row.task}</ListCell>
+                    <ListCell>{row.score}</ListCell>
+                    <ListCell>{row.debrief}</ListCell>
+                  </ListRow>
+                ))}
+              </ListBody>
+            </List>
+          )}
+          {this.state.debrief && (
+            <Button
+              onClick={() =>
+                this.props.history.push(`/debrief/${participantId}`)
+              }
+            >
+              Find out more
+            </Button>
           )}
         </ContentContainer>
       </Container>
@@ -160,4 +176,4 @@ export default connect(
     afterwordMessage: state.exercise.afterword,
   }),
   {}
-)(Afterword);
+)(withRouter(Afterword));
