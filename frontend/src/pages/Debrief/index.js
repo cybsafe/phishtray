@@ -1,47 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { HOST_BACKEND } from '../../utils';
-
-const useFetch = (url, options) => {
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch(url, options);
-        await setLoading(true);
-        const json = await res.json();
-        await setLoading(false);
-        setResponse(json);
-      } catch (error) {
-        setError(error);
-      }
-    };
-    fetchData();
-  }, []);
-  return { response, error, loading };
-};
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 
 function Debrief({
   match: {
     params: { participantUuid },
   },
+  getDebrief,
 }) {
-  const apiUrl = `${HOST_BACKEND}/api/v1/participant-scores/${participantUuid}`;
-
-  const data = useFetch(apiUrl, null);
-
-  if (data.loading) {
-    return 'loading';
-  }
+  useEffect(() => {
+    getDebrief(participantUuid);
+  }, [participantUuid]);
 
   return (
     <div>
-      {console.log(data)}
-      {<div>Debrief</div>}
+      <div>Debrief</div>
     </div>
   );
 }
 
-export default Debrief;
+export default connect(
+  state => ({
+    phishingEmails: state.debrief.phishingEmails,
+    scores: state.debrief.scores,
+  }),
+  { getDebrief }
+)(Debrief);
