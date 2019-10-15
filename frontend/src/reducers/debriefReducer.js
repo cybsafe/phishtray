@@ -4,7 +4,6 @@ const INITIAL_STATE = {
 };
 
 export default function reducer(state: INITIAL_STATE, action: {}) {
-  console.log(action);
   switch (action.type) {
     case 'debrief/LOAD_DATA': {
       return {

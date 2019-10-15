@@ -6,8 +6,8 @@ import debrief from './debriefReducer';
 
 const rootReducer = combineReducers({
   exercise,
+  debrief,
   fileManager,
   ui,
-  debrief,
 });
 export default rootReducer;
