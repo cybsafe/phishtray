@@ -10,10 +10,11 @@ from ..factories import (
     ExerciseWebPageReleaseCodeFactory,
 )
 
-from ..models import (
-    ExerciseEmailProperties,
-    ExerciseWebPage,
-    ExerciseWebPageReleaseCode,
+from ..models import ExerciseEmailProperties, ExerciseWebPage
+
+from exercise.serializer import (
+    ExerciseWebPageSerializer,
+    ExerciseEmailPropertiesSerializer,
 )
 from django.db import IntegrityError
 
@@ -106,8 +107,10 @@ class ExerciseModelTests(TestCase):
             exercise=exercise
         ).first()
 
-        email_properties.web_page = ExerciseWebPageFactory()
-        email_properties.release_codes.add(ExerciseWebPageReleaseCodeFactory())
+        email_properties.web_page = ExerciseWebPageFactory(url="Page URL 1")
+        email_properties.release_codes.add(
+            ExerciseWebPageReleaseCodeFactory(release_code="Release Code 1")
+        )
         email_properties.save()
 
         exercise_specific_properties = (
@@ -147,3 +150,27 @@ class ExerciseWebPageModelTests(TestCase):
     def test_default_page_type(self):
         page = ExerciseWebPage.objects.create(url="https://www.emtray.com/welcome")
         self.assertEqual(ExerciseWebPage.PAGE_REGULAR, page.type)
+
+
+class ExerciseWebPageSerializerTests(TestCase):
+    def test_expected_fields(self):
+        web_page = ExerciseWebPage.objects.create()
+        data = ExerciseWebPageSerializer(instance=web_page).data
+
+        self.assertEqual(set(data.keys()), set(["title", "url", "type", "content"]))
+
+
+class ExerciseEmailPropertiesSerializerTests(TestCase):
+    def test_expected_fields(self):
+        emails = EmailFactory.create_batch(1)
+        exercise = ExerciseFactory.create(emails=emails)
+        email_properties = ExerciseEmailProperties.objects.filter(
+            exercise=exercise
+        ).first()
+
+        data = ExerciseEmailPropertiesSerializer(instance=email_properties).data
+
+        self.assertEqual(
+            set(data.keys()),
+            set(["reveal_time", "web_page", "intercept_exercise", "release_codes"]),
+        )

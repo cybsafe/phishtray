@@ -85,6 +85,7 @@ class ThreadSerializer(serializers.ModelSerializer):
     attachments = ExerciseFileSerializer(many=True)
     emails = serializers.SerializerMethodField()
     reveal_time = serializers.SerializerMethodField()
+    thread_properties = serializers.SerializerMethodField()
 
     class Meta:
         model = ExerciseEmail
@@ -99,6 +100,7 @@ class ThreadSerializer(serializers.ModelSerializer):
             "replies",
             "emails",
             "phishing_explained",
+            "thread_properties",
         )
 
     def get_emails(self, email):
@@ -113,6 +115,11 @@ class ThreadSerializer(serializers.ModelSerializer):
 
     def get_reveal_time(self, email):
         return email.reveal_time
+
+    def get_thread_properties(self, email):
+        return ExerciseEmailPropertiesSerializer(
+            email.exercise_specific_properties
+        ).data
 
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
@@ -163,3 +170,17 @@ class ExerciseReportSerializer(serializers.ModelSerializer):
             participants_queryset, many=True, context=serializer_context
         )
         return serializer.data
+
+
+class ExerciseWebPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExerciseWebPage
+        fields = ("title", "url", "type", "content")
+
+
+class ExerciseEmailPropertiesSerializer(serializers.ModelSerializer):
+    web_page = ExerciseWebPageSerializer
+
+    class Meta:
+        model = ExerciseEmailProperties
+        fields = ("reveal_time", "web_page", "intercept_exercise", "release_codes")
