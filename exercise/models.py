@@ -215,6 +215,23 @@ class Exercise(PhishtrayBaseModel):
     copied_from = models.ForeignKey(
         "self", on_delete=models.PROTECT, null=True, blank=True
     )
+    organisation = models.ForeignKey(
+        "participant.Organization", on_delete=models.PROTECT, null=True, blank=True
+    )
+    updated_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="updated_by",
+    )
+    published_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="published_by",
+    )
 
     @property
     def phishing_emails(self):

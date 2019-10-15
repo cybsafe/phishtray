@@ -30,7 +30,7 @@ class ExerciseAdminForm(forms.ModelForm):
 class ExerciseAdmin(admin.ModelAdmin):
     form = ExerciseAdminForm
     list_display = ("id", "title", "description", "length_minutes", "created_date")
-    readonly_fields = ("copied_from",)
+    readonly_fields = ("copied_from", "updated_by", "published_by")
     change_form_template = "admin/exercise/change_form.html"
     ordering = ("-created_date",)
 
@@ -44,6 +44,16 @@ class ExerciseAdmin(admin.ModelAdmin):
                 reverse("admin:exercise_exercise_change", args=[exercise_copy.id])
             )
         return super().response_change(request, obj)
+
+    def get_readonly_fields(self, request, obj=None):
+        fields = list(super().get_readonly_fields(request))
+        if not request.user.is_superuser:
+            fields.append("organisation")
+        return fields
+
+    def save_model(self, request, obj, form, change):
+        obj.updated_by = request.user
+        obj.save()
 
 
 @admin.register(ExerciseEmailProperties)
