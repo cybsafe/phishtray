@@ -1,5 +1,7 @@
-from django import forms
+from django import forms, template
 from django.contrib import admin
+from django.urls import reverse
+from django.shortcuts import redirect
 from .models import (
     DemographicsInfo,
     Exercise,
@@ -12,6 +14,10 @@ from .models import (
     EmailReplyTaskScore,
 )
 
+from .helpers import copy_exercise
+
+register = template.Library()
+
 
 class ExerciseAdminForm(forms.ModelForm):
     class Meta:
@@ -21,7 +27,21 @@ class ExerciseAdminForm(forms.ModelForm):
 
 class ExerciseAdmin(admin.ModelAdmin):
     form = ExerciseAdminForm
-    list_display = ("id", "title", "description", "length_minutes")
+    list_display = ("id", "title", "description", "length_minutes", "created_date")
+    readonly_fields = ("copied_from",)
+    change_form_template = "admin/exercise/change_form.html"
+    ordering = ("-created_date",)
+
+    def response_change(self, request, obj):
+        if "_copy_exercise" in request.POST:
+            exercise_copy = copy_exercise(obj)
+            self.message_user(
+                request, f"Exercise {exercise_copy.title} created successfully."
+            )
+            return redirect(
+                reverse("admin:exercise_exercise_change", args=[exercise_copy.id])
+            )
+        return super().response_change(request, obj)
 
 
 class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
