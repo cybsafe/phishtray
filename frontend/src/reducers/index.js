@@ -5,6 +5,7 @@ import ui from './uiReducer';
 
 const rootReducer = combineReducers({
   exercise,
+  debrief,
   fileManager,
   ui,
 });

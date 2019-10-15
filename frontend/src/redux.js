@@ -37,7 +37,7 @@ const configureStore = initialState => {
   }
 
   const store = createStore(
-    // reducer,
+    //reducer,
     persistedReducer,
     initialState,
     composeEnhancers(applyMiddleware(...middlewares))
