@@ -157,11 +157,17 @@ class ExerciseEmail(PhishtrayBaseModel):
 
     @property
     def reveal_time(self):
-        email = ExerciseEmailProperties.objects.filter(
+        email_properties = self.exercise_specific_properties
+        if email_properties:
+            return email_properties.reveal_time
+
+    @property
+    def exercise_specific_properties(self):
+        email_properties = ExerciseEmailProperties.objects.filter(
             email_id=self.id, exercise__emails__id=self.id
         ).first()
-        if email:
-            return email.reveal_time
+        if email_properties:
+            return email_properties
 
 
 class DemographicsInfo(PhishtrayBaseModel):
@@ -256,23 +262,6 @@ class Exercise(PhishtrayBaseModel):
             ).set_reveal_time(rand_time)
 
 
-class ExerciseEmailProperties(PhishtrayBaseModel):
-    class Meta:
-        unique_together = ("exercise", "email")
-        verbose_name_plural = "Exercise email properties"
-
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE)
-    reveal_time = models.PositiveIntegerField(
-        blank=True, null=True, help_text="Time in seconds."
-    )
-
-    def set_reveal_time(self, time):
-        if self.reveal_time is None:
-            self.reveal_time = time
-            self.save()
-
-
 class ExerciseWebPage(PhishtrayBaseModel):
     PAGE_REGULAR = 0
     PAGE_TYPES = ((PAGE_REGULAR, "regular"),)
@@ -284,6 +273,44 @@ class ExerciseWebPage(PhishtrayBaseModel):
     url = models.CharField(max_length=250, blank=True, null=True, unique=True)
     type = models.IntegerField(choices=PAGE_TYPES, default=PAGE_REGULAR)
     content = models.TextField(null=True, blank=True)
+
+
+class ExerciseWebPageReleaseCode(PhishtrayBaseModel):
+    release_code = models.CharField(
+        max_length=250, blank=False, null=False, unique=True
+    )
+
+
+class ExerciseEmailProperties(PhishtrayBaseModel):
+    class Meta:
+        unique_together = ("exercise", "email")
+        verbose_name_plural = "Exercise email properties"
+
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+    email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE)
+    reveal_time = models.PositiveIntegerField(
+        blank=True, null=True, help_text="Time in seconds."
+    )
+    web_page = models.ForeignKey(
+        ExerciseWebPage, on_delete=models.CASCADE, null=True, blank=True
+    )
+    intercept_exercise = models.BooleanField(
+        help_text="If selected, participants will be prevented to proceed with the exercise \
+        until they enter the correct release code.",
+        default=False,
+    )
+    release_codes = models.ManyToManyField(
+        ExerciseWebPageReleaseCode,
+        help_text="Accepted codes. \
+     Participants, who have been intercepted, will need to provide one of the selected codes \
+     to proceed with the exercise.",
+    )
+
+    def set_reveal_time(self, time):
+        if self.reveal_time is None:
+            self.reveal_time = time
+            self.save()
+
 
 @receiver(post_save, sender=Exercise)
 def create_email_reveal_time(sender, instance, created, **kwargs):
