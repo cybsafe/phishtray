@@ -122,7 +122,7 @@ class Afterword extends React.Component<Props, State> {
   render() {
     const { afterwordMessage, match } = this.props;
     const { participantUuid } = match.params;
-    const { scores } = this.state;
+    const { scores, debrief } = this.state;
 
     return (
       <Container>
