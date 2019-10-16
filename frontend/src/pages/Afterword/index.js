@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactMarkdown from 'react-markdown';
 import { withRouter } from 'react-router-dom';
 import styled from 'react-emotion';
 import {
@@ -39,17 +40,18 @@ const DebriefTitle = styled('h5')`
   margin-bottom: 1rem;
 `;
 
-const Description = styled('p')`
+const MarkDownContainer = styled('p')`
   font-size: 1rem;
   padding-left: 2rem;
   margin-bottom: 2rem;
+  p {
+    margin-bottom: 10px;
+  }
 `;
 
 const List = styled(StructuredListWrapper)`
   margin-bottom: 3rem;
 `;
-
-const ListBody = styled(StructuredListBody)``;
 
 const ListRow = styled(StructuredListRow)`
   border: 0px !important;
@@ -73,7 +75,6 @@ type Props = {
   afterwordMessage: string,
   match: any,
   history: *,
-  participantId: string,
 };
 
 const clearSessionStorage = async () => await sessionStorage.clear();
@@ -119,7 +120,8 @@ class Afterword extends React.Component<Props, State> {
   ];
 
   render() {
-    const { afterwordMessage, participantId } = this.props;
+    const { afterwordMessage, match } = this.props;
+    const { participantUuid } = match.params;
     const { scores } = this.state;
 
     return (
@@ -129,7 +131,9 @@ class Afterword extends React.Component<Props, State> {
           {afterwordMessage && (
             <>
               <DebriefTitle>Debrief</DebriefTitle>
-              <Description>{afterwordMessage}</Description>
+              <MarkDownContainer>
+                <ReactMarkdown source={afterwordMessage} />
+              </MarkDownContainer>
             </>
           )}
           {scores && (
@@ -143,7 +147,7 @@ class Afterword extends React.Component<Props, State> {
                   ))}
                 </ListRow>
               </StructuredListHead>
-              <ListBody>
+              <StructuredListBody>
                 {scores.map((row, index) => (
                   <ListRow key={`${index}-${row.task}`}>
                     <ListCell>{row.task}</ListCell>
@@ -151,13 +155,13 @@ class Afterword extends React.Component<Props, State> {
                     <ListCell>{row.debrief}</ListCell>
                   </ListRow>
                 ))}
-              </ListBody>
+              </StructuredListBody>
             </List>
           )}
           {this.state.debrief && (
             <Button
               onClick={() =>
-                this.props.history.push(`/debrief/${participantId}`)
+                this.props.history.push(`/debrief/${participantUuid}`)
               }
             >
               Find out more
