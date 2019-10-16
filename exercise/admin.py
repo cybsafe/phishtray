@@ -12,6 +12,7 @@ from .models import (
     ExerciseWebPage,
     ExerciseTask,
     EmailReplyTaskScore,
+    ExerciseWebPageReleaseCode,
 )
 
 from .helpers import copy_exercise
@@ -25,6 +26,7 @@ class ExerciseAdminForm(forms.ModelForm):
         exclude = []
 
 
+@admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
     form = ExerciseAdminForm
     list_display = ("id", "title", "description", "length_minutes", "created_date")
@@ -44,16 +46,20 @@ class ExerciseAdmin(admin.ModelAdmin):
         return super().response_change(request, obj)
 
 
+@admin.register(ExerciseEmailProperties)
 class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
     list_display = ("exercise", "email", "reveal_time")
 
 
+@admin.register(ExerciseWebPageReleaseCode)
+class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
+    list_display = ("release_code",)
+
+
 admin.site.register(DemographicsInfo)
-admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(ExerciseEmail)
 admin.site.register(ExerciseTask)
 admin.site.register(EmailReplyTaskScore)
-admin.site.register(ExerciseEmailProperties, ExerciseEmailPropertiesAdmin)
 admin.site.register(ExerciseEmailReply)
 admin.site.register(ExerciseFile)
 admin.site.register(ExerciseWebPage)
