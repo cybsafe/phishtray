@@ -15,41 +15,41 @@ import WideHeader from '../../components/Header/WideHeader';
 import { persistor } from '../../redux';
 import { getRange, HOST_BACKEND } from '../../utils';
 
-const Container = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  minHeight: '100%',
-  backgroundColor: '#fff',
-  flexDirection: 'column',
-});
+const Container = styled('div')`
+  display: flex;
+  align-items: center;
+  min-height: 100%;
+  background-color: #fff;
+  flex-direction: column;
+`;
 
-const ContentContainer = styled('div')({
-  maxWidth: '1000px',
-  width: '60%',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  marginTop: '3rem',
-  marginBottom: '3rem',
-});
+const ContentContainer = styled('div')`
+  max-width: 1000px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+`;
 
-const DebriefTitle = styled('h5')({
-  fontSize: '1.2rem',
-  paddingLeft: '2rem',
-  marginBottom: '1rem',
-});
+const DebriefTitle = styled('h5')`
+  font-size: 1.2rem;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+`;
 
-const Description = styled('p')({
-  fontSize: '1rem',
-  paddingLeft: '2rem',
-  marginBottom: '2rem',
-});
+const Description = styled('p')`
+  font-size: 1rem;
+  padding-left: 2rem;
+  margin-bottom: 2rem;
+`;
 
-const List = styled(StructuredListWrapper)({
-  marginBottom: '3rem',
-});
+const List = styled(StructuredListWrapper)`
+  margin-bottom: 3rem;
+`;
 
-const ListBody = styled(StructuredListBody)({});
+const ListBody = styled(StructuredListBody)``;
 
 const ListRow = styled(StructuredListRow)`
   border: 0px !important;
@@ -103,8 +103,7 @@ class Afterword extends React.Component<Props, State> {
       json.scores && json.scores.length > 0
         ? this.generateRows(json.scores)
         : [];
-    this.setState({ scores });
-    this.setState({ debrief });
+    this.setState({ scores, debrief });
   }
 
   generateRows = (data: []) =>
