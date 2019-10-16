@@ -158,7 +158,7 @@ class Afterword extends React.Component<Props, State> {
               </StructuredListBody>
             </List>
           )}
-          {this.state.debrief && (
+          {debrief && (
             <Button
               onClick={() =>
                 this.props.history.push(`/debrief/${participantUuid}`)
