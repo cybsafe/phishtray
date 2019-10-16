@@ -307,6 +307,7 @@ class ExerciseEmailProperties(PhishtrayBaseModel):
         help_text="Accepted codes. \
      Participants, who have been intercepted, will need to provide one of the selected codes \
      to proceed with the exercise.",
+        blank=True,
     )
 
     def set_reveal_time(self, time):
