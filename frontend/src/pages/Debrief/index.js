@@ -44,6 +44,14 @@ const Button = styled(CarbonButton)`
   float: right;
 `;
 
+const NotFound = styled('h2')`
+  transform: translate(-50%, -50%);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+`;
+
 injectGlobal`
   #root {
     background-color: white;
@@ -57,6 +65,8 @@ type Props = {
   phishingEmails: Array<*>,
 };
 
+const NotFoundPage = () => <NotFound>participantUuid not found.</NotFound>;
+
 function Debrief({
   match: {
     params: { participantUuid },
@@ -66,7 +76,11 @@ function Debrief({
 }: Props) {
   useEffect(() => {
     getDebrief(participantUuid);
-  }, [participantUuid]);
+  }, [participantUuid, getDebrief]);
+
+  if (phishingEmails === undefined) {
+    return NotFoundPage();
+  }
 
   if (phishingEmails.length <= 0) {
     return false;
@@ -79,7 +93,8 @@ function Debrief({
       </RuiHeader>
       <Container>
         <ResultMessage>
-          You were given {phishingEmails.length} phishing emails!
+          You were given {phishingEmails.length} phishing{' '}
+          {phishingEmails.length > 1 ? 'emails' : 'email'}!
         </ResultMessage>
         <Image src={image} />
         <Button kind="primary" onClick={() => console.log('Showing Details')}>
