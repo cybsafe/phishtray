@@ -283,6 +283,9 @@ class ExerciseWebPageReleaseCode(PhishtrayBaseModel):
         max_length=250, blank=False, null=False, unique=True
     )
 
+    def __str__(self):
+        return self.release_code
+
 
 class ExerciseEmailProperties(PhishtrayBaseModel):
     class Meta:
