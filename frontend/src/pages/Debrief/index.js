@@ -3,22 +3,10 @@ import React, { useEffect, Fragment } from 'react';
 import styled, { injectGlobal } from 'react-emotion';
 import { connect } from 'react-redux';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';
-import image from './assets/image_emails.png';
 import { Button as CarbonButton } from 'carbon-components-react';
+import WideHeader from '../../components/Header/WideHeader';
 
-const RuiHeader = styled('header')`
-  background-color: #0a79cd;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  display: flex;
-
-  h2 {
-    font-size: 48px;
-    color: white;
-    margin: 0;
-  }
-`;
+import image from './assets/image_emails.png';
 
 const Container = styled('section')`
   max-width: 960px;
@@ -88,9 +76,10 @@ function Debrief({
 
   return (
     <Fragment>
-      <RuiHeader>
-        <h2>Rui's Header here</h2>
-      </RuiHeader>
+      <WideHeader
+        title="Thanks for taking the exercise"
+        subtitle="Find out more"
+      />
       <Container>
         <ResultMessage>
           You were given {phishingEmails.length} phishing{' '}
