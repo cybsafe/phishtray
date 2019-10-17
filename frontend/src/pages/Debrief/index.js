@@ -2,8 +2,8 @@
 import React, { useEffect, Fragment } from 'react';
 import styled, { injectGlobal } from 'react-emotion';
 import { connect } from 'react-redux';
-import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import { Button as CarbonButton } from 'carbon-components-react';
+import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import WideHeader from '../../components/Header/WideHeader';
 
 import image from './assets/image_emails.png';
