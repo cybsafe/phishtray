@@ -8,20 +8,6 @@ import WideHeader from '../../components/Header/WideHeader';
 
 import image from './assets/image_emails.png';
 
-const RuiHeader = styled('header')`
-  background-color: #0a79cd;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  display: flex;
-
-  h2 {
-    font-size: 48px;
-    color: white;
-    margin: 0;
-  }
-`;
-
 const Container = styled('section')`
   max-width: 960px;
   padding: 0 15px;
