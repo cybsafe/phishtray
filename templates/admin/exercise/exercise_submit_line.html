@@ -9,7 +9,7 @@
     {% if show_save_as_new %}<input type="submit" value="{% trans 'Save as new' %}" name="_saveasnew" />{% endif %}
     {% if show_save_and_add_another %}<input type="submit" value="{% trans 'Save and add another' %}" name="_addanother" />{% endif %}
     {% if show_save_and_continue %}<input type="submit" value="{% trans 'Save and continue editing' %}" name="_continue" />{% endif %}
-    {% if show_delete_link %}
+    {% if show_delete_link and has_copy_permission %}
         <input type="submit" value="{% trans 'Copy Exercise' %}" name="_copy_exercise">
     {% endif %}
 </div>

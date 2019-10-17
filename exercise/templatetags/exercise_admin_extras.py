@@ -12,6 +12,8 @@ def exercise_submit_row(context):
     change = context["change"]
     is_popup = context["is_popup"]
     save_as = context["save_as"]
+    has_copy_permission = False
+
     ctx = {
         "opts": opts,
         "show_delete_link": (
@@ -32,5 +34,12 @@ def exercise_submit_row(context):
         "preserved_filters": context.get("preserved_filters"),
     }
     if context.get("original") is not None:
-        ctx["original"] = context["original"]
+        ctx["original"] = original = context["original"]
+        user = context["user"]
+        if original.__class__.__name__ == "Exercise" and (
+            user.is_superuser or user.organization == original.organisation
+        ):
+            has_copy_permission = True
+    ctx["has_copy_permission"] = has_copy_permission
+
     return ctx

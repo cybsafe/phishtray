@@ -7,6 +7,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from phishtray.base import PhishtrayBaseModel
+from .managers import ExerciseManager
 
 
 EXERCISE_EMAIL_PHISH = 0
@@ -194,6 +195,8 @@ class DemographicsInfo(PhishtrayBaseModel):
 class Exercise(PhishtrayBaseModel):
     def __str__(self):
         return f"{self.title} - {self.id}"
+
+    user_objects = ExerciseManager()
 
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)

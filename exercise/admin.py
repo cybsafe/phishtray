@@ -55,6 +55,9 @@ class ExerciseAdmin(admin.ModelAdmin):
         obj.updated_by = request.user
         obj.save()
 
+    def get_queryset(self, request):
+        return Exercise.user_objects.filter_by_user(user=request.user)
+
 
 @admin.register(ExerciseEmailProperties)
 class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
