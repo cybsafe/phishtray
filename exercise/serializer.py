@@ -98,7 +98,6 @@ class ThreadSerializer(serializers.ModelSerializer):
             "attachments",
             "replies",
             "emails",
-            "phishing_explained",
         )
 
     def get_emails(self, email):
