@@ -179,7 +179,7 @@ class ExerciseWebPageSerializer(serializers.ModelSerializer):
 
 
 class ExerciseEmailPropertiesSerializer(serializers.ModelSerializer):
-    web_page = ExerciseWebPageSerializer
+    web_page = ExerciseWebPageSerializer()
 
     class Meta:
         model = ExerciseEmailProperties
