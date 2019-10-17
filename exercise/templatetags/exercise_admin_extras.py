@@ -37,7 +37,9 @@ def exercise_submit_row(context):
         ctx["original"] = original = context["original"]
         user = context["user"]
         if original.__class__.__name__ == "Exercise" and (
-            user.is_superuser or user.organization == original.organisation
+            user.is_superuser
+            or user.organization == original.organisation
+            or original.organisation is None
         ):
             has_copy_permission = True
     ctx["has_copy_permission"] = has_copy_permission

@@ -58,6 +58,24 @@ class ExerciseAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return Exercise.user_objects.filter_by_user(user=request.user)
 
+    def has_change_permission(self, request, obj=None):
+        if not request.user.is_superuser:
+            if obj is None:
+                print("No Obj: Guessing this is the list.")
+                return True
+            elif obj.published_by is None:
+                print("published by is none: Only superusers can edit.")
+                return False
+            elif (
+                request.user.organization is not None
+                and request.user.organization == obj.published_by.organization
+            ):
+                print(
+                    "Published by not none: Only admins for the exercise organisation or superusers can edit"
+                )
+                return True
+        return True
+
 
 @admin.register(ExerciseEmailProperties)
 class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
