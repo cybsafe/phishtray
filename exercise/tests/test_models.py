@@ -167,10 +167,17 @@ class ExerciseEmailPropertiesSerializerTests(TestCase):
         email_properties = ExerciseEmailProperties.objects.filter(
             exercise=exercise
         ).first()
-
+        email_properties.web_page = ExerciseWebPageFactory(url="Page URL 1")
+        release_code = ExerciseWebPageReleaseCodeFactory(release_code="Release Code 1")
+        email_properties.release_codes.add(release_code)
         data = ExerciseEmailPropertiesSerializer(instance=email_properties).data
 
         self.assertEqual(
             set(data.keys()),
             set(["reveal_time", "web_page", "intercept_exercise", "release_codes"]),
         )
+        self.assertEqual("Page URL 1", data["web_page"]["url"])
+        self.assertEqual(
+            set(data["web_page"].keys()), set(["title", "url", "type", "content"])
+        )
+        self.assertEqual(release_code.id, data["release_codes"][0])
