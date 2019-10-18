@@ -164,7 +164,7 @@ class ExerciseEmail(PhishtrayBaseModel):
     @property
     def exercise_specific_properties(self):
         email_properties = ExerciseEmailProperties.objects.filter(
-            email_id=self.id, exercise__emails__id=self.id
+            email_id=self.id, exercise=self.exercise_set.first()
         ).first()
         if email_properties:
             return email_properties
