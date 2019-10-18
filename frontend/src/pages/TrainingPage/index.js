@@ -56,7 +56,16 @@ const Icon = styled(FontAwesomeIcon)`
   margin-left: 10px;
 `;
 
-const TrainingPage = props => {
+type Props = {
+  trainingLink: string,
+  match: {
+    params: {
+      participantUuid: string,
+    },
+  },
+};
+
+const TrainingPage = (props: Props) => {
   const { participantUuid } = props.match.params;
   const { trainingLink } = props;
 
