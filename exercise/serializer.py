@@ -114,7 +114,7 @@ class ThreadSerializer(serializers.ModelSerializer):
         return email.to_account
 
     def get_reveal_time(self, email):
-        return email.reveal_time()
+        return email.reveal_time(exercise=self.context.get("exercise"))
 
     def get_thread_properties(self, email):
         return ExerciseEmailPropertiesSerializer(
