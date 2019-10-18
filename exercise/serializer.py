@@ -114,11 +114,11 @@ class ThreadSerializer(serializers.ModelSerializer):
         return email.to_account
 
     def get_reveal_time(self, email):
-        return email.reveal_time
+        return email.reveal_time()
 
     def get_thread_properties(self, email):
         return ExerciseEmailPropertiesSerializer(
-            email.exercise_specific_properties
+            email.exercise_specific_properties(exercise=self.context.get("exercise"))
         ).data
 
 
@@ -143,7 +143,9 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_threads(self, exercise):
         queryset = exercise.emails.all().filter(pk=F("belongs_to"))
-        return ThreadSerializer(queryset, many=True).data
+        return ThreadSerializer(
+            queryset, many=True, context={"exercise": exercise}
+        ).data
 
 
 class ExerciseReportListSerializer(serializers.ModelSerializer):

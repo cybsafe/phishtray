@@ -113,8 +113,8 @@ class ExerciseModelTests(TestCase):
         )
         email_properties.save()
 
-        exercise_specific_properties = (
-            email_properties.email.exercise_specific_properties
+        exercise_specific_properties = email_properties.email.exercise_specific_properties(
+            exercise
         )
 
         self.assertEqual("Page URL 1", exercise_specific_properties.web_page.url)
