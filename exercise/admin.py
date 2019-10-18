@@ -52,6 +52,11 @@ class ExerciseAdmin(admin.ModelAdmin):
         return fields
 
     def save_model(self, request, obj, form, change):
+        # When creating a new exercise, it should have the
+        # 'published by' and 'organisation' fields filled in with the user information
+        if not change:
+            obj.published_by = request.user
+            obj.organisation = request.user.organization
         obj.updated_by = request.user
         obj.save()
 
@@ -59,22 +64,18 @@ class ExerciseAdmin(admin.ModelAdmin):
         return Exercise.user_objects.filter_by_user(user=request.user)
 
     def has_change_permission(self, request, obj=None):
-        if not request.user.is_superuser:
-            if obj is None:
-                print("No Obj: Guessing this is the list.")
-                return True
-            elif obj.published_by is None:
-                print("published by is none: Only superusers can edit.")
-                return False
-            elif (
-                request.user.organization is not None
-                and request.user.organization == obj.published_by.organization
-            ):
-                print(
-                    "Published by not none: Only admins for the exercise organisation or superusers can edit"
-                )
-                return True
-        return True
+        # Public exercises' permissions
+        if obj.__class__.__name__ == "Exercise" and not obj.organisation:
+            if not request.user.is_superuser:
+                if obj.published_by is None:
+                    return False
+                elif (
+                    request.user.organization is not None
+                    and request.user.organization == obj.published_by.organization
+                ):
+                    return True
+            return True
+        return super().has_change_permission(request, obj)
 
 
 @admin.register(ExerciseEmailProperties)
