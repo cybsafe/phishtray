@@ -49,6 +49,7 @@ injectGlobal`
 type Props = {
   match: Object,
   params: Object,
+  history: Object,
   getDebrief: (*) => void,
   phishingEmails: Array<*>,
 };
@@ -59,6 +60,7 @@ function Debrief({
   match: {
     params: { participantUuid },
   },
+  history,
   getDebrief,
   phishingEmails,
 }: Props) {
@@ -86,7 +88,12 @@ function Debrief({
           {phishingEmails.length > 1 ? 'emails' : 'email'}!
         </ResultMessage>
         <Image src={image} />
-        <Button kind="primary" onClick={() => console.log('Showing Details')}>
+        <Button
+          kind="primary"
+          onClick={() =>
+            history.push(`/phishing-email-info/${participantUuid}`)
+          }
+        >
           Show Me Details
         </Button>
       </Container>
