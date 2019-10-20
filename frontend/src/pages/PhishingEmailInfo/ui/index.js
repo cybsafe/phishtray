@@ -15,8 +15,6 @@ export const Container = styled('section')`
   width: 100%;
 `;
 
-export const EmailItem = styled('div')``;
-
 export const EmailItemField = styled('ul')`
   background-color: rgba(13, 121, 205, 0.05);
   box-shadow: 0 0 2px #0d79cd;

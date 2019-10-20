@@ -105,7 +105,7 @@ function PhishingEmailInfo({
         subtitle="Find out more"
       />
       <Container>
-        <EmailItem>
+        <div>
           <Title>Phishing Email {page + 1}</Title>
           <EmailItemField>
             <EmailItemContent>
@@ -159,7 +159,7 @@ function PhishingEmailInfo({
               {positiveMessages(output[page][3][1].actionType)}
             </BehaviorFieldSuccess>
           )}
-        </EmailItem>
+        </div>
 
         <ButtonsContainer>
           {hasPrevious && (
