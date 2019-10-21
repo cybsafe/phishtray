@@ -8,17 +8,25 @@ import WideHeader from '../../components/Header/WideHeader';
 
 import image from './assets/image_emails.png';
 
+const BGWrapper = styled('div')`
+  min-height: calc(100vh - 236px);
+  background-color: white;
+  padding: 216px 0 100px;
+`;
+
 const Container = styled('section')`
   max-width: 960px;
   padding: 0 15px;
   margin: 0 auto;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ResultMessage = styled('h3')`
-  margin: 8.583vw 0 4.472vw;
-  font-size: 2.8vw;
+  margin-bottom: 44px;
   text-align: center;
+  font-size: 48px;
   color: #262939;
 `;
 
@@ -29,7 +37,7 @@ const Image = styled('img')`
 `;
 
 const Button = styled(CarbonButton)`
-  float: right;
+  align-self: flex-end;
 `;
 
 const NotFound = styled('h2')`
@@ -38,12 +46,6 @@ const NotFound = styled('h2')`
   left: 50%;
   top: 50%;
   margin: 0;
-`;
-
-injectGlobal`
-  #root {
-    background-color: white;
-  }
 `;
 
 type Props = {
@@ -82,21 +84,23 @@ function Debrief({
         title="Thanks for taking the exercise"
         subtitle="Find out more"
       />
-      <Container>
-        <ResultMessage>
-          You were given {phishingEmails.length} phishing{' '}
-          {phishingEmails.length > 1 ? 'emails' : 'email'}!
-        </ResultMessage>
-        <Image src={image} />
-        <Button
-          kind="primary"
-          onClick={() =>
-            history.push(`/phishing-email-info/${participantUuid}`)
-          }
-        >
-          Show Me Details
-        </Button>
-      </Container>
+      <BGWrapper>
+        <Container>
+          <ResultMessage>
+            You were given {phishingEmails.length} phishing{' '}
+            {phishingEmails.length > 1 ? 'emails' : 'email'}!
+          </ResultMessage>
+          <Image src={image} />
+          <Button
+            kind="primary"
+            onClick={() =>
+              history.push(`/phishing-email-info/${participantUuid}`)
+            }
+          >
+            Show Me Details
+          </Button>
+        </Container>
+      </BGWrapper>
     </Fragment>
   );
 }
