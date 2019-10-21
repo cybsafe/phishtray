@@ -1,6 +1,5 @@
 from rest_framework.test import APITestCase
-from participant.models import Organization, Participant
-from participant.factories import OrganizationFactory, ParticipantFactory
+from participant.factories import OrganizationFactory
 from users.factories import UserFactory
 from ..factories import ExerciseFactory
 from ..models import Exercise
