@@ -44,40 +44,23 @@ function PhishingEmailInfo({
     params: { participantUuid },
   },
 }: Props) {
-  const [hasPrevious, setHasPrevious] = useState(false);
   const [isShowing, setIsShowing] = useState(false);
-  const [nextLink, setNextLink] = useState(false);
-  const [hasNext, setHasNext] = useState(true);
   const [page, setPage] = useState(0);
 
   useEffect(() => {
     getDebrief(participantUuid);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [participantUuid, getDebrief]);
 
-  useEffect(() => {
-    page > 0 ? setHasPrevious(true) : setHasPrevious(false);
-  }, [page]);
-
-  useEffect(() => {
-    page < phishingEmails.length - 1 ? setHasNext(true) : setHasNext(false);
-  }, [page, phishingEmails]);
-
-  useEffect(() => {
-    page === phishingEmails.length - 1 ? setNextLink(true) : setNextLink(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
-
-  const nextPage = (visible, max) => {
+  const nextPage = (page, max) => {
     if (page > max - 2) return false;
-    setPage(page + 1);
     setIsShowing(false);
+    setPage(page + 1);
   };
 
   const prevPage = page => {
     if (page <= 0) return false;
-    setPage(page - 1);
     setIsShowing(false);
+    setPage(page - 1);
   };
 
   const showDetails = () => {
@@ -88,16 +71,6 @@ function PhishingEmailInfo({
     return false;
   }
 
-  const output = phishingEmails.map(obj => {
-    return Object.keys(obj)
-      .sort()
-      .map(key => {
-        return obj[key];
-      });
-  });
-
-  const behaviorCondition = phishingEmails && output[page][4];
-
   return (
     <Fragment>
       <WideHeader
@@ -107,37 +80,42 @@ function PhishingEmailInfo({
       <Container>
         <div>
           <Title>Phishing Email {page + 1}</Title>
-          <EmailItemField>
-            <EmailItemContent>
-              <Emphasis>Description:</Emphasis> Description
-            </EmailItemContent>
-          </EmailItemField>
+
+          {phishingEmails[page].phishingExplained && (
+            <EmailItemField>
+              <EmailItemContent>
+                <Emphasis>Description:</Emphasis>{' '}
+                {phishingEmails[page].phishingExplained}
+              </EmailItemContent>
+            </EmailItemField>
+          )}
 
           <EmailItemField>
             <EmailItemContent>
-              <Emphasis>To:</Emphasis> {phishingEmails && output[page][1]}
+              <Emphasis>From:</Emphasis> {phishingEmails[page].fromAddress}
             </EmailItemContent>
 
             <EmailItemContent>
-              <Emphasis>Subject:</Emphasis> {phishingEmails && output[page][6]}
+              <Emphasis>Subject:</Emphasis> {phishingEmails[page].subject}
             </EmailItemContent>
 
             <EmailItemContent>
               <Emphasis>Body:</Emphasis>
-              {phishingEmails && output[page][0]}
+              {phishingEmails[page].content}
             </EmailItemContent>
           </EmailItemField>
 
-          <SeeDetails kind="secondary" onClick={() => showDetails()}>
-            See details{' '}
-            <FontAwesomeIcon icon={isShowing ? faArrowUp : faArrowDown} />
-          </SeeDetails>
+          {phishingEmails[page].participantActions.length > 0 && (
+            <SeeDetails kind="secondary" onClick={() => showDetails()}>
+              See details{' '}
+              <FontAwesomeIcon icon={isShowing ? faArrowUp : faArrowDown} />
+            </SeeDetails>
+          )}
 
-          {isShowing && (
+          {isShowing && phishingEmails[page].participantActions.length > 0 && (
             <EmailItemField>
               {phishingEmails &&
-                output[page][3].length &&
-                output[page][3].map(info => (
+                phishingEmails[page].participantActions.map(info => (
                   <EmailItemContent key={info.actionType}>
                     {moment(info.timestamp).format('h:mm:ss a')} -{' '}
                     {sanitizeActions(info.actionType)}
@@ -146,39 +124,43 @@ function PhishingEmailInfo({
             </EmailItemField>
           )}
 
-          {behaviorCondition === 'negative' && (
+          {phishingEmails[page].participantBehaviour === 'negative' && (
             <BehaviorFieldNegative>
               <FontAwesomeIcon icon={faThumbsDown} />
-              {negativeMessages(output[page][3][1].actionType)}
+              {negativeMessages(
+                phishingEmails[page].participantActions[1].actionType
+              )}
             </BehaviorFieldNegative>
           )}
 
-          {behaviorCondition === 'positive' && (
+          {phishingEmails[page].participantBehaviour === 'positive' && (
             <BehaviorFieldSuccess>
               <FontAwesomeIcon icon={faThumbsUp} />
-              {positiveMessages(output[page][3][1].actionType)}
+              {positiveMessages(
+                phishingEmails[page].participantActions[1].actionType
+              )}
             </BehaviorFieldSuccess>
           )}
         </div>
 
         <ButtonsContainer>
-          {hasPrevious && (
+          {page > 0 && (
             <AppButton onClick={() => prevPage(page)}>
               Previous E-mail
             </AppButton>
           )}
 
-          {hasNext && (
+          {page < phishingEmails.length - 1 && (
             <AppButton onClick={() => nextPage(page, phishingEmails.length)}>
               Next Email
             </AppButton>
           )}
 
-          {nextLink && (
+          {page === phishingEmails.length - 1 && (
             <AppButton
               onClick={() => history.push(`/training/${participantUuid}`)}
             >
-              More Informations
+              More Information
             </AppButton>
           )}
         </ButtonsContainer>
