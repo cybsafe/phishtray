@@ -180,8 +180,15 @@ class ExerciseWebPageSerializer(serializers.ModelSerializer):
         fields = ("title", "url", "type", "content")
 
 
+class ExerciseWebPageReleaseCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExerciseWebPageReleaseCode
+        fields = ("release_code",)
+
+
 class ExerciseEmailPropertiesSerializer(serializers.ModelSerializer):
     web_page = ExerciseWebPageSerializer()
+    release_codes = ExerciseWebPageReleaseCodeSerializer(many=True)
 
     class Meta:
         model = ExerciseEmailProperties
