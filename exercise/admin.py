@@ -50,7 +50,7 @@ class ExerciseAdmin(admin.ModelAdmin):
 class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
     list_display = ("exercise", "email", "reveal_time")
     list_filter = ("exercise",)
-    search_fields = ["email__subject"]
+    search_fields = ("email__subject",)
 
 
 @admin.register(ExerciseWebPageReleaseCode)
