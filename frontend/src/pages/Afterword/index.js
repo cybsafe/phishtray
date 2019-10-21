@@ -14,7 +14,8 @@ import {
 } from 'carbon-components-react';
 import WideHeader from '../../components/Header/WideHeader';
 import { persistor } from '../../redux';
-import { getRange, HOST_BACKEND } from '../../utils';
+import { getRange } from '../../utils';
+import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 
 const Container = styled('div')`
   display: flex;
@@ -75,43 +76,21 @@ type Props = {
   afterwordMessage: string,
   match: any,
   history: *,
+  debrief: boolean,
+  scores: Array<any>,
 };
 
 const clearSessionStorage = async () => await sessionStorage.clear();
 
-type State = {
-  scores: Array<any>,
-  debrief: boolean,
-};
-
 class Afterword extends React.Component<Props, State> {
-  state: State = {
-    scores: [],
-    debrief: false,
-  };
-
   async componentDidMount() {
     getRange(0, 100).map(i => clearInterval(i)); //not the best solution
     clearSessionStorage().then(() => {
       persistor.purge();
     });
     const { participantUuid } = this.props.match.params;
-    const apiUrl = `${HOST_BACKEND}/api/v1/participant-scores/${participantUuid}`;
-    const response = await fetch(apiUrl);
-    const json = await response.json();
-    const debrief = json.debrief;
-    const scores =
-      json.scores && json.scores.length > 0
-        ? this.generateRows(json.scores)
-        : [];
-    this.setState({ scores, debrief });
+    this.props.getDebrief(participantUuid);
   }
-
-  generateRows = (data: []) =>
-    data.map(row => {
-      row.id = row.task;
-      return row;
-    });
 
   getHeaders = () => [
     { key: 'task', header: 'Task' },
@@ -120,9 +99,8 @@ class Afterword extends React.Component<Props, State> {
   ];
 
   render() {
-    const { afterwordMessage, match } = this.props;
+    const { afterwordMessage, match, debrief, scores } = this.props;
     const { participantUuid } = match.params;
-    const { scores, debrief } = this.state;
 
     return (
       <Container>
@@ -175,8 +153,9 @@ class Afterword extends React.Component<Props, State> {
 
 export default connect(
   state => ({
-    score: 75,
     afterwordMessage: state.exercise.afterword,
+    debrief: state.debrief.debrief,
+    scores: state.debrief.scores,
   }),
-  {}
+  { getDebrief }
 )(withRouter(Afterword));

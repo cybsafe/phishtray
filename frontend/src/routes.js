@@ -13,6 +13,7 @@ import Afterword from './pages/Afterword';
 import WebBrowser from './components/WebBrowser';
 import Debrief from './pages/Debrief';
 import TrainingPage from './pages/TrainingPage';
+import PhishingEmailInfo from './pages/PhishingEmailInfo';
 import { getHeaderText } from './utils';
 import { getUnreadThreads } from './selectors/exerciseSelectors';
 
@@ -158,6 +159,10 @@ class PhishTray extends PureComponent {
             <Route path="/afterword/:participantUuid" component={Afterword} />
             <Route path="/debrief/:participantUuid" component={Debrief} />
             <Route path="/training/:participantUuid" component={TrainingPage} />
+            <Route
+              path="/phishing-email-info/:participantUuid"
+              component={PhishingEmailInfo}
+            />
             <PrivateRoute
               exact
               path="/"
