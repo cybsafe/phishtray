@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   phishingEmails: [],
   scores: [],
+  trainingLink: '',
   debrief: false,
 };
 
@@ -12,6 +13,7 @@ export default function reducer(state: INITIAL_STATE, action: {}) {
         ...action.payload,
         phishingEmails: action.payload.phishingEmails,
         scores: action.payload.scores,
+        trainingLink: action.payload.trainingLink,
         debrief: action.payload.debrief,
       };
     }

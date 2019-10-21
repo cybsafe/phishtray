@@ -21,4 +21,5 @@ export default {
   browserForgottenPassword: 'webpage_forgotten_password',
   browserSubmittedDetails: 'webpage_login_credentials_submitted',
   browserUserSignUp: 'webpage_user_signup',
+  trainingLinkClick: 'training_link_clicked',
 };
