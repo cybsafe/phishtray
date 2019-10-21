@@ -232,7 +232,7 @@ class ParticipantScoreSerializer(serializers.ModelSerializer):
         emails_list = list(
             ExerciseEmail.objects.filter(
                 exercise__participant=participant, phish_type=EXERCISE_EMAIL_PHISH
-            ).values("id", "subject", "from_address", "content")
+            ).values("id", "subject", "from_address", "content", "phishing_explained")
         )
 
         for email in emails_list:

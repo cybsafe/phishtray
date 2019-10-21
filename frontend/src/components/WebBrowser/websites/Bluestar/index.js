@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
 import { TextInput, Button, Checkbox, Icon } from 'carbon-components-react';
 import { iconStarOutline } from 'carbon-icons';
+import { getAccount } from '../../../../data/accounts';
 
 import Bg from './assets/bg.png';
 
@@ -54,12 +55,6 @@ const LoginBannerText = styled('div')({
   lineHeight: '40px',
 });
 
-const ForgotPassLink = styled('a')({
-  color: '#4285F4',
-  fontSize: '15px',
-  textDecoration: 'none',
-});
-
 const LoginHeaderText = styled('h2')({
   color: '#4285F4',
   lineHeight: '40px',
@@ -92,6 +87,8 @@ class MyBluestar extends React.Component {
 
   render() {
     const { logBrowserActions, actionTypes } = this.props;
+    const account = getAccount('fa59b235-284f-40ba-aae7-dtf48689d22');
+
     return (
       <Switch>
         <Route
@@ -131,8 +128,10 @@ class MyBluestar extends React.Component {
                     <TextInput
                       {...TextInputProps()}
                       id="email"
+                      disabled
                       placeholder="Email"
                       type="email"
+                      value={account.data[0].value}
                       onChange={event => {
                         if (!this.state.logged[event.target.id]) {
                           this.setState(
@@ -202,17 +201,6 @@ class MyBluestar extends React.Component {
                     >
                       Login
                     </Button>
-                  </FieldWrapper>
-                  <FieldWrapper>
-                    <ForgotPassLink
-                      onClick={() =>
-                        logBrowserActions({
-                          actionType: actionTypes.browserForgottenPassword,
-                        })
-                      }
-                    >
-                      Forgotten your password?
-                    </ForgotPassLink>
                   </FieldWrapper>
                 </LoginContainerForm>
               </LoginContainer>
