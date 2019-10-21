@@ -7,7 +7,7 @@ from djangorestframework_camel_case.util import underscoreize
 
 from participant.factories import ParticipantFactory, ProfileEntryFactory
 from phishtray.test.base import PhishtrayAPIBaseTest
-from ..models import Exercise, ExerciseEmail
+from ..models import Exercise, ExerciseEmail, ExerciseEmailProperties
 from ..serializer import ExerciseSerializer, ExerciseEmailSerializer, ThreadSerializer
 from ..factories import (
     ExerciseFileFactory,
@@ -15,6 +15,8 @@ from ..factories import (
     EmailReplyFactory,
     ExerciseFactory,
     DemographicsInfoFactory,
+    ExerciseWebPageReleaseCodeFactory,
+    ExerciseWebPageFactory,
 )
 
 
@@ -87,6 +89,36 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("Not found.", response.data.get("detail"))
+
+    def test_get_exercise_email_properties(self):
+        emails = EmailFactory.create_batch(1)
+        self.threadify(emails[0])
+        exercise = ExerciseFactory.create(emails=emails)
+        email_properties = ExerciseEmailProperties.objects.filter(
+            exercise=exercise
+        ).first()
+
+        email_properties.web_page = ExerciseWebPageFactory(url="Test Page URL")
+        email_properties.release_codes.add(
+            ExerciseWebPageReleaseCodeFactory(release_code="Test Release Code")
+        )
+        email_properties.save()
+
+        url = reverse("api:exercise-detail", args=[exercise.id])
+
+        response = self.client.get(url)
+        thread_properties = response.data.get("threads")[0]["thread_properties"]
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(1, len(response.data.get("threads")))
+        self.assertEqual(
+            set(thread_properties.keys()),
+            set(["reveal_time", "web_page", "intercept_exercise", "release_codes"]),
+        )
+        self.assertEqual("Test Page URL", thread_properties["web_page"]["url"])
+        self.assertEqual(
+            "Test Release Code", thread_properties["release_codes"][0]["release_code"]
+        )
 
 
 class EmailAPITestCase(PhishtrayAPIBaseTest):
