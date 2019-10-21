@@ -8,15 +8,23 @@ import WideHeader from '../../components/Header/WideHeader';
 
 import image from './assets/image_emails_2.png';
 
+const BGWrapper = styled('div')`
+  min-height: calc(100% - 200px);
+  padding: 8.583vw 0 4vw;
+  background-color: white;
+`;
+
 const Container = styled('section')`
   max-width: 960px;
   padding: 0 15px;
   margin: 0 auto;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ResultMessage = styled('h3')`
-  margin: 8.583vw 0 4.472vw;
+  margin-bottom: 4.472vw;
   font-size: 2.8vw;
   text-align: center;
   color: #262939;
@@ -29,8 +37,7 @@ const Image = styled('img')`
 `;
 
 const Button = styled(CarbonButton)`
-  float: right;
-  margin-bottom: 30px;
+  align-self: flex-end;
 `;
 
 const NotFound = styled('h2')`
@@ -75,16 +82,19 @@ function Debrief({
         title="Thanks for taking the exercise"
         subtitle="Find out more"
       />
-      <Container>
-        <ResultMessage>
-          You were given {phishingEmails.length} phishing{' '}
-          {phishingEmails.length > 1 ? 'emails' : 'email'}!
-        </ResultMessage>
-        <Image src={image} />
-        <Button kind="primary" onClick={() => console.log('Showing Details')}>
-          Show Me Details
-        </Button>
-      </Container>
+
+      <BGWrapper>
+        <Container>
+          <ResultMessage>
+            You were given {phishingEmails.length} phishing{' '}
+            {phishingEmails.length > 1 ? 'emails' : 'email'}!
+          </ResultMessage>
+          <Image src={image} />
+          <Button kind="primary" onClick={() => console.log('Showing Details')}>
+            Show Me Details
+          </Button>
+        </Container>
+      </BGWrapper>
     </Fragment>
   );
 }
