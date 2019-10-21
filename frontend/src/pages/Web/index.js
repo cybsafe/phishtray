@@ -50,6 +50,10 @@ class Web extends Component {
           <WebsiteIcon className={css({ backgroundColor: '#192a56' })} />
           <WebsiteTitle>Bluestar</WebsiteTitle>
         </LinkContainer>
+        <LinkContainer onClick={this.handleWebsiteClick('blockedPage')}>
+          <WebsiteIcon className={css({ backgroundColor: 'magenta' })} />
+          <WebsiteTitle>Blocked Page</WebsiteTitle>
+        </LinkContainer>
       </Container>
     );
   }
