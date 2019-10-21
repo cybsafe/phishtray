@@ -9,9 +9,9 @@ import WideHeader from '../../components/Header/WideHeader';
 import image from './assets/image_emails.png';
 
 const BGWrapper = styled('div')`
-  padding: 8.583vw 0 4.472vw;
-  background-color: white;
   min-height: calc(100vh - 236px);
+  background-color: white;
+  padding: 216px 0 100px;
 `;
 
 const Container = styled('section')`
@@ -24,9 +24,9 @@ const Container = styled('section')`
 `;
 
 const ResultMessage = styled('h3')`
-  margin-bottom: 4.472vw;
-  font-size: 2.8vw;
+  margin-bottom: 44px;
   text-align: center;
+  font-size: 48px;
   color: #262939;
 `;
 
