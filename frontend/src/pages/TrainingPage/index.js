@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'react-emotion';
@@ -30,6 +30,7 @@ const ContentContainer = styled('div')`
   margin-top: 3rem;
   margin-bottom: 3rem;
   height: calc(100vh - 200px - 6rem);
+  min-height: 450px;
 `;
 
 const Image = styled('img')`
@@ -46,10 +47,6 @@ const Message = styled('h3')`
 
 const Button = styled(CarbonButton)`
   margin-right: 3rem;
-  a {
-    color: #fff;
-    text-decoration: none;
-  }
 `;
 
 const Icon = styled(FontAwesomeIcon)`
@@ -68,8 +65,9 @@ type Props = {
 const TrainingPage = (props: Props) => {
   const { participantUuid } = props.match.params;
   const { trainingLink } = props;
-
-  getDebrief(participantUuid);
+  useEffect(() => {
+    getDebrief(participantUuid);
+  }, []);
 
   return (
     <Container>
