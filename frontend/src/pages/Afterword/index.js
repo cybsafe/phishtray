@@ -14,7 +14,7 @@ import {
 } from 'carbon-components-react';
 import WideHeader from '../../components/Header/WideHeader';
 import { persistor } from '../../redux';
-import { getRange, HOST_BACKEND } from '../../utils';
+import { getRange } from '../../utils';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 
 const Container = styled('div')`
@@ -91,12 +91,6 @@ class Afterword extends React.Component<Props, State> {
     const { participantUuid } = this.props.match.params;
     this.props.getDebrief(participantUuid);
   }
-
-  generateRows = (data: []) =>
-    data.map(row => {
-      row.id = row.task;
-      return row;
-    });
 
   getHeaders = () => [
     { key: 'task', header: 'Task' },
