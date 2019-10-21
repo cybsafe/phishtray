@@ -6,7 +6,7 @@ import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import { Button as CarbonButton } from 'carbon-components-react';
 import WideHeader from '../../components/Header/WideHeader';
 
-import image from './assets/image_emails.png';
+import image from './assets/image_emails_2.png';
 
 const Container = styled('section')`
   max-width: 960px;
@@ -30,6 +30,7 @@ const Image = styled('img')`
 
 const Button = styled(CarbonButton)`
   float: right;
+  margin-bottom: 30px;
 `;
 
 const NotFound = styled('h2')`
@@ -38,12 +39,6 @@ const NotFound = styled('h2')`
   left: 50%;
   top: 50%;
   margin: 0;
-`;
-
-injectGlobal`
-  #root {
-    background-color: white;
-  }
 `;
 
 type Props = {
