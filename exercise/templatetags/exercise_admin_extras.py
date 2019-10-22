@@ -34,6 +34,7 @@ def exercise_submit_row(context):
     }
 
     if original is not None and original.__class__.__name__ == "Exercise":
+        ctx["original"] = original
         if (
             user.is_superuser
             or user.organization == original.organisation
