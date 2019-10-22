@@ -1,6 +1,7 @@
 import MyPayment from './MyPayment';
 import Bluestar from './Bluestar';
 import Blocked from './Blocked';
+import Warning from './Warning';
 
 export default {
   mypayment: {
@@ -44,5 +45,11 @@ export default {
     url: 'www.myblockedpage.info',
     component: Blocked,
     link: 'myblocked',
+  },
+  warning: {
+    isSecure: true,
+    url: 'www.warningpage.com',
+    component: Warning,
+    link: 'warningpage',
   },
 };
