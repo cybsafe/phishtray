@@ -36,7 +36,7 @@ class ExerciseAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         if "_copy_exercise" in request.POST:
-            exercise_copy = copy_exercise(obj)
+            exercise_copy = copy_exercise(obj, request.user)
             self.message_user(
                 request, f"Exercise {exercise_copy.title} created successfully."
             )

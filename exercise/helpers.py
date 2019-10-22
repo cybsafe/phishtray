@@ -1,7 +1,7 @@
 from .models import Exercise
 
 
-def copy_exercise(original_exercise):
+def copy_exercise(original_exercise, current_user):
     """
     Create a copy of an Exercise
     :param original_exercise: An Exercise instance
@@ -17,6 +17,9 @@ def copy_exercise(original_exercise):
         training_link=original_exercise.training_link,
         debrief=original_exercise.debrief,
         copied_from=original_exercise.copied_from,
+        organisation=current_user.organization,
+        published_by=current_user,
+        updated_by=current_user,
     )
 
     if not original_exercise.copied_from:
