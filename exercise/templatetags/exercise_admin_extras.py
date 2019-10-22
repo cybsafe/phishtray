@@ -14,6 +14,9 @@ def exercise_submit_row(context):
     save_as = context["save_as"]
     has_copy_permission = False
 
+    original = context["original"]
+    user = context["user"]
+
     ctx = {
         "opts": opts,
         "show_delete_link": get_delete_permission(context),
@@ -30,8 +33,6 @@ def exercise_submit_row(context):
         "preserved_filters": context.get("preserved_filters"),
     }
 
-    original = context["original"]
-    user = context["user"]
     if original is not None and original.__class__.__name__ == "Exercise":
         if (
             user.is_superuser
@@ -39,8 +40,9 @@ def exercise_submit_row(context):
             or original.organisation is None
         ):
             has_copy_permission = True
+            ctx["show_delete_button"] = True
 
-        if user.is_staff and original.organisation is None:
+        if not user.is_superuser and original.organisation is None:
             ctx["show_save_and_add_another"] = False
             ctx["show_save"] = False
             ctx["show_delete_button"] = False
