@@ -11,3 +11,8 @@ class User(AbstractUser):
     )
 
     objects = PhishtrayUserManager()
+
+    def __str__(self):
+        return "{self.id} {self.first_name} {self.last_name}, Organisation: {self.organization}".format(
+            self=self
+        )

@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.db import IntegrityError
 
 from ..factories import (
     EmailFactory,
@@ -9,14 +10,12 @@ from ..factories import (
     ExerciseWebPageFactory,
     ExerciseWebPageReleaseCodeFactory,
 )
-
-from ..models import ExerciseEmailProperties, ExerciseWebPage
-
+from ..models import ExerciseEmailProperties, ExerciseWebPage, Exercise
 from exercise.serializer import (
     ExerciseWebPageSerializer,
     ExerciseEmailPropertiesSerializer,
 )
-from django.db import IntegrityError
+from participant.factories import OrganizationFactory
 
 
 class ExerciseModelTests(TestCase):
@@ -138,6 +137,24 @@ class ExerciseModelTests(TestCase):
 
         self.assertEqual(1, email_properties.count())
         self.assertEqual(0, properties_with_invalid_email.count())
+
+    def test_create_public_exercise(self):
+        emails = EmailFactory.create_batch(2)
+        exercise = ExerciseFactory.create(emails=emails)
+
+        self.assertIsNotNone(exercise)
+        self.assertIsNone(exercise.organisation)
+
+    def test_create_private_exercise(self):
+        emails = EmailFactory.create_batch(2)
+        organisation = OrganizationFactory()
+        exercise = ExerciseFactory.create(emails=emails, organisation=organisation)
+        exercise2 = ExerciseFactory()
+
+        self.assertIsNotNone(exercise)
+        self.assertIsNotNone(exercise.organisation)
+        self.assertEqual(2, Exercise.objects.all().count())
+        self.assertEqual(1, Exercise.objects.filter(organisation=organisation).count())
 
 
 class ExerciseWebPageModelTests(TestCase):
