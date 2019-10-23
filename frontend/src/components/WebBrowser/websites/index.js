@@ -50,6 +50,6 @@ export default {
     isSecure: true,
     url: 'www.warningpage.com',
     component: Warning,
-    link: 'warningpage',
+    link: 'warninglink',
   },
 };

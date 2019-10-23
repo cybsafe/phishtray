@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
-import { connect } from 'react-redux';
-
-import { showWebpage } from '../../actions/uiActions';
 
 const Container = styled('div')({
   display: 'flex',
@@ -31,13 +28,6 @@ const WebsiteTitle = styled('h3')({
 });
 
 class Web extends Component {
-  handleWebsiteClick = websiteId => {
-    return event => {
-      event.preventDefault();
-      this.props.showWebpage(websiteId);
-    };
-  };
-
   render() {
     return (
       <Container>
@@ -49,16 +39,9 @@ class Web extends Component {
           <WebsiteIcon className={css({ backgroundColor: '#192a56' })} />
           <WebsiteTitle>Bluestar</WebsiteTitle>
         </LinkContainer>
-        <LinkContainer onClick={this.handleWebsiteClick('warning')}>
-          <WebsiteIcon className={css({ backgroundColor: 'olive' })} />
-          <WebsiteTitle>Warning</WebsiteTitle>
-        </LinkContainer>
       </Container>
     );
   }
 }
 
-export default connect(
-  null,
-  { showWebpage }
-)(Web);
+export default Web;
