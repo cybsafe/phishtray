@@ -15,7 +15,7 @@ from .models import (
     ExerciseWebPageReleaseCode,
 )
 
-from .helpers import copy_exercise
+from .helpers import copy_exercise, add_trial
 
 register = template.Library()
 
@@ -30,7 +30,7 @@ class ExerciseAdminForm(forms.ModelForm):
 class ExerciseAdmin(admin.ModelAdmin):
     form = ExerciseAdminForm
     list_display = ("id", "title", "description", "length_minutes", "created_date")
-    readonly_fields = ("copied_from", "updated_by", "published_by")
+    readonly_fields = ("copied_from", "updated_by", "published_by", "trial_version")
     change_form_template = "admin/exercise/change_form.html"
     ordering = ("-created_date",)
 
@@ -43,6 +43,16 @@ class ExerciseAdmin(admin.ModelAdmin):
             return redirect(
                 reverse("admin:exercise_exercise_change", args=[exercise_copy.id])
             )
+
+        if "_add_trial" in request.POST:
+            exercise_trial = add_trial(obj, request.user)
+            self.message_user(
+                request, f"Exercise Trial {exercise_trial.title} created successfully."
+            )
+            return redirect(
+                reverse("admin:exercise_exercise_change", args=[exercise_trial.id])
+            )
+
         return super().response_change(request, obj)
 
     def get_readonly_fields(self, request, obj=None):
