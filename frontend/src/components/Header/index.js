@@ -149,6 +149,14 @@ class Header extends Component<Props> {
               onClick={() => unsetInlineNotification()}
             />
           )}
+        {inlineNotification && inlineNotification === 'copied' && (
+          <InlineNotification
+            kind="success"
+            title="Copied!"
+            subtitle="Copied to clipboard."
+            onClick={() => unsetInlineNotification()}
+          />
+        )}
 
         {getHeader(this.props.location.pathname)}
         <ClockContainer>
