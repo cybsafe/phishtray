@@ -17,16 +17,19 @@ export const getExerciseTimer = createSelector(
   exercise => exercise.timer
 );
 
-export const getThreads = createSelector(exerciseSelector, exercise =>
-  exercise.threads
-    .filter(thread => thread.revealTime <= exercise.timer)
-    .sort((a, b) => b.revealTime - a.revealTime)
+export const getThreads = createSelector(
+  exerciseSelector,
+  exercise =>
+    exercise.threads
+      .filter(thread => thread.threadProperties.revealTime <= exercise.timer)
+      .sort((a, b) => b.threadProperties.revealTime - a.threadProperties.revealTime)
 );
 export const getUnreadThreads = createSelector(
   exerciseSelector,
   exercise =>
     exercise.threads.filter(
-      thread => !thread.isRead && thread.revealTime <= exercise.timer
+      thread =>
+        !thread.isRead && thread.threadProperties.revealTime <= exercise.timer
     ).length
 );
 
@@ -36,7 +39,9 @@ export const getThread = createSelector(
     return exercise.threads.find(
       thread =>
         thread.id === threadId &&
-        exercise.threads.filter(thread => thread.revealTime <= exercise.timer)
+        exercise.threads.filter(
+          thread => thread.threadProperties.revealTime <= exercise.timer
+        )
     );
   }
 );
