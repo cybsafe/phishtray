@@ -26,7 +26,7 @@ const CopyButton = ({
 );
 
 export default connect(
-  state => ({}),
+  null,
   {
     setInlineNotification,
   }
