@@ -32,7 +32,7 @@ def add_trial(original_exercise, current_user):
     trial_version_count = (
         Exercise.user_objects.filter_by_user(user=current_user)
         .filter(initial_trial=original_exercise.initial_trial)
-        .aggregate(Max("trial_version"))["trial_version__max"]
+        .count()
     )
 
     new_exercise = get_exercise_copy(original_exercise, current_user)
