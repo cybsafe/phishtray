@@ -236,11 +236,18 @@ class Exercise(PhishtrayBaseModel):
         related_name="published_by",
     )
     trial_version = models.IntegerField(null=True, blank=True, default=1)
+    initial_trial = models.ForeignKey(
+        "self",
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
+        related_name="exercise_initial_trial",
+    )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["trial_version", "copied_from"], name="exercise_trial"
+                fields=["initial_trial", "trial_version"], name="exercise_trial"
             )
         ]
 

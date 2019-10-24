@@ -30,7 +30,13 @@ class ExerciseAdminForm(forms.ModelForm):
 class ExerciseAdmin(admin.ModelAdmin):
     form = ExerciseAdminForm
     list_display = ("id", "title", "description", "length_minutes", "created_date")
-    readonly_fields = ("copied_from", "updated_by", "published_by", "trial_version")
+    readonly_fields = (
+        "copied_from",
+        "updated_by",
+        "published_by",
+        "trial_version",
+        "initial_trial",
+    )
     change_form_template = "admin/exercise/change_form.html"
     ordering = ("-created_date",)
 

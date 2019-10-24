@@ -31,6 +31,7 @@ def exercise_submit_row(context):
         "is_popup": is_popup,
         "show_save": True,
         "preserved_filters": context.get("preserved_filters"),
+        "show_trial_button": False,
     }
 
     if original is not None and original.__class__.__name__ == "Exercise":
@@ -47,6 +48,9 @@ def exercise_submit_row(context):
             ctx["show_save_and_add_another"] = False
             ctx["show_save"] = False
             ctx["show_delete_button"] = False
+
+        if original.organisation is not None:
+            ctx["show_trial_button"] = True
 
     ctx["has_copy_permission"] = has_copy_permission
 

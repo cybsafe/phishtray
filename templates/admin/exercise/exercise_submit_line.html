@@ -12,5 +12,7 @@
     {% if show_delete_link and has_copy_permission %}
         <input type="submit" value="{% trans 'Copy Exercise' %}" name="_copy_exercise">
     {% endif %}
-    <input type="submit" value="{% trans 'Add Trial' %}" name="_add_trial">
+    {% if show_trial_button %}
+        <input type="submit" value="{% trans 'Add Trial' %}" name="_add_trial">
+    {% endif %}
 </div>

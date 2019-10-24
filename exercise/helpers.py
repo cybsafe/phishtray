@@ -11,6 +11,7 @@ def copy_exercise(original_exercise, current_user):
 
     """
     new_exercise = get_exercise_copy(original_exercise, current_user)
+    new_exercise.initial_trial = new_exercise
     new_exercise.save()
 
     new_exercise.demographics.add(*original_exercise.demographics.all())
@@ -28,14 +29,17 @@ def add_trial(original_exercise, current_user):
     :return: Another Exercise instance copied from the original one and added a new trial number
 
     """
-    trial_version = (
+    trial_version_count = (
         Exercise.user_objects.filter_by_user(user=current_user)
-        .filter(copied_from=original_exercise)
+        .filter(initial_trial=original_exercise.initial_trial)
         .aggregate(Max("trial_version"))["trial_version__max"]
     )
 
     new_exercise = get_exercise_copy(original_exercise, current_user)
-    new_exercise.trial_version = trial_version + 1 if trial_version is not None else 1
+    new_exercise.initial_trial = original_exercise.initial_trial
+    new_exercise.trial_version = (
+        trial_version_count + 1 if trial_version_count is not None else 1
+    )
     new_exercise.save()
 
     new_exercise.demographics.add(*original_exercise.demographics.all())
