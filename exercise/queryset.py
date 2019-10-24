@@ -12,4 +12,4 @@ class ExerciseQuerySet(QuerySet):
                     organisation=user.organization, deleted_at=None
                 )
                 return private_exercises | public_exercises
-        return self
+        return self.filter(deleted_at=None)
