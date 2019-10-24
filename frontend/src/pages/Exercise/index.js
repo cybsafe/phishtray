@@ -165,7 +165,9 @@ export class Exercise extends Component<Props> {
     });
 
     setInterval(() => {
-      this.props.tickTimer(5); //this is way too high, demo purposes
+      if (false) {
+        this.props.tickTimer(5); //this is way too high, demo purposes
+      }
     }, 5 * 1000);
 
     const { exercise } = this.props;

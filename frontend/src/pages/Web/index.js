@@ -7,7 +7,6 @@ import { showWebpage } from '../../actions/uiActions';
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
-  height: '100%',
   justifyContent: 'center',
   paddingTop: 100,
   position: 'relative',
@@ -51,7 +50,7 @@ class Web extends Component {
           <WebsiteTitle>Bluestar</WebsiteTitle>
         </LinkContainer>
         <LinkContainer onClick={this.handleWebsiteClick('blockedPage')}>
-          <WebsiteIcon className={css({ backgroundColor: 'magenta' })} />
+          <WebsiteIcon className={css({ backgroundColor: 'rebeccapurple' })} />
           <WebsiteTitle>Blocked Page</WebsiteTitle>
         </LinkContainer>
       </Container>

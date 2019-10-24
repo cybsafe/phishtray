@@ -11,6 +11,7 @@ import { resetCountdown } from '../../actions/exerciseActions';
 import InlineNotification from '../../components/InlineNotification';
 
 import { unsetInlineNotification } from '../../actions/exerciseActions';
+import { closeWebpage } from '../../actions/uiActions';
 
 const SectionHeader = styled('div')({
   display: 'flex',
@@ -69,6 +70,7 @@ type Props = {
   participantId: string,
   inlineNotification: string,
   resetCountdown: () => void,
+  closeWebpage: () => void,
   unsetInlineNotification: () => void,
 };
 
@@ -181,6 +183,7 @@ class Header extends Component<Props> {
                 clearSessionStorage()
                   .then(() => {
                     this.props.resetCountdown();
+                    this.props.closeWebpage();
                     this.props.history.push(
                       `/afterword/${this.props.participantId}`
                     );
@@ -217,6 +220,7 @@ class Header extends Component<Props> {
             clearSessionStorage()
               .then(() => {
                 this.props.resetCountdown();
+                this.props.closeWebpage();
                 this.props.history.push(
                   `/afterword/${this.props.participantId}`
                 );
@@ -239,5 +243,5 @@ const mapStateToProps = reduxState => ({
 
 export default connect(
   mapStateToProps,
-  { resetCountdown, unsetInlineNotification }
+  { resetCountdown, unsetInlineNotification, closeWebpage }
 )(withRouter(Header));

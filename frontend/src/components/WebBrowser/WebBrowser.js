@@ -125,7 +125,7 @@ export class WebBrowser extends Component {
   };
 
   render() {
-    const { closeWebpage, webpage } = this.props;
+    const { closeWebpage, webpage, enableClose, pageURL } = this.props;
 
     if (!webpage) {
       return null;
@@ -140,10 +140,10 @@ export class WebBrowser extends Component {
             this.logBrowserActions({
               actionType: actionTypes.browserClose,
             });
-            closeWebpage();
+            enableClose.page !== 'blockedPage' && closeWebpage();
           }}
           isSecure={webpage.isSecure}
-          url={webpage.url}
+          url={pageURL ? pageURL : webpage.url}
         />
         <MemoryRouter>
           <ContentComponent
@@ -159,7 +159,9 @@ export class WebBrowser extends Component {
 export default connect(
   state => ({
     emailId: state.ui.webBrowser ? state.ui.webBrowser.emailId : '',
+    pageURL: state.exercise.pageURL,
     webpage: getWebpage(state),
+    enableClose: state.ui.webBrowser,
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
   }),
