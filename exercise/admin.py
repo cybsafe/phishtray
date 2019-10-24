@@ -35,6 +35,7 @@ class ExerciseAdmin(admin.ModelAdmin):
     ordering = ("-created_date",)
 
     def response_change(self, request, obj):
+        print("=========request===", request.POST)
         if "_copy_exercise" in request.POST:
             exercise_copy = copy_exercise(obj, request.user)
             self.message_user(
@@ -43,6 +44,8 @@ class ExerciseAdmin(admin.ModelAdmin):
             return redirect(
                 reverse("admin:exercise_exercise_change", args=[exercise_copy.id])
             )
+        else:
+            print("Not copy==============: ", request.POST)
         return super().response_change(request, obj)
 
     def get_readonly_fields(self, request, obj=None):
@@ -52,6 +55,7 @@ class ExerciseAdmin(admin.ModelAdmin):
         return fields
 
     def save_model(self, request, obj, form, change):
+        print("=========save===", request.POST)
         # When creating a new exercise, it should have the
         # 'published by' and 'organisation' fields filled in with the user information
         if not change:
@@ -75,6 +79,7 @@ class ExerciseAdmin(admin.ModelAdmin):
                 ):
                     return True
             return True
+        print("=========superuser===[", request.POST, "]", request.user.is_superuser)
         return super().has_change_permission(request, obj)
 
 
