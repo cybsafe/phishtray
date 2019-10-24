@@ -192,4 +192,10 @@ class ExerciseEmailPropertiesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ExerciseEmailProperties
-        fields = ("reveal_time", "web_page", "intercept_exercise", "release_codes")
+        fields = (
+            "reveal_time",
+            "web_page",
+            "intercept_exercise",
+            "release_codes",
+            "date_received",
+        )

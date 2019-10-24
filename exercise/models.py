@@ -345,11 +345,17 @@ class ExerciseEmailProperties(PhishtrayBaseModel):
      to proceed with the exercise.",
         blank=True,
     )
+    date_received = models.DateTimeField(blank=True, null=True)
 
     def set_reveal_time(self, time):
         if self.reveal_time is None:
             self.reveal_time = time
             self.save()
+
+    def save(self, *args, **kwargs):
+        if self.date_received is not None:
+            self.reveal_time = 0
+        super(ExerciseEmailProperties, self).save(*args, **kwargs)
 
 
 @receiver(post_save, sender=Exercise)

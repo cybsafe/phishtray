@@ -113,7 +113,15 @@ class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):
         self.assertEqual(1, len(response.data.get("threads")))
         self.assertEqual(
             set(thread_properties.keys()),
-            set(["reveal_time", "web_page", "intercept_exercise", "release_codes"]),
+            set(
+                [
+                    "reveal_time",
+                    "web_page",
+                    "intercept_exercise",
+                    "release_codes",
+                    "date_received",
+                ]
+            ),
         )
         self.assertEqual("Test Page URL", thread_properties["web_page"]["url"])
         self.assertEqual(
