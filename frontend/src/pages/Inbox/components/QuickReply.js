@@ -1,8 +1,5 @@
-// @flow
 import React from 'react';
-
 import Button from '../../../components/Button/ReplyButton';
-
 import { logAction } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
 
@@ -18,6 +15,7 @@ const QuickReply = ({
   logActionParams,
   setSelectedReply,
   setSelectedReplyParams,
+  onClick,
 }: Props) => {
   const { participantId, startTime, emailId } = logActionParams;
   return replies.map(reply => (
@@ -39,6 +37,7 @@ const QuickReply = ({
           message: reply.message,
           timestamp: new Date(),
         });
+        onClick();
       }}
     />
   ));

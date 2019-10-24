@@ -1,5 +1,6 @@
 // @flow
 import React, { Fragment } from 'react';
+import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -12,6 +13,8 @@ import QuickReply from './QuickReply';
 import { logAction } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
 import { loadFiles } from '../../../actions/fileManagerActions';
+
+import { showWebpage } from '../../../actions/uiActions';
 
 type Props = {
   email: Object,
@@ -224,7 +227,26 @@ function RouterLink(props) {
   );
 }
 
-function ReturnReplies({ props }) {
+function ReturnReplies({ props, items }) {
+  const {
+    interceptExercise,
+    releaseCodes,
+    webPage,
+  } = items[0].threadProperties;
+
+  function selectWebpageType() {
+    if (interceptExercise && releaseCodes.length > 0) {
+      props.showWebpage('blockedPage');
+    } else if (interceptExercise === false && releaseCodes.length > 0) {
+      console.log('Should render Training Page');
+    } else if (releaseCodes.length === 0) {
+      console.log('Should render Warning Page');
+    } else {
+      console.log('No webpage.');
+      return false;
+    }
+  }
+
   return !props.email.isReplied ? (
     <Fragment>
       <h3 ref={props.repliesRef}>
@@ -238,6 +260,9 @@ function ReturnReplies({ props }) {
           emailid: props.email.id,
         }}
         replies={props.email.replies}
+        onClick={() => {
+          webPage && selectWebpageType();
+        }}
       />
     </Fragment>
   ) : (
@@ -255,48 +280,54 @@ function ReturnReplies({ props }) {
   );
 }
 
-const Email = (props: Props) => (
-  <div
-    className={css({
-      maxWidth: 880,
-      margin: '0 auto',
-      padding: '0 40px',
-    })}
-  >
-    <EmailInfo email={props.email} />
-
-    <h3
+const Email = (props: Props) => {
+  const active = props.threads.filter(
+    thread => thread.id === props.activeThread
+  );
+  return (
+    <div
       className={css({
-        marginTop: 40,
-        fontSize: 40,
-        color: '#333',
-        letterSpacing: '1.2px',
+        maxWidth: 880,
+        margin: '0 auto',
+        padding: '0 40px',
       })}
     >
-      {props.email.subject}
-    </h3>
-
-    <Markdown
-      source={props.email.body}
-      renderers={{
-        link: linkProps => RouterLink({ ...linkProps, ...props }),
-        paragraph: Paragraph,
-        heading: Heading,
-      }}
-    />
-    {props.email.attachments.length > 0 && <EmailAttachments props={props} />}
-    {props.email.replies.length > 0 && (
-      <Fragment>
-        <Divider />
-        <ReturnReplies props={props} />
-      </Fragment>
-    )}
-  </div>
-);
+      <EmailInfo email={props.email} />​
+      <h3
+        className={css({
+          marginTop: 40,
+          fontSize: 40,
+          color: '#333',
+          letterSpacing: '1.2px',
+        })}
+      >
+        {props.email.subject}
+      </h3>
+      ​
+      <Markdown
+        source={props.email.body}
+        renderers={{
+          link: linkProps => RouterLink({ ...linkProps, ...props }),
+          paragraph: Paragraph,
+          heading: Heading,
+        }}
+      />
+      {props.email.attachments.length > 0 && <EmailAttachments props={props} />}
+      {props.email.replies.length > 0 && (
+        <Fragment>
+          <Divider />
+          <ReturnReplies items={active} props={props} />
+        </Fragment>
+      )}
+    </div>
+  );
+};
 
 export default connect(
-  null,
-  {
-    loadFiles,
-  }
+  state => ({
+    activeThread: state.exercise.activeThread,
+    threads: state.exercise.threads,
+    exercise: state.exercise,
+  }),
+  { showWebpage, loadFiles }
 )(Email);

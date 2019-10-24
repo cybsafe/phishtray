@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import ReactMarkdown from 'react-markdown';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
@@ -25,35 +26,40 @@ function Blocked({ closeWebpage, activeThread, threads }: Props) {
   const [code, setCode] = useState(null);
   const [error, setError] = useState(false);
 
+  const active = threads.filter(thread => thread.id === activeThread);
+  const { threadProperties } = active[0];
+  const releaseCodes = threadProperties.releaseCodes.map(
+    item => item.releaseCode
+  );
+
   const handleChange = e => {
     setCode(e.target.value);
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (code === 'benthehero') {
+    if (releaseCodes.includes(code)) {
       closeWebpage();
     } else {
       setError(true);
     }
   };
 
-  const active = threads.filter(thread => thread.id === activeThread);
-
-  console.log({ active });
+  if (!active[0].threadProperties.webPage) {
+    // I believe it will never fall here cause the thread doesn't have webPage
+    return <h1>This thread does not supose to render Blocked Page!</h1>;
+  }
 
   return (
     <Wrapper>
       <Container>
         <FontAwesomeIcon icon={faLock} size="2x" color="#ffffff" />
 
-        <Title>Your task has been locked</Title>
+        <Title>
+          <ReactMarkdown>{threadProperties.webPage.title}</ReactMarkdown>
+        </Title>
 
-        <Text>
-          You fell for a phishing simulation, you must now complete the
-          following course and your task progress on the task is correctly until
-          course completion.
-        </Text>
+        <Text>{threadProperties.webPage.content}</Text>
 
         <Form onSubmit={handleSubmit}>
           <Input
