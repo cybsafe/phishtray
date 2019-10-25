@@ -16,6 +16,7 @@ from exercise.serializer import (
     ExerciseEmailPropertiesSerializer,
 )
 from participant.factories import OrganizationFactory
+from django.utils import timezone
 
 
 class ExerciseModelTests(TestCase):
@@ -190,10 +191,64 @@ class ExerciseEmailPropertiesSerializerTests(TestCase):
         data = ExerciseEmailPropertiesSerializer(instance=email_properties).data
         self.assertEqual(
             set(data.keys()),
-            set(["reveal_time", "web_page", "intercept_exercise", "release_codes"]),
+            set(
+                [
+                    "reveal_time",
+                    "web_page",
+                    "intercept_exercise",
+                    "release_codes",
+                    "date_received",
+                ]
+            ),
         )
         self.assertEqual("Page URL 1", data["web_page"]["url"])
         self.assertEqual(
             set(data["web_page"].keys()), set(["title", "url", "type", "content"])
         )
         self.assertEqual("Release Code 1", data["release_codes"][0]["release_code"])
+
+
+class ExerciseReceivedDateTests(TestCase):
+    """
+    Tests that reveal_time becomes, and remains, 0
+    if or when date_received is set.
+    """
+
+    def setUp(self):
+        self.time = timezone.now()
+        emails = EmailFactory.create_batch(1)
+        exercise = ExerciseFactory.create(emails=emails)
+        self.email_properties = ExerciseEmailProperties.objects.filter(
+            exercise=exercise
+        ).first()
+
+    def test_when_date_received_is_set_and_reveal_time_is_none(self):
+        self.email_properties.reveal_time = None
+        self.email_properties.save()
+        self.assertEqual(None, self.email_properties.reveal_time)
+
+        self.email_properties.date_received = self.time
+        self.email_properties.save()
+        self.assertEqual(0, self.email_properties.reveal_time)
+
+    def test_when_date_received_is_set_and_reveal_time_has_value(self):
+        self.email_properties.reveal_time = 44
+        self.email_properties.save()
+        self.assertEqual(44, self.email_properties.reveal_time)
+
+        self.email_properties.date_received = self.time
+        self.email_properties.save()
+        self.assertEqual(0, self.email_properties.reveal_time)
+
+    def test_if_date_received_is_set_no_reveal_time_change(self):
+        self.email_properties.reveal_time = 10
+        self.email_properties.date_received = self.time
+        self.email_properties.save()
+
+        self.assertEqual(0, self.email_properties.reveal_time)
+
+    def test_if_date_received_not_set_reveal_time_may_be_changed(self):
+        self.email_properties.reveal_time = 44
+        self.email_properties.save()
+
+        self.assertEqual(44, self.email_properties.reveal_time)
