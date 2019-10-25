@@ -55,6 +55,7 @@ class ExerciseHelperTests(TestCase):
 
         self.assertEqual(exercise, trial_exercise.copied_from_exercise)
         self.assertEqual(exercise, trial_exercise.initial_trial)
+
         self.assertEqual(2, trial_exercise.trial_version)
 
         self.assertEqual(

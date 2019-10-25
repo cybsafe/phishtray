@@ -302,7 +302,7 @@ class Exercise(PhishtrayBaseModel):
             return None
         else:
             try:
-                return self.copied_from.split(' - ')[1]
+                return self.copied_from.split(" - ")[1]
             except IndexError:
                 return None
 
