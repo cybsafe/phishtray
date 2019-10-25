@@ -345,7 +345,11 @@ class ExerciseEmailProperties(PhishtrayBaseModel):
      to proceed with the exercise.",
         blank=True,
     )
-    date_received = models.DateTimeField(blank=True, null=True)
+    date_received = models.DateTimeField(
+        help_text="If date is provided reveal time will be automatically set to 0.",
+        blank=True,
+        null=True,
+    )
 
     def set_reveal_time(self, time):
         if self.reveal_time is None:
