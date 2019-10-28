@@ -37,7 +37,7 @@ def add_trial(original_exercise, current_user):
     )
 
     new_exercise = get_exercise_copy(original_exercise, current_user)
-    new_exercise.initial_trial = (
+    new_exercise.initial_trial = intial_trial
         original_exercise.initial_trial
         if original_exercise.initial_trial is not None
         else original_exercise
