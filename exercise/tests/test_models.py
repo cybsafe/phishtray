@@ -32,12 +32,9 @@ class ExerciseModelTests(TestCase):
     def test_set_email_reveal_times_with_less_than_ten_emails(self):
         emails = EmailFactory.create_batch(4)
         exercise = ExerciseFactory.create(emails=emails)
-        exercise_reveal_times = ExerciseEmailProperties.objects.filter(
-            exercise=exercise
-        )
 
         exercise.set_email_reveal_times()
-        received_emails = [e for e in exercise_reveal_times if e.reveal_time is 0]
+        received_emails = [e for e in exercise.emails.all() if e.reveal_time(exercise) is 0]
 
         self.assertEqual(4, exercise.emails.all().count())
         self.assertEqual(1, len(received_emails))
