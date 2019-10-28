@@ -216,7 +216,7 @@ class Exercise(PhishtrayBaseModel):
         default=False,
     )
     copied_from = models.ForeignKey(
-        "self", on_delete=models.PROTECT, null=True, blank=True
+        "self", on_delete=models.DO_NOTHING, null=True, blank=True
     )
     organisation = models.ForeignKey(
         "participant.Organization", on_delete=models.PROTECT, null=True, blank=True

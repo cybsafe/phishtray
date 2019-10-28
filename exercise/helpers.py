@@ -1,4 +1,4 @@
-from django.db.models import Max
+from django.db.models import Max, Q
 from .models import Exercise
 
 
@@ -11,12 +11,13 @@ def copy_exercise(original_exercise, current_user):
 
     """
     new_exercise = get_exercise_copy(original_exercise, current_user)
-    new_exercise.initial_trial = new_exercise
     new_exercise.save()
 
     new_exercise.demographics.add(*original_exercise.demographics.all())
     new_exercise.emails.add(*original_exercise.emails.all())
     new_exercise.files.add(*original_exercise.files.all())
+
+    new_exercise.set_email_reveal_times()
 
     return new_exercise
 
@@ -29,22 +30,25 @@ def add_trial(original_exercise, current_user):
     :return: Another Exercise instance copied from the original one and added a new trial number
 
     """
+    initial_trial = original_exercise.initial_trial or original_exercise
+
     trial_version_count = (
         Exercise.user_objects.filter_by_user(user=current_user)
-        .filter(initial_trial=original_exercise.initial_trial)
+        .filter(Q(id=initial_trial.id) | Q(initial_trial=initial_trial))
         .count()
     )
 
     new_exercise = get_exercise_copy(original_exercise, current_user)
-    new_exercise.initial_trial = original_exercise.initial_trial
-    new_exercise.trial_version = (
-        trial_version_count + 1 if trial_version_count is not None else 1
-    )
+    new_exercise.initial_trial = initial_trial
+
+    new_exercise.trial_version = trial_version_count + 1
     new_exercise.save()
 
     new_exercise.demographics.add(*original_exercise.demographics.all())
     new_exercise.emails.add(*original_exercise.emails.all())
     new_exercise.files.add(*original_exercise.files.all())
+
+    new_exercise.set_email_reveal_times()
 
     return new_exercise
 
