@@ -215,9 +215,7 @@ class Exercise(PhishtrayBaseModel):
         help_text="Should participants receive a phishing debrief at the end of the exercise?",
         default=False,
     )
-    copied_from = models.ForeignKey(
-        "self", on_delete=models.DO_NOTHING, null=True, blank=True
-    )
+    copied_from = models.CharField(max_length=250, null=True, blank=True)
     organisation = models.ForeignKey(
         "participant.Organization", on_delete=models.PROTECT, null=True, blank=True
     )
@@ -238,7 +236,7 @@ class Exercise(PhishtrayBaseModel):
     trial_version = models.IntegerField(null=True, blank=True, default=1)
     initial_trial = models.ForeignKey(
         "self",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="exercise_initial_trial",
