@@ -53,7 +53,8 @@ class ExerciseHelperTests(TestCase):
         self.assertIsNotNone(trial_exercise)
         self.assertEqual(2, Exercise.objects.all().count())
 
-        self.assertEqual(str(exercise.id), str(trial_exercise.copied_from.id))
+        self.assertEqual(exercise, trial_exercise.copied_from)
+        self.assertEqual(exercise, trial_exercise.initial_trial)
         self.assertEqual(2, trial_exercise.trial_version)
 
         self.assertEqual(
@@ -85,8 +86,14 @@ class ExerciseHelperTests(TestCase):
         self.assertIsNotNone(another_trial_exercise)
         self.assertEqual(3, Exercise.objects.all().count())
 
-        self.assertEqual(str(exercise.id), str(trial_exercise.copied_from.id))
-        self.assertEqual(str(exercise.id), str(another_trial_exercise.copied_from.id))
+        self.assertEqual(exercise, trial_exercise.copied_from)
+        self.assertEqual(exercise, another_trial_exercise.copied_from)
+
+        self.assertEqual(exercise, trial_exercise.initial_trial)
+        self.assertEqual(exercise, another_trial_exercise.initial_trial)
+
+        self.assertEqual(2, trial_exercise.trial_version)
+        self.assertEqual(3, another_trial_exercise.trial_version)
 
         self.assertEqual(2, Exercise.objects.filter(copied_from=exercise).count())
         self.assertEqual(2, Exercise.objects.filter(initial_trial=exercise).count())
