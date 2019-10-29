@@ -5,12 +5,11 @@ import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import Markdown from 'react-markdown';
-import { connect } from 'react-redux';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
 
-import { logAction } from '../../../utils';
+import { logAction, selectWebpageType } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
 import { loadFiles } from '../../../actions/fileManagerActions';
 
@@ -25,6 +24,8 @@ type Props = {
   loadFiles: () => void,
   markThreadAsDeleted: () => void,
   addReplyToEmail: () => void,
+  threads: Array<*>,
+  activeThread: number,
 };
 
 const Divider = styled('p')({
@@ -52,7 +53,21 @@ const Paragraph = styled('p')({
 });
 
 function EmailAttachments({ props }) {
-  const { email, onReplyParams, addFile, loadFiles } = props;
+  const {
+    email,
+    onReplyParams,
+    addFile,
+    loadFiles,
+    threads,
+    activeThread,
+  } = props;
+  const active = threads.filter(thread => thread.id === activeThread);
+
+  const {
+    interceptExercise,
+    releaseCodes,
+    webPage,
+  } = active[0].threadProperties;
 
   return (
     <div
@@ -89,6 +104,13 @@ function EmailAttachments({ props }) {
               }}
               onClick={async () => {
                 await loadFiles();
+                webPage &&
+                  selectWebpageType(
+                    interceptExercise,
+                    releaseCodes,
+                    props.showWebpage,
+                    actionTypes.emailAttachmentDownload
+                  );
                 logAction({
                   actionType: actionTypes.emailAttachmentDownload,
                   fileName: attachment.filename,
@@ -98,7 +120,7 @@ function EmailAttachments({ props }) {
                   emailId: onReplyParams.emailId,
                   timestamp: new Date(),
                 });
-                await addFile(attachment);
+                addFile(attachment);
               }}
               className={css({
                 marginRight: 20,
@@ -234,19 +256,6 @@ function ReturnReplies({ props, items }) {
     webPage,
   } = items[0].threadProperties;
 
-  function selectWebpageType() {
-    if (interceptExercise && releaseCodes.length > 0) {
-      props.showWebpage('blockedPage');
-    } else if (interceptExercise === false && releaseCodes.length > 0) {
-      console.log('Should render Training Page');
-    } else if (releaseCodes.length === 0) {
-      console.log('Should render Warning Page');
-    } else {
-      console.log('No webpage.');
-      return false;
-    }
-  }
-
   return !props.email.isReplied ? (
     <Fragment>
       <h3 ref={props.repliesRef}>
@@ -261,7 +270,13 @@ function ReturnReplies({ props, items }) {
         }}
         replies={props.email.replies}
         onClick={() => {
-          webPage && selectWebpageType();
+          webPage &&
+            selectWebpageType(
+              interceptExercise,
+              releaseCodes,
+              props.showWebpage,
+              actionTypes.emailQuickReply
+            );
         }}
       />
     </Fragment>
@@ -284,6 +299,7 @@ const Email = (props: Props) => {
   const active = props.threads.filter(
     thread => thread.id === props.activeThread
   );
+
   return (
     <div
       className={css({

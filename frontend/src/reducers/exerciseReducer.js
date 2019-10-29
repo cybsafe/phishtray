@@ -49,6 +49,12 @@ export default function reducer(
       };
     }
 
+    case 'exercise/SET_URL_WEBPAGE':
+      return {
+        ...state,
+        pageURL: action.payload.url,
+      };
+
     case 'exercise/SET_START_TIME':
       return {
         ...state,

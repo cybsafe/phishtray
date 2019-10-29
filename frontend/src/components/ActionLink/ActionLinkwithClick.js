@@ -2,10 +2,11 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import { logAction } from '../../utils';
+import { logAction, selectWebpageType } from '../../utils';
 import { connect } from 'react-redux';
 
 import { setInlineNotification } from '../../actions/exerciseActions';
+import { showWebpage } from '../../actions/uiActions';
 
 type Props = {
   data: {
@@ -22,6 +23,9 @@ type Props = {
   remove?: string,
   secondary?: string,
   onReplyPress: () => void,
+  threads: Array,
+  activeThread?: string,
+  showWebpage: () => void,
 };
 
 const ActionLink = styled(Link)`
@@ -55,8 +59,18 @@ function ActionLinkwithClick({
   remove,
   onReplyPress,
   setInlineNotification,
+  threads,
+  activeThread,
+  showWebpage,
   ...restProps
 }: Props) {
+  const active = threads.filter(thread => thread.id === activeThread);
+
+  const {
+    interceptExercise,
+    releaseCodes,
+    webPage,
+  } = active[0].threadProperties;
   return (
     <ActionLink
       to={
@@ -77,6 +91,13 @@ function ActionLinkwithClick({
         remove && markThreadAsDeleted(threadId) && markThreadAsInactive();
         onReplyPress && onReplyPress();
         setInlineNotification && setInlineNotification(title);
+        webPage &&
+          selectWebpageType(
+            interceptExercise,
+            releaseCodes,
+            showWebpage,
+            data.actionType
+          );
       }}
       {...restProps}
     >
@@ -86,8 +107,12 @@ function ActionLinkwithClick({
 }
 
 export default connect(
-  state => ({}),
+  state => ({
+    threads: state.exercise.threads,
+    activeThread: state.exercise.activeThread,
+  }),
   {
     setInlineNotification,
+    showWebpage,
   }
 )(ActionLinkwithClick);

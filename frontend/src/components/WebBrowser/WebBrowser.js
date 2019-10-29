@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { getWebpage } from '../../selectors/uiSelectors';
 import { closeWebpage } from '../../actions/uiActions';
+import { setUrlWebPage } from '../../actions/exerciseActions';
 
 import { logAction } from '../../utils';
 import actionTypes from '../../config/actionTypes';
@@ -125,7 +126,21 @@ export class WebBrowser extends Component {
   };
 
   render() {
-    const { closeWebpage, webpage, enableClose, pageURL } = this.props;
+    const {
+      closeWebpage,
+      webpage,
+      enableClose,
+      pageURL,
+      threads,
+      activeThread,
+      setUrlWebPage,
+    } = this.props;
+
+    if (activeThread && activeThread !== '') {
+      const active = threads.filter(thread => thread.id === activeThread);
+      const { threadProperties } = active[0];
+      threadProperties.webPage && setUrlWebPage(threadProperties.webPage.url);
+    }
 
     if (!webpage) {
       return null;
@@ -164,6 +179,8 @@ export default connect(
     enableClose: state.ui.webBrowser,
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
+    activeThread: state.exercise.activeThread,
+    threads: state.exercise.threads,
   }),
-  { closeWebpage }
+  { closeWebpage, setUrlWebPage }
 )(WebBrowser);
