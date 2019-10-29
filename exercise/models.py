@@ -295,6 +295,24 @@ class Exercise(PhishtrayBaseModel):
                 exercise_id=self.id, email_id=email.id
             ).set_reveal_time(rand_time)
 
+    @property
+    def copied_from_exercise_id(self):
+        # Expected format of copied_from is 'exercise.name - exercise.id'
+        if not self.copied_from:
+            return None
+        else:
+            try:
+                return self.copied_from.split(' - ')[1]
+            except IndexError:
+                return None
+
+    @property
+    def copied_from_exercise(self):
+        try:
+            return Exercise.objects.get(pk=self.copied_from_exercise_id)
+        except Exercise.DoesNotExist:
+            return None
+
 
 class ExerciseWebPage(PhishtrayBaseModel):
     PAGE_REGULAR = 0
