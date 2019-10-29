@@ -154,6 +154,60 @@ class ExerciseModelTests(TestCase):
         self.assertEqual(2, Exercise.objects.all().count())
         self.assertEqual(1, Exercise.objects.filter(organisation=organisation).count())
 
+    def test_copied_from_exercise_id(self):
+        base_exercise = ExerciseFactory()
+        copied_from_str = f'{base_exercise.title} - {base_exercise.id}'
+
+        test_params = [
+            {"exercise": base_exercise, "expected_result": None},
+            {
+                "exercise": ExerciseFactory(copied_from=None),
+                "expected_result": None
+            },
+            {
+                "exercise": ExerciseFactory(copied_from='some random string'),
+                "expected_result": None
+            },
+            {
+                "exercise": ExerciseFactory(copied_from=copied_from_str),
+                "expected_result": str(base_exercise.id)
+            },
+        ]
+
+        for params in test_params:
+            with self.subTest(params=params):
+                self.assertEquals(
+                    params["expected_result"],
+                    params['exercise'].copied_from_exercise_id
+                )
+
+    def test_copied_from_exercise(self):
+        base_exercise = ExerciseFactory()
+        copied_from_str = f'{base_exercise.title} - {base_exercise.id}'
+
+        test_params = [
+            {"exercise": base_exercise, "expected_result": None},
+            {
+                "exercise": ExerciseFactory(copied_from=None),
+                "expected_result": None
+            },
+            {
+                "exercise": ExerciseFactory(copied_from='some random string'),
+                "expected_result": None
+            },
+            {
+                "exercise": ExerciseFactory(copied_from=copied_from_str),
+                "expected_result": base_exercise
+            },
+        ]
+
+        for params in test_params:
+            with self.subTest(params=params):
+                self.assertEquals(
+                    params["expected_result"],
+                    params['exercise'].copied_from_exercise
+                )
+
 
 class ExerciseWebPageModelTests(TestCase):
     def test_url_uniqueness(self):
