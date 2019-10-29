@@ -11,6 +11,8 @@ import QuickReply from './QuickReply';
 import { logAction } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
 
+import { getAllFiles } from '../../../data/files';
+
 type Props = {
   email: Object,
   onReplyParams: Object,
@@ -47,6 +49,7 @@ const Paragraph = styled('p')({
 
 function EmailAttachments({ props }) {
   const { email, onReplyParams, addFile } = props;
+
   return (
     <div
       className={css({
@@ -80,7 +83,8 @@ function EmailAttachments({ props }) {
                   attachment,
                 },
               }}
-              onClick={() => {
+              onClick={async () => {
+                await getAllFiles();
                 logAction({
                   actionType: actionTypes.emailAttachmentDownload,
                   fileName: attachment.filename,
@@ -90,7 +94,7 @@ function EmailAttachments({ props }) {
                   emailId: onReplyParams.emailId,
                   timestamp: new Date(),
                 });
-                addFile(attachment);
+                await addFile(attachment);
               }}
               className={css({
                 marginRight: 20,
