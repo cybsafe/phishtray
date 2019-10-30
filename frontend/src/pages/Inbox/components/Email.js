@@ -4,12 +4,14 @@ import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import Markdown from 'react-markdown';
+import { connect } from 'react-redux';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
 
 import { logAction } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
+import { loadFiles } from '../../../actions/fileManagerActions';
 
 type Props = {
   email: Object,
@@ -17,6 +19,7 @@ type Props = {
   threadId: string,
   repliesRef: Object,
   addFile: () => void,
+  loadFiles: () => void,
   markThreadAsDeleted: () => void,
   addReplyToEmail: () => void,
 };
@@ -46,7 +49,8 @@ const Paragraph = styled('p')({
 });
 
 function EmailAttachments({ props }) {
-  const { email, onReplyParams, addFile } = props;
+  const { email, onReplyParams, addFile, loadFiles } = props;
+
   return (
     <div
       className={css({
@@ -80,7 +84,8 @@ function EmailAttachments({ props }) {
                   attachment,
                 },
               }}
-              onClick={() => {
+              onClick={async () => {
+                await loadFiles();
                 logAction({
                   actionType: actionTypes.emailAttachmentDownload,
                   fileName: attachment.filename,
@@ -90,7 +95,7 @@ function EmailAttachments({ props }) {
                   emailId: onReplyParams.emailId,
                   timestamp: new Date(),
                 });
-                addFile(attachment);
+                await addFile(attachment);
               }}
               className={css({
                 marginRight: 20,
@@ -289,4 +294,9 @@ const Email = (props: Props) => (
   </div>
 );
 
-export default Email;
+export default connect(
+  null,
+  {
+    loadFiles,
+  }
+)(Email);
