@@ -94,16 +94,41 @@ class ExerciseAdmin(admin.ModelAdmin):
         return super().has_change_permission(request, obj)
 
 
+class ExerciseEmailPropertiesListFilter(admin.SimpleListFilter):
+    title = "Exercise"
+    parameter_name = "exercise"
+
+    def lookups(self, request, model_admin):
+        qs = (
+            ExerciseEmailProperties.objects.filter_by_user(user=request.user)
+            .values_list("exercise", flat=True)
+            .distinct()
+        )
+        exercises = [[ex, ex] for ex in qs]
+        return exercises
+
+    def queryset(self, request, queryset):
+        queryset = ExerciseEmailProperties.objects.filter_by_user(user=request.user)
+
+        if self.value():
+            return queryset.filter(exercise=self.value())
+        else:
+            return queryset
+
+
 @admin.register(ExerciseEmailProperties)
 class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
     list_display = ("exercise", "email", "reveal_time")
-    list_filter = ("exercise",)
+    list_filter = (ExerciseEmailPropertiesListFilter,)
     search_fields = ("email__subject",)
 
 
 @admin.register(ExerciseWebPageReleaseCode)
 class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
     list_display = ("release_code",)
+
+    def get_queryset(self, request):
+        return ExerciseWebPageReleaseCode.objects.filter_by_user(user=request.user)
 
 
 admin.site.register(DemographicsInfo)

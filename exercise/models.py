@@ -7,7 +7,11 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from phishtray.base import PhishtrayBaseModel
-from .managers import ExerciseManager
+from .managers import (
+    ExerciseManager,
+    ExerciseEmailPropertiesManager,
+    ExerciseWebPageReleaseCodeManager,
+)
 
 
 EXERCISE_EMAIL_PHISH = 0
@@ -335,11 +339,15 @@ class ExerciseWebPageReleaseCode(PhishtrayBaseModel):
     def __str__(self):
         return self.release_code
 
+    objects = ExerciseWebPageReleaseCodeManager()
+
 
 class ExerciseEmailProperties(PhishtrayBaseModel):
     class Meta:
         unique_together = ("exercise", "email")
         verbose_name_plural = "Exercise email properties"
+
+    objects = ExerciseEmailPropertiesManager()
 
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     email = models.ForeignKey(ExerciseEmail, on_delete=models.CASCADE)
