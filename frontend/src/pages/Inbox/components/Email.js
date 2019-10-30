@@ -5,6 +5,7 @@ import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import Markdown from 'react-markdown';
+import moment from 'moment';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
@@ -20,6 +21,8 @@ type Props = {
   onReplyParams: Object,
   threadId: string,
   repliesRef: Object,
+  activeThread: string,
+  threads: Array<Object>,
   addFile: () => void,
   loadFiles: () => void,
   markThreadAsDeleted: () => void,
@@ -157,7 +160,15 @@ function EmailAttachments({ props }) {
   );
 }
 
-function EmailInfo({ email }) {
+function EmailInfo({ email, threads, activeThread }) {
+  const activeEmailThread = threads.filter(
+    thread => thread.id === activeThread
+  );
+  const dateReceived = activeEmailThread[0].threadProperties.dateReceived;
+  const date = dateReceived
+    ? moment(dateReceived).format('dddd D MMM YYYY')
+    : format(Date.now(), 'dddd D MMM YYYY');
+
   return (
     <div
       className={css({
@@ -241,7 +252,7 @@ function EmailInfo({ email }) {
           letterSpacing: '1px',
         })}
       >
-        {format(Date.now(), 'dddd D MMM YYYY')}
+        {date}
       </div>
     </div>
   );
@@ -315,6 +326,8 @@ const Email = (props: Props) => {
   const active = props.threads.filter(
     thread => thread.id === props.activeThread
   );
+
+  const { email, threads, activeThread } = props;
   return (
     <div
       className={css({
@@ -323,7 +336,7 @@ const Email = (props: Props) => {
         padding: '0 40px',
       })}
     >
-      <EmailInfo email={props.email} />
+      <EmailInfo email={email} threads={threads} activeThread={activeThread} />
 
       <h3
         className={css({
