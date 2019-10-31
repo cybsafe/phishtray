@@ -122,6 +122,9 @@ class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
     list_filter = (ExerciseEmailPropertiesListFilter,)
     search_fields = ("email__subject",)
 
+    def get_queryset(self, request):
+        return ExerciseEmailProperties.objects.filter_by_user(user=request.user)
+
 
 @admin.register(ExerciseWebPageReleaseCode)
 class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
