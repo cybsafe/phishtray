@@ -89,49 +89,68 @@ function EmailAttachments({ props }) {
           display: 'flex',
           flexDirection: 'row',
           marginTop: '20px',
-          marginBottom: '20px',
         })}
       >
         {email.attachments &&
-          email.attachments.map(attachment => (
-            <Link
-              key={attachment.id}
-              to={{
-                pathname: '/files',
-                params: {
-                  attachment,
-                },
-              }}
-              onClick={async () => {
-                await loadFiles();
-                webPage &&
-                  selectWebpageType(
-                    interceptExercise,
-                    releaseCodes,
-                    props.showWebpage,
-                    actionTypes.emailAttachmentDownload
-                  );
-                logAction({
-                  actionType: actionTypes.emailAttachmentDownload,
-                  fileName: attachment.filename,
-                  fileId: attachment.id,
-                  participantId: onReplyParams.participantId,
-                  timeDelta: Date.now() - onReplyParams.startTime,
-                  emailId: onReplyParams.emailId,
-                  timestamp: new Date(),
-                });
-                addFile(attachment);
-              }}
-              className={css({
-                marginRight: 20,
-                textDecoration: 'none',
-                color: '#B8B8B8',
-                letterSpacing: '1.1px',
-              })}
-            >
-              > {attachment.filename || attachment.fileName}
-            </Link>
-          ))}
+          email.attachments.map(attachment => {
+            if (webPage) {
+              return (
+                <a
+                  className={css({
+                    marginRight: 20,
+                    textDecoration: 'none',
+                    color: '#B8B8B8',
+                    letterSpacing: '1.1px',
+                    cursor: 'pointer',
+                  })}
+                  onClick={() => {
+                    webPage &&
+                      selectWebpageType(
+                        interceptExercise,
+                        releaseCodes,
+                        props.showWebpage,
+                        actionTypes.emailAttachmentDownload
+                      );
+                  }}
+                >
+                  {attachment.filename || attachment.fileName}
+                </a>
+              );
+            } else {
+              return (
+                <Link
+                  key={attachment.id}
+                  to={{
+                    pathname: '/files',
+                    params: {
+                      attachment,
+                    },
+                  }}
+                  onClick={async () => {
+                    await loadFiles();
+                    logAction({
+                      actionType: actionTypes.emailAttachmentDownload,
+                      fileName: attachment.filename,
+                      fileId: attachment.id,
+                      participantId: onReplyParams.participantId,
+                      timeDelta: Date.now() - onReplyParams.startTime,
+                      emailId: onReplyParams.emailId,
+                      timestamp: new Date(),
+                    });
+                    addFile(attachment);
+                  }}
+                  className={css({
+                    marginRight: 20,
+                    textDecoration: 'none',
+                    color: '#B8B8B8',
+                    letterSpacing: '1.1px',
+                  })}
+                >
+                  > {attachment.filename || attachment.fileName}
+                </Link>
+              );
+            }
+          })}
       </div>
     </div>
   );
