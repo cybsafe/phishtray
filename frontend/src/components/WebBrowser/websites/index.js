@@ -46,7 +46,7 @@ export default {
     component: Blocked,
     link: 'myblocked',
   },
-  warning: {
+  warningPage: {
     isSecure: true,
     url: 'www.warningpage.com',
     component: Warning,
