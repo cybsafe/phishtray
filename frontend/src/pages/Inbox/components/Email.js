@@ -26,10 +26,6 @@ type Props = {
   addFile: () => void,
   loadFiles: () => void,
   markThreadAsDeleted: () => void,
-  addReplyToEmail: () => void,
-  threads: Array<*>,
-  activeThread: number,
-  showWebpage: () => void,
 };
 
 const Divider = styled('p')({
