@@ -41,6 +41,3 @@ class ParticipantList(admin.ModelAdmin, ExportCsvMixin):
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ("name",)
     list_display = ("id", "name")
-
-    def get_queryset(self, request):
-        return Organization.objects.filter_by_user(user=request.user)
