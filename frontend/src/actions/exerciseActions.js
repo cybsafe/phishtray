@@ -83,13 +83,6 @@ export function setSelectedReply(params: Object) {
   };
 }
 
-export function setUrlWebPage(url: String) {
-  return {
-    type: 'exercise/SET_URL_WEBPAGE',
-    payload: { url },
-  };
-}
-
 export function setInlineNotification(term: string) {
   return {
     type: 'exercise/SET_INLINE_NOTIFICATION',
