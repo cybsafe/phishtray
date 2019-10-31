@@ -51,3 +51,21 @@ class ExerciseWebPageReleaseCodeQuerySet(QuerySet):
             return self.filter(release_code__in=codes)
 
         return self
+
+
+class ExerciseWebPageQuerySet(QuerySet):
+    def filter_by_user(self, user):
+        from .models import ExerciseEmailProperties
+
+        if not user or not isinstance(user, User):
+            return self.none()
+
+        if not user.is_superuser:
+            webpages = list(
+                ExerciseEmailProperties.objects.filter_by_user(user=user)
+                .values_list("web_page_id", flat=True)
+                .distinct()
+            )
+            return self.filter(id__in=webpages)
+
+        return self

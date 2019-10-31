@@ -11,6 +11,7 @@ from .managers import (
     ExerciseManager,
     ExerciseEmailPropertiesManager,
     ExerciseWebPageReleaseCodeManager,
+    ExerciseWebPageManager,
 )
 
 
@@ -324,6 +325,8 @@ class ExerciseWebPage(PhishtrayBaseModel):
 
     def __str__(self):
         return self.title
+
+    objects = ExerciseWebPageManager()
 
     title = models.CharField(max_length=250, blank=True, null=True)
     url = models.CharField(max_length=250, blank=True, null=True, unique=True)

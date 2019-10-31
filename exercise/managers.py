@@ -3,6 +3,7 @@ from .queryset import (
     ExerciseQuerySet,
     ExerciseEmailPropertiesQuerySet,
     ExerciseWebPageReleaseCodeQuerySet,
+    ExerciseWebPageQuerySet,
 )
 
 
@@ -19,4 +20,8 @@ class ExerciseEmailPropertiesManager(
 class ExerciseWebPageReleaseCodeManager(
     Manager.from_queryset(ExerciseWebPageReleaseCodeQuerySet)
 ):
+    pass
+
+
+class ExerciseWebPageManager(Manager.from_queryset(ExerciseWebPageQuerySet)):
     pass
