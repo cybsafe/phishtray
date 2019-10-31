@@ -41,7 +41,7 @@ export default {
   },
   blockedPage: {
     isSecure: true,
-    url: 'www.myblockedpage.com',
+    url: 'www.myblockedpage.info',
     component: Blocked,
     link: 'myblocked',
   },

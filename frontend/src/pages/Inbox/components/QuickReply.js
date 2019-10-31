@@ -1,13 +1,18 @@
 import React from 'react';
 import Button from '../../../components/Button/ReplyButton';
-import { logAction } from '../../../utils';
+import { connect } from 'react-redux';
+import { logAction, selectWebpageType } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
+import { showWebpage } from '../../../actions/uiActions';
 
 type Props = {
   replies: Array<*>,
   logActionParams: Object,
   setSelectedReplyParams: Object,
   setSelectedReply: () => void,
+  activeThread: Number,
+  threads: Array<*>,
+  showWebpage: () => void,
 };
 
 const QuickReply = ({
@@ -15,9 +20,20 @@ const QuickReply = ({
   logActionParams,
   setSelectedReply,
   setSelectedReplyParams,
-  onClick,
+  activeThread,
+  threads,
+  showWebpage,
 }: Props) => {
   const { participantId, startTime, emailId } = logActionParams;
+
+  const active = threads.filter(thread => thread.id === activeThread);
+
+  const {
+    interceptExercise,
+    releaseCodes,
+    webPage,
+  } = active[0].threadProperties;
+
   return replies.map(reply => (
     <Button
       key={reply.id}
@@ -37,10 +53,23 @@ const QuickReply = ({
           message: reply.message,
           timestamp: new Date(),
         });
-        onClick();
+        webPage &&
+          selectWebpageType(
+            interceptExercise,
+            releaseCodes,
+            showWebpage,
+            actionTypes.emailQuickReply
+          );
       }}
     />
   ));
 };
 
-export default QuickReply;
+export default connect(
+  state => ({
+    activeThread: state.exercise.activeThread,
+    threads: state.exercise.threads,
+    exercise: state.exercise,
+  }),
+  { showWebpage }
+)(QuickReply);

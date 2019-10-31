@@ -249,13 +249,7 @@ function RouterLink(props) {
   );
 }
 
-function ReturnReplies({ props, items }) {
-  const {
-    interceptExercise,
-    releaseCodes,
-    webPage,
-  } = items[0].threadProperties;
-
+function ReturnReplies({ props }) {
   return !props.email.isReplied ? (
     <Fragment>
       <h3 ref={props.repliesRef}>
@@ -269,15 +263,6 @@ function ReturnReplies({ props, items }) {
           emailid: props.email.id,
         }}
         replies={props.email.replies}
-        onClick={() => {
-          webPage &&
-            selectWebpageType(
-              interceptExercise,
-              releaseCodes,
-              props.showWebpage,
-              actionTypes.emailQuickReply
-            );
-        }}
       />
     </Fragment>
   ) : (

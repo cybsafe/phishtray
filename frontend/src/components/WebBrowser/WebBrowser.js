@@ -5,7 +5,6 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { getWebpage } from '../../selectors/uiSelectors';
 import { closeWebpage } from '../../actions/uiActions';
-import { setUrlWebPage } from '../../actions/exerciseActions';
 
 import { logAction } from '../../utils';
 import actionTypes from '../../config/actionTypes';
@@ -130,16 +129,15 @@ export class WebBrowser extends Component {
       closeWebpage,
       webpage,
       enableClose,
-      pageURL,
       threads,
       activeThread,
-      setUrlWebPage,
     } = this.props;
+
+    let threadProperties = {};
 
     if (activeThread && activeThread !== '') {
       const active = threads.filter(thread => thread.id === activeThread);
-      const { threadProperties } = active[0];
-      threadProperties.webPage && setUrlWebPage(threadProperties.webPage.url);
+      threadProperties = active[0].threadProperties;
     }
 
     if (!webpage) {
@@ -158,7 +156,11 @@ export class WebBrowser extends Component {
             enableClose.page !== 'blockedPage' && closeWebpage();
           }}
           isSecure={webpage.isSecure}
-          url={pageURL ? pageURL : webpage.url}
+          url={
+            threadProperties.webPage
+              ? threadProperties.webPage.url
+              : webpage.url
+          }
         />
         <MemoryRouter>
           <ContentComponent
@@ -174,7 +176,6 @@ export class WebBrowser extends Component {
 export default connect(
   state => ({
     emailId: state.ui.webBrowser ? state.ui.webBrowser.emailId : '',
-    pageURL: state.exercise.pageURL,
     webpage: getWebpage(state),
     enableClose: state.ui.webBrowser,
     startTime: state.exercise.startTime,
@@ -182,5 +183,5 @@ export default connect(
     activeThread: state.exercise.activeThread,
     threads: state.exercise.threads,
   }),
-  { closeWebpage, setUrlWebPage }
+  { closeWebpage }
 )(WebBrowser);

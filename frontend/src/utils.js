@@ -86,19 +86,21 @@ export const getHeaderText = location => {
   }
 };
 
+const negativeActions = [
+  'email_forwarded',
+  'email_attachment_download',
+  'email_opened',
+  'email_quick_reply',
+  'email_replied',
+];
+
 export const selectWebpageType = (
   interceptExercise: string,
   releaseCodes: string,
-  showWebpage: () => void,
+  showWebpage: (page: string) => void,
   actionType: string
 ) => {
-  if (
-    actionType === 'email_attachment_download' ||
-    actionType === 'email_forwarded' ||
-    actionType === 'email_opened' ||
-    actionType === 'email_quick_reply' ||
-    actionType === 'email_replied'
-  ) {
+  if (negativeActions.indexOf(actionType) >= 0) {
     if (interceptExercise && releaseCodes.length > 0) {
       showWebpage('blockedPage');
     } else if (interceptExercise === false && releaseCodes.length > 0) {
@@ -107,7 +109,7 @@ export const selectWebpageType = (
       // need to improve this logic
       console.log('Should render Warning Page');
     } else {
-      console.log('No webpage.');
+      return null;
     }
   }
 };

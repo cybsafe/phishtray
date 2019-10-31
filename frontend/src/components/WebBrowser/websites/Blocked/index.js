@@ -63,7 +63,7 @@ function Blocked({ closeWebpage, activeThread, threads }: Props) {
             onChange={handleChange}
             placeholder="Enter the code"
             invalid={error}
-            invalidText="Wrong code provided"
+            invalidText="Incorrect code provided"
           />
           <SubmitButton type="submit">Submit</SubmitButton>
         </Form>
