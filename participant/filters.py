@@ -13,7 +13,6 @@ class TrialVersionListFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
 
         exercise = request.GET.get("exercise__id__exact", "")
-        print(exercise)
 
         if exercise:
             trial_versions = (
@@ -21,7 +20,6 @@ class TrialVersionListFilter(admin.SimpleListFilter):
                 .filter(Q(id=exercise) | Q(initial_trial__id__exact=exercise))
                 .order_by("trial_version")
             )
-            print(len(trial_versions))
         else:
             trial_versions = Exercise.objects.none()
 
