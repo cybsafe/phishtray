@@ -1,8 +1,10 @@
 // @flow
 import Cookies from 'js-cookie';
 
-export const HOST_BACKEND = process.env.REACT_APP_HOST_BACKEND || process.env.REACT_APP_HOST;
-export const HOST_FRONTEND = process.env.REACT_APP_HOST_FRONTEND || process.env.REACT_APP_HOST;
+export const HOST_BACKEND =
+  process.env.REACT_APP_HOST_BACKEND || process.env.REACT_APP_HOST;
+export const HOST_FRONTEND =
+  process.env.REACT_APP_HOST_FRONTEND || process.env.REACT_APP_HOST;
 
 export const fetchAndDispatch = (apiUrl: string, dispatchType: string) => (
   dispatch: *
@@ -81,6 +83,34 @@ export const getHeaderText = location => {
       return 'Staff Profiles';
     default:
       return location.split('/')[1] || 'Inbox';
+  }
+};
+
+const negativeActions = [
+  'email_forwarded',
+  'email_attachment_download',
+  'email_opened',
+  'email_quick_reply',
+  'email_replied',
+];
+
+export const selectWebpageType = (
+  interceptExercise: string,
+  releaseCodes: string,
+  showWebpage: (page: string) => void,
+  actionType: string
+) => {
+  if (negativeActions.indexOf(actionType) >= 0) {
+    if (interceptExercise && releaseCodes.length > 0) {
+      showWebpage('blockedPage');
+    } else if (interceptExercise === false && releaseCodes.length > 0) {
+      console.log('Should render Training Page');
+    } else if (releaseCodes.length === 0) {
+      // need to improve this logic
+      console.log('Should render Warning Page');
+    } else {
+      return null;
+    }
   }
 };
 

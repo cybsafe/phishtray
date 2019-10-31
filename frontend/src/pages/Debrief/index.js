@@ -1,6 +1,6 @@
 //@flow
 import React, { useEffect, Fragment } from 'react';
-import styled, { injectGlobal } from 'react-emotion';
+import styled from 'react-emotion';
 import { connect } from 'react-redux';
 import { Button as CarbonButton } from 'carbon-components-react';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';

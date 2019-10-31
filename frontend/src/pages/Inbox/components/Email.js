@@ -1,17 +1,19 @@
 // @flow
 import React, { Fragment } from 'react';
+import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import Markdown from 'react-markdown';
-import { connect } from 'react-redux';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
 
-import { logAction } from '../../../utils';
+import { logAction, selectWebpageType } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
 import { loadFiles } from '../../../actions/fileManagerActions';
+
+import { showWebpage } from '../../../actions/uiActions';
 
 type Props = {
   email: Object,
@@ -22,6 +24,8 @@ type Props = {
   loadFiles: () => void,
   markThreadAsDeleted: () => void,
   addReplyToEmail: () => void,
+  threads: Array<*>,
+  activeThread: number,
 };
 
 const Divider = styled('p')({
@@ -49,7 +53,21 @@ const Paragraph = styled('p')({
 });
 
 function EmailAttachments({ props }) {
-  const { email, onReplyParams, addFile, loadFiles } = props;
+  const {
+    email,
+    onReplyParams,
+    addFile,
+    loadFiles,
+    threads,
+    activeThread,
+  } = props;
+  const active = threads.filter(thread => thread.id === activeThread);
+
+  const {
+    interceptExercise,
+    releaseCodes,
+    webPage,
+  } = active[0].threadProperties;
 
   return (
     <div
@@ -71,42 +89,68 @@ function EmailAttachments({ props }) {
           display: 'flex',
           flexDirection: 'row',
           marginTop: '20px',
-          marginBottom: '20px',
         })}
       >
         {email.attachments &&
-          email.attachments.map(attachment => (
-            <Link
-              key={attachment.id}
-              to={{
-                pathname: '/files',
-                params: {
-                  attachment,
-                },
-              }}
-              onClick={async () => {
-                await loadFiles();
-                logAction({
-                  actionType: actionTypes.emailAttachmentDownload,
-                  fileName: attachment.filename,
-                  fileId: attachment.id,
-                  participantId: onReplyParams.participantId,
-                  timeDelta: Date.now() - onReplyParams.startTime,
-                  emailId: onReplyParams.emailId,
-                  timestamp: new Date(),
-                });
-                await addFile(attachment);
-              }}
-              className={css({
-                marginRight: 20,
-                textDecoration: 'none',
-                color: '#B8B8B8',
-                letterSpacing: '1.1px',
-              })}
-            >
-              > {attachment.filename || attachment.fileName}
-            </Link>
-          ))}
+          email.attachments.map(attachment => {
+            if (webPage) {
+              return (
+                <a
+                  className={css({
+                    marginRight: 20,
+                    textDecoration: 'none',
+                    color: '#B8B8B8',
+                    letterSpacing: '1.1px',
+                    cursor: 'pointer',
+                  })}
+                  onClick={() => {
+                    webPage &&
+                      selectWebpageType(
+                        interceptExercise,
+                        releaseCodes,
+                        props.showWebpage,
+                        actionTypes.emailAttachmentDownload
+                      );
+                  }}
+                >
+                  {attachment.filename || attachment.fileName}
+                </a>
+              );
+            } else {
+              return (
+                <Link
+                  key={attachment.id}
+                  to={{
+                    pathname: '/files',
+                    params: {
+                      attachment,
+                    },
+                  }}
+                  onClick={async () => {
+                    await loadFiles();
+                    logAction({
+                      actionType: actionTypes.emailAttachmentDownload,
+                      fileName: attachment.filename,
+                      fileId: attachment.id,
+                      participantId: onReplyParams.participantId,
+                      timeDelta: Date.now() - onReplyParams.startTime,
+                      emailId: onReplyParams.emailId,
+                      timestamp: new Date(),
+                    });
+                    addFile(attachment);
+                  }}
+                  className={css({
+                    marginRight: 20,
+                    textDecoration: 'none',
+                    color: '#B8B8B8',
+                    letterSpacing: '1.1px',
+                  })}
+                >
+                  > {attachment.filename || attachment.fileName}
+                </Link>
+              );
+            }
+          })}
       </div>
     </div>
   );
@@ -255,48 +299,55 @@ function ReturnReplies({ props }) {
   );
 }
 
-const Email = (props: Props) => (
-  <div
-    className={css({
-      maxWidth: 880,
-      margin: '0 auto',
-      padding: '0 40px',
-    })}
-  >
-    <EmailInfo email={props.email} />
+const Email = (props: Props) => {
+  const active = props.threads.filter(
+    thread => thread.id === props.activeThread
+  );
 
-    <h3
+  return (
+    <div
       className={css({
-        marginTop: 40,
-        fontSize: 40,
-        color: '#333',
-        letterSpacing: '1.2px',
+        maxWidth: 880,
+        margin: '0 auto',
+        padding: '0 40px',
       })}
     >
-      {props.email.subject}
-    </h3>
-
-    <Markdown
-      source={props.email.body}
-      renderers={{
-        link: linkProps => RouterLink({ ...linkProps, ...props }),
-        paragraph: Paragraph,
-        heading: Heading,
-      }}
-    />
-    {props.email.attachments.length > 0 && <EmailAttachments props={props} />}
-    {props.email.replies.length > 0 && (
-      <Fragment>
-        <Divider />
-        <ReturnReplies props={props} />
-      </Fragment>
-    )}
-  </div>
-);
+      <EmailInfo email={props.email} />​
+      <h3
+        className={css({
+          marginTop: 40,
+          fontSize: 40,
+          color: '#333',
+          letterSpacing: '1.2px',
+        })}
+      >
+        {props.email.subject}
+      </h3>
+      ​
+      <Markdown
+        source={props.email.body}
+        renderers={{
+          link: linkProps => RouterLink({ ...linkProps, ...props }),
+          paragraph: Paragraph,
+          heading: Heading,
+        }}
+      />
+      {props.email.attachments.length > 0 && <EmailAttachments props={props} />}
+      {props.email.replies.length > 0 && (
+        <Fragment>
+          <Divider />
+          <ReturnReplies items={active} props={props} />
+        </Fragment>
+      )}
+    </div>
+  );
+};
 
 export default connect(
-  null,
-  {
-    loadFiles,
-  }
+  state => ({
+    activeThread: state.exercise.activeThread,
+    threads: state.exercise.threads,
+    exercise: state.exercise,
+  }),
+  { showWebpage, loadFiles }
 )(Email);

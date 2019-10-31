@@ -10,6 +10,7 @@ const CustomInlineNotification = styled(Inline)`
   bottom: 20px;
   right: 20px;
   position: fixed;
+  z-index: 100;
 
   .bx--inline-notification__text-wrapper {
     p,

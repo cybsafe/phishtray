@@ -125,7 +125,20 @@ export class WebBrowser extends Component {
   };
 
   render() {
-    const { closeWebpage, webpage } = this.props;
+    const {
+      closeWebpage,
+      webpage,
+      enableClose,
+      threads,
+      activeThread,
+    } = this.props;
+
+    let threadProperties = {};
+
+    if (activeThread && activeThread !== '') {
+      const active = threads.filter(thread => thread.id === activeThread);
+      threadProperties = active[0].threadProperties;
+    }
 
     if (!webpage) {
       return null;
@@ -140,10 +153,14 @@ export class WebBrowser extends Component {
             this.logBrowserActions({
               actionType: actionTypes.browserClose,
             });
-            closeWebpage();
+            enableClose.page !== 'blockedPage' && closeWebpage();
           }}
           isSecure={webpage.isSecure}
-          url={webpage.url}
+          url={
+            threadProperties.webPage
+              ? threadProperties.webPage.url
+              : webpage.url
+          }
         />
         <MemoryRouter>
           <ContentComponent
@@ -160,8 +177,11 @@ export default connect(
   state => ({
     emailId: state.ui.webBrowser ? state.ui.webBrowser.emailId : '',
     webpage: getWebpage(state),
+    enableClose: state.ui.webBrowser,
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
+    activeThread: state.exercise.activeThread,
+    threads: state.exercise.threads,
   }),
   { closeWebpage }
 )(WebBrowser);

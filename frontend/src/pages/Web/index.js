@@ -7,7 +7,6 @@ import { showWebpage } from '../../actions/uiActions';
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
-  height: '100%',
   justifyContent: 'center',
   paddingTop: 100,
   position: 'relative',
