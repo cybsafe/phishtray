@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Participant, Organization
-from .filters import TrialVersionListFilter
+from .filters import TrialVersionListFilter, ExerciseListFilter
 from django.http import HttpResponse
 import csv
 
@@ -26,7 +26,7 @@ class ExportCsvMixin:
 
 @admin.register(Participant)
 class ParticipantList(admin.ModelAdmin, ExportCsvMixin):
-    list_filter = ("exercise", TrialVersionListFilter)
+    list_filter = (ExerciseListFilter, TrialVersionListFilter)
     actions = ["download_csv"]
 
     def get_queryset(self, request):
