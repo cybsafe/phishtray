@@ -13,3 +13,8 @@ class ExerciseQuerySet(QuerySet):
                 )
                 return private_exercises | public_exercises
         return self.filter(deleted_at=None)
+
+    def filter_by_org_private(self, user):
+        if not user.is_superuser:
+            return self.filter(organisation=user.organization, deleted_at=None)
+        return self.filter(deleted_at=None)
