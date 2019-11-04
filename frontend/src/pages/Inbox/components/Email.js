@@ -51,6 +51,24 @@ const Paragraph = styled('p')({
   fontSize: 20,
 });
 
+const FromAccountInitials = styled('div')({
+  width: 60,
+  height: 60,
+  borderRadius: '50%',
+  backgroundColor: '#1B87EC',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  color: 'white',
+  fontSize: '2rem',
+});
+
+const FromAccountPhoto = styled('img')({
+  width: 60,
+  height: 60,
+  borderRadius: '50%',
+});
+
 function EmailAttachments({ props }) {
   const {
     email,
@@ -164,6 +182,15 @@ function EmailInfo({ email, threads, activeThread }) {
     ? moment(dateReceived).format('dddd D MMM YYYY')
     : moment().format('dddd D MMM YYYY');
 
+  const { fromAccount, toAccount } = email;
+  const fromAccountSenderNames = fromAccount.name.split(' ');
+
+  const onlyInitials =
+    fromAccountSenderNames.length === 1
+      ? fromAccountSenderNames[0].charAt(0)
+      : fromAccountSenderNames[0].charAt(0) +
+        fromAccountSenderNames[fromAccountSenderNames.length - 1].charAt(0);
+
   return (
     <div
       className={css({
@@ -174,16 +201,17 @@ function EmailInfo({ email, threads, activeThread }) {
     >
       <div className={css({ flex: 0, flexBasis: '60px' })}>
         <EmailCard
-          name={email.fromAccount.name}
-          photoUrl={email.fromAccount.photoUrl}
-          role={email.fromAccount.role}
-          email={email.fromAccount.email}
+          name={fromAccount.name}
+          photoUrl={fromAccount.photoUrl}
+          onlyInitials={onlyInitials}
+          role={fromAccount.role}
+          email={fromAccount.email}
           triggerText={
-            <img
-              className={css({ width: 60, height: 60, borderRadius: '50%' })}
-              src={email.fromAccount.photoUrl}
-              alt=""
-            />
+            fromAccount.photoUrl ? (
+              <FromAccountPhoto src={fromAccount.photoUrl} alt="" />
+            ) : (
+              <FromAccountInitials>{onlyInitials}</FromAccountInitials>
+            )
           }
           direction="right"
         />
@@ -200,10 +228,10 @@ function EmailInfo({ email, threads, activeThread }) {
         <EmailField>
           <p>From: </p>
           <EmailCard
-            name={email.fromAccount.name}
-            photoUrl={email.fromAccount.photoUrl}
-            role={email.fromAccount.role}
-            email={email.fromAccount.email}
+            name={fromAccount.name}
+            photoUrl={fromAccount.photoUrl}
+            role={fromAccount.role}
+            email={fromAccount.email}
             triggerText={
               <a
                 className={css({
@@ -211,7 +239,7 @@ function EmailInfo({ email, threads, activeThread }) {
                   display: 'inline-block',
                 })}
               >
-                {email.fromAccount.name ? email.fromAccount.name + ' ' : ' '}
+                {fromAccount.name ? fromAccount.name + ' ' : ' '}
                 {String.fromCharCode(8744)}
               </a>
             }
@@ -220,10 +248,10 @@ function EmailInfo({ email, threads, activeThread }) {
         <EmailField>
           <p>To: </p>
           <EmailCard
-            name={email.toAccount.name}
-            photoUrl={email.toAccount.photoUrl}
-            email={email.toAccount.email}
-            role={email.toAccount.role}
+            name={toAccount.name}
+            photoUrl={toAccount.photoUrl}
+            email={toAccount.email}
+            role={toAccount.role}
             triggerText={
               <a
                 className={css({
@@ -231,7 +259,7 @@ function EmailInfo({ email, threads, activeThread }) {
                   display: 'inline-block',
                 })}
               >
-                {email.toAccount.name ? email.toAccount.name + ' ' : ' '}
+                {toAccount.name ? toAccount.name + ' ' : ' '}
                 {String.fromCharCode(8744)}
               </a>
             }
