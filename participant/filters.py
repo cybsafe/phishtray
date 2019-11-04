@@ -17,7 +17,7 @@ class TrialVersionListFilter(admin.SimpleListFilter):
 
         if exercise:
             trial_versions = (
-                Exercise.user_objects.filter_by_user(user=request.user)
+                Exercise.user_objects.filter_by_org_private(user=request.user)
                 .filter(Q(id=exercise) | Q(initial_trial__id__exact=exercise))
                 .annotate(
                     display_name=Concat(
@@ -66,7 +66,7 @@ class ExerciseListFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
 
         exercises = (
-            Exercise.user_objects.filter_by_user(user=request.user)
+            Exercise.user_objects.filter_by_org_private(user=request.user)
             .filter(trial_version=1)
             .annotate(
                 display_name=Concat(
