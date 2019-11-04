@@ -3,7 +3,6 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
-import format from 'date-fns/format';
 import Markdown from 'react-markdown';
 import moment from 'moment';
 
@@ -163,7 +162,7 @@ function EmailInfo({ email, threads, activeThread }) {
   const dateReceived = activeEmailThread[0].threadProperties.dateReceived;
   const date = dateReceived
     ? moment(dateReceived).format('dddd D MMM YYYY')
-    : format(Date.now(), 'dddd D MMM YYYY');
+    : moment().format('dddd D MMM YYYY');
 
   return (
     <div
