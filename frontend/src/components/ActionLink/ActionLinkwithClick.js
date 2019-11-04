@@ -2,8 +2,8 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import { logAction, selectWebpageType } from '../../utils';
 import { connect } from 'react-redux';
+import { logAction, selectWebpageType } from '../../utils';
 
 import { setInlineNotification } from '../../actions/exerciseActions';
 import { showWebpage } from '../../actions/uiActions';

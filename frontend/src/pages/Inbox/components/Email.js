@@ -3,8 +3,8 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
-import format from 'date-fns/format';
 import Markdown from 'react-markdown';
+import moment from 'moment';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
@@ -20,12 +20,11 @@ type Props = {
   onReplyParams: Object,
   threadId: string,
   repliesRef: Object,
+  activeThread: string,
+  threads: Array<Object>,
   addFile: () => void,
   loadFiles: () => void,
   markThreadAsDeleted: () => void,
-  addReplyToEmail: () => void,
-  threads: Array<*>,
-  activeThread: number,
 };
 
 const Divider = styled('p')({
@@ -156,7 +155,15 @@ function EmailAttachments({ props }) {
   );
 }
 
-function EmailInfo({ email }) {
+function EmailInfo({ email, threads, activeThread }) {
+  const activeEmailThread = threads.filter(
+    thread => thread.id === activeThread
+  );
+  const dateReceived = activeEmailThread[0].threadProperties.dateReceived;
+  const date = dateReceived
+    ? moment(dateReceived).format('dddd D MMM YYYY')
+    : moment().format('dddd D MMM YYYY');
+
   return (
     <div
       className={css({
@@ -240,7 +247,7 @@ function EmailInfo({ email }) {
           letterSpacing: '1px',
         })}
       >
-        {format(Date.now(), 'dddd D MMM YYYY')}
+        {date}
       </div>
     </div>
   );
@@ -268,7 +275,14 @@ function RouterLink(props) {
   );
 }
 
-function ReturnReplies({ props }) {
+function ReturnReplies({ props, items }) {
+  const { showWebpage } = props;
+  const {
+    interceptExercise,
+    releaseCodes,
+    webPage,
+  } = items[0].threadProperties;
+
   return !props.email.isReplied ? (
     <Fragment>
       <h3 ref={props.repliesRef}>
@@ -282,6 +296,10 @@ function ReturnReplies({ props }) {
           emailid: props.email.id,
         }}
         replies={props.email.replies}
+        onClick={() => {
+          webPage &&
+            selectWebpageType(interceptExercise, releaseCodes, showWebpage);
+        }}
       />
     </Fragment>
   ) : (
@@ -304,6 +322,7 @@ const Email = (props: Props) => {
     thread => thread.id === props.activeThread
   );
 
+  const { email, threads, activeThread } = props;
   return (
     <div
       className={css({
@@ -312,7 +331,8 @@ const Email = (props: Props) => {
         padding: '0 40px',
       })}
     >
-      <EmailInfo email={props.email} />​
+      <EmailInfo email={email} threads={threads} activeThread={activeThread} />
+
       <h3
         className={css({
           marginTop: 40,
@@ -323,7 +343,6 @@ const Email = (props: Props) => {
       >
         {props.email.subject}
       </h3>
-      ​
       <Markdown
         source={props.email.body}
         renderers={{

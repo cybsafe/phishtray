@@ -106,8 +106,7 @@ export const selectWebpageType = (
     } else if (interceptExercise === false && releaseCodes.length > 0) {
       showWebpage('trainingPage');
     } else if (releaseCodes.length === 0) {
-      // need to improve this logic
-      console.log('Should render Warning Page');
+      showWebpage('warningPage');
     } else {
       return null;
     }
