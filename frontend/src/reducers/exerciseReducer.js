@@ -8,7 +8,6 @@ const INITIAL_STATE: ExerciseState = {
   threads: [],
   activeThread: '',
   inlineNotification: null,
-  url: null,
 };
 
 export default function reducer(

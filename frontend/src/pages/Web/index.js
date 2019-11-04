@@ -28,6 +28,12 @@ const WebsiteTitle = styled('h3')({
 });
 
 class Web extends Component {
+  handleWebsiteClick = websiteId => {
+    return event => {
+      event.preventDefault();
+      this.props.showWebpage(websiteId);
+    };
+  };
   render() {
     return (
       <Container>
