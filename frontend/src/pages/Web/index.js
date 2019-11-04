@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
+import { connect } from 'react-redux';
+
+import { showWebpage } from '../../actions/uiActions';
 
 const Container = styled('div')({
   display: 'flex',
@@ -50,4 +53,7 @@ class Web extends Component {
   }
 }
 
-export default Web;
+export default connect(
+  null,
+  { showWebpage }
+)(Web);
