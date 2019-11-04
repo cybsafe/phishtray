@@ -1,6 +1,7 @@
 import MyPayment from './MyPayment';
 import Bluestar from './Bluestar';
 import Blocked from './Blocked';
+import Training from './Training';
 import Warning from './Warning';
 
 export default {
@@ -45,6 +46,12 @@ export default {
     url: 'www.myblockedpage.info',
     component: Blocked,
     link: 'myblocked',
+  },
+  trainingPage: {
+    isSecure: true,
+    url: 'www.mytrainingpage.info',
+    component: Training,
+    link: 'mytraining',
   },
   warningPage: {
     isSecure: true,
