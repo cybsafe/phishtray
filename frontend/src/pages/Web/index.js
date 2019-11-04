@@ -37,7 +37,6 @@ class Web extends Component {
       this.props.showWebpage(websiteId);
     };
   };
-
   render() {
     return (
       <Container>

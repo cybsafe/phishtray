@@ -26,6 +26,7 @@ type Props = {
   addReplyToEmail: () => void,
   threads: Array<*>,
   activeThread: number,
+  showWebpage: () => void,
 };
 
 const Divider = styled('p')({
@@ -268,7 +269,14 @@ function RouterLink(props) {
   );
 }
 
-function ReturnReplies({ props }) {
+function ReturnReplies({ props, items }) {
+  const { showWebpage } = props;
+  const {
+    interceptExercise,
+    releaseCodes,
+    webPage,
+  } = items[0].threadProperties;
+
   return !props.email.isReplied ? (
     <Fragment>
       <h3 ref={props.repliesRef}>
@@ -282,6 +290,10 @@ function ReturnReplies({ props }) {
           emailid: props.email.id,
         }}
         replies={props.email.replies}
+        onClick={() => {
+          webPage &&
+            selectWebpageType(interceptExercise, releaseCodes, showWebpage);
+        }}
       />
     </Fragment>
   ) : (
@@ -303,7 +315,6 @@ const Email = (props: Props) => {
   const active = props.threads.filter(
     thread => thread.id === props.activeThread
   );
-
   return (
     <div
       className={css({
@@ -312,7 +323,8 @@ const Email = (props: Props) => {
         padding: '0 40px',
       })}
     >
-      <EmailInfo email={props.email} />​
+      <EmailInfo email={props.email} />
+
       <h3
         className={css({
           marginTop: 40,
@@ -323,7 +335,6 @@ const Email = (props: Props) => {
       >
         {props.email.subject}
       </h3>
-      ​
       <Markdown
         source={props.email.body}
         renderers={{
