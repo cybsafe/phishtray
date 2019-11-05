@@ -5,7 +5,6 @@ import { Tooltip } from 'carbon-components-react';
 
 type Props = {
   name: string,
-  photoUrl: string,
   email: string,
   triggerText: React.Node,
   role?: string,
@@ -25,34 +24,15 @@ const FromAccountInitials = styled('div')({
   fontSize: '2.5rem',
 });
 
-const FromAccountPhoto = styled('img')({
-  width: 80,
-  height: 80,
-  borderRadius: '50%',
-  marginRight: 20,
-});
-
 const EmailCard = (props: Props) => {
-  const {
-    triggerText,
-    direction,
-    photoUrl,
-    onlyInitials,
-    role,
-    email,
-    name,
-  } = props;
+  const { triggerText, direction, onlyInitials, role, email, name } = props;
   return (
     <Tooltip
       showIcon={false}
       triggerText={triggerText}
       direction={direction ? direction : 'bottom'}
     >
-      {photoUrl ? (
-        <FromAccountPhoto src={photoUrl} alt="" />
-      ) : (
-        <FromAccountInitials>{onlyInitials}</FromAccountInitials>
-      )}
+      <FromAccountInitials>{onlyInitials}</FromAccountInitials>
       <h2>{name}</h2>
       <br />
       {role && <p className="bx--tooltip__label">{role}</p>}

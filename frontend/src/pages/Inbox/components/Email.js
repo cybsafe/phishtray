@@ -63,12 +63,6 @@ const FromAccountInitials = styled('div')({
   fontSize: '2rem',
 });
 
-const FromAccountPhoto = styled('img')({
-  width: 60,
-  height: 60,
-  borderRadius: '50%',
-});
-
 function EmailAttachments({ props }) {
   const {
     email,
@@ -174,6 +168,8 @@ function EmailAttachments({ props }) {
 }
 
 function EmailInfo({ email, threads, activeThread }) {
+  const { fromAccount, toAccount } = email;
+
   const activeEmailThread = threads.filter(
     thread => thread.id === activeThread
   );
@@ -182,15 +178,13 @@ function EmailInfo({ email, threads, activeThread }) {
     ? moment(dateReceived).format('dddd D MMM YYYY')
     : moment().format('dddd D MMM YYYY');
 
-  const { fromAccount, toAccount } = email;
-  const fromAccountSenderNames = fromAccount.name.split(' ');
+  const trimNamesInitials = account => {
+    const names = account.name.split(' ');
 
-  const onlyInitials =
-    fromAccountSenderNames.length === 1
-      ? fromAccountSenderNames[0].charAt(0)
-      : fromAccountSenderNames[0].charAt(0) +
-        fromAccountSenderNames[fromAccountSenderNames.length - 1].charAt(0);
-
+    return names.length === 1
+      ? names[0].charAt(0)
+      : names[0].charAt(0) + names[names.length - 1].charAt(0);
+  };
   return (
     <div
       className={css({
@@ -202,16 +196,13 @@ function EmailInfo({ email, threads, activeThread }) {
       <div className={css({ flex: 0, flexBasis: '60px' })}>
         <EmailCard
           name={fromAccount.name}
-          photoUrl={fromAccount.photoUrl}
-          onlyInitials={onlyInitials}
+          onlyInitials={trimNamesInitials(fromAccount)}
           role={fromAccount.role}
           email={fromAccount.email}
           triggerText={
-            fromAccount.photoUrl ? (
-              <FromAccountPhoto src={fromAccount.photoUrl} alt="" />
-            ) : (
-              <FromAccountInitials>{onlyInitials}</FromAccountInitials>
-            )
+            <FromAccountInitials>
+              {trimNamesInitials(fromAccount)}
+            </FromAccountInitials>
           }
           direction="right"
         />
@@ -229,7 +220,7 @@ function EmailInfo({ email, threads, activeThread }) {
           <p>From: </p>
           <EmailCard
             name={fromAccount.name}
-            photoUrl={fromAccount.photoUrl}
+            onlyInitials={trimNamesInitials(fromAccount)}
             role={fromAccount.role}
             email={fromAccount.email}
             triggerText={
@@ -239,8 +230,7 @@ function EmailInfo({ email, threads, activeThread }) {
                   display: 'inline-block',
                 })}
               >
-                {fromAccount.name ? fromAccount.name + ' ' : ' '}
-                {String.fromCharCode(8744)}
+                {fromAccount.name || ' '}
               </a>
             }
           />
@@ -249,9 +239,9 @@ function EmailInfo({ email, threads, activeThread }) {
           <p>To: </p>
           <EmailCard
             name={toAccount.name}
-            photoUrl={toAccount.photoUrl}
             email={toAccount.email}
             role={toAccount.role}
+            onlyInitials={trimNamesInitials(toAccount)}
             triggerText={
               <a
                 className={css({
@@ -259,8 +249,7 @@ function EmailInfo({ email, threads, activeThread }) {
                   display: 'inline-block',
                 })}
               >
-                {toAccount.name ? toAccount.name + ' ' : ' '}
-                {String.fromCharCode(8744)}
+                {toAccount.name || ' '}
               </a>
             }
           />
