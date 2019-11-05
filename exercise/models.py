@@ -7,7 +7,12 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from phishtray.base import PhishtrayBaseModel
-from .managers import ExerciseManager, ExerciseEmailPropertiesManager
+from .managers import (
+    ExerciseManager,
+    ExerciseEmailPropertiesManager,
+    ExerciseWebPageReleaseCodeManager,
+    ExerciseWebPageManager,
+)
 
 
 EXERCISE_EMAIL_PHISH = 0
@@ -321,6 +326,8 @@ class ExerciseWebPage(PhishtrayBaseModel):
     def __str__(self):
         return self.title
 
+    objects = ExerciseWebPageManager()
+
     title = models.CharField(max_length=250, blank=True, null=True)
     url = models.CharField(max_length=250, blank=True, null=True, unique=True)
     type = models.IntegerField(choices=PAGE_TYPES, default=PAGE_REGULAR)
@@ -340,6 +347,8 @@ class ExerciseWebPageReleaseCode(PhishtrayBaseModel):
 
     def __str__(self):
         return self.release_code
+
+    objects = ExerciseWebPageReleaseCodeManager()
 
 
 class ExerciseEmailProperties(PhishtrayBaseModel):

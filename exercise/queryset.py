@@ -30,8 +30,30 @@ class ExerciseEmailPropertiesQuerySet(QuerySet):
 
         if not user.is_superuser:
             return self.filter(
-                exercise__in=Exercise.user_objects.filter_by_user(user=user).exclude(
-                    organisation=None
-                )
+                exercise__in=Exercise.user_objects.filter_by_user(user=user)
             )
+        return self
+
+
+class ExerciseWebPageReleaseCodeQuerySet(QuerySet):
+    def filter_by_user(self, user):
+
+        if not user or not isinstance(user, User):
+            return self.none()
+
+        if not user.is_superuser:
+            return self.filter(organization=user.organization)
+
+        return self
+
+
+class ExerciseWebPageQuerySet(QuerySet):
+    def filter_by_user(self, user):
+
+        if not user or not isinstance(user, User):
+            return self.none()
+
+        if not user.is_superuser:
+            return self.filter(organization=user.organization)
+
         return self

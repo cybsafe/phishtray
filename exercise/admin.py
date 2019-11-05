@@ -99,9 +99,7 @@ class ExerciseEmailPropertiesListFilter(admin.SimpleListFilter):
     parameter_name = "exercise"
 
     def lookups(self, request, model_admin):
-        exercises = Exercise.user_objects.filter_by_user(request.user).exclude(
-            organisation=None
-        )
+        exercises = Exercise.user_objects.filter_by_org_private(request.user)
         return [(e.id, e) for e in exercises]
 
     def queryset(self, request, queryset):
@@ -128,23 +126,13 @@ class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
     list_display = ("release_code",)
 
     def get_queryset(self, request):
-        if request.user.is_superuser:
-            return ExerciseWebPageReleaseCode.objects.all()
-        else:
-            return ExerciseWebPageReleaseCode.objects.filter(
-                organization=request.user.organization
-            )
+        return ExerciseWebPageReleaseCode.objects.filter_by_user(user=request.user)
 
 
 @admin.register(ExerciseWebPage)
 class ExerciseWebPageAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
-        if request.user.is_superuser:
-            return ExerciseWebPage.objects.all()
-        else:
-            return ExerciseWebPage.objects.filter(
-                organization=request.user.organization
-            )
+        return ExerciseWebPage.objects.filter_by_user(user=request.user)
 
 
 admin.site.register(DemographicsInfo)
