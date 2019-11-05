@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import {
   InlineLoading,
   Button,
-  NumberInput,
   TextInput,
   Form,
   Tile,
