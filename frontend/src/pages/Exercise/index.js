@@ -95,12 +95,6 @@ const FormContainer = styled('div')({
   paddingTop: '15px',
 });
 
-const Number = styled(NumberInput)`
-  .bx--number__controls {
-    visibility: hidden;
-  }
-`;
-
 type Props = {
   exercise: Object,
   match: Match,
@@ -205,16 +199,15 @@ export class Exercise extends Component<Props> {
                 case 0: // number
                   return (
                     <FormContainer key={item.id}>
-                      <Number
-                        className={css(`width: 100%`)}
-                        label={item.question}
-                        min={0}
+                      <TextInput
+                        type="number"
+                        min={16}
+                        labelText={item.question}
                         id={`${item.id}`}
                         name={`${item.id}`}
                         onChange={this.userInput}
                         onClick={this.userInput}
                         required={item.required}
-                        invalidText="Please input a number value"
                       />
                     </FormContainer>
                   );
