@@ -5,6 +5,8 @@ import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
@@ -50,6 +52,35 @@ const Paragraph = styled('p')({
   marginBottom: 20,
   fontSize: 20,
 });
+
+const EmailFieldLabel = styled('p')({
+  marginRight: 6,
+});
+
+const EmailFieldInnerContainer = styled('div')`
+  svg {
+    transition: transform 0.2s ease-in-out;
+  }
+`;
+
+const NameLink = styled('a')`
+  &&& {
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline-block;
+  }
+  :hover svg {
+    transition: transform 0.2s ease-in-out;
+    transform: scale(-1, -1);
+  }
+`;
+
+const Icon = styled(FontAwesomeIcon)`
+  margin-left: 10px;
+  color: #b8b8b8;
+  &:hover {
+  }
+`;
 
 function EmailAttachments({ props }) {
   const {
@@ -198,44 +229,38 @@ function EmailInfo({ email, threads, activeThread }) {
         })}
       >
         <EmailField>
-          <p>From: </p>
-          <EmailCard
-            name={email.fromAccount.name}
-            photoUrl={email.fromAccount.photoUrl}
-            role={email.fromAccount.role}
-            email={email.fromAccount.email}
-            triggerText={
-              <a
-                className={css({
-                  textDecoration: 'underline',
-                  display: 'inline-block',
-                })}
-              >
-                {email.fromAccount.name ? email.fromAccount.name + ' ' : ' '}
-                {String.fromCharCode(8744)}
-              </a>
-            }
-          />
+          <EmailFieldLabel>From: </EmailFieldLabel>
+          <EmailFieldInnerContainer>
+            <EmailCard
+              name={email.fromAccount.name}
+              photoUrl={email.fromAccount.photoUrl}
+              role={email.fromAccount.role}
+              email={email.fromAccount.email}
+              triggerText={
+                <NameLink>
+                  {email.fromAccount.name || ' '}
+                  <Icon icon={faChevronDown} />
+                </NameLink>
+              }
+            />
+          </EmailFieldInnerContainer>
         </EmailField>
         <EmailField>
-          <p>To: </p>
-          <EmailCard
-            name={email.toAccount.name}
-            photoUrl={email.toAccount.photoUrl}
-            email={email.toAccount.email}
-            role={email.toAccount.role}
-            triggerText={
-              <a
-                className={css({
-                  textDecoration: 'underline',
-                  display: 'inline-block',
-                })}
-              >
-                {email.toAccount.name ? email.toAccount.name + ' ' : ' '}
-                {String.fromCharCode(8744)}
-              </a>
-            }
-          />
+          <EmailFieldLabel>To: </EmailFieldLabel>
+          <EmailFieldInnerContainer>
+            <EmailCard
+              name={email.toAccount.name}
+              photoUrl={email.toAccount.photoUrl}
+              email={email.toAccount.email}
+              role={email.toAccount.role}
+              triggerText={
+                <NameLink>
+                  {email.toAccount.name || ' '}
+                  <Icon icon={faChevronDown} />
+                </NameLink>
+              }
+            />
+          </EmailFieldInnerContainer>
         </EmailField>
       </div>
       <div

@@ -14,6 +14,7 @@ type Props = {
 
 const EmailCard = (props: Props) => (
   <Tooltip
+    // open
     showIcon={false}
     triggerText={props.triggerText}
     direction={props.direction ? props.direction : 'bottom'}
