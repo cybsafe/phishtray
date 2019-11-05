@@ -1,5 +1,5 @@
 // @flow
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
@@ -69,10 +69,12 @@ const NameLink = styled('a')`
     text-decoration: underline;
     display: inline-block;
   }
-  :hover svg {
-    transition: transform 0.2s ease-in-out;
-    transform: scale(-1, -1);
-  }
+  ${({ isHover }) => isHover ? `
+    svg {
+      transition: transform 0.2s ease-in-out;
+      transform: scale(-1, -1);
+    }
+  ` : ''}
 `;
 
 const Icon = styled(FontAwesomeIcon)`
@@ -187,6 +189,7 @@ function EmailAttachments({ props }) {
 }
 
 function EmailInfo({ email, threads, activeThread }) {
+  const [isHover, setIsHover] = useState(false);
   const activeEmailThread = threads.filter(
     thread => thread.id === activeThread
   );
@@ -194,6 +197,9 @@ function EmailInfo({ email, threads, activeThread }) {
   const date = dateReceived
     ? moment(dateReceived).format('dddd D MMM YYYY')
     : moment().format('dddd D MMM YYYY');
+
+  const mouseEnter = () => setIsHover(true);
+  const mouseLeave = () => setIsHover(false);
 
   return (
     <div
@@ -228,16 +234,21 @@ function EmailInfo({ email, threads, activeThread }) {
           marginTop: 10,
         })}
       >
-        <EmailField>
+        <EmailField
+          onMouseEnter={() => mouseEnter()}
+          onMouseLeave={() => mouseLeave()}
+        >
           <EmailFieldLabel>From: </EmailFieldLabel>
           <EmailFieldInnerContainer>
             <EmailCard
+              mouseEnter={mouseEnter}
+              mouseLeave={mouseEnter}
               name={email.fromAccount.name}
               photoUrl={email.fromAccount.photoUrl}
               role={email.fromAccount.role}
               email={email.fromAccount.email}
               triggerText={
-                <NameLink>
+                <NameLink isHover={isHover}>
                   {email.fromAccount.name || ' '}
                   <Icon icon={faChevronDown} />
                 </NameLink>

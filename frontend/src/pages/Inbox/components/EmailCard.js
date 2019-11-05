@@ -18,6 +18,8 @@ const EmailCard = (props: Props) => (
     showIcon={false}
     triggerText={props.triggerText}
     direction={props.direction ? props.direction : 'bottom'}
+    onMouseEnter={() => props.mouseEnter()}
+    onMouseLeave={() => props.mouseLeave()}
   >
     <img
       className={css({
