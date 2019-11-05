@@ -5,6 +5,8 @@ import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
