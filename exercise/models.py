@@ -3,10 +3,8 @@ from random import randrange, random
 
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
-from phishtray.base import PhishtrayBaseModel
+from phishtray.base import PhishtrayBaseModel, CacheBusterMixin
 from .managers import (
     ExerciseManager,
     ExerciseEmailPropertiesManager,
@@ -26,7 +24,7 @@ EXERCISE_PHISH_TYPES = (
 EXERCISE_REPLY_TYPE = ((0, "reply"), (1, "forward"))
 
 
-class ExerciseTask(PhishtrayBaseModel):
+class ExerciseTask(CacheBusterMixin, PhishtrayBaseModel):
     """
     Tasks are a way to define a metric for scoring in the psychometric evaluation
     """
@@ -57,7 +55,7 @@ class ExerciseTask(PhishtrayBaseModel):
         return self.name
 
 
-class ExerciseFile(PhishtrayBaseModel):
+class ExerciseFile(CacheBusterMixin, PhishtrayBaseModel):
     """
     ExercieseFiles are not actual files but they act like one.
     """
@@ -72,7 +70,7 @@ class ExerciseFile(PhishtrayBaseModel):
         return self.file_name
 
 
-class ExerciseEmailReply(PhishtrayBaseModel):
+class ExerciseEmailReply(CacheBusterMixin, PhishtrayBaseModel):
     reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
     message = models.TextField(null=True, blank=True)
 
@@ -91,7 +89,7 @@ class ExerciseEmailReply(PhishtrayBaseModel):
         return self.message
 
 
-class EmailReplyTaskScore(PhishtrayBaseModel):
+class EmailReplyTaskScore(CacheBusterMixin, PhishtrayBaseModel):
     """
     A method to associate scores to email replies.
     """
@@ -110,7 +108,7 @@ class EmailReplyTaskScore(PhishtrayBaseModel):
         )
 
 
-class ExerciseEmail(PhishtrayBaseModel):
+class ExerciseEmail(CacheBusterMixin, PhishtrayBaseModel):
     def __str__(self):
         return self.subject
 
@@ -174,7 +172,7 @@ class ExerciseEmail(PhishtrayBaseModel):
             return email_properties
 
 
-class DemographicsInfo(PhishtrayBaseModel):
+class DemographicsInfo(CacheBusterMixin, PhishtrayBaseModel):
     """
     Demographic Questions that can be added to Exercises.
     """
@@ -197,7 +195,7 @@ class DemographicsInfo(PhishtrayBaseModel):
         return self.question
 
 
-class Exercise(PhishtrayBaseModel):
+class Exercise(CacheBusterMixin, PhishtrayBaseModel):
     def __str__(self):
         return f"{self.title} - {self.id}"
 
@@ -318,8 +316,27 @@ class Exercise(PhishtrayBaseModel):
         except Exercise.DoesNotExist:
             return None
 
+    def sync_email_properties(self):
+        # Generate email properties for the attached emails
+        for email in self.emails.all():
+            ExerciseEmailProperties.objects.get_or_create(
+                exercise_id=self.id, email_id=email.id
+            )
 
-class ExerciseWebPage(PhishtrayBaseModel):
+        # Remove email properties that are no longer attached to the exercise
+        orphaned_email_properties = ExerciseEmailProperties.objects.filter(
+            exercise_id=self.id
+        ).exclude(
+            email_id__in=self.emails.values_list("id", flat=True)
+        )
+        if orphaned_email_properties:
+            orphaned_email_properties.all().hard_delete()
+
+        # Then set default email reveal times
+        self.set_email_reveal_times()
+
+
+class ExerciseWebPage(CacheBusterMixin, PhishtrayBaseModel):
     PAGE_REGULAR = 0
     PAGE_TYPES = ((PAGE_REGULAR, "regular"),)
 
@@ -337,7 +354,7 @@ class ExerciseWebPage(PhishtrayBaseModel):
     )
 
 
-class ExerciseWebPageReleaseCode(PhishtrayBaseModel):
+class ExerciseWebPageReleaseCode(CacheBusterMixin, PhishtrayBaseModel):
     release_code = models.CharField(
         max_length=250, blank=False, null=False, unique=True
     )
@@ -351,7 +368,7 @@ class ExerciseWebPageReleaseCode(PhishtrayBaseModel):
     objects = ExerciseWebPageReleaseCodeManager()
 
 
-class ExerciseEmailProperties(PhishtrayBaseModel):
+class ExerciseEmailProperties(CacheBusterMixin, PhishtrayBaseModel):
     class Meta:
         unique_together = ("exercise", "email")
         verbose_name_plural = "Exercise email properties"
@@ -393,15 +410,3 @@ class ExerciseEmailProperties(PhishtrayBaseModel):
         if self.date_received is not None:
             self.reveal_time = 0
         super(ExerciseEmailProperties, self).save(*args, **kwargs)
-
-
-@receiver(post_save, sender=Exercise)
-def create_email_reveal_time(sender, instance, created, **kwargs):
-    """Create email reveal times when an exercise email instance is created."""
-    for email in ExerciseEmail.objects.reverse():
-        ExerciseEmailProperties.objects.get_or_create(
-            exercise_id=instance.id, email_id=email.id
-        )
-
-    # Set the email reveal times
-    instance.set_email_reveal_times()
