@@ -22,7 +22,7 @@ class ExerciseQuerySet(QuerySet):
 
 
 class ExerciseEmailPropertiesQuerySet(QuerySet):
-    def filter_by_user(self, user):
+    def filter_by_org_private(self, user):
         from .models import Exercise
 
         if not user or not isinstance(user, User):
@@ -30,30 +30,30 @@ class ExerciseEmailPropertiesQuerySet(QuerySet):
 
         if not user.is_superuser:
             return self.filter(
-                exercise__in=Exercise.user_objects.filter_by_user(user=user)
+                exercise__in=Exercise.user_objects.filter_by_org_private(user=user)
             )
         return self
 
 
 class ExerciseWebPageReleaseCodeQuerySet(QuerySet):
-    def filter_by_user(self, user):
+    def filter_by_org_private(self, user):
 
         if not user or not isinstance(user, User):
             return self.none()
 
         if not user.is_superuser:
-            return self.filter(organization=user.organization)
+            return self.filter(organization=user.organization, deleted_at=None)
 
-        return self
+        return self.filter(deleted_at=None)
 
 
 class ExerciseWebPageQuerySet(QuerySet):
-    def filter_by_user(self, user):
+    def filter_by_org_private(self, user):
 
         if not user or not isinstance(user, User):
             return self.none()
 
         if not user.is_superuser:
-            return self.filter(organization=user.organization)
+            return self.filter(organization=user.organization, deleted_at=None)
 
-        return self
+        return self.filter(deleted_at=None)

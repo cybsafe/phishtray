@@ -103,7 +103,9 @@ class ExerciseEmailPropertiesListFilter(admin.SimpleListFilter):
         return [(e.id, e) for e in exercises]
 
     def queryset(self, request, queryset):
-        queryset = ExerciseEmailProperties.objects.filter_by_user(user=request.user)
+        queryset = ExerciseEmailProperties.objects.filter_by_org_private(
+            user=request.user
+        )
 
         if self.value():
             return queryset.filter(exercise=self.value())
@@ -118,7 +120,7 @@ class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
     search_fields = ("email__subject",)
 
     def get_queryset(self, request):
-        return ExerciseEmailProperties.objects.filter_by_user(user=request.user)
+        return ExerciseEmailProperties.objects.filter_by_org_private(user=request.user)
 
 
 @admin.register(ExerciseWebPageReleaseCode)
@@ -126,13 +128,15 @@ class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
     list_display = ("release_code",)
 
     def get_queryset(self, request):
-        return ExerciseWebPageReleaseCode.objects.filter_by_user(user=request.user)
+        return ExerciseWebPageReleaseCode.objects.filter_by_org_private(
+            user=request.user
+        )
 
 
 @admin.register(ExerciseWebPage)
 class ExerciseWebPageAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
-        return ExerciseWebPage.objects.filter_by_user(user=request.user)
+        return ExerciseWebPage.objects.filter_by_org_private(user=request.user)
 
 
 admin.site.register(DemographicsInfo)
