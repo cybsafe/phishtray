@@ -1,5 +1,5 @@
 // @flow
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
@@ -64,6 +64,36 @@ const FromAccountInitials = styled('div')({
   color: 'white',
   fontSize: '2rem',
 });
+
+const EmailFieldInnerContainer = styled('div')`
+  svg {
+    transition: transform 0.2s ease-in-out;
+  }
+`;
+
+const NameLink = styled('a')`
+  &&& {
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline-block;
+  }
+  ${({ isHover }) =>
+    isHover
+      ? `
+   svg {
+      transition: transform 0.2s ease-in-out;
+      transform: scale(-1, -1);
+    }
+  `
+      : ''}
+`;
+
+const Icon = styled(FontAwesomeIcon)`
+  margin-left: 10px;
+  color: #b8b8b8;
+  &:hover {
+  }
+`;
 
 function EmailAttachments({ props }) {
   const {
@@ -172,6 +202,8 @@ function EmailAttachments({ props }) {
 function EmailInfo({ email, threads, activeThread }) {
   const { fromAccount, toAccount } = email;
 
+  const [isHoverFrom, setIsHoverFrom] = useState(false);
+  const [isHoverTo, setIsHoverTo] = useState(false);
   const activeEmailThread = threads.filter(
     thread => thread.id === activeThread
   );
@@ -187,6 +219,11 @@ function EmailInfo({ email, threads, activeThread }) {
       ? names[0].charAt(0)
       : names[0].charAt(0) + names[names.length - 1].charAt(0);
   };
+  const mouseEnter = iconArea =>
+    iconArea === 'from' ? setIsHoverFrom(true) : setIsHoverTo(true);
+  const mouseLeave = iconArea =>
+    iconArea === 'from' ? setIsHoverFrom(false) : setIsHoverTo(false);
+
   return (
     <div
       className={css({
@@ -219,42 +256,52 @@ function EmailInfo({ email, threads, activeThread }) {
         })}
       >
         <EmailField>
-          <p>From: </p>
-          <EmailCard
-            name={fromAccount.name}
-            onlyInitials={trimNamesInitials(fromAccount)}
-            role={fromAccount.role}
-            email={fromAccount.email}
-            triggerText={
-              <a
-                className={css({
-                  textDecoration: 'underline',
-                  display: 'inline-block',
-                })}
-              >
-                {fromAccount.name || ' '}
-              </a>
-            }
-          />
+          <EmailFieldLabel>From: </EmailFieldLabel>
+          <EmailFieldInnerContainer
+            onMouseOver={() => mouseEnter('from')}
+            onFocus={() => mouseEnter('from')}
+            onMouseLeave={() => mouseLeave('from')}
+            onBlur={() => mouseLeave('from')}
+          >
+            <EmailCard
+              mouseEnter={mouseEnter}
+              mouseLeave={mouseLeave}
+              name={email.fromAccount.name}
+              photoUrl={email.fromAccount.photoUrl}
+              role={email.fromAccount.role}
+              email={email.fromAccount.email}
+              triggerText={
+                <NameLink isHover={isHoverFrom}>
+                  {email.fromAccount.name || ' '}
+                  <Icon icon={faChevronDown} />
+                </NameLink>
+              }
+            />
+          </EmailFieldInnerContainer>
         </EmailField>
         <EmailField>
-          <p>To: </p>
-          <EmailCard
-            name={toAccount.name}
-            email={toAccount.email}
-            role={toAccount.role}
-            onlyInitials={trimNamesInitials(toAccount)}
-            triggerText={
-              <a
-                className={css({
-                  textDecoration: 'underline',
-                  display: 'inline-block',
-                })}
-              >
-                {toAccount.name || ' '}
-              </a>
-            }
-          />
+          <EmailFieldLabel>To: </EmailFieldLabel>
+          <EmailFieldInnerContainer
+            onMouseOver={() => mouseEnter('to')}
+            onFocus={() => mouseEnter('to')}
+            onMouseLeave={() => mouseLeave('to')}
+            onBlur={() => mouseLeave('to')}
+          >
+            <EmailCard
+              mouseEnter={mouseEnter}
+              mouseLeave={mouseLeave}
+              name={email.toAccount.name}
+              photoUrl={email.toAccount.photoUrl}
+              email={email.toAccount.email}
+              role={email.toAccount.role}
+              triggerText={
+                <NameLink isHover={isHoverTo}>
+                  {email.toAccount.name || ' '}
+                  <Icon icon={faChevronDown} />
+                </NameLink>
+              }
+            />
+          </EmailFieldInnerContainer>
         </EmailField>
       </div>
       <div

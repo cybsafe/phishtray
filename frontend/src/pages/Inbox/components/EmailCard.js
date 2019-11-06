@@ -25,19 +25,33 @@ const FromAccountInitials = styled('div')({
 });
 
 const EmailCard = (props: Props) => {
-  const { triggerText, direction, onlyInitials, role, email, name } = props;
+  const {
+    triggerText,
+    direction,
+    onlyInitials,
+    role,
+    email,
+    name,
+    mouseEnter,
+    mouseLeave,
+  } = props;
   return (
     <Tooltip
+      // open
       showIcon={false}
       triggerText={triggerText}
       direction={direction ? direction : 'bottom'}
+      onMouseEnter={() => mouseEnter()}
+      onMouseLeave={() => mouseLeave()}
     >
       <FromAccountInitials>{onlyInitials}</FromAccountInitials>
       <h2>{name}</h2>
       <br />
       {role && <p className="bx--tooltip__label">{role}</p>}
       <br />
-      <p className={css({ color: '#B8B8B8' })}>{email ? `E: ${email}` : ''}</p>
+      <p className={css({ color: '#B8B8B8' })}>
+        {email ? `E: ${props.email}` : ''}
+      </p>
     </Tooltip>
   );
 };
