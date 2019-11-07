@@ -122,6 +122,22 @@ class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return ExerciseEmailProperties.objects.filter_by_org_private(user=request.user)
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if not request.user.is_superuser and db_field.name == "release_codes":
+            kwargs[
+                "queryset"
+            ] = ExerciseWebPageReleaseCode.objects.filter_by_org_private(
+                user=request.user
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "web_page":
+            kwargs["queryset"] = ExerciseWebPage.objects.filter_by_org_private(
+                user=request.user
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 @admin.register(ExerciseWebPageReleaseCode)
 class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
@@ -132,11 +148,23 @@ class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
             user=request.user
         )
 
+    def get_readonly_fields(self, request, obj=None):
+        ro_fields = list(super().get_readonly_fields(request))
+        if not request.user.is_superuser:
+            ro_fields.append("organization")
+        return ro_fields
+
 
 @admin.register(ExerciseWebPage)
 class ExerciseWebPageAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return ExerciseWebPage.objects.filter_by_org_private(user=request.user)
+
+    def get_readonly_fields(self, request, obj=None):
+        ro_fields = list(super().get_readonly_fields(request))
+        if not request.user.is_superuser:
+            ro_fields.append("organization")
+        return ro_fields
 
 
 admin.site.register(DemographicsInfo)
