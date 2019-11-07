@@ -154,6 +154,10 @@ class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
             ro_fields.append("organization")
         return ro_fields
 
+    def save_model(self, request, obj, form, change):
+        obj.organization = request.user.organization
+        super().save_model(request, obj, form, change)
+
 
 @admin.register(ExerciseWebPage)
 class ExerciseWebPageAdmin(admin.ModelAdmin):
@@ -165,6 +169,10 @@ class ExerciseWebPageAdmin(admin.ModelAdmin):
         if not request.user.is_superuser:
             ro_fields.append("organization")
         return ro_fields
+
+    def save_model(self, request, obj, form, change):
+        obj.organization = request.user.organization
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(DemographicsInfo)
