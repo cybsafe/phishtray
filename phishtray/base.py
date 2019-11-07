@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.db import models
 from django.db.models import QuerySet
 
+from utils.cache import flush_cache
+
 
 class SoftDeletionQuerySet(QuerySet):
     def delete(self):
@@ -58,3 +60,19 @@ class PhishtrayBaseModel(SoftDeletionModel):
 
     class Meta:
         abstract = True
+
+
+class CacheBusterMixin:
+    """
+    Use this mixin to flush the cache each time the instance is saved/deleted.
+    """
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        flush_cache()
+
+    # there's no need to override "delete"
+    # as that will save the object which already triggers a flush
+
+    def hard_delete(self):
+        super().hard_delete()
+        flush_cache()
