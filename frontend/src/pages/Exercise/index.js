@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import {
   InlineLoading,
   Button,
-  NumberInput,
   TextInput,
   Form,
   Tile,
@@ -94,12 +93,6 @@ const FormContainer = styled('div')({
   paddingBottom: '15px',
   paddingTop: '15px',
 });
-
-const Number = styled(NumberInput)`
-  .bx--number__controls {
-    visibility: hidden;
-  }
-`;
 
 type Props = {
   exercise: Object,
@@ -205,16 +198,14 @@ export class Exercise extends Component<Props> {
                 case 0: // number
                   return (
                     <FormContainer key={item.id}>
-                      <Number
-                        className={css(`width: 100%`)}
-                        label={item.question}
-                        min={0}
+                      <TextInput
+                        type="number"
+                        labelText={item.question}
                         id={`${item.id}`}
                         name={`${item.id}`}
                         onChange={this.userInput}
                         onClick={this.userInput}
                         required={item.required}
-                        invalidText="Please input a number value"
                       />
                     </FormContainer>
                   );
