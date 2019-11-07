@@ -7,8 +7,6 @@ import csv
 
 class ExportCsvMixin:
     def download_csv(self, request, queryset):
-
-        meta = self.model._meta
         field_names = [field.name for field in meta.fields]
 
         response = HttpResponse(content_type="text/csv")

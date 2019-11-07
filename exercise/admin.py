@@ -94,16 +94,85 @@ class ExerciseAdmin(admin.ModelAdmin):
         return super().has_change_permission(request, obj)
 
 
+class ExerciseEmailPropertiesListFilter(admin.SimpleListFilter):
+    title = "Exercise"
+    parameter_name = "exercise"
+
+    def lookups(self, request, model_admin):
+        exercises = Exercise.user_objects.filter_by_org_private(request.user)
+        return [(e.id, e) for e in exercises]
+
+    def queryset(self, request, queryset):
+        queryset = ExerciseEmailProperties.objects.filter_by_org_private(
+            user=request.user
+        )
+
+        if self.value():
+            return queryset.filter(exercise=self.value())
+        else:
+            return queryset
+
+
 @admin.register(ExerciseEmailProperties)
 class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
     list_display = ("exercise", "email", "reveal_time")
-    list_filter = ("exercise",)
+    list_filter = (ExerciseEmailPropertiesListFilter,)
     search_fields = ("email__subject",)
+
+    def get_queryset(self, request):
+        return ExerciseEmailProperties.objects.filter_by_org_private(user=request.user)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if not request.user.is_superuser and db_field.name == "release_codes":
+            kwargs[
+                "queryset"
+            ] = ExerciseWebPageReleaseCode.objects.filter_by_org_private(
+                user=request.user
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "web_page":
+            kwargs["queryset"] = ExerciseWebPage.objects.filter_by_org_private(
+                user=request.user
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(ExerciseWebPageReleaseCode)
 class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
     list_display = ("release_code",)
+
+    def get_queryset(self, request):
+        return ExerciseWebPageReleaseCode.objects.filter_by_org_private(
+            user=request.user
+        )
+
+    def get_readonly_fields(self, request, obj=None):
+        ro_fields = list(super().get_readonly_fields(request))
+        if not request.user.is_superuser:
+            ro_fields.append("organization")
+        return ro_fields
+
+    def save_model(self, request, obj, form, change):
+        obj.organization = request.user.organization
+        super().save_model(request, obj, form, change)
+
+
+@admin.register(ExerciseWebPage)
+class ExerciseWebPageAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        return ExerciseWebPage.objects.filter_by_org_private(user=request.user)
+
+    def get_readonly_fields(self, request, obj=None):
+        ro_fields = list(super().get_readonly_fields(request))
+        if not request.user.is_superuser:
+            ro_fields.append("organization")
+        return ro_fields
+
+    def save_model(self, request, obj, form, change):
+        obj.organization = request.user.organization
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(DemographicsInfo)
@@ -112,4 +181,3 @@ admin.site.register(ExerciseTask)
 admin.site.register(EmailReplyTaskScore)
 admin.site.register(ExerciseEmailReply)
 admin.site.register(ExerciseFile)
-admin.site.register(ExerciseWebPage)
