@@ -200,7 +200,6 @@ export class Exercise extends Component<Props> {
                     <FormContainer key={item.id}>
                       <TextInput
                         type="number"
-                        min={16}
                         labelText={item.question}
                         id={`${item.id}`}
                         name={`${item.id}`}
