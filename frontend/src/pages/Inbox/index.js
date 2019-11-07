@@ -24,6 +24,7 @@ const EmailList = styled('div')({
   backgroundColor: '#1B87EC',
   minHeight: '100%',
   overflow: 'auto',
+  paddingBottom: '80px',
 });
 
 const EmailContainer = styled('div')({
