@@ -122,13 +122,11 @@ class ExerciseEmail(PhishtrayBaseModel):
     # TODO: introduce new model i.e.: Account to store these info
     from_address = models.CharField(max_length=250, blank=True, null=True)
     from_name = models.CharField(max_length=250, blank=True, null=True)
-    from_profile_img_url = models.CharField(max_length=150, blank=True, null=True)
     from_role = models.CharField(max_length=50, blank=True, null=True)
 
     # TODO: introduce new model i.e.: Account to store these info
     to_address = models.CharField(max_length=250, blank=True, null=True)
     to_name = models.CharField(max_length=250, blank=True, null=True)
-    to_profile_img_url = models.CharField(max_length=150, blank=True, null=True)
     to_role = models.CharField(max_length=50, blank=True, null=True)
 
     phish_type = models.IntegerField(choices=EXERCISE_PHISH_TYPES)
@@ -146,19 +144,13 @@ class ExerciseEmail(PhishtrayBaseModel):
         data = {
             "email": self.from_address,
             "name": self.from_name,
-            "photo_url": self.from_profile_img_url,
             "role": self.from_role,
         }
         return data
 
     @property
     def to_account(self):
-        data = {
-            "email": self.to_address,
-            "name": self.to_name,
-            "photo_url": self.to_profile_img_url,
-            "role": self.to_role,
-        }
+        data = {"email": self.to_address, "name": self.to_name, "role": self.to_role}
         return data
 
     def reveal_time(self, exercise=None):
