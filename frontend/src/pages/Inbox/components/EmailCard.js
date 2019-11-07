@@ -39,10 +39,8 @@ const EmailCard = (props: Props) => {
     <Tooltip
       // open
       showIcon={false}
-      triggerText={triggerText}
-      direction={direction ? direction : 'bottom'}
-      onMouseEnter={() => mouseEnter()}
-      onMouseLeave={() => mouseLeave()}
+      triggerText={props.triggerText}
+      direction={props.direction ? props.direction : 'bottom'}
     >
       <FromAccountInitials>{onlyInitials}</FromAccountInitials>
       <h2>{name}</h2>

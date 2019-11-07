@@ -91,8 +91,6 @@ const NameLink = styled('a')`
 const Icon = styled(FontAwesomeIcon)`
   margin-left: 10px;
   color: #b8b8b8;
-  &:hover {
-  }
 `;
 
 function EmailAttachments({ props }) {
@@ -202,8 +200,15 @@ function EmailAttachments({ props }) {
 function EmailInfo({ email, threads, activeThread }) {
   const { fromAccount, toAccount } = email;
 
+  //Hover on From and To fields Behaviour
   const [isHoverFrom, setIsHoverFrom] = useState(false);
   const [isHoverTo, setIsHoverTo] = useState(false);
+  const mouseEnter = iconArea =>
+    iconArea === 'from' ? setIsHoverFrom(true) : setIsHoverTo(true);
+  const mouseLeave = iconArea =>
+    iconArea === 'from' ? setIsHoverFrom(false) : setIsHoverTo(false);
+  //Finish Hover on From and To fields behaviour
+
   const activeEmailThread = threads.filter(
     thread => thread.id === activeThread
   );
@@ -219,10 +224,6 @@ function EmailInfo({ email, threads, activeThread }) {
       ? names[0].charAt(0)
       : names[0].charAt(0) + names[names.length - 1].charAt(0);
   };
-  const mouseEnter = iconArea =>
-    iconArea === 'from' ? setIsHoverFrom(true) : setIsHoverTo(true);
-  const mouseLeave = iconArea =>
-    iconArea === 'from' ? setIsHoverFrom(false) : setIsHoverTo(false);
 
   return (
     <div
@@ -259,13 +260,9 @@ function EmailInfo({ email, threads, activeThread }) {
           <EmailFieldLabel>From: </EmailFieldLabel>
           <EmailFieldInnerContainer
             onMouseOver={() => mouseEnter('from')}
-            onFocus={() => mouseEnter('from')}
             onMouseLeave={() => mouseLeave('from')}
-            onBlur={() => mouseLeave('from')}
           >
             <EmailCard
-              mouseEnter={mouseEnter}
-              mouseLeave={mouseLeave}
               name={email.fromAccount.name}
               photoUrl={email.fromAccount.photoUrl}
               role={email.fromAccount.role}
@@ -276,6 +273,8 @@ function EmailInfo({ email, threads, activeThread }) {
                   <Icon icon={faChevronDown} />
                 </NameLink>
               }
+              onMouseOver={() => mouseEnter('from')}
+              onMouseLeave={() => mouseLeave('from')}
             />
           </EmailFieldInnerContainer>
         </EmailField>
@@ -283,13 +282,9 @@ function EmailInfo({ email, threads, activeThread }) {
           <EmailFieldLabel>To: </EmailFieldLabel>
           <EmailFieldInnerContainer
             onMouseOver={() => mouseEnter('to')}
-            onFocus={() => mouseEnter('to')}
             onMouseLeave={() => mouseLeave('to')}
-            onBlur={() => mouseLeave('to')}
           >
             <EmailCard
-              mouseEnter={mouseEnter}
-              mouseLeave={mouseLeave}
               name={email.toAccount.name}
               photoUrl={email.toAccount.photoUrl}
               email={email.toAccount.email}
@@ -300,6 +295,8 @@ function EmailInfo({ email, threads, activeThread }) {
                   <Icon icon={faChevronDown} />
                 </NameLink>
               }
+              onMouseOver={() => mouseEnter('to')}
+              onMouseLeave={() => mouseLeave('to')}
             />
           </EmailFieldInnerContainer>
         </EmailField>
