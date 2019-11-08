@@ -257,19 +257,19 @@ function EmailInfo({ email, threads, activeThread }) {
         })}
       >
         <EmailField>
-          <EmailFieldLabel>From: </EmailFieldLabel>
+          <p>From: </p>
           <EmailFieldInnerContainer
             onMouseOver={() => mouseEnter('from')}
             onMouseLeave={() => mouseLeave('from')}
           >
             <EmailCard
-              name={email.fromAccount.name}
-              photoUrl={email.fromAccount.photoUrl}
-              role={email.fromAccount.role}
-              email={email.fromAccount.email}
+              onlyInitials={trimNamesInitials(fromAccount)}
+              name={fromAccount.name}
+              role={fromAccount.role}
+              email={fromAccount.email}
               triggerText={
                 <NameLink isHover={isHoverFrom}>
-                  {email.fromAccount.name || ' '}
+                  {fromAccount.name || ' '}
                   <Icon icon={faChevronDown} />
                 </NameLink>
               }
@@ -279,19 +279,19 @@ function EmailInfo({ email, threads, activeThread }) {
           </EmailFieldInnerContainer>
         </EmailField>
         <EmailField>
-          <EmailFieldLabel>To: </EmailFieldLabel>
+          <p>To: </p>
           <EmailFieldInnerContainer
             onMouseOver={() => mouseEnter('to')}
             onMouseLeave={() => mouseLeave('to')}
           >
             <EmailCard
-              name={email.toAccount.name}
-              photoUrl={email.toAccount.photoUrl}
-              email={email.toAccount.email}
-              role={email.toAccount.role}
+              name={toAccount.name}
+              onlyInitials={trimNamesInitials(toAccount)}
+              email={toAccount.email}
+              role={toAccount.role}
               triggerText={
                 <NameLink isHover={isHoverTo}>
-                  {email.toAccount.name || ' '}
+                  {toAccount.name || ' '}
                   <Icon icon={faChevronDown} />
                 </NameLink>
               }

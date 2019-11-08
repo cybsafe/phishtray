@@ -25,22 +25,12 @@ const FromAccountInitials = styled('div')({
 });
 
 const EmailCard = (props: Props) => {
-  const {
-    triggerText,
-    direction,
-    onlyInitials,
-    role,
-    email,
-    name,
-    mouseEnter,
-    mouseLeave,
-  } = props;
+  const { triggerText, direction, onlyInitials, role, email, name } = props;
   return (
     <Tooltip
-      // open
       showIcon={false}
-      triggerText={props.triggerText}
-      direction={props.direction ? props.direction : 'bottom'}
+      triggerText={triggerText}
+      direction={direction ? direction : 'bottom'}
     >
       <FromAccountInitials>{onlyInitials}</FromAccountInitials>
       <h2>{name}</h2>
