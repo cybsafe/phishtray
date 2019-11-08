@@ -1,10 +1,12 @@
 // @flow
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
@@ -62,6 +64,34 @@ const FromAccountInitials = styled('div')({
   color: 'white',
   fontSize: '2rem',
 });
+
+const EmailFieldInnerContainer = styled('div')`
+  svg {
+    transition: transform 0.4s ease-in-out;
+  }
+`;
+
+const NameLink = styled('a')`
+  &&& {
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline-block;
+  }
+  ${({ isHover }) =>
+    isHover
+      ? `
+   svg {
+      transition: transform 0.4s ease-in-out;
+      transform: scale(-1, -1);
+    }
+  `
+      : ''}
+`;
+
+const Icon = styled(FontAwesomeIcon)`
+  margin-left: 10px;
+  color: #b8b8b8;
+`;
 
 function EmailAttachments({ props }) {
   const {
@@ -170,6 +200,13 @@ function EmailAttachments({ props }) {
 function EmailInfo({ email, threads, activeThread }) {
   const { fromAccount, toAccount } = email;
 
+  const [isHoverFrom, setIsHoverFrom] = useState(false);
+  const [isHoverTo, setIsHoverTo] = useState(false);
+  const mouseEnter = iconArea =>
+    iconArea === 'from' ? setIsHoverFrom(true) : setIsHoverTo(true);
+  const mouseLeave = iconArea =>
+    iconArea === 'from' ? setIsHoverFrom(false) : setIsHoverTo(false);
+
   const activeEmailThread = threads.filter(
     thread => thread.id === activeThread
   );
@@ -185,6 +222,7 @@ function EmailInfo({ email, threads, activeThread }) {
       ? names[0].charAt(0)
       : names[0].charAt(0) + names[names.length - 1].charAt(0);
   };
+
   return (
     <div
       className={css({
@@ -218,41 +256,47 @@ function EmailInfo({ email, threads, activeThread }) {
       >
         <EmailField>
           <p>From: </p>
-          <EmailCard
-            name={fromAccount.name}
-            onlyInitials={trimNamesInitials(fromAccount)}
-            role={fromAccount.role}
-            email={fromAccount.email}
-            triggerText={
-              <a
-                className={css({
-                  textDecoration: 'underline',
-                  display: 'inline-block',
-                })}
-              >
-                {fromAccount.name || ' '}
-              </a>
-            }
-          />
+          <EmailFieldInnerContainer
+            onMouseOver={() => mouseEnter('from')}
+            onMouseLeave={() => mouseLeave('from')}
+          >
+            <EmailCard
+              onlyInitials={trimNamesInitials(fromAccount)}
+              name={fromAccount.name}
+              role={fromAccount.role}
+              email={fromAccount.email}
+              triggerText={
+                <NameLink isHover={isHoverFrom}>
+                  {fromAccount.name || ' '}
+                  <Icon icon={faChevronDown} />
+                </NameLink>
+              }
+              onMouseOver={() => mouseEnter('from')}
+              onMouseLeave={() => mouseLeave('from')}
+            />
+          </EmailFieldInnerContainer>
         </EmailField>
         <EmailField>
           <p>To: </p>
-          <EmailCard
-            name={toAccount.name}
-            email={toAccount.email}
-            role={toAccount.role}
-            onlyInitials={trimNamesInitials(toAccount)}
-            triggerText={
-              <a
-                className={css({
-                  textDecoration: 'underline',
-                  display: 'inline-block',
-                })}
-              >
-                {toAccount.name || ' '}
-              </a>
-            }
-          />
+          <EmailFieldInnerContainer
+            onMouseOver={() => mouseEnter('to')}
+            onMouseLeave={() => mouseLeave('to')}
+          >
+            <EmailCard
+              name={toAccount.name}
+              onlyInitials={trimNamesInitials(toAccount)}
+              email={toAccount.email}
+              role={toAccount.role}
+              triggerText={
+                <NameLink isHover={isHoverTo}>
+                  {toAccount.name || ' '}
+                  <Icon icon={faChevronDown} />
+                </NameLink>
+              }
+              onMouseOver={() => mouseEnter('to')}
+              onMouseLeave={() => mouseLeave('to')}
+            />
+          </EmailFieldInnerContainer>
         </EmailField>
       </div>
       <div
