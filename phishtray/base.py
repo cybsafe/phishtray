@@ -6,6 +6,8 @@ from django.db import models
 from django.db.models import QuerySet
 
 from utils.cache import flush_cache
+from .managers import OrganizationManager
+from django.contrib import admin
 
 
 class SoftDeletionQuerySet(QuerySet):
@@ -66,6 +68,7 @@ class CacheBusterMixin:
     """
     Use this mixin to flush the cache each time the instance is saved/deleted.
     """
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         flush_cache()
@@ -76,3 +79,25 @@ class CacheBusterMixin:
     def hard_delete(self):
         super().hard_delete()
         flush_cache()
+
+
+class MultiTenantMixin(models.Model):
+    organization = models.ForeignKey(
+        "participant.Organization", on_delete=models.PROTECT, null=True, blank=True
+    )
+    objects = OrganizationManager()
+
+    class Meta:
+        abstract = True
+
+
+class OrganizationAdminMethods(admin.ModelAdmin):
+    def get_readonly_fields(self, request, obj=None):
+        ro_fields = list(super().get_readonly_fields(request))
+        if not request.user.is_superuser:
+            ro_fields.append("organization")
+        return ro_fields
+
+    def save_model(self, request, obj, form, change):
+        obj.organization = request.user.organization
+        super().save_model(request, obj, form, change)

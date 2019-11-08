@@ -16,6 +16,7 @@ from .models import (
 )
 
 from .helpers import copy_exercise, add_trial
+from phishtray.base import OrganizationAdminMethods
 
 register = template.Library()
 
@@ -123,7 +124,7 @@ class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
         return ExerciseEmailProperties.objects.filter_by_org_private(user=request.user)
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if not request.user.is_superuser and db_field.name == "release_codes":
+        if db_field.name == "release_codes":
             kwargs[
                 "queryset"
             ] = ExerciseWebPageReleaseCode.objects.filter_by_org_private(
@@ -136,11 +137,19 @@ class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
             kwargs["queryset"] = ExerciseWebPage.objects.filter_by_org_private(
                 user=request.user
             )
+        elif db_field.name == "email":
+            kwargs["queryset"] = ExerciseEmail.objects.filter_by_org_private(
+                user=request.user
+            )
+        elif db_field.name == "exercise":
+            kwargs["queryset"] = Exercise.user_objects.filter_by_org_private(
+                user=request.user
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(ExerciseWebPageReleaseCode)
-class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
+class ExerciseWebPageReleaseCodeAdmin(OrganizationAdminMethods):
     list_display = ("release_code",)
 
     def get_queryset(self, request):
@@ -148,36 +157,45 @@ class ExerciseWebPageReleaseCodeAdmin(admin.ModelAdmin):
             user=request.user
         )
 
-    def get_readonly_fields(self, request, obj=None):
-        ro_fields = list(super().get_readonly_fields(request))
-        if not request.user.is_superuser:
-            ro_fields.append("organization")
-        return ro_fields
-
-    def save_model(self, request, obj, form, change):
-        obj.organization = request.user.organization
-        super().save_model(request, obj, form, change)
-
 
 @admin.register(ExerciseWebPage)
-class ExerciseWebPageAdmin(admin.ModelAdmin):
+class ExerciseWebPageAdmin(OrganizationAdminMethods):
     def get_queryset(self, request):
         return ExerciseWebPage.objects.filter_by_org_private(user=request.user)
 
-    def get_readonly_fields(self, request, obj=None):
-        ro_fields = list(super().get_readonly_fields(request))
-        if not request.user.is_superuser:
-            ro_fields.append("organization")
-        return ro_fields
 
-    def save_model(self, request, obj, form, change):
-        obj.organization = request.user.organization
-        super().save_model(request, obj, form, change)
+@admin.register(ExerciseEmail)
+class ExerciseEmailAdmin(OrganizationAdminMethods):
+    def get_queryset(self, request):
+        return ExerciseEmail.objects.filter_by_org_private(user=request.user)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "replies":
+            kwargs["queryset"] = ExerciseEmailReply.objects.filter_by_org_private(
+                user=request.user
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "belongs_to":
+            kwargs["queryset"] = ExerciseEmail.objects.filter_by_org_private(
+                user=request.user
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+@admin.register(ExerciseEmailReply)
+class ExerciseEmailReplyAdmin(OrganizationAdminMethods):
+    def get_queryset(self, request):
+        return ExerciseEmailReply.objects.filter_by_org_private(user=request.user)
+
+
+@admin.register(ExerciseFile)
+class ExerciseFileAdmin(OrganizationAdminMethods):
+    def get_queryset(self, request):
+        return ExerciseFile.objects.filter_by_org_private(user=request.user)
 
 
 admin.site.register(DemographicsInfo)
-admin.site.register(ExerciseEmail)
 admin.site.register(ExerciseTask)
 admin.site.register(EmailReplyTaskScore)
-admin.site.register(ExerciseEmailReply)
-admin.site.register(ExerciseFile)
