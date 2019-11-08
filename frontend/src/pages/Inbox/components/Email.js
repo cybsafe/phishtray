@@ -67,7 +67,7 @@ const FromAccountInitials = styled('div')({
 
 const EmailFieldInnerContainer = styled('div')`
   svg {
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.4s ease-in-out;
   }
 `;
 
@@ -81,7 +81,7 @@ const NameLink = styled('a')`
     isHover
       ? `
    svg {
-      transition: transform 0.2s ease-in-out;
+      transition: transform 0.4s ease-in-out;
       transform: scale(-1, -1);
     }
   `
@@ -200,14 +200,12 @@ function EmailAttachments({ props }) {
 function EmailInfo({ email, threads, activeThread }) {
   const { fromAccount, toAccount } = email;
 
-  //Hover on From and To fields Behaviour
   const [isHoverFrom, setIsHoverFrom] = useState(false);
   const [isHoverTo, setIsHoverTo] = useState(false);
   const mouseEnter = iconArea =>
     iconArea === 'from' ? setIsHoverFrom(true) : setIsHoverTo(true);
   const mouseLeave = iconArea =>
     iconArea === 'from' ? setIsHoverFrom(false) : setIsHoverTo(false);
-  //Finish Hover on From and To fields behaviour
 
   const activeEmailThread = threads.filter(
     thread => thread.id === activeThread
