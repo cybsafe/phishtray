@@ -18,9 +18,6 @@ const BodyContainer = styled('div')({
 const Spacer = styled('div')({ height: 40 });
 
 function AccountInfo({ credentials }) {
-  if (credentials.label.match(/e[\-]?mail/gi)) {
-    return null;
-  }
   return (
     <div className="bx--structured-list-row">
       <div className="bx--structured-list-td bx--structured-list-content--nowrap">
