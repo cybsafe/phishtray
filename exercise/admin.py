@@ -174,6 +174,10 @@ class ExerciseEmailAdmin(OrganizationAdminMethods):
             kwargs["queryset"] = ExerciseEmailReply.objects.filter_by_org_private(
                 user=request.user
             )
+        elif db_field.name == "attachments":
+            kwargs["queryset"] = ExerciseFile.objects.filter_by_org_private(
+                user=request.user
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
