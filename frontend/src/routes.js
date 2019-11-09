@@ -39,7 +39,7 @@ const WelcomeContainer = styled('div')({
 
 const Sidebar = styled('div')({
   flex: 0,
-  flexBasis: '160px',
+  flexBasis: '165px',
   height: '100%',
   background: '#161415',
 });

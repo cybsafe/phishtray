@@ -117,7 +117,7 @@ class Header extends Component<Props> {
         <div
           className={css({
             height: 80,
-            width: 160,
+            width: 165,
             backgroundColor: '#1D1B1C',
           })}
         />
