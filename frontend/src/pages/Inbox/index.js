@@ -7,6 +7,7 @@ import { markThreadAsActive } from '../../actions/exerciseActions';
 import {
   getThreads,
   getLastRefreshed,
+  getUnreadThreads,
 } from '../../selectors/exerciseSelectors';
 
 import EmailChain from './components/EmailChain';
@@ -17,6 +18,15 @@ const Container = styled('div')({
   flexDirection: 'row',
   height: '100%',
 });
+
+const NoActiveMessage = styled('div')`
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  color: #333;
+  letter-spacing: 1.2px;
+`;
 
 const EmailList = styled('div')({
   flex: 0,
@@ -41,7 +51,7 @@ export class Inbox extends Component {
     }
   }
   render() {
-    const { match, threads } = this.props;
+    const { match, threads, countUnread, activeThread } = this.props;
 
     if (!threads) {
       return (
@@ -78,7 +88,14 @@ export class Inbox extends Component {
           ))}
         </EmailList>
         <EmailContainer>
-          <Route path={`${match.url}/:emailId`} component={EmailChain} />
+          {activeThread === '' ? (
+            <NoActiveMessage>
+              You have {countUnread} unread email
+              {countUnread === 1 ? '' : 's'}
+            </NoActiveMessage>
+          ) : (
+            <Route path={`${match.url}/:emailId`} component={EmailChain} />
+          )}
         </EmailContainer>
       </Container>
     );
@@ -92,6 +109,7 @@ export default connect(
     startTime: state.exercise.startTime,
     participantId: state.exercise.participant,
     activeThread: state.exercise.activeThread,
+    countUnread: getUnreadThreads(state),
   }),
   {
     markThreadAsActive,
