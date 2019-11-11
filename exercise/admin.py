@@ -16,7 +16,7 @@ from .models import (
 )
 
 from .helpers import copy_exercise, add_trial
-from phishtray.base import OrganizationAdminMethods
+from phishtray.base import MultiTenantModelAdmin
 
 register = template.Library()
 
@@ -149,7 +149,7 @@ class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
 
 
 @admin.register(ExerciseWebPageReleaseCode)
-class ExerciseWebPageReleaseCodeAdmin(OrganizationAdminMethods):
+class ExerciseWebPageReleaseCodeAdmin(MultiTenantModelAdmin):
     list_display = ("release_code",)
 
     def get_queryset(self, request):
@@ -159,13 +159,13 @@ class ExerciseWebPageReleaseCodeAdmin(OrganizationAdminMethods):
 
 
 @admin.register(ExerciseWebPage)
-class ExerciseWebPageAdmin(OrganizationAdminMethods):
+class ExerciseWebPageAdmin(MultiTenantModelAdmin):
     def get_queryset(self, request):
         return ExerciseWebPage.objects.filter_by_org_private(user=request.user)
 
 
 @admin.register(ExerciseEmail)
-class ExerciseEmailAdmin(OrganizationAdminMethods):
+class ExerciseEmailAdmin(MultiTenantModelAdmin):
     def get_queryset(self, request):
         return ExerciseEmail.objects.filter_by_org_private(user=request.user)
 
@@ -189,13 +189,13 @@ class ExerciseEmailAdmin(OrganizationAdminMethods):
 
 
 @admin.register(ExerciseEmailReply)
-class ExerciseEmailReplyAdmin(OrganizationAdminMethods):
+class ExerciseEmailReplyAdmin(MultiTenantModelAdmin):
     def get_queryset(self, request):
         return ExerciseEmailReply.objects.filter_by_org_private(user=request.user)
 
 
 @admin.register(ExerciseFile)
-class ExerciseFileAdmin(OrganizationAdminMethods):
+class ExerciseFileAdmin(MultiTenantModelAdmin):
     def get_queryset(self, request):
         return ExerciseFile.objects.filter_by_org_private(user=request.user)
 
