@@ -405,6 +405,7 @@ const Email = (props: Props) => {
       <h3
         className={css({
           marginTop: 40,
+          marginBottom: 30,
           fontSize: 40,
           color: '#333',
           letterSpacing: '1.2px',
