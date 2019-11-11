@@ -91,7 +91,7 @@ export class Inbox extends Component {
           {activeThread === '' ? (
             <NoActiveMessage>
               You have {countUnread} unread email
-              {countUnread === 1 ? '' : 's'}
+              {countUnread !== 1 && 's'}
             </NoActiveMessage>
           ) : (
             <Route path={`${match.url}/:emailId`} component={EmailChain} />
