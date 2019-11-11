@@ -15,11 +15,6 @@ const ACCOUNTS = [
     id: 'fa59b235-284f-40ba-aae7-dtf48689d22',
     data: [
       {
-        id: '1',
-        label: 'E-mail address',
-        value: 'geoff@bluestar.com',
-      },
-      {
         id: '3',
         label: 'Password',
         value: 'someSeriouslySecure3Password',
