@@ -99,7 +99,7 @@ class MultiTenantModelAdmin(admin.ModelAdmin):
         return ro_fields
 
     def save_model(self, request, obj, form, change):
-        if not request.user.is_superuser:
+        if not request.user.is_superuser and not obj.organization:
             obj.organization = request.user.organization
 
         super().save_model(request, obj, form, change)
