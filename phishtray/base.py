@@ -90,12 +90,6 @@ class MultiTenantMixin(models.Model):
     class Meta:
         abstract = True
 
-    def save_model(self, request, obj, form, change):
-        if not request.user.is_superuser and not obj.organization:
-            obj.organization = request.user.organization
-
-        super().save_model(request, obj, form, change)
-
 
 class MultiTenantModelAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
@@ -103,3 +97,9 @@ class MultiTenantModelAdmin(admin.ModelAdmin):
         if not request.user.is_superuser:
             ro_fields.append("organization")
         return ro_fields
+
+    def save_model(self, request, obj, form, change):
+        if not request.user.is_superuser:
+            obj.organization = request.user.organization
+
+        super().save_model(request, obj, form, change)
