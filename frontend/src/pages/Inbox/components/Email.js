@@ -207,6 +207,21 @@ function EmailInfo({ email, threads, activeThread }) {
   const mouseLeave = iconArea =>
     iconArea === 'from' ? setIsHoverFrom(false) : setIsHoverTo(false);
 
+  const splitNamesIntoArray = account => account.name.split(/\s*;\s*/);
+  const calculateAccountOtherNamesNumber = account =>
+    splitNamesIntoArray(account).length - 1;
+
+  const trimNamesInitials = account => {
+    const firstAccountNames = splitNamesIntoArray(account)[0].split(' ');
+
+    return firstAccountNames.length === 1
+      ? firstAccountNames[0].charAt(0).toUpperCase()
+      : firstAccountNames[0].charAt(0).toUpperCase() +
+          firstAccountNames[firstAccountNames.length - 1]
+            .charAt(0)
+            .toUpperCase();
+  };
+
   const activeEmailThread = threads.filter(
     thread => thread.id === activeThread
   );
@@ -214,14 +229,6 @@ function EmailInfo({ email, threads, activeThread }) {
   const date = dateReceived
     ? moment(dateReceived).format('dddd D MMM YYYY')
     : moment().format('dddd D MMM YYYY');
-
-  const trimNamesInitials = account => {
-    const names = account.name.split(' ');
-
-    return names.length === 1
-      ? names[0].charAt(0)
-      : names[0].charAt(0) + names[names.length - 1].charAt(0);
-  };
 
   return (
     <div
@@ -287,6 +294,7 @@ function EmailInfo({ email, threads, activeThread }) {
               onlyInitials={trimNamesInitials(toAccount)}
               email={toAccount.email}
               role={toAccount.role}
+              otherAccountsNumber={calculateAccountOtherNamesNumber(toAccount)}
               triggerText={
                 <NameLink isHover={isHoverTo}>
                   {toAccount.name || ' '}
