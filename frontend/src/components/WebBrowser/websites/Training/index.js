@@ -16,19 +16,28 @@ import {
 } from './ui';
 
 import { closeWebpage } from '../../../../actions/uiActions';
+import { logAction } from '../../../../utils';
 
 type Props = {
   closeWebpage: () => void,
   activeThread: string,
   threads: Array<*>,
+  startTime: Date,
+  participantId: Number,
 };
 
-function Training({ closeWebpage, activeThread, threads }: Props) {
+function Training({
+  closeWebpage,
+  activeThread,
+  threads,
+  startTime,
+  participantId,
+}: Props) {
   const [code, setCode] = useState(null);
   const [error, setError] = useState(false);
 
   const active = threads.filter(thread => thread.id === activeThread);
-  const { threadProperties } = active[0];
+  const { threadProperties, id } = active[0];
   const releaseCodes = threadProperties.releaseCodes.map(
     item => item.releaseCode
   );
@@ -40,6 +49,14 @@ function Training({ closeWebpage, activeThread, threads }: Props) {
   const handleSubmit = e => {
     e.preventDefault();
     if (releaseCodes.includes(code)) {
+      logAction({
+        actionType: 'training_release_code_confirm',
+        emailId: id,
+        releaseCodeEntered: code,
+        participantId: participantId,
+        timeDelta: Date.now() - startTime,
+        timestamp: new Date(),
+      });
       closeWebpage();
     } else {
       setError(true);
@@ -82,6 +99,8 @@ export default connect(
   state => ({
     activeThread: state.exercise.activeThread,
     threads: state.exercise.threads,
+    startTime: state.exercise.startTime,
+    participantId: state.exercise.participant,
   }),
   { closeWebpage }
 )(Training);
