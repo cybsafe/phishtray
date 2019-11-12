@@ -67,7 +67,7 @@ const TrainingPage = (props: Props) => {
   const { trainingLink } = props;
   useEffect(() => {
     getDebrief(participantUuid);
-  }, []);
+  }, [participantUuid]);
 
   return (
     <Container>
