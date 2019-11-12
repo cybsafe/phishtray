@@ -17,6 +17,7 @@ import {
 
 import { closeWebpage } from '../../../../actions/uiActions';
 import { logAction } from '../../../../utils';
+import actionTypes from '../../../../config/actionTypes';
 
 type Props = {
   closeWebpage: () => void,
@@ -50,7 +51,7 @@ function Training({
     e.preventDefault();
     if (releaseCodes.includes(code)) {
       logAction({
-        actionType: 'training_release_code_confirm',
+        actionType: actionTypes.triningReleaseCodeConfirm,
         emailId: id,
         releaseCodeEntered: code,
         participantId: participantId,
