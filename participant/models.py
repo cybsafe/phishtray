@@ -1,7 +1,11 @@
 from operator import itemgetter
 from statistics import mean
 
-from participant.constants import ParticipantBehaviour, POSITIVE_ACTIONS, NEGATIVE_ACTIONS
+from participant.constants import (
+    ParticipantBehaviour,
+    POSITIVE_ACTIONS,
+    NEGATIVE_ACTIONS,
+)
 from .managers import OrganizationManager, ParticipantManager
 
 from django.db import models
@@ -86,9 +90,9 @@ class Participant(PhishtrayBaseModel):
 
         def participant_behaviour(actions):
             pb = ParticipantBehaviour.NEUTRAL
-            if [a for a in actions if a.get('action_type') in POSITIVE_ACTIONS]:
+            if [a for a in actions if a.get("action_type") in POSITIVE_ACTIONS]:
                 pb = ParticipantBehaviour.POSITIVE
-            if [a for a in actions if a.get('action_type') in NEGATIVE_ACTIONS]:
+            if [a for a in actions if a.get("action_type") in NEGATIVE_ACTIONS]:
                 pb = ParticipantBehaviour.NEGATIVE
             return pb
 
@@ -96,7 +100,7 @@ class Participant(PhishtrayBaseModel):
 
         if email_id in self.exercise.phishing_email_ids:
             for action_id, action_details in self.actions.items():
-                if email_id == action_details.get('email_id'):
+                if email_id == action_details.get("email_id"):
                     actions.append(action_details)
 
         return participant_behaviour(actions), actions
