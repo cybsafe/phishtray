@@ -6,8 +6,9 @@ from django.db import models
 from django.db.models import QuerySet
 
 from utils.cache import flush_cache
-from .managers import OrganizationManager
 from django.contrib import admin
+from users.models import User
+from django.db.models import Manager
 
 
 class SoftDeletionQuerySet(QuerySet):
@@ -81,11 +82,53 @@ class CacheBusterMixin:
         flush_cache()
 
 
+class MultiTenantQuerySet(QuerySet):
+    """
+    Suppose to work with models which inherits from PhishtrayBaseModel
+    or SoftDeletionModel
+    """
+
+    def filter_by_org_private(self, user):
+
+        if not user or not isinstance(user, User):
+            return self.none()
+
+        if not user.is_superuser:
+            return self.filter(organization=user.organization, deleted_at=None)
+
+        return self.filter(deleted_at=None)
+
+    def filter_by_org_public(self, user):
+        public_orgs = self.filter(organisation=None, deleted_at=None)
+        if not user.is_superuser:
+            if user.organization is None:
+                return public_orgs
+            else:
+                private_orgs = self.filter(
+                    organisation=user.organization, deleted_at=None
+                )
+                return private_orgs | public_orgs
+        return self.filter(deleted_at=None)
+
+    def filter_by_user(self, user):
+        if not user or not isinstance(user, User):
+            return self.none()
+
+        if user.is_superuser:
+            return self
+
+        return self.filter(id=user.organization_id)
+
+
+class MultiTenantManager(Manager.from_queryset(MultiTenantQuerySet)):
+    pass
+
+
 class MultiTenantMixin(models.Model):
     organization = models.ForeignKey(
         "participant.Organization", on_delete=models.PROTECT, null=True, blank=True
     )
-    objects = OrganizationManager()
+    objects = MultiTenantManager()
 
     class Meta:
         abstract = True
