@@ -13,7 +13,6 @@ import {
 
 import {
   Container,
-  EmailItem,
   EmailItemField,
   EmailItemContent,
   Emphasis,
