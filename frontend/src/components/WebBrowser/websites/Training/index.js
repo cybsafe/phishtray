@@ -8,7 +8,6 @@ import {
   Wrapper,
   Container,
   Title,
-  Text,
   Input,
   Form,
   MarkDownContainer,

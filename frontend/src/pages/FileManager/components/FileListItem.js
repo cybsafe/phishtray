@@ -20,6 +20,16 @@ const Cell = styled('td')({
   },
 });
 
+const CustomLink = styled('button')`
+  font-size: 16px;
+  font-weight: 400;
+  text-decoration: none;
+  color: #5596e6;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+`;
+
 export default function FileListItem({
   file,
   deleteFileHandler,
@@ -43,7 +53,8 @@ export default function FileListItem({
       <Cell>{file.description}</Cell>
       <Cell>{format(file.dateCreated, 'DD/MM/YYYY')}</Cell>
       <Cell>
-        <a
+        <CustomLink
+          type="button"
           onClick={() => deleteFileHandler(file)}
           className={css({
             fontSize: 16,
@@ -54,7 +65,7 @@ export default function FileListItem({
           })}
         >
           Delete
-        </a>
+        </CustomLink>
       </Cell>
     </Row>
   );

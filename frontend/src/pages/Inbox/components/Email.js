@@ -88,6 +88,17 @@ const NameLink = styled('a')`
       : ''}
 `;
 
+const CustomLink = styled('button')`
+  margin-right: 20px;
+  letterspacing: 1.1px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-size: ${({ attachment }) => (attachment ? '1rem' : '1.2rem')};
+  text-decoration: ${({ attachment }) => (attachment ? 'none' : 'underline')};
+  color: ${({ attachment }) => (attachment ? '#b8b8b8' : '#3d70b2')};
+`;
+
 const Icon = styled(FontAwesomeIcon)`
   margin-left: 10px;
   color: #b8b8b8;
@@ -136,14 +147,9 @@ function EmailAttachments({ props }) {
           email.attachments.map(attachment => {
             if (webPage) {
               return (
-                <a
-                  className={css({
-                    marginRight: 20,
-                    textDecoration: 'none',
-                    color: '#B8B8B8',
-                    letterSpacing: '1.1px',
-                    cursor: 'pointer',
-                  })}
+                <CustomLink
+                  attachment
+                  type="button"
                   onClick={() => {
                     webPage &&
                       selectWebpageType(
@@ -155,7 +161,7 @@ function EmailAttachments({ props }) {
                   }}
                 >
                   {attachment.filename || attachment.fileName}
-                </a>
+                </CustomLink>
               );
             } else {
               return (
@@ -324,7 +330,8 @@ function EmailInfo({ email, threads, activeThread }) {
 
 function RouterLink(props) {
   return (
-    <a
+    <CustomLink
+      type="button"
       onClick={() => {
         const { onReplyParams, showWebpage } = props;
         logAction({
@@ -337,10 +344,9 @@ function RouterLink(props) {
         });
         showWebpage(props.href.substring(1), onReplyParams.emailId);
       }}
-      href="#"
     >
       {props.children}
-    </a>
+    </CustomLink>
   );
 }
 
