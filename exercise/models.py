@@ -4,13 +4,8 @@ from random import randrange, random
 from django.conf import settings
 from django.db import models
 
-from phishtray.base import PhishtrayBaseModel, CacheBusterMixin
-from .managers import (
-    ExerciseManager,
-    ExerciseEmailPropertiesManager,
-    ExerciseWebPageReleaseCodeManager,
-    ExerciseWebPageManager,
-)
+from phishtray.base import PhishtrayBaseModel, CacheBusterMixin, MultiTenantMixin
+from .managers import ExerciseManager, ExerciseEmailPropertiesManager
 
 
 EXERCISE_EMAIL_PHISH = 0
@@ -55,7 +50,7 @@ class ExerciseTask(CacheBusterMixin, PhishtrayBaseModel):
         return self.name
 
 
-class ExerciseFile(CacheBusterMixin, PhishtrayBaseModel):
+class ExerciseFile(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     """
     ExercieseFiles are not actual files but they act like one.
     """
@@ -70,7 +65,7 @@ class ExerciseFile(CacheBusterMixin, PhishtrayBaseModel):
         return self.file_name
 
 
-class ExerciseEmailReply(CacheBusterMixin, PhishtrayBaseModel):
+class ExerciseEmailReply(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
     message = models.TextField(null=True, blank=True)
 
@@ -108,7 +103,7 @@ class EmailReplyTaskScore(CacheBusterMixin, PhishtrayBaseModel):
         )
 
 
-class ExerciseEmail(CacheBusterMixin, PhishtrayBaseModel):
+class ExerciseEmail(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     def __str__(self):
         return self.subject
 
@@ -318,9 +313,7 @@ class Exercise(CacheBusterMixin, PhishtrayBaseModel):
         # Remove email properties that are no longer attached to the exercise
         orphaned_email_properties = ExerciseEmailProperties.objects.filter(
             exercise_id=self.id
-        ).exclude(
-            email_id__in=self.emails.values_list("id", flat=True)
-        )
+        ).exclude(email_id__in=self.emails.values_list("id", flat=True))
         if orphaned_email_properties:
             orphaned_email_properties.all().hard_delete()
 
@@ -328,36 +321,28 @@ class Exercise(CacheBusterMixin, PhishtrayBaseModel):
         self.set_email_reveal_times()
 
 
-class ExerciseWebPage(CacheBusterMixin, PhishtrayBaseModel):
+class ExerciseWebPage(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     PAGE_REGULAR = 0
     PAGE_TYPES = ((PAGE_REGULAR, "regular"),)
 
     def __str__(self):
         return self.title
 
-    objects = ExerciseWebPageManager()
-
     title = models.CharField(max_length=250, blank=True, null=True)
     url = models.CharField(max_length=250, blank=True, null=True, unique=True)
     type = models.IntegerField(choices=PAGE_TYPES, default=PAGE_REGULAR)
     content = models.TextField(null=True, blank=True)
-    organization = models.ForeignKey(
-        "participant.Organization", on_delete=models.PROTECT, null=True, blank=True
-    )
 
 
-class ExerciseWebPageReleaseCode(CacheBusterMixin, PhishtrayBaseModel):
+class ExerciseWebPageReleaseCode(
+    CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel
+):
     release_code = models.CharField(
         max_length=250, blank=False, null=False, unique=True
-    )
-    organization = models.ForeignKey(
-        "participant.Organization", on_delete=models.PROTECT, null=True, blank=True
     )
 
     def __str__(self):
         return self.release_code
-
-    objects = ExerciseWebPageReleaseCodeManager()
 
 
 class ExerciseEmailProperties(CacheBusterMixin, PhishtrayBaseModel):
