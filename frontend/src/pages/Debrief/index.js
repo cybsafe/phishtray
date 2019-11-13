@@ -1,7 +1,7 @@
 //@flow
 import React, { useEffect, Fragment } from 'react';
 import styled from 'react-emotion';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button as CarbonButton } from 'carbon-components-react';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import WideHeader from '../../components/Header/WideHeader';
@@ -52,8 +52,6 @@ type Props = {
   match: Object,
   params: Object,
   history: Object,
-  getDebrief: (*) => void,
-  phishingEmails: Array<*>,
 };
 
 const NotFoundPage = () => <NotFound>participantUuid not found.</NotFound>;
@@ -63,11 +61,12 @@ function Debrief({
     params: { participantUuid },
   },
   history,
-  getDebrief,
-  phishingEmails,
 }: Props) {
+  const phishingEmails = useSelector(state => state.debrief.phishingEmails);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    getDebrief(participantUuid);
+    dispatch(getDebrief(participantUuid));
   }, [participantUuid, getDebrief]);
 
   if (phishingEmails === undefined) {
@@ -105,9 +104,4 @@ function Debrief({
   );
 }
 
-export default connect(
-  state => ({
-    phishingEmails: state.debrief.phishingEmails,
-  }),
-  { getDebrief }
-)(Debrief);
+export default Debrief;
