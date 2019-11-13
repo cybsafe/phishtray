@@ -27,11 +27,8 @@ class ExportCsvMixin:
 
         exercise_ids = queryset.values_list("exercise_id")
 
-        # Steps:
-        # 1 - Get the exercises from the selected participant(s)
         exercise_qs = Exercise.objects.filter(id__in=exercise_ids)
 
-        # 2 - Calculate the results based on the actual exercises
         exercise_participants_qs = (
             Participant.objects.filter(exercise_id=OuterRef("pk"))
             .values("exercise_id")
@@ -61,45 +58,15 @@ class ExportCsvMixin:
                 email_opened_attachment=Count(
                     "id",
                     filter=Q(name="action_type", value="email_attachment_download"),
-                )
-                # refresher_failed=Coalesce(
-                #     Count("id", filter=Q(is_passed=0), distinct=True), 0
-                # ),
+                ),
+                webpage_clicked=Count(
+                    "id", filter=Q(name="action_type", value="webpage_click")
+                ),
+                emails_replied=Count(
+                    "id", filter=Q(name="action_type", value="email_replied")
+                ),
             )
         )
-
-        #   fileDelete: 'file_deleted',
-        #   fileOpen: 'file_opened',
-        #   emailOpen: 'email_opened',
-        #   emailReply: 'email_replied',
-        #   emailForward: 'email_forwarded',
-        #   emailDelete: 'email_deleted',
-        #   emailReport: 'email_reported',
-        #   emailQuickReply: 'email_quick_reply',
-        #   emailAttachmentDownload: 'email_attachment_download',
-        #   emailLinkOpen: 'email_link_clicked',
-        #   accountOpen: 'account_open',
-        #   contactOpen: 'contact_open',
-        #   browserClose: 'browser_closed',
-        #   browserClick: 'webpage_click',
-        #   browserInputChange: 'webpage_entry',
-        #   browserInputLoginCrendentials: 'webpage_login_credentials_entered',
-        #   browserForgottenPassword: 'webpage_forgotten_password',
-        #   browserSubmittedDetails: 'webpage_login_credentials_submitted',
-        #   browserUserSignUp: 'webpage_user_signup',
-        #   trainingLinkClick: 'training_link_clicked',
-
-        # 3 - Organize the results to show on CSV
-
-        # participant_actions_queryset = ParticipantAction.objects.filter(
-        #     participant_id=participant_id
-        # )
-        # serialized_actions = ParticipantActionSerializer(
-        #     participant_actions_queryset, many=True
-        # )
-        #
-        # # print(f"Result: {str(serialized_actions, 'utf-8')}")
-        # print(serialized_actions)
 
         field_names = [
             "exercise_title",
@@ -126,7 +93,7 @@ class ExportCsvMixin:
                 ),
                 0,
             ),
-            phishing_emails_opened=Value("", output_field=CharField()),
+            phishing_emails_opened=Value(0, output_field=CharField()),
             pos_reported=Subquery(
                 participant_actions_qs.values("emails_reported")[:1],
                 output_field=CharField(),
@@ -139,8 +106,14 @@ class ExportCsvMixin:
                 participant_actions_qs.values("emails_linked_click")[:1],
                 output_field=CharField(),
             ),
-            neg_entered_detail=Value("", output_field=CharField()),
-            neg_replied_to_phishing_email=Value("", output_field=CharField()),
+            neg_entered_detail=Subquery(
+                participant_actions_qs.values("webpage_clicked")[:1],
+                output_field=CharField(),
+            ),
+            neg_replied_to_phishing_email=Subquery(
+                participant_actions_qs.values("emails_replied")[:1],
+                output_field=CharField(),
+            ),
             neg_opened_attachment=Subquery(
                 participant_actions_qs.values("email_opened_attachment")[:1],
                 output_field=CharField(),
@@ -164,7 +137,6 @@ class ExportCsvMixin:
 
         writer.writerow(field_names)
         for obj in queryset:
-            # print([getattr(obj, field) for field in field_names])
             writer.writerow([getattr(obj, field) for field in field_names])
 
         return response
