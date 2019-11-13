@@ -1,21 +1,9 @@
 from django.contrib import admin
-from .models import Participant, Organization, ParticipantAction, ActionLog
-from .serializer import ParticipantActionSerializer
+from .models import Participant, Organization, ActionLog
 from .filters import TrialVersionListFilter, ExerciseListFilter
 from django.http import HttpResponse
-from django.db.models import (
-    F,
-    Q,
-    Value,
-    CharField,
-    OuterRef,
-    Subquery,
-    ExpressionWrapper,
-    Case,
-    When,
-    Count,
-)
-from django.db.models.functions import Coalesce, Concat, Now
+from django.db.models import F, Q, Value, CharField, OuterRef, Subquery, Count
+from django.db.models.functions import Coalesce
 from exercise.models import Exercise
 import csv
 
