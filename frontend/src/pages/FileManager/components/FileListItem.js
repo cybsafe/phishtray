@@ -53,17 +53,7 @@ export default function FileListItem({
       <Cell>{file.description}</Cell>
       <Cell>{format(file.dateCreated, 'DD/MM/YYYY')}</Cell>
       <Cell>
-        <CustomLink
-          type="button"
-          onClick={() => deleteFileHandler(file)}
-          className={css({
-            fontSize: 16,
-            fontWeight: 400,
-            textDecoration: 'none',
-            color: '#5596e6',
-            cursor: 'pointer',
-          })}
-        >
+        <CustomLink type="button" onClick={() => deleteFileHandler(file)}>
           Delete
         </CustomLink>
       </Cell>
