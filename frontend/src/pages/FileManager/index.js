@@ -90,27 +90,29 @@ const Loading = () => (
   </Container>
 );
 
-const dispatch = useDispatch();
+const FileManager = props => {
+  const files = useSelector(state => getFiles(state));
+  const isLoaded = useSelector(state => getLastRefreshed(state) !== null);
+  const modal = useSelector(state => getModal(state));
+  const startTime = useSelector(state => state.exercise.startTime);
+  const fileDeleted = useSelector(state => state.fileManager.fileDeleted);
+  const participantId = useSelector(state => state.exercise.participant);
+  const dispatch = useDispatch();
+  // async componentDidMount() {
+  //   //only load files once there are no files or a file have not been deleted
+  //   files.length <= 0 &&
+  //     !fileDeleted &&
+  //     (await dispatch(loadFiles()));
+  //   //view files when attributes passed from Email link
+  //   if (props.location.params && props.location.params.attachment) {
+  //     props.location.params.attachment.fileUrl &&
+  //       displayFileModalHandler(
+  //         props.location.params.attachment.fileUrl
+  //       );
+  //   }
+  // }
 
-    
-
-export class FileManager extends Component {
-  async componentDidMount() {
-    //only load files once there are no files or a file have not been deleted
-    this.props.files.length <= 0 &&
-      !this.props.fileDeleted &&
-      (await dispatch(loadFiles()));
-    //view files when attributes passed from Email link
-    if (this.props.location.params && this.props.location.params.attachment) {
-      this.props.location.params.attachment.fileUrl &&
-        this.displayFileModalHandler(
-          this.props.location.params.attachment.fileUrl
-        );
-    }
-  }
-
-  deleteFileHandler = fileToDelete => {
-    const { modal } = this.props;
+  const deleteFileHandler = fileToDelete => {
     if (modal.isOpen && modal.fileUrl === fileToDelete.fileUrl) {
       dispatch(hideAndDeleteFile(fileToDelete.id));
     } else {
@@ -118,75 +120,55 @@ export class FileManager extends Component {
     }
   };
 
-  displayFileModalHandler = fileUrl => {
+  const displayFileModalHandler = fileUrl => {
     dispatch(displayFile(fileUrl));
   };
 
-  };
-
-  logActionsHandler = params => {
+  const logActionsHandler = params => {
     return logAction({
-      participantId: this.props.participantId,
-      timeDelta: Date.now() - this.props.startTime,
+      participantId: participantId,
+      timeDelta: Date.now() - startTime,
       timestamp: new Date(),
       ...params,
     });
   };
 
-  render() {
-    const { files, isLoaded, modal } = this.props;
-    if (!isLoaded) return <Loading />;
-    return (
-      <Container>
-        {modal.isOpen && (
-          <FileModal
-            fileUrl={modal.fileUrl}
-            isOpen={modal.isOpen}
-          />
-        )}
-        <Table>
-          <TableHead />
-          <tbody>
-            {files &&
-              files.map(file => (
-                <FileListItem
-                  key={file.id}
-                  file={file}
-                  deleteFileHandler={file => {
-                    this.logActionsHandler({
-                      actionType: actionTypes.fileDelete,
-                      fileId: file.id,
-                      fileName: file.fileName,
-                    });
-                    this.deleteFileHandler(file);
-                  }}
-                  displayFileModalHandler={file => {
-                    this.logActionsHandler({
-                      actionType: actionTypes.fileOpen,
-                      fileId: file.id,
-                      fileName: file.fileName,
-                    });
-                    this.displayFileModalHandler(file);
-                  }}
-                />
-              ))}
-          </tbody>
-        </Table>
-      </Container>
-    );
-  }
-}
+  if (!isLoaded) return <Loading />;
+  return (
+    <Container>
+      {modal.isOpen && (
+        <FileModal fileUrl={modal.fileUrl} isOpen={modal.isOpen} />
+      )}
+      <Table>
+        <TableHead />
+        <tbody>
+          {files &&
+            files.map(file => (
+              <FileListItem
+                key={file.id}
+                file={file}
+                deleteFileHandler={file => {
+                  logActionsHandler({
+                    actionType: actionTypes.fileDelete,
+                    fileId: file.id,
+                    fileName: file.fileName,
+                  });
+                  deleteFileHandler(file);
+                }}
+                displayFileModalHandler={file => {
+                  logActionsHandler({
+                    actionType: actionTypes.fileOpen,
+                    fileId: file.id,
+                    fileName: file.fileName,
+                  });
+                  displayFileModalHandler(file);
+                }}
+              />
+            ))}
+        </tbody>
+      </Table>
+    </Container>
+  );
+};
 
-export default connect(
-  state => ({
-    files: getFiles(state),
-    isLoaded: getLastRefreshed(state) !== null,
-    modal: getModal(state),
-    startTime: state.exercise.startTime,
-    fileDeleted: state.fileManager.fileDeleted,
-    participantId: state.exercise.participant,
-  }),
-  {
-    hideAndDeleteFile,
-  }
-)(FileManager);
+export default FileManager;
