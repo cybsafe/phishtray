@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
 
 import FileListItem from './components/FileListItem';
@@ -16,7 +16,6 @@ import {
   loadFiles,
   removeFile,
   displayFile,
-  hideFile,
   hideAndDeleteFile,
 } from '../../actions/fileManagerActions';
 
@@ -91,12 +90,16 @@ const Loading = () => (
   </Container>
 );
 
+const dispatch = useDispatch();
+
+    
+
 export class FileManager extends Component {
   async componentDidMount() {
     //only load files once there are no files or a file have not been deleted
     this.props.files.length <= 0 &&
       !this.props.fileDeleted &&
-      (await this.props.loadFiles());
+      (await dispatch(loadFiles()));
     //view files when attributes passed from Email link
     if (this.props.location.params && this.props.location.params.attachment) {
       this.props.location.params.attachment.fileUrl &&
@@ -107,20 +110,18 @@ export class FileManager extends Component {
   }
 
   deleteFileHandler = fileToDelete => {
-    const { modal, removeFile, hideAndDeleteFile } = this.props;
+    const { modal } = this.props;
     if (modal.isOpen && modal.fileUrl === fileToDelete.fileUrl) {
-      hideAndDeleteFile(fileToDelete.id);
+      dispatch(hideAndDeleteFile(fileToDelete.id));
     } else {
-      removeFile(fileToDelete.id);
+      dispatch(removeFile(fileToDelete.id));
     }
   };
 
   displayFileModalHandler = fileUrl => {
-    this.props.displayFile(fileUrl);
+    dispatch(displayFile(fileUrl));
   };
 
-  hideFileModalHandler = () => {
-    this.props.hideFile();
   };
 
   logActionsHandler = params => {
@@ -141,7 +142,6 @@ export class FileManager extends Component {
           <FileModal
             fileUrl={modal.fileUrl}
             isOpen={modal.isOpen}
-            hideFileModalHandler={this.hideFileModalHandler}
           />
         )}
         <Table>
@@ -187,10 +187,6 @@ export default connect(
     participantId: state.exercise.participant,
   }),
   {
-    loadFiles,
-    removeFile,
-    displayFile,
-    hideFile,
     hideAndDeleteFile,
   }
 )(FileManager);
