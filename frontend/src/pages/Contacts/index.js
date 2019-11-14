@@ -1,8 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
-
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getAllContacts } from '../../data/contacts';
 
 import ContactDetail from './components/ContactDetail';
@@ -49,7 +48,10 @@ function NoMatch() {
   );
 }
 
-function Contacts({ match, participantId, startTime, ...params }) {
+function Contacts({ match }) {
+  const participantId = useSelector(state => state.exercise.participantId);
+  const startTime = useSelector(state => state.exercise.startTime);
+
   const logActionsHandler = params => {
     return logAction({
       participantId: participantId,
@@ -83,10 +85,4 @@ function Contacts({ match, participantId, startTime, ...params }) {
   );
 }
 
-export default connect(
-  state => ({
-    startTime: state.exercise.startTime,
-    participantId: state.exercise.participant,
-  }),
-  null
-)(Contacts);
+export default Contacts;
