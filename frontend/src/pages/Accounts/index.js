@@ -53,8 +53,8 @@ function Accounts({ match }) {
 
   const logActionsHandler = params => {
     return logAction({
-      participantId: this.props.participantId,
-      timeDelta: Date.now() - this.props.startTime,
+      participantId: participantId,
+      timeDelta: Date.now() - startTime,
       timestamp: new Date(),
       actionType: actionTypes.accountOpen,
       ...params,
