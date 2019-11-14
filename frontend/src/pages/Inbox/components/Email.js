@@ -1,6 +1,6 @@
 // @flow
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
 import Markdown from 'react-markdown';
@@ -14,7 +14,6 @@ import QuickReply from './QuickReply';
 import { logAction, selectWebpageType } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
 import { loadFiles } from '../../../actions/fileManagerActions';
-
 import { showWebpage } from '../../../actions/uiActions';
 
 type Props = {
@@ -22,10 +21,7 @@ type Props = {
   onReplyParams: Object,
   threadId: string,
   repliesRef: Object,
-  activeThread: string,
-  threads: Array<Object>,
   addFile: () => void,
-  loadFiles: () => void,
   markThreadAsDeleted: () => void,
 };
 
@@ -104,15 +100,8 @@ const Icon = styled(FontAwesomeIcon)`
   color: #b8b8b8;
 `;
 
-function EmailAttachments({ props }) {
-  const {
-    email,
-    onReplyParams,
-    addFile,
-    loadFiles,
-    threads,
-    activeThread,
-  } = props;
+function EmailAttachments({ props, activeThread, threads, loadFiles }) {
+  const { email, onReplyParams, addFile } = props;
   const active = threads.filter(thread => thread.id === activeThread);
 
   const {
@@ -203,7 +192,7 @@ function EmailAttachments({ props }) {
   );
 }
 
-function EmailInfo({ email, threads, activeThread }) {
+function EmailInfo({ email }) {
   const { fromAccount, toAccount } = email;
 
   const [isHoverFrom, setIsHoverFrom] = useState(false);
@@ -228,9 +217,12 @@ function EmailInfo({ email, threads, activeThread }) {
             .toUpperCase();
   };
 
+  const { activeThread, threads } = useSelector(state => state.exercise);
+
   const activeEmailThread = threads.filter(
     thread => thread.id === activeThread
   );
+
   const dateReceived = activeEmailThread[0].threadProperties.dateReceived;
   const date = dateReceived
     ? moment(dateReceived).format('dddd D MMM YYYY')
@@ -350,8 +342,7 @@ function RouterLink(props) {
   );
 }
 
-function ReturnReplies({ props, items }) {
-  const { showWebpage } = props;
+function ReturnReplies({ props, items, showWebpage }) {
   const {
     interceptExercise,
     releaseCodes,
@@ -392,12 +383,13 @@ function ReturnReplies({ props, items }) {
   );
 }
 
-const Email = (props: Props) => {
-  const active = props.threads.filter(
-    thread => thread.id === props.activeThread
-  );
+function Email(props: Props) {
+  const { activeThread, threads } = useSelector(state => state.exercise);
+  const dispatch = useDispatch();
 
-  const { email, threads, activeThread } = props;
+  const active = threads.filter(thread => thread.id === activeThread);
+
+  const { email } = props;
   return (
     <div
       className={css({
@@ -427,22 +419,26 @@ const Email = (props: Props) => {
           heading: Heading,
         }}
       />
-      {props.email.attachments.length > 0 && <EmailAttachments props={props} />}
+      {props.email.attachments.length > 0 && (
+        <EmailAttachments
+          props={props}
+          activeThread={activeThread}
+          threads={threads}
+          loadFiles={dispatch(loadFiles)}
+        />
+      )}
       {props.email.replies.length > 0 && (
         <Fragment>
           <Divider />
-          <ReturnReplies items={active} props={props} />
+          <ReturnReplies
+            items={active}
+            props={props}
+            showWebpage={dispatch(showWebpage)}
+          />
         </Fragment>
       )}
     </div>
   );
-};
+}
 
-export default connect(
-  state => ({
-    activeThread: state.exercise.activeThread,
-    threads: state.exercise.threads,
-    exercise: state.exercise,
-  }),
-  { showWebpage, loadFiles }
-)(Email);
+export default Email;
