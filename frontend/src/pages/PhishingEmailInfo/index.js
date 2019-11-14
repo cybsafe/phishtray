@@ -1,6 +1,6 @@
 //@flow
 import React, { Fragment, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,27 +28,25 @@ import WideHeader from '../../components/Header/WideHeader';
 import { negativeMessages, positiveMessages, sanitizeActions } from './utils';
 
 type Props = {
-  phishingEmails: [*],
   history: Object,
-  getDebrief: (id: string) => void,
   match: Object,
   params: Object,
   participantUuid: string,
 };
 
 function PhishingEmailInfo({
-  phishingEmails,
   history,
-  getDebrief,
   match: {
     params: { participantUuid },
   },
 }: Props) {
+  const phishingEmails = useSelector(state => state.debrief.phishingEmails);
+  const dispatch = useDispatch();
   const [isShowing, setIsShowing] = useState(false);
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    getDebrief(participantUuid);
+    dispatch(getDebrief(participantUuid));
   }, [participantUuid, getDebrief]);
 
   const nextPage = (page, max) => {
@@ -169,15 +167,4 @@ function PhishingEmailInfo({
   );
 }
 
-const mapStateToProps = state => ({
-  phishingEmails: state.debrief.phishingEmails,
-});
-
-const mapDispatchToProps = {
-  getDebrief,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PhishingEmailInfo);
+export default PhishingEmailInfo;
