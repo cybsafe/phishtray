@@ -64,7 +64,7 @@ def get_exercise_copy(original_exercise, current_user):
         training_link=original_exercise.training_link,
         debrief=original_exercise.debrief,
         copied_from=f"{original_exercise.title} - {original_exercise.id}",
-        organisation=current_user.organization,
+        organization=current_user.organization,
         published_by=current_user,
         updated_by=current_user,
     )

@@ -61,7 +61,7 @@ class ParticipantQuerysetTests(APITestCase):
         self.superuser = UserFactory(organization=organization, is_superuser=True)
         self.user_without_organization = UserFactory()
 
-    def test_participant_filter_by_user_with_organisation(self):
+    def test_participant_filter_by_user_with_organization(self):
         expected_ids = [
             self.participant1.id,
             self.participant2.id,

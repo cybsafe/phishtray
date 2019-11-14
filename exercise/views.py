@@ -42,10 +42,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(TWO_HOURS))
     def init(self, request, *args, **kwargs):
         exercise = self.get_object()
-        participant = Participant(
-            exercise=exercise,
-            organization=exercise.organisation
-        )
+        participant = Participant(exercise=exercise, organization=exercise.organization)
         participant.save()
         resp = {
             "participant": str(participant.id),

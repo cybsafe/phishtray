@@ -99,13 +99,13 @@ class MultiTenantQuerySet(QuerySet):
         return self.filter(deleted_at=None)
 
     def filter_by_org_public(self, user):
-        public_orgs = self.filter(organisation=None, deleted_at=None)
+        public_orgs = self.filter(organization=None, deleted_at=None)
         if not user.is_superuser:
             if user.organization is None:
                 return public_orgs
             else:
                 private_orgs = self.filter(
-                    organisation=user.organization, deleted_at=None
+                    organization=user.organization, deleted_at=None
                 )
                 return private_orgs | public_orgs
         return self.filter(deleted_at=None)

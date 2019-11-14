@@ -28,7 +28,7 @@ class ExerciseAdminForm(forms.ModelForm):
 
 
 @admin.register(Exercise)
-class ExerciseAdmin(admin.ModelAdmin):
+class ExerciseAdmin(MultiTenantModelAdmin):
     form = ExerciseAdminForm
     list_display = ("id", "title", "description", "length_minutes", "created_date")
     readonly_fields = (
@@ -62,18 +62,12 @@ class ExerciseAdmin(admin.ModelAdmin):
 
         return super().response_change(request, obj)
 
-    def get_readonly_fields(self, request, obj=None):
-        fields = list(super().get_readonly_fields(request))
-        if not request.user.is_superuser:
-            fields.append("organisation")
-        return fields
-
     def save_model(self, request, obj, form, change):
         # When creating a new exercise, it should have the
-        # 'published by' and 'organisation' fields filled in with the user information
+        # 'published by' and 'organization' fields filled in with the user information
         if not change:
             obj.published_by = request.user
-            obj.organisation = request.user.organization
+            obj.organization = request.user.organization
         obj.updated_by = request.user
         obj.save()
 
@@ -82,7 +76,7 @@ class ExerciseAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         # Public exercises' permissions
-        if obj.__class__.__name__ == "Exercise" and not obj.organisation:
+        if obj.__class__.__name__ == "Exercise" and not obj.organization:
             if not request.user.is_superuser:
                 if obj.published_by is None:
                     return False
@@ -93,6 +87,21 @@ class ExerciseAdmin(admin.ModelAdmin):
                     return True
             return True
         return super().has_change_permission(request, obj)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "demographics":
+            kwargs["queryset"] = DemographicsInfo.objects.filter_by_org_private(
+                user=request.user
+            )
+        elif db_field.name == "emails":
+            kwargs["queryset"] = ExerciseEmail.objects.filter_by_org_private(
+                user=request.user
+            )
+        elif db_field.name == "files":
+            kwargs["queryset"] = ExerciseFile.objects.filter_by_org_private(
+                user=request.user
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class ExerciseEmailPropertiesListFilter(admin.SimpleListFilter):
@@ -200,6 +209,11 @@ class ExerciseFileAdmin(MultiTenantModelAdmin):
         return ExerciseFile.objects.filter_by_org_private(user=request.user)
 
 
-admin.site.register(DemographicsInfo)
+@admin.register(DemographicsInfo)
+class DemographicsInfoAdmin(MultiTenantModelAdmin):
+    def get_queryset(self, request):
+        return DemographicsInfo.objects.filter_by_org_private(user=request.user)
+
+
 admin.site.register(ExerciseTask)
 admin.site.register(EmailReplyTaskScore)

@@ -159,7 +159,7 @@ class ExerciseEmail(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
             return email_properties
 
 
-class DemographicsInfo(CacheBusterMixin, PhishtrayBaseModel):
+class DemographicsInfo(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     """
     Demographic Questions that can be added to Exercises.
     """
@@ -182,11 +182,12 @@ class DemographicsInfo(CacheBusterMixin, PhishtrayBaseModel):
         return self.question
 
 
-class Exercise(CacheBusterMixin, PhishtrayBaseModel):
+class Exercise(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     def __str__(self):
         return f"{self.title} - {self.id}"
 
     user_objects = ExerciseManager()
+    objects = models.Manager()
 
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -206,9 +207,6 @@ class Exercise(CacheBusterMixin, PhishtrayBaseModel):
         default=False,
     )
     copied_from = models.CharField(max_length=250, null=True, blank=True)
-    organisation = models.ForeignKey(
-        "participant.Organization", on_delete=models.PROTECT, null=True, blank=True
-    )
     updated_by = models.ForeignKey(
         "users.User",
         on_delete=models.PROTECT,

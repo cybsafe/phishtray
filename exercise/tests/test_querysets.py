@@ -10,8 +10,8 @@ class ExerciseQuerysetTests(APITestCase):
         self.organization = OrganizationFactory(name="this_test_organization")
         self.organization2 = OrganizationFactory(name="this_test_organization 2")
 
-        self.private_exercise = ExerciseFactory(organisation=self.organization)
-        self.another_private_exercise = ExerciseFactory(organisation=self.organization2)
+        self.private_exercise = ExerciseFactory(organization=self.organization)
+        self.another_private_exercise = ExerciseFactory(organization=self.organization2)
         self.public_exercise = ExerciseFactory()
 
         self.user = UserFactory(
@@ -25,7 +25,7 @@ class ExerciseQuerysetTests(APITestCase):
         )
 
     def test_exercise_filter_when_user_with_organization(self):
-        # The user with organization must see his organisation's exercise and public ones
+        # The user with organization must see his organization's exercise and public ones
         all_exercises = Exercise.objects.all()
         user_exercises = Exercise.user_objects.filter_by_user(self.user)
         self.assertEqual(3, all_exercises.count())

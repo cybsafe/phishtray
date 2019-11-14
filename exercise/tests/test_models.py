@@ -34,7 +34,9 @@ class ExerciseModelTests(TestCase):
         exercise = ExerciseFactory.create(emails=emails)
 
         exercise.set_email_reveal_times()
-        received_emails = [e for e in exercise.emails.all() if e.reveal_time(exercise) is 0]
+        received_emails = [
+            e for e in exercise.emails.all() if e.reveal_time(exercise) is 0
+        ]
 
         self.assertEqual(4, exercise.emails.all().count())
         self.assertEqual(1, len(received_emails))
@@ -141,36 +143,33 @@ class ExerciseModelTests(TestCase):
         exercise = ExerciseFactory.create(emails=emails)
 
         self.assertIsNotNone(exercise)
-        self.assertIsNone(exercise.organisation)
+        self.assertIsNone(exercise.organization)
 
     def test_create_private_exercise(self):
         emails = EmailFactory.create_batch(2)
-        organisation = OrganizationFactory()
-        exercise = ExerciseFactory.create(emails=emails, organisation=organisation)
+        organization = OrganizationFactory()
+        exercise = ExerciseFactory.create(emails=emails, organization=organization)
         exercise2 = ExerciseFactory()
 
         self.assertIsNotNone(exercise)
-        self.assertIsNotNone(exercise.organisation)
+        self.assertIsNotNone(exercise.organization)
         self.assertEqual(2, Exercise.objects.all().count())
-        self.assertEqual(1, Exercise.objects.filter(organisation=organisation).count())
+        self.assertEqual(1, Exercise.objects.filter(organization=organization).count())
 
     def test_copied_from_exercise_id(self):
         base_exercise = ExerciseFactory()
-        copied_from_str = f'{base_exercise.title} - {base_exercise.id}'
+        copied_from_str = f"{base_exercise.title} - {base_exercise.id}"
 
         test_params = [
             {"exercise": base_exercise, "expected_result": None},
+            {"exercise": ExerciseFactory(copied_from=None), "expected_result": None},
             {
-                "exercise": ExerciseFactory(copied_from=None),
-                "expected_result": None
-            },
-            {
-                "exercise": ExerciseFactory(copied_from='some random string'),
-                "expected_result": None
+                "exercise": ExerciseFactory(copied_from="some random string"),
+                "expected_result": None,
             },
             {
                 "exercise": ExerciseFactory(copied_from=copied_from_str),
-                "expected_result": str(base_exercise.id)
+                "expected_result": str(base_exercise.id),
             },
         ]
 
@@ -178,34 +177,30 @@ class ExerciseModelTests(TestCase):
             with self.subTest(params=params):
                 self.assertEquals(
                     params["expected_result"],
-                    params['exercise'].copied_from_exercise_id
+                    params["exercise"].copied_from_exercise_id,
                 )
 
     def test_copied_from_exercise(self):
         base_exercise = ExerciseFactory()
-        copied_from_str = f'{base_exercise.title} - {base_exercise.id}'
+        copied_from_str = f"{base_exercise.title} - {base_exercise.id}"
 
         test_params = [
             {"exercise": base_exercise, "expected_result": None},
+            {"exercise": ExerciseFactory(copied_from=None), "expected_result": None},
             {
-                "exercise": ExerciseFactory(copied_from=None),
-                "expected_result": None
-            },
-            {
-                "exercise": ExerciseFactory(copied_from='some random string'),
-                "expected_result": None
+                "exercise": ExerciseFactory(copied_from="some random string"),
+                "expected_result": None,
             },
             {
                 "exercise": ExerciseFactory(copied_from=copied_from_str),
-                "expected_result": base_exercise
+                "expected_result": base_exercise,
             },
         ]
 
         for params in test_params:
             with self.subTest(params=params):
                 self.assertEquals(
-                    params["expected_result"],
-                    params['exercise'].copied_from_exercise
+                    params["expected_result"], params["exercise"].copied_from_exercise
                 )
 
 
