@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getAllAccounts } from '../../data/accounts';
 import AccountDetail from './components/AccountDetail';
 import AccountListItem from './components/AccountListItem';
@@ -47,8 +47,11 @@ function NoMatch() {
   );
 }
 
-class Accounts extends Component {
-  logActionsHandler = params => {
+function Accounts({ match }) {
+  const startTime = useSelector(state => state.exercise.startTime);
+  const participantId = useSelector(state => state.exercise.participantId);
+
+  const logActionsHandler = params => {
     return logAction({
       participantId: this.props.participantId,
       timeDelta: Date.now() - this.props.startTime,
@@ -58,36 +61,27 @@ class Accounts extends Component {
     });
   };
 
-  render() {
-    const { match } = this.props;
-    const accounts = getAllAccounts();
+  const accounts = getAllAccounts();
 
-    return (
-      <Container>
-        <AccountList>
-          {accounts.map(account => (
-            <AccountListItem
-              key={account.id}
-              account={account}
-              logAction={params => this.logActionsHandler(params)}
-            />
-          ))}
-        </AccountList>
-        <AccountContainer>
-          <Switch>
-            <Route path={`${match.url}/:id`} component={AccountDetail} />
-            <Route component={NoMatch} />
-          </Switch>
-        </AccountContainer>
-      </Container>
-    );
-  }
+  return (
+    <Container>
+      <AccountList>
+        {accounts.map(account => (
+          <AccountListItem
+            key={account.id}
+            account={account}
+            logAction={params => logActionsHandler(params)}
+          />
+        ))}
+      </AccountList>
+      <AccountContainer>
+        <Switch>
+          <Route path={`${match.url}/:id`} component={AccountDetail} />
+          <Route component={NoMatch} />
+        </Switch>
+      </AccountContainer>
+    </Container>
+  );
 }
 
-export default connect(
-  state => ({
-    startTime: state.exercise.startTime,
-    participantId: state.exercise.participant,
-  }),
-  {}
-)(Accounts);
+export default Accounts;
