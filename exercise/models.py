@@ -187,7 +187,6 @@ class Exercise(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
         return f"{self.title} - {self.id}"
 
     user_objects = ExerciseManager()
-    objects = models.Manager()
 
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
