@@ -23,7 +23,7 @@ function Training() {
   const activeThread = useSelector(state => state.exercise.activeThread);
   const threads = useSelector(state => state.exercise.threads);
   const startTime = useSelector(state => state.exercise.startTime);
-  const participantId = useSelector(state => state.exercise.participantId);
+  const participantId = useSelector(state => state.exercise.participant);
   const dispatch = useDispatch();
 
   const [code, setCode] = useState(null);
