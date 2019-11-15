@@ -1,6 +1,6 @@
 // @flow
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import { withRouter } from 'react-router-dom';
 import styled from 'react-emotion';
@@ -73,89 +73,75 @@ const Button = styled(CarbonButton)`
 `;
 
 type Props = {
-  afterwordMessage: string,
   match: any,
   history: *,
-  debrief: boolean,
-  scores: Array<any>,
 };
 
 const clearSessionStorage = async () => await sessionStorage.clear();
 
-class Afterword extends React.Component<Props, State> {
-  async componentDidMount() {
-    getRange(0, 100).map(i => clearInterval(i)); //not the best solution
-    clearSessionStorage().then(() => {
-      persistor.purge();
-    });
-    const { participantUuid } = this.props.match.params;
-    this.props.getDebrief(participantUuid);
-  }
-
-  getHeaders = () => [
+const Afterword = ({ match, history }: Props) => {
+  const { participantUuid } = match.params;
+  const { debrief, scores } = useSelector(state => state.debrief);
+  const afterwordMessage = useSelector(state => state.exercise.afterword);
+  const dispatch = useDispatch();
+  const getHeaders = () => [
     { key: 'task', header: 'Task' },
     { key: 'score', header: 'Score' },
     { key: 'debrief', header: 'Message' },
   ];
 
-  render() {
-    const { afterwordMessage, match, debrief, scores } = this.props;
-    const { participantUuid } = match.params;
+  useEffect(() => {
+    async function didMount() {
+      getRange(0, 100).map(i => clearInterval(i)); //not the best solution
+      await clearSessionStorage();
+      await persistor.purge();
+      dispatch(getDebrief(participantUuid));
+    }
+    didMount();
+  }, [dispatch, participantUuid]);
 
-    return (
-      <Container>
-        <WideHeader title="Thanks for taking the exercise." />
-        <ContentContainer>
-          {afterwordMessage && (
-            <>
-              <DebriefTitle>Debrief</DebriefTitle>
-              <MarkDownContainer>
-                <ReactMarkdown source={afterwordMessage} />
-              </MarkDownContainer>
-            </>
-          )}
-          {scores && (
-            <List>
-              <StructuredListHead>
-                <ListRow head>
-                  {this.getHeaders().map((header, index) => (
-                    <ListCell key={`${index}-${header.header}`} head>
-                      {header.header}
-                    </ListCell>
-                  ))}
-                </ListRow>
-              </StructuredListHead>
-              <StructuredListBody>
-                {scores.map((row, index) => (
-                  <ListRow key={`${index}-${row.task}`}>
-                    <ListCell>{row.task}</ListCell>
-                    <ListCell>{row.score}</ListCell>
-                    <ListCell>{row.debrief}</ListCell>
-                  </ListRow>
+  return (
+    <Container>
+      <WideHeader title="Thanks for taking the exercise." />
+      <ContentContainer>
+        {afterwordMessage && (
+          <>
+            <DebriefTitle>Debrief</DebriefTitle>
+            <MarkDownContainer>
+              <ReactMarkdown source={afterwordMessage} />
+            </MarkDownContainer>
+          </>
+        )}
+        {scores && (
+          <List>
+            <StructuredListHead>
+              <ListRow head>
+                {getHeaders().map((header, index) => (
+                  <ListCell key={`${index}-${header.header}`} head>
+                    {header.header}
+                  </ListCell>
                 ))}
-              </StructuredListBody>
-            </List>
-          )}
-          {debrief && (
-            <Button
-              onClick={() =>
-                this.props.history.push(`/debrief/${participantUuid}`)
-              }
-            >
-              Find out more
-            </Button>
-          )}
-        </ContentContainer>
-      </Container>
-    );
-  }
-}
+              </ListRow>
+            </StructuredListHead>
+            <StructuredListBody>
+              {scores.map((row, index) => (
+                <ListRow key={`${index}-${row.task}`}>
+                  <ListCell>{row.task}</ListCell>
+                  <ListCell>{row.score}</ListCell>
+                  <ListCell>{row.debrief}</ListCell>
+                </ListRow>
+              ))}
+            </StructuredListBody>
+          </List>
+        )}
+        {debrief && (
+          <Button onClick={() => history.push(`/debrief/${participantUuid}`)}>
+            Find out more
+          </Button>
+        )}
+      </ContentContainer>
+    </Container>
+  );
+};
 
-export default connect(
-  state => ({
-    afterwordMessage: state.exercise.afterword,
-    debrief: state.debrief.debrief,
-    scores: state.debrief.scores,
-  }),
-  { getDebrief }
-)(withRouter(Afterword));
+export default withRouter(Afterword);
