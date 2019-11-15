@@ -53,7 +53,7 @@ class Participant(PhishtrayBaseModel):
 
     objects = ParticipantManager()
 
-    exercise = models.ForeignKey(Exercise, on_delete=models.PROTECT)
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     profile = models.ManyToManyField(ParticipantProfileEntry)
     organization = models.ForeignKey(
         "participant.Organization", null=True, blank=True, on_delete=models.DO_NOTHING
