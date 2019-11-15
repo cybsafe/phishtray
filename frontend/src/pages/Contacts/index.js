@@ -49,7 +49,7 @@ function NoMatch() {
 }
 
 function Contacts({ match }) {
-  const participantId = useSelector(state => state.exercise.participantId);
+  const participantId = useSelector(state => state.exercise.participant);
   const startTime = useSelector(state => state.exercise.startTime);
 
   const logActionsHandler = params => {
