@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import styled, { css } from 'react-emotion';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
 
 import FileListItem from './components/FileListItem';
@@ -16,6 +16,7 @@ import {
   loadFiles,
   removeFile,
   displayFile,
+  hideFile,
   hideAndDeleteFile,
 } from '../../actions/fileManagerActions';
 
@@ -98,19 +99,24 @@ const FileManager = props => {
   const fileDeleted = useSelector(state => state.fileManager.fileDeleted);
   const participantId = useSelector(state => state.exercise.participant);
   const dispatch = useDispatch();
-  // async componentDidMount() {
-  //   //only load files once there are no files or a file have not been deleted
-  //   files.length <= 0 &&
-  //     !fileDeleted &&
-  //     (await dispatch(loadFiles()));
-  //   //view files when attributes passed from Email link
-  //   if (props.location.params && props.location.params.attachment) {
-  //     props.location.params.attachment.fileUrl &&
-  //       displayFileModalHandler(
-  //         props.location.params.attachment.fileUrl
-  //       );
-  //   }
-  // }
+
+  useEffect(() => {
+    async function didMount() {
+      files.length <= 0 && !fileDeleted && (await dispatch(loadFiles()));
+      //view files when attributes passed from Email link
+      if (props.location.params && props.location.params.attachment) {
+        props.location.params.attachment.fileUrl &&
+          displayFileModalHandler(props.location.params.attachment.fileUrl);
+      }
+    }
+    didMount();
+  }, [
+    dispatch,
+    displayFileModalHandler,
+    fileDeleted,
+    files.length,
+    props.location.params,
+  ]);
 
   const deleteFileHandler = fileToDelete => {
     if (modal.isOpen && modal.fileUrl === fileToDelete.fileUrl) {
@@ -122,6 +128,10 @@ const FileManager = props => {
 
   const displayFileModalHandler = fileUrl => {
     dispatch(displayFile(fileUrl));
+  };
+
+  const hideFileModalHandler = () => {
+    dispatch(hideFile());
   };
 
   const logActionsHandler = params => {
@@ -137,7 +147,11 @@ const FileManager = props => {
   return (
     <Container>
       {modal.isOpen && (
-        <FileModal fileUrl={modal.fileUrl} isOpen={modal.isOpen} />
+        <FileModal
+          fileUrl={modal.fileUrl}
+          isOpen={modal.isOpen}
+          hideFileModalHandler={hideFileModalHandler}
+        />
       )}
       <Table>
         <TableHead />
