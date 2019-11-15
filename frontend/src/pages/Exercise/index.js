@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled, { css, injectGlobal } from 'react-emotion';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   InlineLoading,
   Button,
@@ -94,15 +94,6 @@ const FormContainer = styled('div')({
   paddingTop: '15px',
 });
 
-/*type Props = {
-  exercise: Object,
-  match: Match,
-  history: history,
-  isLoaded: *,
-  getExerciseData: (*) => void,
-  startCountdown: (*) => void,
-};*/
-
 injectGlobal`
   #root > div:first-child {
     overflow-y: scroll !important;
@@ -113,7 +104,8 @@ function Exercise(props) {
   const [item, setItem] = useState();
   const exercise = useSelector(state => getExercise(state));
   const isLoaded = useSelector(state => getLastRefreshed(state) !== null);
-  const { startTime, participantId } = useSelector(state => state.exercise);
+  const startTime = useSelector(state => state.exercise.startTime);
+  const participantId = useSelector(state => state.exercise.participant);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -292,12 +284,4 @@ function Exercise(props) {
   );
 }
 
-export default connect(
-  state => ({
-    exercise: getExercise(state),
-    isLoaded: getLastRefreshed(state) !== null,
-    startTime: state.exercise.startTime,
-    participantId: state.exercise.participant,
-  }),
-  { getExerciseData, startCountdown, tickTimer }
-)(Exercise);
+export default Exercise;
