@@ -79,8 +79,7 @@ type Props = {
 
 const clearSessionStorage = async () => await sessionStorage.clear();
 
-const Afterword = (props: Props) => {
-  const { match } = props;
+const Afterword = ({ match, history }: Props) => {
   const { participantUuid } = match.params;
   const { debrief, scores } = useSelector(state => state.debrief);
   const afterwordMessage = useSelector(state => state.exercise.afterword);
@@ -136,9 +135,7 @@ const Afterword = (props: Props) => {
           </List>
         )}
         {debrief && (
-          <Button
-            onClick={() => props.history.push(`/debrief/${participantUuid}`)}
-          >
+          <Button onClick={() => history.push(`/debrief/${participantUuid}`)}>
             Find out more
           </Button>
         )}
