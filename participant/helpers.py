@@ -56,32 +56,33 @@ class ExportCSVMixinHelpers:
                 self.get_subquery_value(participant_actions_qs, "emails_opened"), 0
             ),
             phishing_emails_opened=Value(0, output_field=CharField()),
-            pos_reported=self.get_subquery_value(
-                participant_actions_qs, "emails_reported"
+            pos_reported=Coalesce(
+                self.get_subquery_value(participant_actions_qs, "emails_reported"), 0
             ),
-            pos_deleted=self.get_subquery_value(
-                participant_actions_qs, "emails_deleted"
+            pos_deleted=Coalesce(
+                self.get_subquery_value(participant_actions_qs, "emails_deleted"), 0
             ),
-            neg_clicked_link=self.get_subquery_value(
-                participant_actions_qs, "emails_linked_click"
+            neg_clicked_link=Coalesce(
+                self.get_subquery_value(participant_actions_qs, "emails_linked_click"),
+                0,
             ),
-            neg_entered_detail=self.get_subquery_value(
-                participant_actions_qs, "webpage_clicked"
+            neg_entered_detail=Coalesce(
+                self.get_subquery_value(participant_actions_qs, "webpage_clicked"), 0
             ),
-            neg_replied_to_phishing_email=self.get_subquery_value(
-                participant_actions_qs, "emails_replied"
+            neg_replied_to_phishing_email=Coalesce(
+                self.get_subquery_value(participant_actions_qs, "emails_replied"), 0
             ),
-            neg_opened_attachment=self.get_subquery_value(
-                participant_actions_qs, "email_opened_attachment"
+            neg_opened_attachment=Coalesce(
+                self.get_subquery_value(
+                    participant_actions_qs, "email_opened_attachment"
+                ),
+                0,
             ),
             participant_count=self.get_subquery_value(
                 exercise_participants_qs, "participant_count"
             ),
-            training_link_clicked=Coalesce(
-                self.get_subquery_value(
-                    participant_actions_qs, "clicked_training_link"
-                ),
-                Value("N.A."),
+            training_link_clicked=self.get_subquery_value(
+                participant_actions_qs, "clicked_training_link"
             ),
         )
 
