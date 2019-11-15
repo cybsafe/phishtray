@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
-
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getAllContacts } from '../../data/contacts';
 
 import ContactDetail from './components/ContactDetail';
@@ -49,47 +48,41 @@ function NoMatch() {
   );
 }
 
-class Contacts extends Component {
-  logActionsHandler = params => {
+function Contacts({ match }) {
+  const participantId = useSelector(state => state.exercise.participant);
+  const startTime = useSelector(state => state.exercise.startTime);
+
+  const logActionsHandler = params => {
     return logAction({
-      participantId: this.props.participantId,
-      timeDelta: Date.now() - this.props.startTime,
+      participantId: participantId,
+      timeDelta: Date.now() - startTime,
       timestamp: new Date(),
       actionType: actionTypes.contactOpen,
       ...params,
     });
   };
 
-  render() {
-    const { match } = this.props;
-    const contacts = getAllContacts();
+  const contacts = getAllContacts();
 
-    return (
-      <Container>
-        <ContactList>
-          {contacts.map(contact => (
-            <ContactListItem
-              key={contact.id}
-              contact={contact}
-              logAction={params => this.logActionsHandler(params)}
-            />
-          ))}
-        </ContactList>
-        <ContactsContainer>
-          <Switch>
-            <Route path={`${match.url}/:id`} component={ContactDetail} />
-            <Route component={NoMatch} />
-          </Switch>
-        </ContactsContainer>
-      </Container>
-    );
-  }
+  return (
+    <Container>
+      <ContactList>
+        {contacts.map(contact => (
+          <ContactListItem
+            key={contact.id}
+            contact={contact}
+            logAction={params => logActionsHandler(params)}
+          />
+        ))}
+      </ContactList>
+      <ContactsContainer>
+        <Switch>
+          <Route path={`${match.url}/:id`} component={ContactDetail} />
+          <Route component={NoMatch} />
+        </Switch>
+      </ContactsContainer>
+    </Container>
+  );
 }
 
-export default connect(
-  state => ({
-    startTime: state.exercise.startTime,
-    participantId: state.exercise.participant,
-  }),
-  {}
-)(Contacts);
+export default Contacts;
