@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled, { css } from 'react-emotion';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { showWebpage } from '../../actions/uiActions';
 
@@ -30,30 +30,28 @@ const WebsiteTitle = styled('h3')({
   color: '#333',
 });
 
-class Web extends Component {
-  handleWebsiteClick = websiteId => {
+function Web() {
+  const dispatch = useDispatch();
+
+  const handleWebsiteClick = websiteId => {
     return event => {
       event.preventDefault();
-      this.props.showWebpage(websiteId);
+      dispatch(showWebpage(websiteId));
     };
   };
-  render() {
-    return (
-      <Container>
-        <LinkContainer onClick={this.handleWebsiteClick('mypayment')}>
-          <WebsiteIcon className={css({ backgroundColor: '#e84118' })} />
-          <WebsiteTitle>My Money Transfer</WebsiteTitle>
-        </LinkContainer>
-        <LinkContainer onClick={this.handleWebsiteClick('bluestar')}>
-          <WebsiteIcon className={css({ backgroundColor: '#192a56' })} />
-          <WebsiteTitle>Bluestar</WebsiteTitle>
-        </LinkContainer>
-      </Container>
-    );
-  }
+
+  return (
+    <Container>
+      <LinkContainer onClick={handleWebsiteClick('mypayment')}>
+        <WebsiteIcon className={css({ backgroundColor: '#e84118' })} />
+        <WebsiteTitle>My Money Transfer</WebsiteTitle>
+      </LinkContainer>
+      <LinkContainer onClick={handleWebsiteClick('bluestar')}>
+        <WebsiteIcon className={css({ backgroundColor: '#192a56' })} />
+        <WebsiteTitle>Bluestar</WebsiteTitle>
+      </LinkContainer>
+    </Container>
+  );
 }
 
-export default connect(
-  null,
-  { showWebpage }
-)(Web);
+export default Web;
