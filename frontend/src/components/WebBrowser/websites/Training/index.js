@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,21 +18,13 @@ import { closeWebpage } from '../../../../actions/uiActions';
 import { logAction } from '../../../../utils';
 import actionTypes from '../../../../config/actionTypes';
 
-type Props = {
-  closeWebpage: () => void,
-  activeThread: string,
-  threads: Array<*>,
-  startTime: Date,
-  participantId: Number,
-};
+function Training() {
+  const { activeThread, threads, startTime } = useSelector(
+    state => state.exercise
+  );
+  const participantId = useSelector(state => state.exercise.participant);
+  const dispatch = useDispatch();
 
-function Training({
-  closeWebpage,
-  activeThread,
-  threads,
-  startTime,
-  participantId,
-}: Props) {
   const [code, setCode] = useState(null);
   const [error, setError] = useState(false);
 
@@ -57,7 +49,7 @@ function Training({
         timeDelta: Date.now() - startTime,
         timestamp: new Date(),
       });
-      closeWebpage();
+      dispatch(closeWebpage());
     } else {
       setError(true);
     }
@@ -95,12 +87,4 @@ function Training({
   );
 }
 
-export default connect(
-  state => ({
-    activeThread: state.exercise.activeThread,
-    threads: state.exercise.threads,
-    startTime: state.exercise.startTime,
-    participantId: state.exercise.participant,
-  }),
-  { closeWebpage }
-)(Training);
+export default Training;
