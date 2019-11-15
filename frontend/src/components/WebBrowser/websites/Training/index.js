@@ -20,9 +20,9 @@ import { logAction } from '../../../../utils';
 import actionTypes from '../../../../config/actionTypes';
 
 function Training() {
-  const activeThread = useSelector(state => state.exercise.activeThread);
-  const threads = useSelector(state => state.exercise.threads);
-  const startTime = useSelector(state => state.exercise.startTime);
+  const { activeThread, threads, startTime } = useSelector(
+    state => state.exercise
+  );
   const participantId = useSelector(state => state.exercise.participant);
   const dispatch = useDispatch();
 
