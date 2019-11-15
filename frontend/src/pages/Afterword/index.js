@@ -94,7 +94,7 @@ const Afterword = ({ match, history }: Props) => {
     async function didMount() {
       getRange(0, 100).map(i => clearInterval(i)); //not the best solution
       await clearSessionStorage();
-      persistor.purge();
+      await persistor.purge();
       dispatch(getDebrief(participantUuid));
     }
     didMount();
