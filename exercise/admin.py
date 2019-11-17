@@ -65,15 +65,15 @@ class ExerciseAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         fields = list(super().get_readonly_fields(request))
         if not request.user.is_superuser:
-            fields.append("organisation")
+            fields.append("organization")
         return fields
 
     def save_model(self, request, obj, form, change):
         # When creating a new exercise, it should have the
-        # 'published by' and 'organisation' fields filled in with the user information
+        # 'published by' and 'organization' fields filled in with the user information
         if not change:
             obj.published_by = request.user
-            obj.organisation = request.user.organization
+            obj.organization = request.user.organization
         obj.updated_by = request.user
         obj.save()
 
@@ -82,7 +82,7 @@ class ExerciseAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         # Public exercises' permissions
-        if obj.__class__.__name__ == "Exercise" and not obj.organisation:
+        if obj.__class__.__name__ == "Exercise" and not obj.organization:
             if not request.user.is_superuser:
                 if obj.published_by is None:
                     return False

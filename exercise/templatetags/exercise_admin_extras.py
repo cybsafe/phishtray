@@ -38,18 +38,18 @@ def exercise_submit_row(context):
         ctx["original"] = original
         if (
             user.is_superuser
-            or user.organization == original.organisation
-            or original.organisation is None
+            or user.organization == original.organization
+            or original.organization is None
         ):
             has_copy_permission = True
             ctx["show_delete_button"] = True
 
-        if not user.is_superuser and original.organisation is None:
+        if not user.is_superuser and original.organization is None:
             ctx["show_save_and_add_another"] = False
             ctx["show_save"] = False
             ctx["show_delete_button"] = False
 
-        if original.organisation is not None:
+        if original.organization is not None:
             ctx["show_trial_button"] = True
 
     ctx["has_copy_permission"] = has_copy_permission

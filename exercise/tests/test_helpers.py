@@ -47,7 +47,7 @@ class ExerciseHelperTests(TestCase):
         self.user = UserFactory(
             username="user_with_organization", organization=self.organization
         )
-        exercise = ExerciseFactory(organisation=self.organization)
+        exercise = ExerciseFactory(organization=self.organization)
         trial_exercise = add_trial(exercise, self.user)
 
         self.assertIsNotNone(trial_exercise)
@@ -79,7 +79,7 @@ class ExerciseHelperTests(TestCase):
         self.user = UserFactory(
             username="user_with_organization", organization=self.organization
         )
-        exercise = ExerciseFactory(organisation=self.organization)
+        exercise = ExerciseFactory(organization=self.organization)
         trial_exercise = add_trial(exercise, self.user)
         another_trial_exercise = add_trial(exercise, self.user)
 
