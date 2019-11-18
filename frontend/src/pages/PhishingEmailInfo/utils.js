@@ -21,7 +21,7 @@ export const positiveMessages = actionType => {
     case 'email_deleted':
       return 'You deleted this email!';
     default:
-      return 'This was a high risk thing to do!';
+      return 'You deleted this email!';
   }
 };
 
@@ -43,6 +43,8 @@ export const sanitizeActions = actionType => {
       return 'Quickly email replied';
     case 'email_replied':
       return 'Email replied';
+    case 'training_release_code_confirm':
+      return 'Release Code succesfully';
     default:
       return 'Action not founded';
   }
