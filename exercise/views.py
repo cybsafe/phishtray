@@ -44,7 +44,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         exercise = self.get_object()
         participant = Participant(
             exercise=exercise,
-            organization=exercise.organisation
+            organization=exercise.organization
         )
         participant.save()
         resp = {

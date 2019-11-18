@@ -182,7 +182,7 @@ class DemographicsInfo(CacheBusterMixin, PhishtrayBaseModel):
         return self.question
 
 
-class Exercise(CacheBusterMixin, PhishtrayBaseModel):
+class Exercise(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     def __str__(self):
         return f"{self.title} - {self.id}"
 
@@ -206,9 +206,6 @@ class Exercise(CacheBusterMixin, PhishtrayBaseModel):
         default=False,
     )
     copied_from = models.CharField(max_length=250, null=True, blank=True)
-    organisation = models.ForeignKey(
-        "participant.Organization", on_delete=models.PROTECT, null=True, blank=True
-    )
     updated_by = models.ForeignKey(
         "users.User",
         on_delete=models.PROTECT,

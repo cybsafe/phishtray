@@ -141,18 +141,18 @@ class ExerciseModelTests(TestCase):
         exercise = ExerciseFactory.create(emails=emails)
 
         self.assertIsNotNone(exercise)
-        self.assertIsNone(exercise.organisation)
+        self.assertIsNone(exercise.organization)
 
     def test_create_private_exercise(self):
         emails = EmailFactory.create_batch(2)
-        organisation = OrganizationFactory()
-        exercise = ExerciseFactory.create(emails=emails, organisation=organisation)
+        org = OrganizationFactory()
+        exercise = ExerciseFactory.create(emails=emails, organization=org)
         exercise2 = ExerciseFactory()
 
         self.assertIsNotNone(exercise)
-        self.assertIsNotNone(exercise.organisation)
+        self.assertIsNotNone(exercise.organization)
         self.assertEqual(2, Exercise.objects.all().count())
-        self.assertEqual(1, Exercise.objects.filter(organisation=organisation).count())
+        self.assertEqual(1, Exercise.objects.filter(organization=org).count())
 
     def test_copied_from_exercise_id(self):
         base_exercise = ExerciseFactory()
