@@ -1,8 +1,7 @@
-from django.db.models import Manager
 from django.contrib.auth.models import UserManager
 
-from .queryset import UserQuerySet
+from phishtray.base import MultiTenantManager
 
 
-class PhishtrayUserManager(UserManager, Manager.from_queryset(UserQuerySet)):
+class PhishtrayUserManager(MultiTenantManager, UserManager):
     pass

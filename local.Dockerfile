@@ -46,10 +46,10 @@ ENV PYTHONUNBUFFERED=1
 RUN echo "alias py3='python3.6'" >> ~/.bashrc
 
 # PIP Requirements
-COPY requirements.txt ./
+COPY requirements*.txt ./
 
 RUN pip3.6 install --upgrade pip
 RUN pip3.6 install --upgrade setuptools
-RUN pip3.6 install -r requirements.txt
+RUN pip3.6 install -r requirements.txt && pip3.6 install -r requirements-dev.txt
 
 WORKDIR /usr/src/app

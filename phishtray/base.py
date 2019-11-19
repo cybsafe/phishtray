@@ -1,11 +1,11 @@
 import uuid
 
+from django.apps import apps
 from django.db import models
 from django.db.models import QuerySet
 
 from utils.cache import flush_cache
 from django.contrib import admin
-from users.models import User
 from django.db.models import Manager
 
 
@@ -29,11 +29,16 @@ class CacheBusterMixin(models.Model):
 class MultiTenantQuerySet(QuerySet):
 
     def filter_by_org_private(self, user):
+        User = apps.get_model('users', 'User')
+
         if not user or not isinstance(user, User):
             return self.none()
 
         if not user.is_superuser:
-            return self.filter(organization=user.organization)
+            if user.organization is None:
+                return self.none()
+            else:
+                return self.filter(organization=user.organization)
 
         return self
 
@@ -48,15 +53,6 @@ class MultiTenantQuerySet(QuerySet):
                 return private_orgs | public_orgs
 
         return self
-
-    def filter_by_user(self, user):
-        if not user or not isinstance(user, User):
-            return self.none()
-
-        if user.is_superuser:
-            return self
-
-        return self.filter(id=user.organization_id)
 
 
 class MultiTenantManager(Manager.from_queryset(MultiTenantQuerySet)):
