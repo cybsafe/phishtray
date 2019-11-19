@@ -159,7 +159,7 @@ class ExerciseEmail(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
             return email_properties
 
 
-class DemographicsInfo(CacheBusterMixin, PhishtrayBaseModel):
+class DemographicsInfo(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     """
     Demographic Questions that can be added to Exercises.
     """

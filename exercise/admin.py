@@ -94,6 +94,13 @@ class ExerciseAdmin(admin.ModelAdmin):
             return True
         return super().has_change_permission(request, obj)
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "demographics":
+            kwargs["queryset"] = DemographicsInfo.objects.filter_by_org_private(
+                user=request.user
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class ExerciseEmailPropertiesListFilter(admin.SimpleListFilter):
     title = "Exercise"
@@ -200,6 +207,11 @@ class ExerciseFileAdmin(MultiTenantModelAdmin):
         return ExerciseFile.objects.filter_by_org_private(user=request.user)
 
 
-admin.site.register(DemographicsInfo)
+@admin.register(DemographicsInfo)
+class DemographicsInfoAdmin(MultiTenantModelAdmin):
+    def get_queryset(self, request):
+        return DemographicsInfo.objects.filter_by_org_private(user=request.user)
+
+
 admin.site.register(ExerciseTask)
 admin.site.register(EmailReplyTaskScore)
