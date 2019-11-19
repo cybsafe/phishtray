@@ -46,7 +46,7 @@ function PhishingEmailInfo({
 
   useEffect(() => {
     dispatch(getDebrief(participantUuid));
-  }, [participantUuid, getDebrief]);
+  }, [participantUuid, dispatch]);
 
   const nextPage = (page, max) => {
     if (page > max - 2) return false;
