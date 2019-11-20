@@ -67,7 +67,7 @@ function Debrief({
 
   useEffect(() => {
     dispatch(getDebrief(participantUuid));
-  }, [participantUuid, getDebrief]);
+  }, [participantUuid, dispatch]);
 
   if (phishingEmails === undefined) {
     return NotFoundPage();
