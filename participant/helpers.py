@@ -1,14 +1,18 @@
-from django.db.models import F, Q, Value, CharField, OuterRef, Subquery, Count
+from django.db.models import Q, CharField, OuterRef, Subquery, Count
 from django.db.models.functions import Coalesce
 
-from exercise.models import Exercise
-from .models import Participant, ActionLog
+from .serializer import ParticipantActionSerializer
+from .models import Participant, ParticipantAction
+
+from exercise import models as exercise_models
 
 
 class ExportCSVMixinHelpers:
     def get_participant_stats_csv_data(self, exercise_ids):
 
-        exercise_qs = Exercise.objects.filter(id__in=exercise_ids)
+        exercise_qs = exercise_models.Exercise.objects.filter(id__in=exercise_ids)
+
+        email_type_count_map = self.get_emails_count_map(exercise_qs)
 
         exercise_participants_qs = (
             Participant.objects.filter(exercise_id=OuterRef("pk"))
@@ -17,11 +21,10 @@ class ExportCSVMixinHelpers:
         )
 
         participant_actions_qs = (
-            ActionLog.objects.filter(action__participant__exercise_id=OuterRef("pk"))
-            .values("action__participant__exercise_id")
+            ParticipantAction.objects.filter(participant__exercise_id=OuterRef("pk"))
+            .values("participant__exercise_id")
             .annotate(
-                dcount=Count("action__participant__exercise_id"),
-                emails_opened=self.get_action_count("email_opened"),
+                dcount=Count("participant__exercise_id"),
                 emails_reported=self.get_action_count("email_reported"),
                 emails_deleted=self.get_action_count("email_deleted"),
                 emails_linked_click=self.get_action_count("email_link_clicked"),
@@ -35,8 +38,8 @@ class ExportCSVMixinHelpers:
         )
 
         csv_columns = [
-            "exercise_title",
-            "exercise_trial_version",
+            "title",
+            "trial_version",
             "emails_opened",
             "phishing_emails_opened",
             "pos_reported",
@@ -49,13 +52,7 @@ class ExportCSVMixinHelpers:
             "training_link_clicked",
         ]
 
-        csv_rows = exercise_qs.annotate(
-            exercise_title=F("title"),
-            exercise_trial_version=F("trial_version"),
-            emails_opened=Coalesce(
-                self.get_subquery_value(participant_actions_qs, "emails_opened"), 0
-            ),
-            phishing_emails_opened=Value(0, output_field=CharField()),
+        rows_qs = exercise_qs.annotate(
             pos_reported=Coalesce(
                 self.get_subquery_value(participant_actions_qs, "emails_reported"), 0
             ),
@@ -84,7 +81,27 @@ class ExportCSVMixinHelpers:
             training_link_clicked=self.get_subquery_value(
                 participant_actions_qs, "clicked_training_link"
             ),
+        ).values(
+            "id",
+            "title",
+            "trial_version",
+            "pos_reported",
+            "pos_deleted",
+            "neg_clicked_link",
+            "neg_entered_detail",
+            "neg_replied_to_phishing_email",
+            "neg_opened_attachment",
+            "participant_count",
+            "training_link_clicked",
         )
+
+        csv_rows = list(rows_qs)
+
+        for row in csv_rows:
+            row["emails_opened"] = email_type_count_map[row["id"]]["regular_emails"]
+            row["phishing_emails_opened"] = email_type_count_map[row["id"]][
+                "phishing_emails"
+            ]
 
         return csv_columns, csv_rows
 
@@ -94,4 +111,49 @@ class ExportCSVMixinHelpers:
 
     @staticmethod
     def get_action_count(action):
-        return Count("id", filter=Q(name="action_type", value=action))
+        return Count(
+            "id", filter=Q(actionlog__name="action_type", actionlog__value=action)
+        )
+
+    @staticmethod
+    def get_emails_count_map(exercise_qs):
+        emails_count_map = {}
+        for exercise in exercise_qs:
+            # Participants actions based on the exercise
+            participant_actions_queryset = ParticipantAction.objects.filter(
+                participant__exercise=exercise
+            )
+            # serializing actions to filter only the ones corresponding to emails opened
+            serialized_actions = ParticipantActionSerializer(
+                participant_actions_queryset, many=True
+            ).data
+
+            # Filtering email opened ids
+            email_uuids = {
+                action["action_details"]["email_id"]
+                for action in serialized_actions
+                if (action["action_details"].get("email_id"))
+                and (action["action_details"].get("action_type") == "email_opened")
+            }
+
+            # Getting opened emails to verify if they are phishing or regular ones
+            exercise_scoped_emails = exercise_models.ExerciseEmail.objects.filter(
+                id__in=email_uuids
+            )
+
+            phishing_emails_count = len(
+                exercise_scoped_emails.filter(
+                    phish_type=exercise_models.EXERCISE_EMAIL_PHISH
+                )
+            )
+            regular_emails_count = len(
+                exercise_scoped_emails.filter(
+                    phish_type=exercise_models.EXERCISE_EMAIL_REGULAR
+                )
+            )
+            emails_count_map[exercise.id] = {
+                "phishing_emails": phishing_emails_count,
+                "regular_emails": regular_emails_count,
+            }
+
+        return emails_count_map

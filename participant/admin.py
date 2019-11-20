@@ -24,7 +24,7 @@ class ExportCsvMixin:
 
         writer.writerow(csv_columns)
         for obj in csv_rows:
-            writer.writerow([getattr(obj, field) for field in csv_columns])
+            writer.writerow([obj[field] for field in csv_columns])
 
         return response
 
