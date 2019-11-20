@@ -111,7 +111,7 @@ function Exercise(props) {
   useEffect(() => {
     const { exerciseUuid } = props.match.params;
     dispatch(getExerciseData(exerciseUuid));
-  }, []);
+  }, [dispatch, props.match.params]);
 
   useEffect(() => {
     if (item && Object.keys(item).length === 0) {
@@ -125,7 +125,7 @@ function Exercise(props) {
           })
         );
     }
-  }, [item]);
+  }, [item, exercise]);
 
   const nextPath = (path: string) => {
     props.history.push(path);
