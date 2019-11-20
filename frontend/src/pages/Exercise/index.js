@@ -5,7 +5,7 @@ import styled, { css, injectGlobal } from 'react-emotion';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   InlineLoading,
-  Button,
+  Button as CarbonButton,
   TextInput,
   Form,
   Tile,
@@ -61,6 +61,12 @@ const FormContainer = styled('div')({
   lineHeight: 1,
   paddingBottom: '15px',
   paddingTop: '15px',
+});
+
+const Button = styled(CarbonButton)({
+  display: 'flex !important',
+  marginLeft: 'auto',
+  lineHeight: '36px',
 });
 
 injectGlobal`
@@ -186,12 +192,7 @@ function Exercise({ match, history }: Props) {
                   return {};
               }
             })}
-            <Button
-              className={css(`display: flex !important; margin-left: auto`)}
-              type="submit"
-            >
-              Click here to start the E-tray
-            </Button>
+            <Button type="submit">Click here to start the E-tray</Button>
           </Form>
         ) : (
           handleSubmit()
@@ -210,6 +211,33 @@ function Exercise({ match, history }: Props) {
             '& svg': { stroke: 'black !important' },
           })}
           description="Loading"
+      <Switch>
+        <Route
+          exact
+          path={`${match.url}`}
+          render={() => (
+            <Container>
+              <Title>{exercise.title}</Title>
+              <Tile>
+                <Subtitle>Description</Subtitle>
+                <MarkdownContainer>
+                  <ReactMarkdown>{exercise.description}</ReactMarkdown>
+                </MarkdownContainer>
+                <Divider />
+                <Subtitle>Introduction</Subtitle>
+                <MarkdownContainer>
+                  <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
+                </MarkdownContainer>
+                <Divider />
+                <p>This exercise will take: {exercise.lengthMinutes} mins</p>
+                <Button
+                  onClick={() => this.nextPath(`/welcome/${exercise.id}/form`)}
+                >
+                  Continue
+                </Button>
+              </Tile>
+            </Container>
+          )}
         />
       </Container>
     );
