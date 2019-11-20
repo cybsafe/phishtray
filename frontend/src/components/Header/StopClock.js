@@ -14,7 +14,7 @@ type State = {
 };
 
 type CircularProgressbarProps = {
-  text: string,
+  text: *,
   percentage: number,
 };
 
@@ -90,10 +90,16 @@ class StopClock extends Component<Props, State> {
     const { currentTime } = this.state;
     const { startTime, countdown } = this.props;
     const percentage = getPercRemaining(currentTime, startTime, countdown);
+    const isIE = document.documentMode; // May be deprecated due to browser changes
+
     return (
       this.endTime !== 0 && (
         <StyledCircularProgressbar
-          text={getTimeLabel(countdown - percentage * countdown)}
+          text={
+            <tspan dy={isIE ? 8 : 0}>
+              {getTimeLabel(countdown - percentage * countdown)}
+            </tspan>
+          }
           percentage={percentage * 100}
         />
       )
