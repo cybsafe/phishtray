@@ -22,5 +22,5 @@ export default {
   browserSubmittedDetails: 'webpage_login_credentials_submitted',
   browserUserSignUp: 'webpage_user_signup',
   trainingLinkClick: 'training_link_clicked',
-  triningReleaseCodeConfirm: 'training_release_code_confirm',
+  trainingReleaseCodeConfirm: 'training_release_code_confirm',
 };

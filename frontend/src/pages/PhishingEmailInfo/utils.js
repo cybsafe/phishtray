@@ -21,7 +21,7 @@ export const positiveMessages = actionType => {
     case 'email_deleted':
       return 'You deleted this email!';
     default:
-      return 'This was a high risk thing to do!';
+      return 'This was a low risk thing to do!';
   }
 };
 

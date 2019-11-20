@@ -49,7 +49,7 @@ function Blocked({
     e.preventDefault();
     if (releaseCodes.includes(code)) {
       logAction({
-        actionType: actionTypes.triningReleaseCodeConfirm,
+        actionType: actionTypes.trainingReleaseCodeConfirm,
         emailId: id,
         releaseCodeEntered: code,
         participantId: participantId,
