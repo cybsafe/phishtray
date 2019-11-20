@@ -34,7 +34,9 @@ const HeaderText = styled('h2')({
 
 const ClockContainer = styled('div')({
   flex: 1,
-  textAlign: 'right',
+  display: 'flex',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
 });
 
 const ButtonContainer = styled('div')({
@@ -167,7 +169,6 @@ class Header extends Component<Props> {
           <div
             style={{
               width: '60px',
-              paddingTop: '10px',
               marginRight: '20px',
               display: 'inline-block',
             }}
