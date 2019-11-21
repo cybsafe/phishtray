@@ -141,16 +141,14 @@ class ExportCSVMixinHelpers:
                 id__in=email_uuids
             )
 
-            phishing_emails_count = len(
-                exercise_scoped_emails.filter(
-                    phish_type=exercise_models.EXERCISE_EMAIL_PHISH
-                )
-            )
-            regular_emails_count = len(
-                exercise_scoped_emails.filter(
-                    phish_type=exercise_models.EXERCISE_EMAIL_REGULAR
-                )
-            )
+            phishing_emails_count = exercise_scoped_emails.filter(
+                phish_type=exercise_models.EXERCISE_EMAIL_PHISH
+            ).count()
+
+            regular_emails_count = exercise_scoped_emails.filter(
+                phish_type=exercise_models.EXERCISE_EMAIL_REGULAR
+            ).count()
+
             emails_count_map[exercise.id] = {
                 "phishing_emails": phishing_emails_count,
                 "regular_emails": regular_emails_count,
