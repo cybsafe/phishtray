@@ -1,9 +1,11 @@
 import React from 'react';
 import { Route, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 
 import { logAction } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
+import { markThreadAsActive } from '../../../actions/exerciseActions';
 
 const Container = styled('div')(
   {
@@ -29,11 +31,7 @@ const Text = styled('div')(
   })
 );
 
-export default function EmailListItem({
-  email,
-  onOpenParams,
-  markThreadAsActive,
-}) {
+function EmailListItem({ email, onOpenParams, markThreadAsActive }) {
   const { startTime, participantId } = onOpenParams;
   return (
     <Route path={`/inbox/${email.id}`}>
@@ -70,3 +68,8 @@ export default function EmailListItem({
     </Route>
   );
 }
+
+export default connect(
+  null,
+  { markThreadAsActive }
+)(EmailListItem);
