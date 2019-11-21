@@ -19,7 +19,7 @@ EXERCISE_PHISH_TYPES = (
 EXERCISE_REPLY_TYPE = ((0, "reply"), (1, "forward"))
 
 
-class ExerciseTask(CacheBusterMixin, PhishtrayBaseModel):
+class ExerciseTask(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     """
     Tasks are a way to define a metric for scoring in the psychometric evaluation
     """
@@ -84,7 +84,7 @@ class ExerciseEmailReply(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel)
         return self.message
 
 
-class EmailReplyTaskScore(CacheBusterMixin, PhishtrayBaseModel):
+class EmailReplyTaskScore(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     """
     A method to associate scores to email replies.
     """
