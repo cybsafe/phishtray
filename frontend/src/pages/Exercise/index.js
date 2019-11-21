@@ -100,8 +100,13 @@ injectGlobal`
   }
 `;
 
-function Exercise(props) {
-  const [item, setItem] = useState();
+type Props = {
+  match: object,
+  history: object,
+};
+
+function Exercise({ match, history }: Props) {
+  const [item, setItem] = useState([]);
   const exercise = useSelector(state => getExercise(state));
   const isLoaded = useSelector(state => getLastRefreshed(state) !== null);
   const startTime = useSelector(state => state.exercise.startTime);
@@ -109,9 +114,9 @@ function Exercise(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const { exerciseUuid } = props.match.params;
+    const { exerciseUuid } = match.params;
     dispatch(getExerciseData(exerciseUuid));
-  }, [dispatch, props.match.params]);
+  }, [dispatch, match.params]);
 
   useEffect(() => {
     if (item && Object.keys(item).length === 0) {
@@ -128,7 +133,7 @@ function Exercise(props) {
   }, [item, exercise]);
 
   const nextPath = (path: string) => {
-    props.history.push(path);
+    history.push(path);
   };
 
   const userInput = event => {
@@ -166,7 +171,7 @@ function Exercise(props) {
       data
     );
 
-    props.history.replace('/');
+    history.replace('/');
   };
 
   const WelcomeForm = (exercise: ExerciseState) => (
@@ -228,8 +233,6 @@ function Exercise(props) {
       </Tile>
     </Container>
   );
-
-  const { match } = props;
 
   if (!isLoaded) {
     return (
