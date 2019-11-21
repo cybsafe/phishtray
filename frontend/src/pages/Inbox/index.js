@@ -51,6 +51,7 @@ function Inbox({ match, history }) {
     if (Object.keys(match.params).length === 0 && activeThread !== '') {
       history.push(`/inbox/${activeThread}`);
     }
+    //eslint-disable-next-line
   }, []);
 
   if (!threads) {
