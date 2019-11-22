@@ -312,7 +312,7 @@ class Exercise(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
             exercise_id=self.id
         ).exclude(email_id__in=self.emails.values_list("id", flat=True))
         if orphaned_email_properties:
-            orphaned_email_properties.all().hard_delete()
+            orphaned_email_properties.all().delete()
 
         # Then set default email reveal times
         self.set_email_reveal_times()
