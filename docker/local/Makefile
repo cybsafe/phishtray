@@ -31,6 +31,11 @@ django-test:
 django-tests-coverage:
 	docker-compose exec django bash -c "coverage run --source='.' manage.py test"
 	docker-compose exec django bash -c "coverage report"
+
+.PHONY: git-hooks
+git-hooks:
+	# === Setting up pre-commit hooks ========
+	docker-compose exec django bash -c "cp docker/local/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
 # ==================================================
 
 

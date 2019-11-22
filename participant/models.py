@@ -2,7 +2,7 @@ from operator import itemgetter
 from statistics import mean
 
 from participant.constants import ParticipantBehaviour, POSITIVE_ACTIONS, NEGATIVE_ACTIONS
-from .managers import ParticipantManager
+from .managers import ParticipantManager, OrganizationManager
 
 from django.db import models
 from exercise.models import (
@@ -14,7 +14,7 @@ from exercise.models import (
     ExerciseTask,
 )
 
-from phishtray.base import PhishtrayBaseModel, MultiTenantManager
+from phishtray.base import PhishtrayBaseModel
 
 STARTED_EXPERIMENT = 0
 COMPLETED_EXPERIMENT = 1
@@ -189,4 +189,4 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
-    objects = MultiTenantManager()
+    objects = OrganizationManager()

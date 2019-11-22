@@ -16,7 +16,7 @@ class UserQuerysetTests(APITestCase):
         )
 
     def test_a_user(self):
-        users = User.objects.filter_by_user(user=self.user1)
+        users = User.objects.filter_by_org_private(user=self.user1)
         user_organizations = users.values_list("organization__name", flat=True)
 
         self.assertEqual(3, users.count())
@@ -24,7 +24,7 @@ class UserQuerysetTests(APITestCase):
         self.assertFalse(self.other_organization.name in user_organizations)
 
     def test_a_superuser(self):
-        users = User.objects.filter_by_user(user=self.superuser)
+        users = User.objects.filter_by_org_private(user=self.superuser)
         user_organizations = users.values_list("organization__name", flat=True)
 
         self.assertEqual(4, users.count())
@@ -32,9 +32,9 @@ class UserQuerysetTests(APITestCase):
         self.assertTrue(self.other_organization.name in user_organizations)
 
     def test_when_user_is_none(self):
-        user = User.objects.filter_by_user(user=None)
+        user = User.objects.filter_by_org_private(user=None)
         self.assertFalse(user.exists())
 
     def test_when_user_is_not_user_instance(self):
-        user = User.objects.filter_by_user(user=None)
+        user = User.objects.filter_by_org_private(user=None)
         self.assertFalse(user.exists())
