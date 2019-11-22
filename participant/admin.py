@@ -50,3 +50,12 @@ class ParticipantList(admin.ModelAdmin, ExportCsvMixin):
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ("name",)
     list_display = ("id", "name")
+
+    def get_queryset(self, request):
+        return Organization.objects.filter_by_user(user=request.user)
+
+    def has_add_permission(self, request):
+        if not request.user.is_superuser:
+            return False
+
+        return super().has_add_permission(request)
