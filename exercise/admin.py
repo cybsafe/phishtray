@@ -99,7 +99,16 @@ class ExerciseAdmin(admin.ModelAdmin):
             kwargs["queryset"] = DemographicsInfo.objects.filter_by_org_private(
                 user=request.user
             )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+        elif db_field.name == "emails":
+            kwargs["queryset"] = ExerciseEmail.objects.filter_by_org_private(
+                user=request.user
+            )
+        elif db_field.name == "files":
+            kwargs["queryset"] = ExerciseFile.objects.filter_by_org_private(
+                user=request.user
+            )
+
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 class ExerciseEmailPropertiesListFilter(admin.SimpleListFilter):
@@ -137,7 +146,7 @@ class ExerciseEmailPropertiesAdmin(admin.ModelAdmin):
             ] = ExerciseWebPageReleaseCode.objects.filter_by_org_private(
                 user=request.user
             )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "web_page":
@@ -185,7 +194,7 @@ class ExerciseEmailAdmin(MultiTenantModelAdmin):
             kwargs["queryset"] = ExerciseFile.objects.filter_by_org_private(
                 user=request.user
             )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "belongs_to":
