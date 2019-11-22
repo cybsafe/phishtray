@@ -1,4 +1,4 @@
-from django.db.models import Q, CharField, OuterRef, Subquery, Count
+from django.db.models import Q, CharField, OuterRef, Subquery, Count, Case, When, Value
 from django.db.models.functions import Coalesce
 
 from .serializer import ParticipantActionSerializer
@@ -28,7 +28,12 @@ class ExportCSVMixinHelpers:
                 emails_reported=self.get_action_count("email_reported"),
                 emails_deleted=self.get_action_count("email_deleted"),
                 emails_linked_click=self.get_action_count("email_link_clicked"),
-                clicked_training_link=self.get_action_count("training_link_clicked"),
+                clicked_training_link=Case(
+                    When(
+                        participant__exercise__debrief=True,
+                        then=(self.get_action_count("training_link_clicked")),
+                    )
+                ),
                 email_opened_attachment=self.get_action_count(
                     "email_attachment_download"
                 ),
@@ -78,8 +83,11 @@ class ExportCSVMixinHelpers:
             participant_count=self.get_subquery_value(
                 exercise_participants_qs, "participant_count"
             ),
-            training_link_clicked=self.get_subquery_value(
-                participant_actions_qs, "clicked_training_link"
+            training_link_clicked=Coalesce(
+                self.get_subquery_value(
+                    participant_actions_qs, "clicked_training_link"
+                ),
+                Value("N.A."),
             ),
         ).values(
             "id",
