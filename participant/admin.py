@@ -1,21 +1,30 @@
 from django.contrib import admin
 from .models import Participant, Organization
 from .filters import TrialVersionListFilter, ExerciseListFilter
+from .helpers import ExportCSVMixinHelpers
 from django.http import HttpResponse
+
 import csv
 
 
 class ExportCsvMixin:
     def download_csv(self, request, queryset):
-        field_names = [field.name for field in meta.fields]
+
+        meta = self.model._meta
+
+        exercise_ids = queryset.values_list("exercise_id")
+
+        csv_columns, csv_rows = ExportCSVMixinHelpers().get_participant_stats_csv_data(
+            exercise_ids
+        )
 
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = "attachment; filename={}.csv".format(meta)
         writer = csv.writer(response)
 
-        writer.writerow(field_names)
-        for obj in queryset:
-            writer.writerow([getattr(obj, field) for field in field_names])
+        writer.writerow(csv_columns)
+        for obj in csv_rows:
+            writer.writerow([obj[field] for field in csv_columns])
 
         return response
 
