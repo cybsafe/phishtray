@@ -149,7 +149,7 @@ function Exercise({ match, history }: Props) {
     event && event.preventDefault();
 
     logAction({
-      participantId: participantId,
+      participantId,
       actionType: actionTypes.experimentStarted,
       timestamp: new Date(),
       timeDelta: Date.now() - startTime,
