@@ -297,8 +297,14 @@ class ParticipantScoresAPI(APITestCase):
                     ],
                 )
                 if behaviour == "neutral":
+                    self.assertIsNone(
+                        response.data["phishing_emails"][0]["participant_behaviour"][
+                            "action_id"
+                        ]
+                    )
+                else:
                     self.assertEqual(
-                        None,
+                        str(action.id),
                         response.data["phishing_emails"][0]["participant_behaviour"][
                             "action_id"
                         ],

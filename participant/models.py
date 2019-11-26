@@ -85,21 +85,21 @@ class Participant(PhishtrayBaseModel):
         Aggregates actions related to a phishing email and determines behaviour.
 
         :param email_id: UUID - id of an email
-        :return: (STRING, LIST) - returns a tuple of participant behaviour and actions
+        :return: (DICT, LIST) - returns a tuple of participant behaviour and actions
         """
 
         def participant_behaviour(actions):
             behaviour = ParticipantBehaviour.NEUTRAL
             action_id = None
 
-            for a in actions:
-                if a[1].get("action_type") in POSITIVE_ACTIONS:
+            for action in actions:
+                if action.get("action_type") in POSITIVE_ACTIONS:
                     behaviour = ParticipantBehaviour.POSITIVE
-                    action_id = a[0]
+                    action_id = action.get("action_id")
 
-                if a[1].get("action_type") in NEGATIVE_ACTIONS:
+                if action.get("action_type") in NEGATIVE_ACTIONS:
                     behaviour = ParticipantBehaviour.NEGATIVE
-                    action_id = a[0]
+                    action_id = action.get("action_id")
                     break
 
             pb = {"behaviour": behaviour, "action_id": action_id}
@@ -110,7 +110,8 @@ class Participant(PhishtrayBaseModel):
         if email_id in self.exercise.phishing_email_ids:
             for action_id, action_details in self.actions.items():
                 if email_id == action_details.get("email_id"):
-                    actions.append([action_id, action_details])
+                    action_details["action_id"] = action_id
+                    actions.append(action_details)
 
         return participant_behaviour(actions), actions
 
