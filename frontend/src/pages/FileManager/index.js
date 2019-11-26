@@ -91,7 +91,7 @@ const Loading = () => (
   </Container>
 );
 
-const FileManager = props => {
+const FileManager = ({ location }) => {
   const files = useSelector(state => getFiles(state));
   const isLoaded = useSelector(state => getLastRefreshed(state) !== null);
   const modal = useSelector(state => getModal(state));
@@ -100,34 +100,18 @@ const FileManager = props => {
   const participantId = useSelector(state => state.exercise.participant);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    async function didMount() {
-      files.length <= 0 && !fileDeleted && (await dispatch(loadFiles()));
-      //view files when attributes passed from Email link
-      if (props.location.params && props.location.params.attachment) {
-        props.location.params.attachment.fileUrl &&
-          displayFileModalHandler(props.location.params.attachment.fileUrl);
-      }
-    }
-    didMount();
-  }, [
-    dispatch,
-    displayFileModalHandler,
-    fileDeleted,
-    files.length,
-    props.location.params,
-  ]);
-
+  const displayFileModalHandler = React.useCallback(
+    fileUrl => {
+      dispatch(displayFile(fileUrl));
+    },
+    [dispatch]
+  );
   const deleteFileHandler = fileToDelete => {
     if (modal.isOpen && modal.fileUrl === fileToDelete.fileUrl) {
       dispatch(hideAndDeleteFile(fileToDelete.id));
     } else {
       dispatch(removeFile(fileToDelete.id));
     }
-  };
-
-  const displayFileModalHandler = fileUrl => {
-    dispatch(displayFile(fileUrl));
   };
 
   const hideFileModalHandler = () => {
@@ -142,6 +126,24 @@ const FileManager = props => {
       ...params,
     });
   };
+
+  useEffect(() => {
+    async function didMount() {
+      files.length <= 0 && !fileDeleted && (await dispatch(loadFiles()));
+      //view files when attributes passed from Email link
+      if (location.params && location.params.attachment) {
+        location.params.attachment.fileUrl &&
+          displayFileModalHandler(location.params.attachment.fileUrl);
+      }
+    }
+    didMount();
+  }, [
+    dispatch,
+    displayFileModalHandler,
+    fileDeleted,
+    files.length,
+    location.params,
+  ]);
 
   if (!isLoaded) return <Loading />;
   return (
