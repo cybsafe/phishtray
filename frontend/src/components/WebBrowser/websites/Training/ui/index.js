@@ -45,8 +45,6 @@ export const Text = styled('p')`
 `;
 
 export const Form = styled('form')`
-  flex-direction: column;
-  display: flex;
   width: 100%;
 
   .bx--form-item {

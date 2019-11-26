@@ -11,6 +11,7 @@ import {
   Input,
   Form,
   SubmitButton,
+  Clear,
 } from './ui';
 
 import { closeWebpage } from '../../../../actions/uiActions';
@@ -85,7 +86,9 @@ function Blocked({
             labelText=""
             id="1"
           />
-          <SubmitButton type="submit">Submit</SubmitButton>
+          <Clear>
+            <SubmitButton type="submit">Submit</SubmitButton>
+          </Clear>
         </Form>
       </Container>
     </Wrapper>
