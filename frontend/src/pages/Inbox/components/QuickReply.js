@@ -52,7 +52,7 @@ const QuickReply = ({
           selectWebpageType(
             interceptExercise,
             releaseCodes,
-            (...args) => dispatch(showWebpage(...args)),
+            webPage => dispatch(showWebpage(webPage)),
             actionTypes.emailQuickReply
           );
       }}
