@@ -105,10 +105,10 @@ function EmailChain({ match }) {
       key={thread.id}
     >
       <EmailActions
-        markThreadAsDeleted={(...arg) => dispatch(markThreadAsDeleted(...arg))}
-        markThreadAsInactive={(...arg) =>
-          dispatch(markThreadAsInactive(...arg))
+        markThreadAsDeleted={threadId =>
+          dispatch(markThreadAsDeleted(threadId))
         }
+        markThreadAsInactive={() => dispatch(markThreadAsInactive())}
         threadId={thread.id}
         onReplyParams={{
           startTime,
@@ -127,17 +127,17 @@ function EmailChain({ match }) {
             <Email
               email={email}
               threadId={thread.id}
-              addFile={(...arg) => dispatch(addFile(...arg))}
-              markThreadAsDeleted={(...arg) =>
-                dispatch(markThreadAsDeleted(...arg))
+              addFile={file => dispatch(addFile(file))}
+              markThreadAsDeleted={threadId =>
+                dispatch(markThreadAsDeleted(threadId))
               }
-              showWebpage={(...arg) => dispatch(showWebpage(...arg))}
+              showWebpage={webpage => dispatch(showWebpage(webpage))}
               onReplyParams={{
                 startTime,
                 participantId,
                 emailId: email.id,
               }}
-              setSelectedReply={(...arg) => dispatch(setSelectedReply(...arg))}
+              setSelectedReply={params => dispatch(setSelectedReply(params))}
               repliesRef={repliesRef}
             />
             <hr
