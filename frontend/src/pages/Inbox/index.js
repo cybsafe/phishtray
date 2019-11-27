@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import styled, { css } from 'react-emotion';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
-import { markThreadAsActive } from '../../actions/exerciseActions';
 import {
   getThreads,
-  getLastRefreshed,
   getUnreadThreads,
 } from '../../selectors/exerciseSelectors';
 
@@ -43,75 +41,64 @@ const EmailContainer = styled('div')({
   paddingBottom: 80,
 });
 
-export class Inbox extends Component {
-  componentDidMount() {
-    const { match, activeThread, history } = this.props;
+function Inbox({ match, history }) {
+  const { startTime, activeThread } = useSelector(state => state.exercise);
+  const participantId = useSelector(state => state.exercise.participant);
+  const threads = useSelector(state => getThreads(state));
+  const countUnread = useSelector(state => getUnreadThreads(state));
+
+  useEffect(() => {
     if (Object.keys(match.params).length === 0 && activeThread !== '') {
       history.push(`/inbox/${activeThread}`);
     }
-  }
-  render() {
-    const { match, threads, countUnread, activeThread } = this.props;
+    //eslint-disable-next-line
+  }, []);
 
-    if (!threads) {
-      return (
-        <Container>
-          <EmailList>
-            <InlineLoading
-              className={css({
-                color: '#fff',
-                justifyContent: 'center',
-                marginTop: '20%',
-                '& svg': { stroke: '#fff !important' },
-              })}
-              description="Loading"
-            />
-          </EmailList>
-          <EmailContainer />
-        </Container>
-      );
-    }
-
+  if (!threads) {
     return (
       <Container>
         <EmailList>
-          {threads.map(thread => (
-            <EmailListItem
-              key={thread.id}
-              email={thread}
-              onOpenParams={{
-                startTime: this.props.startTime,
-                participantId: this.props.participantId,
-              }}
-              markThreadAsActive={this.props.markThreadAsActive}
-            />
-          ))}
+          <InlineLoading
+            className={css({
+              color: '#fff',
+              justifyContent: 'center',
+              marginTop: '20%',
+              '& svg': { stroke: '#fff !important' },
+            })}
+            description="Loading"
+          />
         </EmailList>
-        <EmailContainer>
-          {activeThread === '' ? (
-            <NoActiveMessage>
-              You have {countUnread} unread email
-              {countUnread !== 1 && 's'}
-            </NoActiveMessage>
-          ) : (
-            <Route path={`${match.url}/:emailId`} component={EmailChain} />
-          )}
-        </EmailContainer>
+        <EmailContainer />
       </Container>
     );
   }
+
+  return (
+    <Container>
+      <EmailList>
+        {threads.map(thread => (
+          <EmailListItem
+            key={thread.id}
+            email={thread}
+            onOpenParams={{
+              startTime: startTime,
+              participantId: participantId,
+            }}
+          />
+        ))}
+      </EmailList>
+      <EmailContainer>
+        {activeThread === '' ? (
+          <NoActiveMessage>
+            You have {countUnread} unread email
+            {countUnread !== 1 && 's'}
+          </NoActiveMessage>
+        ) : (
+          <Route path={`${match.url}/:emailId`} component={EmailChain} />
+        )}
+      </EmailContainer>
+    </Container>
+  );
 }
 
-export default connect(
-  state => ({
-    threads: getThreads(state),
-    isLoaded: getLastRefreshed(state) !== null,
-    startTime: state.exercise.startTime,
-    participantId: state.exercise.participant,
-    activeThread: state.exercise.activeThread,
-    countUnread: getUnreadThreads(state),
-  }),
-  {
-    markThreadAsActive,
-  }
-)(Inbox);
+export default Inbox;
