@@ -128,22 +128,23 @@ const FileManager = ({ location }) => {
   };
 
   useEffect(() => {
-    async function didMount() {
-      files.length <= 0 && !fileDeleted && (await dispatch(loadFiles()));
-      //view files when attributes passed from Email link
-      if (location.params && location.params.attachment) {
-        location.params.attachment.fileUrl &&
-          displayFileModalHandler(location.params.attachment.fileUrl);
+    //view files when attributes passed from Email link
+    const openModalFromAttachment = params => {
+      if (params && params.attachment) {
+        params.attachment.fileUrl &&
+          displayFileModalHandler(params.attachment.fileUrl);
       }
+    };
+
+    //only load files once there are no files or a file have not been deleted
+    async function dispatchLoadFiles() {
+      files.length <= 0 && !fileDeleted && (await dispatch(loadFiles()));
     }
-    didMount();
-  }, [
-    dispatch,
-    displayFileModalHandler,
-    fileDeleted,
-    files.length,
-    location.params,
-  ]);
+
+    openModalFromAttachment(location.params);
+    dispatchLoadFiles();
+    // eslint-disable-next-line
+  }, [dispatch, displayFileModalHandler, fileDeleted, location.params]);
 
   if (!isLoaded) return <Loading />;
   return (
