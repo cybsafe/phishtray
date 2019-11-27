@@ -28,7 +28,7 @@ export const EmailItemContent = styled('li')`
   font-size: 22px;
   color: #909196;
   line-height: 1.5;
-  font-weight: 300;
+  font-weight: ${({ fault }) => (fault === 'fault' ? '700' : '300')};
 
   &:not(:last-child) {
     margin-bottom: 15px;

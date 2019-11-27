@@ -112,8 +112,15 @@ function PhishingEmailInfo({
           {isShowing && phishingEmails[page].participantActions.length > 0 && (
             <EmailItemField>
               {phishingEmails &&
-                phishingEmails[page].participantActions.map(info => (
-                  <EmailItemContent key={info.actionType}>
+                phishingEmails[page].participantActions.map((info, i) => (
+                  <EmailItemContent
+                    fault={
+                      info.actionId ===
+                        phishingEmails[page].participantBehaviour.actionId &&
+                      'fault'
+                    }
+                    key={info.actionType + i}
+                  >
                     {moment(info.timestamp).format('h:mm:ss a')} -{' '}
                     {sanitizeActions(info.actionType)}
                   </EmailItemContent>
@@ -121,7 +128,8 @@ function PhishingEmailInfo({
             </EmailItemField>
           )}
 
-          {phishingEmails[page].participantBehaviour === 'negative' && (
+          {phishingEmails[page].participantBehaviour.behaviour ===
+            'negative' && (
             <BehaviorFieldNegative>
               <FontAwesomeIcon icon={faThumbsDown} />
               {negativeMessages(
@@ -130,7 +138,8 @@ function PhishingEmailInfo({
             </BehaviorFieldNegative>
           )}
 
-          {phishingEmails[page].participantBehaviour === 'positive' && (
+          {phishingEmails[page].participantBehaviour.behaviour ===
+            'positive' && (
             <BehaviorFieldSuccess>
               <FontAwesomeIcon icon={faThumbsUp} />
               {positiveMessages(
