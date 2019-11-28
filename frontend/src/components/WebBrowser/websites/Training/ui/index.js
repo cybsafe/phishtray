@@ -8,9 +8,8 @@ export const Wrapper = styled('section')`
 `;
 
 export const Container = styled('div')`
-  margin-bottom: 100px;
   max-width: 700px;
-  margin: 0 auto;
+  margin: 40px auto 90px;
   width: 100%;
   position: absolute;
   top: 50%;
