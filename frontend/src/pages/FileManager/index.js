@@ -45,9 +45,8 @@ const columns = [
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
-  minHeight: '100%',
-  margin: 50,
-  marginTop: 0,
+  margin: '0 50px',
+  paddingBottom: 80,
 });
 
 const Table = styled('table')({
