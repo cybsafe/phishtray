@@ -1,5 +1,11 @@
 from django.db.models import Q
-from .models import Exercise
+from .models import (
+    Exercise,
+    ExerciseEmail,
+    ExerciseEmailReply,
+    EmailReplyTaskScore,
+    ExerciseTask,
+)
 
 
 def copy_exercise(original_exercise, current_user):
@@ -13,9 +19,12 @@ def copy_exercise(original_exercise, current_user):
     new_exercise = get_exercise_copy(original_exercise, current_user)
     new_exercise.save()
 
-    new_exercise.demographics.add(*original_exercise.demographics.all())
-    new_exercise.emails.add(*original_exercise.emails.all())
-    new_exercise.files.add(*original_exercise.files.all())
+    if original_exercise.organization == current_user.organization:
+        new_exercise.demographics.add(*original_exercise.demographics.all())
+        new_exercise.emails.add(*original_exercise.emails.all())
+        new_exercise.files.add(*original_exercise.files.all())
+    else:
+        copy_emails(original_exercise, new_exercise)
 
     new_exercise.set_email_reveal_times()
 
@@ -70,3 +79,103 @@ def get_exercise_copy(original_exercise, current_user):
     )
 
     return new_exercise
+
+
+def copy_attachments():
+    pass
+
+
+def copy_exercise_task_score(original_task_score, reply):
+    # fetch the Task first
+    task = None
+    filters = {"organization": reply.organization}
+
+    task = ExerciseTask.objects.filter(**filters).first()
+
+    if not task:
+        # create a copy of the task
+        task = ExerciseTask(
+            name=original_task_score.task.name,
+            debrief_over_threshold=original_task_score.task.debrief_over_threshold,
+            debrief_under_threshold=original_task_score.task.debrief_under_threshold,
+            score_threshold=original_task_score.task.score_threshold,
+            organization=reply.organization,
+        )
+
+    # Create the EmailReplyTaskScore entry for the new reply
+    EmailReplyTaskScore(value=original_task_score.value, email_reply=reply, task=task)
+
+
+def copy_email_reply(original_reply, email):
+    reply = None
+    filters = {"message": original_reply.message, "organization": email.organization}
+
+    reply = ExerciseEmailReply.objects.filter(**filters).first()
+
+    if not reply:
+        # create a copy of the original reply
+        reply = ExerciseEmailReply(
+            reply_type=original_reply.reply_type,
+            message=original_reply.message,
+            organization=email.organization,
+        )
+
+        # copy related tasks and task scores as well
+        for original_task_score in EmailReplyTaskScore.objects.filter(
+            email_reply=original_reply
+        ):
+            copy_exercise_task_score(original_task_score, reply)
+
+    return reply
+
+
+def copy_email(original_email, new_exercise):
+    email = None
+    filters = {
+        "subject": original_email.subject,
+        "organization": new_exercise.organization,
+    }
+
+    email = ExerciseEmail.objects.filter(**filters).first()
+
+    if not email:
+        # create a copy of the original email and its related data
+        email = ExerciseEmail(
+            subject=original_email.subject,
+            from_address=original_email.from_address,
+            from_name=original_email.from_name,
+            from_role=original_email.from_role,
+            to_address=original_email.to_address,
+            to_name=original_email.to_name,
+            to_role=original_email.to_role,
+            phish_type=original_email.phish_type,
+            phishing_explained=original_email.phishing_explained,
+            content=original_email.content,
+            sort_order=original_email.sort_order,
+            organization=new_exercise.organisation,
+        )
+
+        # ManyToManys
+        # Replies
+        replies = []
+        for original_reply in original_email.replies.all():
+            reply = copy_email_reply(original_reply, email)
+            replies.append(reply)
+
+        email.replies.add(*replies)
+
+        # Attachments
+
+        # Belongs to
+        # recursive to copy the one it belongs to (if it hasn't been copied already)
+
+    return email
+
+
+def copy_emails(original_exercise, new_exercise):
+    emails = []
+    for original_email in original_exercise.emails.all():
+        email = copy_email(original_email, new_exercise)
+        emails.append(email)
+
+    new_exercise.emails.add(*emails)
