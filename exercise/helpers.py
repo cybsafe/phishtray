@@ -1,5 +1,5 @@
 from django.db.models import Q
-from .models import Exercise
+from .models import Exercise, DemographicsInfo, ExerciseFile
 
 
 def copy_exercise(original_exercise, current_user):
@@ -11,6 +11,11 @@ def copy_exercise(original_exercise, current_user):
 
     """
     new_exercise = get_exercise_copy(original_exercise, current_user)
+    new_exercise.save()
+    new_exercise = copy_exercise_demographics(
+        original_exercise, new_exercise, current_user
+    )
+    new_exercise = copy_exercise_files(original_exercise, new_exercise, current_user)
     new_exercise.save()
 
     new_exercise.demographics.add(*original_exercise.demographics.all())
@@ -69,4 +74,33 @@ def get_exercise_copy(original_exercise, current_user):
         updated_by=current_user,
     )
 
+    return new_exercise
+
+
+def copy_exercise_demographics(original_exercise, new_exercise, current_user):
+    """
+    Copy (Create) those questions (DemographicsInfo objects), which are not already existing for
+    current_user's organization
+    """
+    for info in original_exercise.demographics.all():
+        if not DemographicsInfo.objects.filter(
+            question=info.question, organization=current_user.organization
+        ).exists():
+            info.organization = current_user.organization
+            info.id = None
+            info.save()
+    return new_exercise
+
+
+def copy_exercise_files(original_exercise, new_exercise, current_user):
+    """
+    Copy (Create) those files, which are not already existing for current_user's organization
+    """
+    for file in original_exercise.files.all():
+        if not ExerciseFile.objects.filter(
+            file_name=file.file_name, organization=current_user.organization
+        ).exists():
+            file.organization = current_user.organization
+            file.id = None
+            file.save()
     return new_exercise
