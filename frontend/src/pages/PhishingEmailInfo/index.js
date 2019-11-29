@@ -119,7 +119,7 @@ function PhishingEmailInfo({
                         phishingEmails[page].participantBehaviour.actionId &&
                       'fault'
                     }
-                    key={info.actionType + i}
+                    key={info.actionId}
                   >
                     {moment(info.timestamp).format('h:mm:ss a')} -{' '}
                     {sanitizeActions(info.actionType)}
