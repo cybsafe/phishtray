@@ -1,4 +1,14 @@
-from django.db.models import Q, CharField, OuterRef, Subquery, Count, Case, When, Value
+from django.db.models import (
+    Q,
+    CharField,
+    OuterRef,
+    Subquery,
+    Count,
+    Case,
+    When,
+    Value,
+    F,
+)
 from django.db.models.functions import Coalesce
 
 from .serializer import ParticipantActionSerializer
@@ -39,6 +49,9 @@ class ExportCSVMixinHelpers:
                 ),
                 webpage_clicked=self.get_action_count("webpage_click"),
                 emails_replied=self.get_action_count("email_replied"),
+                code_skipped=self.get_action_count("training_release_code_skipped"),
+                code_correct=self.get_action_count("training_release_code_correct"),
+                code_incorrect=self.get_action_count("training_release_code_incorrect"),
             )
         )
 
@@ -53,6 +66,10 @@ class ExportCSVMixinHelpers:
             "neg_entered_detail",
             "neg_replied_to_phishing_email",
             "neg_opened_attachment",
+            "code_entered",
+            "code_skipped",
+            "code_correct",
+            "code_incorrect",
             "participant_count",
             "training_link_clicked",
         ]
@@ -80,6 +97,16 @@ class ExportCSVMixinHelpers:
                 ),
                 0,
             ),
+            code_skipped=Coalesce(
+                self.get_subquery_value(participant_actions_qs, "code_skipped"), 0
+            ),
+            code_correct=Coalesce(
+                self.get_subquery_value(participant_actions_qs, "code_correct"), 0
+            ),
+            code_incorrect=Coalesce(
+                self.get_subquery_value(participant_actions_qs, "code_incorrect"), 0
+            ),
+            code_entered=Coalesce(F("code_correct") + F("code_incorrect"), 0),
             participant_count=self.get_subquery_value(
                 exercise_participants_qs, "participant_count"
             ),
@@ -99,6 +126,10 @@ class ExportCSVMixinHelpers:
             "neg_entered_detail",
             "neg_replied_to_phishing_email",
             "neg_opened_attachment",
+            "code_entered",
+            "code_skipped",
+            "code_correct",
+            "code_incorrect",
             "participant_count",
             "training_link_clicked",
         )
