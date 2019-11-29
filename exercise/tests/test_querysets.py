@@ -77,19 +77,12 @@ class ExerciseQuerysetTestsByOrgPvt(APITestCase):
         self.assertEqual(list(all_exercises), list(user_exercises))
 
 
-class ThreadTestsMixin:
-    def threadify(self, email):
-        email.belongs_to = email
-        email.save()
-
-
-class ExerciseEmailPropertiesQuerysetTests(APITestCase, ThreadTestsMixin):
+class ExerciseEmailPropertiesQuerysetTests(APITestCase):
     def setUp(self):
         self.organization = OrganizationFactory()
         self.organization2 = OrganizationFactory()
 
         emails = EmailFactory.create_batch(1)
-        self.threadify(emails[0])
         self.private_exercise = ExerciseFactory(
             organization=self.organization, emails=emails
         )
