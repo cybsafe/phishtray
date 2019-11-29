@@ -88,7 +88,7 @@ const TrainingPage = (props: Props) => {
             window.open(
               trainingLink !== ''
                 ? trainingLink
-                : 'https://app.cybsafe.com/phishtray'
+                : 'https://app.cybsafe.com/phishtray?login=false'
             );
           }}
         >
