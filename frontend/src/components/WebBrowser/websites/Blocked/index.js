@@ -17,7 +17,7 @@ import {
 
 import { logAction } from '../../../../utils';
 import actionTypes from '../../../../config/actionTypes';
-import { closeWebpage } from '../../../../actions/uiActions';
+import CustomMarkdown from '../../../Markdown/Markdown';
 
 type Props = {
   closeWebpage: () => void,
@@ -82,9 +82,11 @@ function Blocked({
 
         <Title>{threadProperties.webPage.title}</Title>
 
-        <P>
-          <ReactMarkdown source={threadProperties.webPage.content} />
-        </P>
+        <CustomMarkdown
+          light
+          marginBottom
+          source={threadProperties.webPage.content}
+        />
 
         <Form onSubmit={handleSubmit}>
           <Input

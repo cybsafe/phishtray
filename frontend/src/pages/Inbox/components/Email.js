@@ -3,10 +3,10 @@ import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'react-emotion';
 import { Link } from 'react-router-dom';
-import Markdown from 'react-markdown';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import CustomMarkdown from '../../../components/Markdown/Markdown';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';
@@ -370,7 +370,7 @@ function ReturnReplies({ props, items }) {
   ) : (
     <Fragment>
       <h3>You replied to this email:</h3>
-      <Markdown
+      <CustomMarkdown
         source={props.email.replies[0].message}
         renderers={{
           paragraph: Paragraph,
@@ -409,7 +409,7 @@ const Email = (props: Props) => {
       >
         {props.email.subject}
       </h3>
-      <Markdown
+      <CustomMarkdown
         source={props.email.body}
         renderers={{
           link: linkProps => RouterLink({ ...linkProps, ...props }),

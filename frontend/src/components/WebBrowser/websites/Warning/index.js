@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'react-emotion';
-import ReactMarkdown from 'react-markdown';
+import CustomMarkdown from '../../../Markdown/Markdown';
 
 const Container = styled('div')`
   display: flex;
@@ -21,11 +21,6 @@ const Title = styled('h1')`
   color: #262939;
   font-size: 48px;
 `;
-const P = styled('p')`
-  margin-bottom: 26px;
-  color: #909196;
-  font-size: 18px;
-`;
 
 const Warning = props => {
   const active = props.threads.filter(
@@ -36,9 +31,7 @@ const Warning = props => {
     <Container>
       <ContentWrapper>
         <Title>{webPage.title}</Title>
-        <P>
-          <ReactMarkdown source={webPage.content} />
-        </P>
+        <CustomMarkdown source={webPage.content} />
       </ContentWrapper>
     </Container>
   );
