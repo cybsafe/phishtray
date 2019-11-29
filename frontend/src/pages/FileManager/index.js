@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import styled, { css } from 'react-emotion';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
 
 import FileListItem from './components/FileListItem';
@@ -91,106 +91,101 @@ const Loading = () => (
   </Container>
 );
 
-export class FileManager extends Component {
-  async componentDidMount() {
-    //only load files once there are no files or a file have not been deleted
-    this.props.files.length <= 0 &&
-      !this.props.fileDeleted &&
-      (await this.props.loadFiles());
-    //view files when attributes passed from Email link
-    if (this.props.location.params && this.props.location.params.attachment) {
-      this.props.location.params.attachment.fileUrl &&
-        this.displayFileModalHandler(
-          this.props.location.params.attachment.fileUrl
-        );
-    }
-  }
+const FileManager = ({ location }) => {
+  const files = useSelector(state => getFiles(state));
+  const isLoaded = useSelector(state => getLastRefreshed(state) !== null);
+  const modal = useSelector(state => getModal(state));
+  const startTime = useSelector(state => state.exercise.startTime);
+  const fileDeleted = useSelector(state => state.fileManager.fileDeleted);
+  const participantId = useSelector(state => state.exercise.participant);
+  const dispatch = useDispatch();
 
-  deleteFileHandler = fileToDelete => {
-    const { modal, removeFile, hideAndDeleteFile } = this.props;
+  const displayFileModalHandler = React.useCallback(
+    fileUrl => {
+      dispatch(displayFile(fileUrl));
+    },
+    [dispatch]
+  );
+  const deleteFileHandler = fileToDelete => {
     if (modal.isOpen && modal.fileUrl === fileToDelete.fileUrl) {
-      hideAndDeleteFile(fileToDelete.id);
+      dispatch(hideAndDeleteFile(fileToDelete.id));
     } else {
-      removeFile(fileToDelete.id);
+      dispatch(removeFile(fileToDelete.id));
     }
   };
 
-  displayFileModalHandler = fileUrl => {
-    this.props.displayFile(fileUrl);
+  const hideFileModalHandler = () => {
+    dispatch(hideFile());
   };
 
-  hideFileModalHandler = () => {
-    this.props.hideFile();
-  };
-
-  logActionsHandler = params => {
+  const logActionsHandler = params => {
     return logAction({
-      participantId: this.props.participantId,
-      timeDelta: Date.now() - this.props.startTime,
+      participantId: participantId,
+      timeDelta: Date.now() - startTime,
       timestamp: new Date(),
       ...params,
     });
   };
 
-  render() {
-    const { files, isLoaded, modal } = this.props;
-    if (!isLoaded) return <Loading />;
-    return (
-      <Container>
-        {modal.isOpen && (
-          <FileModal
-            fileUrl={modal.fileUrl}
-            isOpen={modal.isOpen}
-            hideFileModalHandler={this.hideFileModalHandler}
-          />
-        )}
-        <Table>
-          <TableHead />
-          <tbody>
-            {files &&
-              files.map(file => (
-                <FileListItem
-                  key={file.id}
-                  file={file}
-                  deleteFileHandler={file => {
-                    this.logActionsHandler({
-                      actionType: actionTypes.fileDelete,
-                      fileId: file.id,
-                      fileName: file.fileName,
-                    });
-                    this.deleteFileHandler(file);
-                  }}
-                  displayFileModalHandler={file => {
-                    this.logActionsHandler({
-                      actionType: actionTypes.fileOpen,
-                      fileId: file.id,
-                      fileName: file.fileName,
-                    });
-                    this.displayFileModalHandler(file);
-                  }}
-                />
-              ))}
-          </tbody>
-        </Table>
-      </Container>
-    );
-  }
-}
+  useEffect(() => {
+    //view files when attributes passed from Email link
+    const openModalFromAttachment = params => {
+      if (params && params.attachment) {
+        params.attachment.fileUrl &&
+          displayFileModalHandler(params.attachment.fileUrl);
+      }
+    };
 
-export default connect(
-  state => ({
-    files: getFiles(state),
-    isLoaded: getLastRefreshed(state) !== null,
-    modal: getModal(state),
-    startTime: state.exercise.startTime,
-    fileDeleted: state.fileManager.fileDeleted,
-    participantId: state.exercise.participant,
-  }),
-  {
-    loadFiles,
-    removeFile,
-    displayFile,
-    hideFile,
-    hideAndDeleteFile,
-  }
-)(FileManager);
+    //only load files once there are no files or a file have not been deleted
+    async function dispatchLoadFiles() {
+      files.length <= 0 && !fileDeleted && (await dispatch(loadFiles()));
+    }
+
+    openModalFromAttachment(location.params);
+    dispatchLoadFiles();
+    // eslint-disable-next-line
+  }, [dispatch, displayFileModalHandler, fileDeleted, location.params]);
+
+  if (!isLoaded) return <Loading />;
+  return (
+    <Container>
+      {modal.isOpen && (
+        <FileModal
+          fileUrl={modal.fileUrl}
+          isOpen={modal.isOpen}
+          hideFileModalHandler={hideFileModalHandler}
+        />
+      )}
+      <Table>
+        <TableHead />
+        <tbody>
+          {files &&
+            files.map(file => (
+              <FileListItem
+                key={file.id}
+                file={file}
+                deleteFileHandler={file => {
+                  logActionsHandler({
+                    actionType: actionTypes.fileDelete,
+                    fileId: file.id,
+                    fileName: file.fileName,
+                  });
+                  deleteFileHandler(file);
+                }}
+                displayFileModalHandler={file => {
+                  logActionsHandler({
+                    actionType: actionTypes.fileOpen,
+                    fileId: file.id,
+                    fileName: file.fileName,
+                  });
+                  displayFileModalHandler(file);
+                }}
+              />
+            ))}
+        </tbody>
+      </Table>
+    </Container>
+  );
+};
+
+export default FileManager;
