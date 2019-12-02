@@ -3,7 +3,6 @@ import Markdown from 'react-markdown';
 import styled from 'react-emotion';
 
 const MarkdownContainer = styled('div')`
-  display: flex;
   margin-bottom: ${({ marginBottom }) => marginBottom && '2rem'};
   h1,
   h2,
