@@ -211,33 +211,6 @@ function Exercise({ match, history }: Props) {
             '& svg': { stroke: 'black !important' },
           })}
           description="Loading"
-      <Switch>
-        <Route
-          exact
-          path={`${match.url}`}
-          render={() => (
-            <Container>
-              <Title>{exercise.title}</Title>
-              <Tile>
-                <Subtitle>Description</Subtitle>
-                <MarkdownContainer>
-                  <ReactMarkdown>{exercise.description}</ReactMarkdown>
-                </MarkdownContainer>
-                <Divider />
-                <Subtitle>Introduction</Subtitle>
-                <MarkdownContainer>
-                  <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
-                </MarkdownContainer>
-                <Divider />
-                <p>This exercise will take: {exercise.lengthMinutes} mins</p>
-                <Button
-                  onClick={() => this.nextPath(`/welcome/${exercise.id}/form`)}
-                >
-                  Continue
-                </Button>
-              </Tile>
-            </Container>
-          )}
         />
       </Container>
     );
