@@ -3,20 +3,20 @@ import { TextInput, Button } from 'carbon-components-react';
 
 export const Wrapper = styled('section')`
   background-color: #ffffff;
-  justify-content: center;
-  align-items: center;
   min-height: 100%;
-  display: flex;
+  position: relative;
 `;
 
 export const Container = styled('div')`
-  flex-direction: column;
   margin-bottom: 100px;
-  align-items: center;
   max-width: 700px;
   margin: 0 auto;
-  display: flex;
   width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 `;
 
 export const Title = styled('h1')`
@@ -45,8 +45,6 @@ export const Text = styled('p')`
 `;
 
 export const Form = styled('form')`
-  flex-direction: column;
-  display: flex;
   width: 100%;
 
   .bx--form-item {
@@ -66,10 +64,25 @@ export const Input = styled(TextInput)`
   box-shadow: none;
 `;
 
+export const Clear = styled('div')`
+  zoom: 1;
+
+  &:after {
+    content: '';
+    display: table;
+  }
+
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+`;
+
 export const SubmitButton = styled(Button)`
   border-radius: 6px;
   min-width: 150px;
   height: 50px;
-  align-self: flex-end;
+  float: right;
   margin-top: 20px;
 `;

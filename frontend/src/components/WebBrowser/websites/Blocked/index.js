@@ -4,8 +4,16 @@ import styled from 'react-emotion';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import ReactMarkdown from 'react-markdown';
-import { Wrapper, Container, Title, Input, Form, SubmitButton } from './ui';
+import {
+  Wrapper,
+  Container,
+  Title,
+  Text,
+  Input,
+  Form,
+  SubmitButton,
+  Clear,
+} from './ui';
 
 import { logAction } from '../../../../utils';
 import actionTypes from '../../../../config/actionTypes';
@@ -87,7 +95,9 @@ function Blocked({
             labelText=""
             id="1"
           />
-          <SubmitButton type="submit">Submit</SubmitButton>
+          <Clear>
+            <SubmitButton type="submit">Submit</SubmitButton>
+          </Clear>
         </Form>
       </Container>
     </Wrapper>
