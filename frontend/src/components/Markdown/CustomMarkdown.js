@@ -15,9 +15,10 @@ const MarkdownContainer = styled('div')`
   }
   p {
     padding: 0px;
-    line-height: 2;
+    line-height: 1.6;
     color: ${({ light }) => light && '#fff'};
     padding-left: ${({ paddingLeft }) => paddingLeft && '2rem'};
+    margin-bottom: 15px;
   }
   ol {
     list-style: decimal;

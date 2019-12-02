@@ -17,7 +17,8 @@ import {
 
 import { logAction } from '../../../../utils';
 import actionTypes from '../../../../config/actionTypes';
-import CustomMarkdown from '../../../Markdown/Markdown';
+import CustomMarkdown from '../../../Markdown/CustomMarkdown';
+import { closeWebpage } from '../../../../actions/uiActions';
 
 type Props = {
   closeWebpage: () => void,
@@ -26,12 +27,6 @@ type Props = {
   startTime: Date,
   participantId: Number,
 };
-
-const P = styled('p')`
-  margin-bottom: 80px;
-  color: white;
-  font-size: 18px;
-`;
 
 function Blocked({
   closeWebpage,

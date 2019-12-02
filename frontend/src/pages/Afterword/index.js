@@ -15,7 +15,7 @@ import WideHeader from '../../components/Header/WideHeader';
 import { persistor } from '../../redux';
 import { getRange } from '../../utils';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';
-import CustomMarkdown from '../../components/Markdown/Markdown';
+import CustomMarkdown from '../../components/Markdown/CustomMarkdown';
 
 const Container = styled('div')`
   display: flex;

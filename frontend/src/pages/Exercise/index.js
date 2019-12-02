@@ -10,7 +10,7 @@ import {
   Form,
   Tile,
 } from 'carbon-components-react';
-import CustomMarkdown from '../../components/Markdown/Markdown';
+import CustomMarkdown from '../../components/Markdown/CustomMarkdown';
 import {
   getLastRefreshed,
   getExercise,
@@ -62,37 +62,6 @@ const FormContainer = styled('div')({
   paddingBottom: '15px',
   paddingTop: '15px',
 });
-
-const MarkdownContainer = styled('div')`
-  display: flex;
-  h1,
-  h2,
-  h3,
-  h4 {
-    margin: 10px 0;
-    font-weight: bold;
-  }
-  p {
-    padding: 10px 0px;
-    line-height: 2;
-  }
-  ol {
-    list-style: decimal;
-  }
-  ul {
-    list-style: disc;
-  }
-  li {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    line-height: 2;
-  }
-  img {
-    width: 100%;
-    margin: 20px 0;
-  }
-`;
 
 injectGlobal`
   #root > div:first-child {

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import CustomMarkdown from '../../../components/Markdown/Markdown';
+import CustomMarkdown from '../../../components/Markdown/CustomMarkdown';
 
 import EmailCard from './EmailCard';
 import QuickReply from './QuickReply';

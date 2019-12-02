@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'react-emotion';
-import CustomMarkdown from '../../../Markdown/Markdown';
+import CustomMarkdown from '../../../Markdown/CustomMarkdown';
 
 const Container = styled('div')`
   display: flex;
