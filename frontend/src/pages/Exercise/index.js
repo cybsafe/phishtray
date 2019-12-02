@@ -1,8 +1,8 @@
 // @flow
-import React, { Component } from 'react';
-import { Route, Switch, type Match, type history } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import styled, { css, injectGlobal } from 'react-emotion';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   InlineLoading,
   Button,
@@ -63,14 +63,36 @@ const FormContainer = styled('div')({
   paddingTop: '15px',
 });
 
-type Props = {
-  exercise: Object,
-  match: Match,
-  history: history,
-  isLoaded: *,
-  getExerciseData: (*) => void,
-  startCountdown: (*) => void,
-};
+const MarkdownContainer = styled('div')`
+  display: flex;
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 10px 0;
+    font-weight: bold;
+  }
+  p {
+    padding: 10px 0px;
+    line-height: 2;
+  }
+  ol {
+    list-style: decimal;
+  }
+  ul {
+    list-style: disc;
+  }
+  li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    line-height: 2;
+  }
+  img {
+    width: 100%;
+    margin: 20px 0;
+  }
+`;
 
 injectGlobal`
   #root > div:first-child {
@@ -78,22 +100,29 @@ injectGlobal`
   }
 `;
 
-export class Exercise extends Component<Props> {
-  constructor(props: Props) {
-    super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+type Props = {
+  match: object,
+  history: object,
+};
 
-  componentDidMount() {
-    const { exerciseUuid } = this.props.match.params;
-    this.props.getExerciseData(exerciseUuid);
-  }
+function Exercise({ match, history }: Props) {
+  const [item, setItem] = useState([]);
+  const exercise = useSelector(state => getExercise(state));
+  const isLoaded = useSelector(state => getLastRefreshed(state) !== null);
+  const startTime = useSelector(state => state.exercise.startTime);
+  const participantId = useSelector(state => state.exercise.participant);
+  const dispatch = useDispatch();
 
-  componentDidUpdate() {
-    if (this.state && Object.keys(this.state).length === 0) {
-      this.props.exercise.profileForm &&
-        this.props.exercise.profileForm.map(item =>
-          this.setState({
+  useEffect(() => {
+    const { exerciseUuid } = match.params;
+    dispatch(getExerciseData(exerciseUuid));
+  }, [dispatch, match.params]);
+
+  useEffect(() => {
+    if (item && Object.keys(item).length === 0) {
+      exercise.profileForm &&
+        exercise.profileForm.map(item =>
+          setItem({
             [item.id]: {
               id: item.id,
               value: '',
@@ -101,14 +130,14 @@ export class Exercise extends Component<Props> {
           })
         );
     }
-  }
+  }, [item, exercise]);
 
-  nextPath(path: string) {
-    this.props.history.push(path);
-  }
+  const nextPath = (path: string) => {
+    history.push(path);
+  };
 
-  userInput = (event: SyntheticInputEvent<*>) => {
-    this.setState({
+  const userInput = event => {
+    setItem({
       [event.target.id]: {
         id: event.target.name,
         value: event.target.value,
@@ -116,29 +145,25 @@ export class Exercise extends Component<Props> {
     });
   };
 
-  handleSubmit = (event: SyntheticInputEvent<*>) => {
+  const handleSubmit = (event: SyntheticInputEvent<*>) => {
     event && event.preventDefault();
 
     logAction({
-      participantId: this.props.participantId,
+      participantId,
       actionType: actionTypes.experimentStarted,
       timestamp: new Date(),
-      timeDelta: Date.now() - this.props.startTime,
+      timeDelta: Date.now() - startTime,
     });
 
     setInterval(() => {
-      this.props.tickTimer(5); //this is way too high, demo purposes
+      dispatch(tickTimer(5)); //this is way too high, demo purposes
     }, 5 * 1000);
 
-    const { exercise } = this.props;
-    exercise.startTime || this.props.startCountdown(exercise.lengthMinutes);
+    exercise.startTime || dispatch(startCountdown(exercise.lengthMinutes));
 
     const data = {
       profileForm:
-        this.state &&
-        Object.keys(this.state).map(
-          answerKey => this.state && this.state[answerKey]
-        ),
+        item && Object.keys(item).map(answerKey => item && item[answerKey]),
     };
 
     postFormData(
@@ -146,17 +171,17 @@ export class Exercise extends Component<Props> {
       data
     );
 
-    this.props.history.replace('/');
+    history.replace('/');
   };
 
-  WelcomeForm = (exercise: ExerciseState) => (
+  const WelcomeForm = (exercise: ExerciseState) => (
     <Container>
       <Title>{exercise.title}</Title>
       <Tile>
         <Subtitle>Demographic Information</Subtitle>
         {exercise.profileForm ? (
           <Form
-            onSubmit={this.handleSubmit}
+            onSubmit={handleSubmit}
             id={exercise.id && `exercise-${exercise.id}`}
           >
             {exercise.profileForm.map(item => {
@@ -169,8 +194,8 @@ export class Exercise extends Component<Props> {
                         labelText={item.question}
                         id={`${item.id}`}
                         name={`${item.id}`}
-                        onChange={this.userInput}
-                        onClick={this.userInput}
+                        onChange={userInput}
+                        onClick={userInput}
                         required={item.required}
                       />
                     </FormContainer>
@@ -183,7 +208,7 @@ export class Exercise extends Component<Props> {
                         id={`${item.id}`}
                         labelText={item.question}
                         name={`${item.id}`}
-                        onChange={this.userInput}
+                        onChange={userInput}
                         required={item.required}
                       />
                     </FormContainer>
@@ -200,71 +225,59 @@ export class Exercise extends Component<Props> {
             </Button>
           </Form>
         ) : (
-          this.handleSubmit()
+          handleSubmit()
         )}
       </Tile>
     </Container>
   );
 
-  render() {
-    const { exercise, isLoaded, match } = this.props;
-
-    if (!isLoaded) {
-      return (
-        <Container>
-          <InlineLoading
-            className={css({
-              color: 'black',
-              justifyContent: 'center',
-              '& svg': { stroke: 'black !important' },
-            })}
-            description="Loading"
-          />
-        </Container>
-      );
-    }
-
+  if (!isLoaded) {
     return (
-      <Switch>
-        <Route
-          exact
-          path={`${match.url}`}
-          render={() => (
-            <Container>
-              <Title>{exercise.title}</Title>
-              <Tile>
-                <Subtitle>Description</Subtitle>
-                <CustomMarkdown source={exercise.description} />
-                <Divider />
-                <Subtitle>Introduction</Subtitle>
-                <CustomMarkdown source={exercise.introduction} />
-                <Divider />
-                <p>This exercise will take: {exercise.lengthMinutes} mins</p>
-                <Button
-                  className={css(`display: flex !important; margin-left: auto`)}
-                  onClick={() => this.nextPath(`/welcome/${exercise.id}/form`)}
-                >
-                  Continue
-                </Button>
-              </Tile>
-            </Container>
-          )}
+      <Container>
+        <InlineLoading
+          className={css({
+            color: 'black',
+            justifyContent: 'center',
+            '& svg': { stroke: 'black !important' },
+          })}
+          description="Loading"
         />
-        <Route
-          path={`${match.url}/form`}
-          render={() => <Container>{this.WelcomeForm(exercise)}</Container>}
-        />
-      </Switch>
+      </Container>
     );
   }
+
+  return (
+    <Switch>
+      <Route
+        exact
+        path={`${match.url}`}
+        render={() => (
+          <Container>
+            <Title>{exercise.title}</Title>
+            <Tile>
+              <Subtitle>Description</Subtitle>
+              <CustomMarkdown source={exercise.description} />
+              <Divider />
+              <Subtitle>Introduction</Subtitle>
+              <CustomMarkdown source={exercise.introduction} />
+              <Divider />
+              <p>This exercise will take: {exercise.lengthMinutes} mins</p>
+              <Button
+                className={css(`display: flex !important; margin-left: auto`)}
+                onClick={() => nextPath(`/welcome/${exercise.id}/form`)}
+              >
+                Continue
+              </Button>
+            </Tile>
+          </Container>
+        )}
+      />
+      <Route
+        path={`${match.url}/form`}
+        render={() => <Container>{WelcomeForm(exercise)}</Container>}
+      />
+    </Switch>
+  );
 }
 
-export default connect(
-  state => ({
-    exercise: getExercise(state),
-    isLoaded: getLastRefreshed(state) !== null,
-    startTime: state.exercise.startTime,
-    participantId: state.exercise.participant,
-  }),
-  { getExerciseData, startCountdown, tickTimer }
-)(Exercise);
+export default Exercise;
