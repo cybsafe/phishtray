@@ -178,6 +178,7 @@ function Exercise({ match, history }: Props) {
     <Container>
       <Title>{exercise.title}</Title>
       <Tile>
+        <Subtitle>Demographic Information</Subtitle>
         {exercise.profileForm ? (
           <Form
             onSubmit={handleSubmit}
