@@ -178,10 +178,6 @@ function Exercise({ match, history }: Props) {
     <Container>
       <Title>{exercise.title}</Title>
       <Tile>
-        <MarkdownContainer>
-          <ReactMarkdown>{exercise.description}</ReactMarkdown>
-        </MarkdownContainer>
-
         {exercise.profileForm ? (
           <Form
             onSubmit={handleSubmit}
