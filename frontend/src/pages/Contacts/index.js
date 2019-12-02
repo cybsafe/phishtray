@@ -12,7 +12,7 @@ import { logAction } from '../../utils';
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
-  minHeight: '100%',
+  height: '100%',
 });
 
 const ContactList = styled('div')({
