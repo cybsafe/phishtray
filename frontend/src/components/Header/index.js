@@ -7,10 +7,12 @@ import { Button, Modal } from 'carbon-components-react';
 import StopClock from './StopClock';
 import { logAction, getHeaderText } from '../../utils';
 import actionTypes from '../../config/actionTypes';
-import { resetCountdown } from '../../actions/exerciseActions';
-import InlineNotification from '../../components/InlineNotification';
+import {
+  resetCountdown,
+  unsetInlineNotification,
+} from '../../actions/exerciseActions';
+import InlineNotification from '../InlineNotification';
 
-import { unsetInlineNotification } from '../../actions/exerciseActions';
 import { closeWebpage } from '../../actions/uiActions';
 
 const SectionHeader = styled('div')({

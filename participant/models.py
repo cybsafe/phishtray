@@ -1,8 +1,12 @@
 from operator import itemgetter
 from statistics import mean
 
-from participant.constants import ParticipantBehaviour, POSITIVE_ACTIONS, NEGATIVE_ACTIONS
-from .managers import ParticipantManager
+from participant.constants import (
+    ParticipantBehaviour,
+    POSITIVE_ACTIONS,
+    NEGATIVE_ACTIONS,
+)
+from .managers import ParticipantManager, OrganizationManager
 
 from django.db import models
 from exercise.models import (
@@ -14,7 +18,7 @@ from exercise.models import (
     ExerciseTask,
 )
 
-from phishtray.base import PhishtrayBaseModel, MultiTenantManager
+from phishtray.base import PhishtrayBaseModel
 
 STARTED_EXPERIMENT = 0
 COMPLETED_EXPERIMENT = 1
@@ -81,22 +85,32 @@ class Participant(PhishtrayBaseModel):
         Aggregates actions related to a phishing email and determines behaviour.
 
         :param email_id: UUID - id of an email
-        :return: (STRING, LIST) - returns a tuple of participant behaviour and actions
+        :return: (DICT, LIST) - returns a tuple of participant behaviour and actions
         """
 
         def participant_behaviour(actions):
-            pb = ParticipantBehaviour.NEUTRAL
-            if [a for a in actions if a.get('action_type') in POSITIVE_ACTIONS]:
-                pb = ParticipantBehaviour.POSITIVE
-            if [a for a in actions if a.get('action_type') in NEGATIVE_ACTIONS]:
-                pb = ParticipantBehaviour.NEGATIVE
+            behaviour = ParticipantBehaviour.NEUTRAL
+            action_id = None
+
+            for action in actions:
+                if action.get("action_type") in POSITIVE_ACTIONS:
+                    behaviour = ParticipantBehaviour.POSITIVE
+                    action_id = action.get("action_id")
+
+                if action.get("action_type") in NEGATIVE_ACTIONS:
+                    behaviour = ParticipantBehaviour.NEGATIVE
+                    action_id = action.get("action_id")
+                    break
+
+            pb = {"behaviour": behaviour, "action_id": action_id}
             return pb
 
         actions = []
 
         if email_id in self.exercise.phishing_email_ids:
             for action_id, action_details in self.actions.items():
-                if email_id == action_details.get('email_id'):
+                if email_id == action_details.get("email_id"):
+                    action_details["action_id"] = action_id
                     actions.append(action_details)
 
         return participant_behaviour(actions), actions
@@ -189,4 +203,4 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
-    objects = MultiTenantManager()
+    objects = OrganizationManager()

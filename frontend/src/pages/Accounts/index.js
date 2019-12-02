@@ -11,7 +11,7 @@ import actionTypes from '../../config/actionTypes';
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'row',
-  minHeight: '100%',
+  height: '100%',
 });
 
 const AccountList = styled('div')({

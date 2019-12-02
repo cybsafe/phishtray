@@ -95,7 +95,7 @@ const DefaultLayout = ({ children, renderProps }) => {
           <SidebarLink to="/web">Web</SidebarLink>
           <SidebarLink to="/files">Files</SidebarLink>
         </Sidebar>
-        <div className={css({ flex: 1 })}>{children}</div>
+        <div className={css({ flex: 1, overflowY: 'auto' })}>{children}</div>
       </Container>
     </div>
   );

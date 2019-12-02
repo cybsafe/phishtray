@@ -1,14 +1,13 @@
-import React, { Component, Fragment, createRef } from 'react';
+import React, { Fragment, createRef, useEffect } from 'react';
 import { css } from 'react-emotion';
 import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   markThreadAsRead,
   markThreadAsInactive,
   markThreadAsDeleted,
   setSelectedReply,
 } from '../../../actions/exerciseActions';
-import { getThread } from '../../../selectors/exerciseSelectors';
 import { showWebpage } from '../../../actions/uiActions';
 import { addFile } from '../../../actions/fileManagerActions';
 import actionTypes from '../../../config/actionTypes';
@@ -82,94 +81,77 @@ function EmailActions({
   );
 }
 
-export class EmailChain extends Component {
-  componentDidMount() {
-    const { thread } = this.props;
+function EmailChain({ match }) {
+  const threads = useSelector(state => state.exercise.threads);
+  const thread = threads.filter(e => e.id === match.params.emailId)[0];
+  const { startTime } = useSelector(state => state.exercise);
+  const participantId = useSelector(state => state.exercise.participant);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
     if (thread && !thread.idRead) {
-      this.props.markThreadAsRead(thread.id);
+      dispatch(markThreadAsRead(thread.id));
     }
-  }
+  }, [thread, dispatch]);
 
-  componentDidUpdate(prevProps) {
-    const { thread: oldThread } = prevProps;
-    const { thread: newThread } = this.props;
-    if (newThread.id !== oldThread.id && !newThread.isRead) {
-      this.props.markThreadAsRead(newThread.id);
-    }
-  }
-
-  render() {
-    const { thread } = this.props;
-
-    return thread ? (
+  return thread ? (
+    <div
+      className={css({
+        height: '100%',
+        display: 'flex',
+        boxSizing: 'border-box',
+        flexDirection: 'column',
+      })}
+      key={thread.id}
+    >
+      <EmailActions
+        markThreadAsDeleted={threadId =>
+          dispatch(markThreadAsDeleted(threadId))
+        }
+        markThreadAsInactive={() => dispatch(markThreadAsInactive())}
+        threadId={thread.id}
+        onReplyParams={{
+          startTime,
+          participantId,
+          emailId: thread.id,
+        }}
+      />
       <div
         className={css({
-          height: '100%',
-          display: 'flex',
-          boxSizing: 'border-box',
-          flexDirection: 'column',
+          flexGrow: 1,
+          overflowY: 'auto',
         })}
-        key={thread.id}
       >
-        <EmailActions
-          markThreadAsDeleted={this.props.markThreadAsDeleted}
-          markThreadAsInactive={this.props.markThreadAsInactive}
-          threadId={thread.id}
-          onReplyParams={{
-            startTime: this.props.startTime,
-            participantId: this.props.participantId,
-            emailId: thread.id,
-          }}
-        />
-        <div
-          className={css({
-            flexGrow: 1,
-            overflowY: 'auto',
-          })}
-        >
-          {thread.emails.map(email => (
-            <Fragment key={email.id}>
-              <Email
-                email={email}
-                threadId={thread.id}
-                addFile={this.props.addFile}
-                markThreadAsDeleted={this.props.markThreadAsDeleted}
-                showWebpage={this.props.showWebpage}
-                onReplyParams={{
-                  startTime: this.props.startTime,
-                  participantId: this.props.participantId,
-                  emailId: email.id,
-                }}
-                setSelectedReply={this.props.setSelectedReply}
-                repliesRef={repliesRef}
-              />
-              <hr
-                className={css({
-                  width: '100%',
-                })}
-              />
-            </Fragment>
-          ))}
-        </div>
+        {thread.emails.map(email => (
+          <Fragment key={email.id}>
+            <Email
+              email={email}
+              threadId={thread.id}
+              addFile={file => dispatch(addFile(file))}
+              markThreadAsDeleted={threadId =>
+                dispatch(markThreadAsDeleted(threadId))
+              }
+              showWebpage={webpage => dispatch(showWebpage(webpage))}
+              onReplyParams={{
+                startTime,
+                participantId,
+                emailId: email.id,
+              }}
+              setSelectedReply={params => dispatch(setSelectedReply(params))}
+              repliesRef={repliesRef}
+            />
+            <hr
+              className={css({
+                width: '100%',
+              })}
+            />
+          </Fragment>
+        ))}
       </div>
-    ) : (
-      <Redirect to="/inbox" />
-    );
-  }
+    </div>
+  ) : (
+    <Redirect to="/inbox" />
+  );
 }
 
-export default connect(
-  (state, props) => ({
-    thread: getThread(state, { threadId: props.match.params.emailId }),
-    startTime: state.exercise.startTime,
-    participantId: state.exercise.participant,
-  }),
-  {
-    markThreadAsRead,
-    markThreadAsInactive,
-    showWebpage,
-    addFile,
-    markThreadAsDeleted,
-    setSelectedReply,
-  }
-)(EmailChain);
+export default EmailChain;

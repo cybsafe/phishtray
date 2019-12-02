@@ -1,6 +1,6 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Button from '../../../components/Button/ReplyButton';
-import { connect } from 'react-redux';
 import { logAction, selectWebpageType } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
 import { showWebpage } from '../../../actions/uiActions';
@@ -10,9 +10,6 @@ type Props = {
   logActionParams: Object,
   setSelectedReplyParams: Object,
   setSelectedReply: () => void,
-  activeThread: Number,
-  threads: Array<*>,
-  showWebpage: () => void,
 };
 
 const QuickReply = ({
@@ -20,13 +17,11 @@ const QuickReply = ({
   logActionParams,
   setSelectedReply,
   setSelectedReplyParams,
-  activeThread,
-  threads,
-  showWebpage,
 }: Props) => {
   const { participantId, startTime, emailId } = logActionParams;
-
+  const { activeThread, threads } = useSelector(state => state.exercise);
   const active = threads.filter(thread => thread.id === activeThread);
+  const dispatch = useDispatch();
 
   const {
     interceptExercise,
@@ -57,7 +52,7 @@ const QuickReply = ({
           selectWebpageType(
             interceptExercise,
             releaseCodes,
-            showWebpage,
+            webPage => dispatch(showWebpage(webPage)),
             actionTypes.emailQuickReply
           );
       }}
@@ -65,11 +60,4 @@ const QuickReply = ({
   ));
 };
 
-export default connect(
-  state => ({
-    activeThread: state.exercise.activeThread,
-    threads: state.exercise.threads,
-    exercise: state.exercise,
-  }),
-  { showWebpage }
-)(QuickReply);
+export default QuickReply;

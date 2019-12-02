@@ -19,7 +19,7 @@ EXERCISE_PHISH_TYPES = (
 EXERCISE_REPLY_TYPE = ((0, "reply"), (1, "forward"))
 
 
-class ExerciseTask(CacheBusterMixin, PhishtrayBaseModel):
+class ExerciseTask(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     """
     Tasks are a way to define a metric for scoring in the psychometric evaluation
     """
@@ -84,7 +84,7 @@ class ExerciseEmailReply(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel)
         return self.message
 
 
-class EmailReplyTaskScore(CacheBusterMixin, PhishtrayBaseModel):
+class EmailReplyTaskScore(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
     """
     A method to associate scores to email replies.
     """
@@ -312,7 +312,7 @@ class Exercise(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
             exercise_id=self.id
         ).exclude(email_id__in=self.emails.values_list("id", flat=True))
         if orphaned_email_properties:
-            orphaned_email_properties.all().hard_delete()
+            orphaned_email_properties.all().delete()
 
         # Then set default email reveal times
         self.set_email_reveal_times()

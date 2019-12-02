@@ -66,7 +66,7 @@ function BrowserHeader({ onClose, url, isSecure }) {
     >
       <div
         className={css({
-          flex: 0,
+          flex: '0 0 1',
           width: 70,
           display: 'flex',
           flexDirection: 'row',

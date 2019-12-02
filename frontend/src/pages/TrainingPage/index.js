@@ -86,7 +86,9 @@ const TrainingPage = (props: Props) => {
               startTime: Date.now(),
             });
             window.open(
-              trainingLink !== '' ? trainingLink : 'https://app.cybsafe.com'
+              trainingLink !== ''
+                ? trainingLink
+                : 'https://app.cybsafe.com/phishtray?login=false'
             );
           }}
         >
