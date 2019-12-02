@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import styled from 'react-emotion';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import {
-  Wrapper,
-  Container,
-  Title,
-  Text,
-  Input,
-  Form,
-  SubmitButton,
-} from './ui';
+import ReactMarkdown from 'react-markdown';
+import { Wrapper, Container, Title, Input, Form, SubmitButton } from './ui';
 
-import { closeWebpage } from '../../../../actions/uiActions';
 import { logAction } from '../../../../utils';
 import actionTypes from '../../../../config/actionTypes';
+import { closeWebpage } from '../../../../actions/uiActions';
 
 type Props = {
   closeWebpage: () => void,
@@ -24,6 +18,12 @@ type Props = {
   startTime: Date,
   participantId: Number,
 };
+
+const P = styled('p')`
+  margin-bottom: 80px;
+  color: white;
+  font-size: 18px;
+`;
 
 function Blocked({
   closeWebpage,
@@ -74,7 +74,9 @@ function Blocked({
 
         <Title>{threadProperties.webPage.title}</Title>
 
-        <Text>{threadProperties.webPage.content}</Text>
+        <P>
+          <ReactMarkdown source={threadProperties.webPage.content} />
+        </P>
 
         <Form onSubmit={handleSubmit}>
           <Input
