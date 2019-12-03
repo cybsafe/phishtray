@@ -5,6 +5,7 @@ from .models import (
     ExerciseEmailReply,
     EmailReplyTaskScore,
     ExerciseTask,
+    ExerciseFile,
 )
 
 
@@ -81,8 +82,20 @@ def get_exercise_copy(original_exercise, current_user):
     return new_exercise
 
 
-def copy_attachments():
-    pass
+def copy_exercise_file(original_file, email):
+    filters = {"file_name": original_file.file_name, "organization": email.organization}
+
+    file = ExerciseFile.objects.filter(**filters).first()
+
+    if not file:
+        file = ExerciseFile(
+            file_name=original_file.file_name,
+            description=original_file.description,
+            img_url=original_file.img_url,
+            organization=email.organization,
+        )
+
+    return file
 
 
 def copy_exercise_task_score(original_task_score, reply):
@@ -107,7 +120,6 @@ def copy_exercise_task_score(original_task_score, reply):
 
 
 def copy_email_reply(original_reply, email):
-    reply = None
     filters = {"message": original_reply.message, "organization": email.organization}
 
     reply = ExerciseEmailReply.objects.filter(**filters).first()
@@ -130,7 +142,6 @@ def copy_email_reply(original_reply, email):
 
 
 def copy_email(original_email, new_exercise):
-    email = None
     filters = {
         "subject": original_email.subject,
         "organization": new_exercise.organization,
@@ -155,7 +166,7 @@ def copy_email(original_email, new_exercise):
             organization=new_exercise.organisation,
         )
 
-        # ManyToManys
+        # Copy Records for the ManyToMany fields
         # Replies
         replies = []
         for original_reply in original_email.replies.all():
@@ -165,9 +176,22 @@ def copy_email(original_email, new_exercise):
         email.replies.add(*replies)
 
         # Attachments
+        attachments = []
+        for original_file in original_email.attachments.all():
+            file = copy_exercise_file(original_file, email)
+            attachments.append(file)
+
+        email.attachments.add(*attachments)
 
         # Belongs to
-        # recursive to copy the one it belongs to (if it hasn't been copied already)
+        # recursively copy the one it belongs to (if it hasn't been copied already)
+        if original_email.belongs_to:
+            if original_email == original_email.belongs_to:
+                email.belongs_to = email
+            else:
+                belongs_to_email = copy_email(original_email.belongs_to, new_exercise)
+                email.belongs_to = belongs_to_email
+            email.save()
 
     return email
 
