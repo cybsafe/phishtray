@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import styled from 'react-emotion';
-import ReactMarkdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import {
   Wrapper,
   Container,
   Title,
-  Text,
   Input,
   Form,
   SubmitButton,
