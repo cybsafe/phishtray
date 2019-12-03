@@ -82,7 +82,7 @@ def get_exercise_copy(original_exercise, current_user):
     return new_exercise
 
 
-def copy_exercise_file(original_file, email):
+def copy_email_attachment(original_file, email):
     filters = {"file_name": original_file.file_name, "organization": email.organization}
 
     file = ExerciseFile.objects.filter(**filters).first()
@@ -178,7 +178,7 @@ def copy_email(original_email, new_exercise):
         # Attachments
         attachments = []
         for original_file in original_email.attachments.all():
-            file = copy_exercise_file(original_file, email)
+            file = copy_email_attachment(original_file, email)
             attachments.append(file)
 
         email.attachments.add(*attachments)
