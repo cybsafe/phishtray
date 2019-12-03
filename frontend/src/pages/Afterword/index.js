@@ -1,7 +1,6 @@
 // @flow
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import ReactMarkdown from 'react-markdown';
 import { withRouter } from 'react-router-dom';
 import styled from 'react-emotion';
 import {
@@ -16,6 +15,7 @@ import WideHeader from '../../components/Header/WideHeader';
 import { persistor } from '../../redux';
 import { getRange } from '../../utils';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';
+import CustomMarkdown from '../../components/Markdown/CustomMarkdown';
 
 const Container = styled('div')`
   display: flex;
@@ -39,15 +39,6 @@ const DebriefTitle = styled('h5')`
   font-size: 1.2rem;
   padding-left: 2rem;
   margin-bottom: 1rem;
-`;
-
-const MarkDownContainer = styled('p')`
-  font-size: 1rem;
-  padding-left: 2rem;
-  margin-bottom: 2rem;
-  p {
-    margin-bottom: 10px;
-  }
 `;
 
 const List = styled(StructuredListWrapper)`
@@ -107,9 +98,11 @@ const Afterword = ({ match, history }: Props) => {
         {afterwordMessage && (
           <>
             <DebriefTitle>Debrief</DebriefTitle>
-            <MarkDownContainer>
-              <ReactMarkdown source={afterwordMessage} />
-            </MarkDownContainer>
+            <CustomMarkdown
+              source={afterwordMessage}
+              marginBottom
+              paddingLeft
+            />
           </>
         )}
         {scores && (

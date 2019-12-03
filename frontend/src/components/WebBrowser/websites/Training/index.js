@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import ReactMarkdown from 'react-markdown';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import CustomMarkdown from '../../../Markdown/CustomMarkdown';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import {
   Wrapper,
@@ -10,7 +10,6 @@ import {
   Title,
   Input,
   Form,
-  MarkDownContainer,
   SubmitButton,
   Clear,
 } from './ui';
@@ -68,9 +67,7 @@ function Training() {
 
         <Title>{threadProperties.webPage.title}</Title>
 
-        <MarkDownContainer>
-          <ReactMarkdown source={threadProperties.webPage.content} />
-        </MarkDownContainer>
+        <CustomMarkdown source={threadProperties.webPage.content} />
 
         <Form onSubmit={handleSubmit}>
           <Input

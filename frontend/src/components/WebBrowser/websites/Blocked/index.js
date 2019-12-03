@@ -17,6 +17,7 @@ import {
 
 import { logAction } from '../../../../utils';
 import actionTypes from '../../../../config/actionTypes';
+import CustomMarkdown from '../../../Markdown/CustomMarkdown';
 import { closeWebpage } from '../../../../actions/uiActions';
 
 type Props = {
@@ -26,12 +27,6 @@ type Props = {
   startTime: Date,
   participantId: Number,
 };
-
-const P = styled('p')`
-  margin-bottom: 80px;
-  color: white;
-  font-size: 18px;
-`;
 
 function Blocked({
   closeWebpage,
@@ -82,9 +77,11 @@ function Blocked({
 
         <Title>{threadProperties.webPage.title}</Title>
 
-        <P>
-          <ReactMarkdown source={threadProperties.webPage.content} />
-        </P>
+        <CustomMarkdown
+          light
+          marginBottom
+          source={threadProperties.webPage.content}
+        />
 
         <Form onSubmit={handleSubmit}>
           <Input

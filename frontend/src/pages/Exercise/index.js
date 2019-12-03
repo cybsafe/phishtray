@@ -10,7 +10,7 @@ import {
   Form,
   Tile,
 } from 'carbon-components-react';
-import ReactMarkdown from 'react-markdown';
+import CustomMarkdown from '../../components/Markdown/CustomMarkdown';
 import {
   getLastRefreshed,
   getExercise,
@@ -40,37 +40,6 @@ const Title = styled('h1')({
   marginBottom: '35px',
   fontWeight: 300,
 });
-
-const MarkdownContainer = styled('div')`
-  display: flex;
-  h1,
-  h2,
-  h3,
-  h4 {
-    margin: 10px 0;
-    font-weight: bold;
-  }
-  p {
-    padding: 10px 0px;
-    line-height: 2;
-  }
-  ol {
-    list-style: decimal;
-  }
-  ul {
-    list-style: disc;
-  }
-  li {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    line-height: 2;
-  }
-  img {
-    width: 100%;
-    margin: 20px 0;
-  }
-`;
 
 const Divider = styled('p')({
   borderBottom: '1px solid #CCC',
@@ -256,14 +225,10 @@ function Exercise({ match, history }: Props) {
             <Title>{exercise.title}</Title>
             <Tile>
               <Subtitle>Description</Subtitle>
-              <MarkdownContainer>
-                <ReactMarkdown>{exercise.description}</ReactMarkdown>
-              </MarkdownContainer>
+              <CustomMarkdown source={exercise.description} />
               <Divider />
               <Subtitle>Introduction</Subtitle>
-              <MarkdownContainer>
-                <ReactMarkdown>{exercise.introduction}</ReactMarkdown>
-              </MarkdownContainer>
+              <CustomMarkdown source={exercise.introduction} />
               <Divider />
               <p>This exercise will take: {exercise.lengthMinutes} mins</p>
               <Button
