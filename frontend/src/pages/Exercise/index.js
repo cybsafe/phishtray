@@ -5,7 +5,7 @@ import styled, { css, injectGlobal } from 'react-emotion';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   InlineLoading,
-  Button,
+  Button as CarbonButton,
   TextInput,
   Form,
   Tile,
@@ -61,6 +61,12 @@ const FormContainer = styled('div')({
   lineHeight: 1,
   paddingBottom: '15px',
   paddingTop: '15px',
+});
+
+const Button = styled(CarbonButton)({
+  display: 'flex !important',
+  marginLeft: 'auto',
+  lineHeight: '36px',
 });
 
 injectGlobal`
@@ -186,12 +192,7 @@ function Exercise({ match, history }: Props) {
                   return {};
               }
             })}
-            <Button
-              className={css(`display: flex !important; margin-left: auto`)}
-              type="submit"
-            >
-              Click here to start the E-tray
-            </Button>
+            <Button type="submit">Click here to start the E-tray</Button>
           </Form>
         ) : (
           handleSubmit()

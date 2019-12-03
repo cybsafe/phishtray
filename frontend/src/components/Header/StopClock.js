@@ -2,6 +2,9 @@
 import React, { Component } from 'react';
 import CircularProgressbar from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { detect } from 'detect-browser';
+
+const browser = detect();
 
 type Props = {
   startTime: number, // Date.now() ms at start
@@ -14,7 +17,7 @@ type State = {
 };
 
 type CircularProgressbarProps = {
-  text: string,
+  text: *,
   percentage: number,
 };
 
@@ -90,10 +93,15 @@ class StopClock extends Component<Props, State> {
     const { currentTime } = this.state;
     const { startTime, countdown } = this.props;
     const percentage = getPercRemaining(currentTime, startTime, countdown);
+
     return (
       this.endTime !== 0 && (
         <StyledCircularProgressbar
-          text={getTimeLabel(countdown - percentage * countdown)}
+          text={
+            <tspan dy={browser.name === 'ie' ? 8 : 0}>
+              {getTimeLabel(countdown - percentage * countdown)}
+            </tspan>
+          }
           percentage={percentage * 100}
         />
       )
