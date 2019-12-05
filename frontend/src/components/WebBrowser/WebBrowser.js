@@ -14,7 +14,7 @@ const BrowserChrome = styled('div')({
   top: 30,
   left: 50,
   width: '95%',
-  height: '90%',
+  minHeight: '90%',
   backgroundColor: '#fff',
   boxShadow: '10px 10px 65px 0px rgba(0,0,0,0.5)',
   borderRadius: '4px',
