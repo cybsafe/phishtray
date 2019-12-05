@@ -88,7 +88,7 @@ def copy_email_attachment(original_file, email):
     file = ExerciseFile.objects.filter(**filters).first()
 
     if not file:
-        file = ExerciseFile(
+        file = ExerciseFile.objects.create(
             file_name=original_file.file_name,
             description=original_file.description,
             img_url=original_file.img_url,
@@ -100,14 +100,16 @@ def copy_email_attachment(original_file, email):
 
 def copy_exercise_task_score(original_task_score, reply):
     # fetch the Task first
-    task = None
-    filters = {"organization": reply.organization}
+    filters = {
+        "name": original_task_score.task.name,
+        "organization": reply.organization,
+    }
 
     task = ExerciseTask.objects.filter(**filters).first()
 
     if not task:
         # create a copy of the task
-        task = ExerciseTask(
+        task = ExerciseTask.objects.create(
             name=original_task_score.task.name,
             debrief_over_threshold=original_task_score.task.debrief_over_threshold,
             debrief_under_threshold=original_task_score.task.debrief_under_threshold,
@@ -116,7 +118,12 @@ def copy_exercise_task_score(original_task_score, reply):
         )
 
     # Create the EmailReplyTaskScore entry for the new reply
-    EmailReplyTaskScore(value=original_task_score.value, email_reply=reply, task=task)
+    EmailReplyTaskScore.objects.create(
+        value=original_task_score.value,
+        email_reply=reply,
+        task=task,
+        organization=reply.organization,
+    )
 
 
 def copy_email_reply(original_reply, email):
@@ -126,7 +133,7 @@ def copy_email_reply(original_reply, email):
 
     if not reply:
         # create a copy of the original reply
-        reply = ExerciseEmailReply(
+        reply = ExerciseEmailReply.objects.create(
             reply_type=original_reply.reply_type,
             message=original_reply.message,
             organization=email.organization,
@@ -151,7 +158,7 @@ def copy_email(original_email, new_exercise):
 
     if not email:
         # create a copy of the original email and its related data
-        email = ExerciseEmail(
+        email = ExerciseEmail.objects.create(
             subject=original_email.subject,
             from_address=original_email.from_address,
             from_name=original_email.from_name,
@@ -163,7 +170,7 @@ def copy_email(original_email, new_exercise):
             phishing_explained=original_email.phishing_explained,
             content=original_email.content,
             sort_order=original_email.sort_order,
-            organization=new_exercise.organisation,
+            organization=new_exercise.organization,
         )
 
         # Copy Records for the ManyToMany fields
