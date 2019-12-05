@@ -1,6 +1,11 @@
 import React from 'react';
 import Markdown from 'react-markdown';
+import htmlParser from 'react-markdown/plugins/html-parser';
 import styled from 'react-emotion';
+
+const parseHtml = htmlParser({
+  isValidNode: node => node.type !== 'script',
+});
 
 const MarkdownContainer = styled('div')`
   margin-bottom: ${({ marginBottom }) => marginBottom && '2rem'};
@@ -53,7 +58,12 @@ const CustomMarkdown = ({
     paddingLeft={paddingLeft}
     marginBottom={marginBottom}
   >
-    <Markdown source={source} renderers={renderers} />
+    <Markdown
+      source={source}
+      renderers={renderers}
+      escapeHtml={false}
+      astPlugins={[parseHtml]}
+    />
   </MarkdownContainer>
 );
 
