@@ -152,11 +152,14 @@ class ExerciseEmail(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
             return email_properties.reveal_time
 
     def exercise_specific_properties(self, exercise=None):
+        """
+        :param exercise: Exercise instance
+        :return: ExerciseEmailProperties instance or None
+        """
         email_properties = ExerciseEmailProperties.objects.filter(
             email_id=self.id, exercise=exercise
         ).first()
-        if email_properties:
-            return email_properties
+        return email_properties
 
 
 class DemographicsInfo(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
@@ -326,20 +329,24 @@ class ExerciseWebPage(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
         return self.title
 
     title = models.CharField(max_length=250, blank=True, null=True)
-    url = models.CharField(max_length=250, blank=True, null=True, unique=True)
+    url = models.CharField(max_length=250, blank=True, null=True)
     type = models.IntegerField(choices=PAGE_TYPES, default=PAGE_REGULAR)
     content = models.TextField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ("url", "organization")
 
 
 class ExerciseWebPageReleaseCode(
     CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel
 ):
-    release_code = models.CharField(
-        max_length=250, blank=False, null=False, unique=True
-    )
+    release_code = models.CharField(max_length=250, blank=False, null=False)
 
     def __str__(self):
         return self.release_code
+
+    class Meta:
+        unique_together = ("release_code", "organization")
 
 
 class ExerciseEmailProperties(CacheBusterMixin, PhishtrayBaseModel):

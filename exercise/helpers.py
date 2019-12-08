@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from .models import (
     Exercise,
@@ -6,6 +7,9 @@ from .models import (
     EmailReplyTaskScore,
     ExerciseTask,
     ExerciseFile,
+    ExerciseEmailProperties,
+    ExerciseWebPage,
+    ExerciseWebPageReleaseCode,
 )
 
 
@@ -17,19 +21,21 @@ def copy_exercise(original_exercise, current_user):
     :return: Another Exercise instance copied from the original one
 
     """
-    new_exercise = get_exercise_copy(original_exercise, current_user)
-    new_exercise.save()
+    with transaction.atomic():
+        new_exercise = get_exercise_copy(original_exercise, current_user)
+        new_exercise.save()
 
-    if original_exercise.organization == current_user.organization:
-        new_exercise.demographics.add(*original_exercise.demographics.all())
-        new_exercise.emails.add(*original_exercise.emails.all())
-        new_exercise.files.add(*original_exercise.files.all())
-    else:
+        if original_exercise.organization == current_user.organization:
+            new_exercise.demographics.add(*original_exercise.demographics.all())
+            new_exercise.files.add(*original_exercise.files.all())
+        else:
+            # Copy demographics info
+            # Copy exercise files
+            pass
+
+        # copy emails and email properties (+ their related records)
         copy_emails(original_exercise, new_exercise)
-
-    new_exercise.set_email_reveal_times()
-
-    return new_exercise
+        return new_exercise
 
 
 def add_trial(original_exercise, current_user):
@@ -48,19 +54,18 @@ def add_trial(original_exercise, current_user):
         .count()
     )
 
-    new_exercise = get_exercise_copy(original_exercise, current_user)
+    with transaction.atomic():
+        new_exercise = get_exercise_copy(original_exercise, current_user)
 
-    new_exercise.initial_trial = initial_trial
-    new_exercise.trial_version = trial_version_count + 1
-    new_exercise.save()
+        new_exercise.initial_trial = initial_trial
+        new_exercise.trial_version = trial_version_count + 1
+        new_exercise.save()
 
-    new_exercise.demographics.add(*original_exercise.demographics.all())
-    new_exercise.emails.add(*original_exercise.emails.all())
-    new_exercise.files.add(*original_exercise.files.all())
+        new_exercise.demographics.add(*original_exercise.demographics.all())
+        new_exercise.files.add(*original_exercise.files.all())
+        new_exercise.emails.add(*original_exercise.emails.all())
 
-    new_exercise.set_email_reveal_times()
-
-    return new_exercise
+        return new_exercise
 
 
 def get_exercise_copy(original_exercise, current_user):
@@ -203,10 +208,76 @@ def copy_email(original_email, new_exercise):
     return email
 
 
+def copy_webpage(original_webpage, new_exercise):
+    if original_webpage is None:
+        return None
+
+    filters = {"url": original_webpage.url, "organization": new_exercise.organization}
+
+    webpage = ExerciseWebPage.objects.filter(**filters).first()
+
+    if not webpage:
+        webpage = ExerciseWebPage.objects.create(
+            title=original_webpage.title,
+            url=original_webpage.url,
+            type=original_webpage.type,
+            content=original_webpage.content,
+            organization=new_exercise.organization,
+        )
+
+    return webpage
+
+
+def copy_webpage_release_codes(original_release_code, new_exercise):
+    filters = {
+        "release_code": original_release_code.release_code,
+        "organization": new_exercise.organization,
+    }
+
+    release_code = ExerciseWebPageReleaseCode.objects.filter(**filters).first()
+
+    if not release_code:
+        release_code = ExerciseWebPageReleaseCode.objects.create(
+            release_code=original_release_code.release_code,
+            organization=new_exercise.organization,
+        )
+
+    return release_code
+
+
+def copy_email_properties(
+    original_email, original_exercise, target_email, target_exercise
+):
+    """
+    Copies email properties from the original exercise to target.
+    """
+    original_email_props = ExerciseEmailProperties.objects.get(
+        exercise_id=original_exercise.id, email_id=original_email.id
+    )
+    webpage = copy_webpage(original_email_props.web_page, target_exercise)
+    email_props = ExerciseEmailProperties.objects.create(
+        exercise=target_exercise,
+        email=target_email,
+        reveal_time=original_email_props.reveal_time,
+        web_page=webpage,
+        intercept_exercise=original_email_props.intercept_exercise,
+        date_received=original_email_props.date_received,
+    )
+
+    # Add release codes
+    codes = []
+    for release_code in original_email_props.release_codes.all():
+        code = copy_webpage_release_codes(release_code, target_exercise)
+        codes.append(code)
+
+    email_props.release_codes.add(*codes)
+
+
 def copy_emails(original_exercise, new_exercise):
     emails = []
     for original_email in original_exercise.emails.all():
         email = copy_email(original_email, new_exercise)
         emails.append(email)
+        copy_email_properties(original_email, original_exercise, email, new_exercise)
 
     new_exercise.emails.add(*emails)

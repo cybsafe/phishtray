@@ -8,6 +8,8 @@ from ..factories import (
     ExerciseTaskFactory,
     EmailReplyTaskScoreFactory,
     ExerciseFileFactory,
+    ExerciseWebPageFactory,
+    ExerciseWebPageReleaseCodeFactory,
 )
 from ..models import (
     Exercise,
@@ -16,6 +18,8 @@ from ..models import (
     EmailReplyTaskScore,
     ExerciseTask,
     ExerciseFile,
+    ExerciseWebPage,
+    ExerciseWebPageReleaseCode,
 )
 from ..helpers import copy_exercise, add_trial
 
@@ -258,6 +262,59 @@ class ExerciseHelperTests(ThreadTestsMixin, TestCase):
         # After copying the exercise the organisation will have 3 emails that all belong to the same thread.
         qs = ExerciseEmail.objects.filter_by_org_private(self.user)
         self.assertEquals(3, qs.filter(belongs_to__subject=thread_subject).count())
+
+    def test_copy_email_properties(self):
+        """
+        When copying an exercise, related emails with the relevant email properties should be copied as well.
+        Webpages and release codes should also be copied if they are linked to the given email properties.
+        :return:
+        """
+        webpage = ExerciseWebPageFactory()
+        release_code = ExerciseWebPageReleaseCodeFactory()
+        email = EmailFactory()
+        exercise = ExerciseFactory.create(emails=[email])
+        exercise.sync_email_properties()
+
+        # Add some data to email properties
+        props = email.exercise_specific_properties(exercise)
+        props.reveal_time = 60
+        props.web_page = webpage
+        props.release_codes.add(release_code)
+        props.save()
+
+        webpage_qs = ExerciseWebPage.objects.filter_by_org_private(self.user)
+        release_code_qs = ExerciseWebPageReleaseCode.objects.filter_by_org_private(
+            self.user
+        )
+
+        self.assertEquals(0, webpage_qs.count())
+        self.assertEquals(0, release_code_qs.count())
+
+        copied_exercise = copy_exercise(exercise, self.user)
+
+        self.assertEquals(1, webpage_qs.count())
+        self.assertEquals(1, release_code_qs.count())
+
+        # Email Properties
+        copied_email = copied_exercise.emails.first()
+        copied_props = copied_email.exercise_specific_properties(copied_exercise)
+        self.assertNotEquals(props.id, copied_props.id)
+        self.assertNotEquals(props.email, copied_props.email)
+        self.assertNotEquals(props.exercise, copied_props.exercise)
+        self.assertEquals(props.reveal_time, copied_props.reveal_time)
+
+        # Web page
+        self.assertNotEquals(props.web_page, copied_props.web_page)
+        self.assertEquals(props.web_page.title, copied_props.web_page.title)
+
+        # Release codes
+        self.assertNotEquals(
+            props.release_codes.first().id, copied_props.release_codes.first().id
+        )
+        self.assertEquals(
+            props.release_codes.first().release_code,
+            copied_props.release_codes.first().release_code,
+        )
 
     def test_trial_exercise(self):
         """

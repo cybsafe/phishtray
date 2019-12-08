@@ -34,7 +34,9 @@ class ExerciseModelTests(TestCase):
         exercise = ExerciseFactory.create(emails=emails)
 
         exercise.set_email_reveal_times()
-        received_emails = [e for e in exercise.emails.all() if e.reveal_time(exercise) is 0]
+        received_emails = [
+            e for e in exercise.emails.all() if e.reveal_time(exercise) is 0
+        ]
 
         self.assertEqual(4, exercise.emails.all().count())
         self.assertEqual(1, len(received_emails))
@@ -156,21 +158,18 @@ class ExerciseModelTests(TestCase):
 
     def test_copied_from_exercise_id(self):
         base_exercise = ExerciseFactory()
-        copied_from_str = f'{base_exercise.title} - {base_exercise.id}'
+        copied_from_str = f"{base_exercise.title} - {base_exercise.id}"
 
         test_params = [
             {"exercise": base_exercise, "expected_result": None},
+            {"exercise": ExerciseFactory(copied_from=None), "expected_result": None},
             {
-                "exercise": ExerciseFactory(copied_from=None),
-                "expected_result": None
-            },
-            {
-                "exercise": ExerciseFactory(copied_from='some random string'),
-                "expected_result": None
+                "exercise": ExerciseFactory(copied_from="some random string"),
+                "expected_result": None,
             },
             {
                 "exercise": ExerciseFactory(copied_from=copied_from_str),
-                "expected_result": str(base_exercise.id)
+                "expected_result": str(base_exercise.id),
             },
         ]
 
@@ -178,43 +177,44 @@ class ExerciseModelTests(TestCase):
             with self.subTest(params=params):
                 self.assertEquals(
                     params["expected_result"],
-                    params['exercise'].copied_from_exercise_id
+                    params["exercise"].copied_from_exercise_id,
                 )
 
     def test_copied_from_exercise(self):
         base_exercise = ExerciseFactory()
-        copied_from_str = f'{base_exercise.title} - {base_exercise.id}'
+        copied_from_str = f"{base_exercise.title} - {base_exercise.id}"
 
         test_params = [
             {"exercise": base_exercise, "expected_result": None},
+            {"exercise": ExerciseFactory(copied_from=None), "expected_result": None},
             {
-                "exercise": ExerciseFactory(copied_from=None),
-                "expected_result": None
-            },
-            {
-                "exercise": ExerciseFactory(copied_from='some random string'),
-                "expected_result": None
+                "exercise": ExerciseFactory(copied_from="some random string"),
+                "expected_result": None,
             },
             {
                 "exercise": ExerciseFactory(copied_from=copied_from_str),
-                "expected_result": base_exercise
+                "expected_result": base_exercise,
             },
         ]
 
         for params in test_params:
             with self.subTest(params=params):
                 self.assertEquals(
-                    params["expected_result"],
-                    params['exercise'].copied_from_exercise
+                    params["expected_result"], params["exercise"].copied_from_exercise
                 )
 
 
 class ExerciseWebPageModelTests(TestCase):
     def test_url_uniqueness(self):
-        ExerciseWebPage.objects.create(url="https://www.emtray.com/welcome")
+        org = OrganizationFactory()
+        ExerciseWebPage.objects.create(
+            url="https://www.emtray.com/welcome", organization=org
+        )
 
         with self.assertRaises(IntegrityError):
-            ExerciseWebPage.objects.create(url="https://www.emtray.com/welcome")
+            ExerciseWebPage.objects.create(
+                url="https://www.emtray.com/welcome", organization=org
+            )
 
     def test_default_page_type(self):
         page = ExerciseWebPage.objects.create(url="https://www.emtray.com/welcome")
