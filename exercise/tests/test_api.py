@@ -6,7 +6,7 @@ from rest_framework.views import status
 from djangorestframework_camel_case.util import underscoreize
 
 from participant.factories import ParticipantFactory, ProfileEntryFactory
-from phishtray.test.base import PhishtrayAPIBaseTest
+from phishtray.test.base import PhishtrayAPIBaseTest, ThreadTestsMixin
 from ..models import Exercise, ExerciseEmail, ExerciseEmailProperties
 from ..serializer import ExerciseSerializer, ExerciseEmailSerializer, ThreadSerializer
 from ..factories import (
@@ -18,12 +18,6 @@ from ..factories import (
     ExerciseWebPageReleaseCodeFactory,
     ExerciseWebPageFactory,
 )
-
-
-class ThreadTestsMixin:
-    def threadify(self, email):
-        email.belongs_to = email
-        email.save()
 
 
 class ExerciseAPITests(PhishtrayAPIBaseTest, ThreadTestsMixin):

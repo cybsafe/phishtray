@@ -15,3 +15,9 @@ class PhishtrayAPIBaseTest(APITestCase):
         )
 
         self.client = APIClient()
+
+
+class ThreadTestsMixin:
+    def threadify(self, email, belongs_to=None):
+        email.belongs_to = belongs_to or email
+        email.save()
