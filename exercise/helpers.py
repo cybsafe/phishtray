@@ -10,6 +10,7 @@ from .models import (
     ExerciseEmailProperties,
     ExerciseWebPage,
     ExerciseWebPageReleaseCode,
+    DemographicsInfo,
 )
 
 
@@ -24,16 +25,8 @@ def copy_exercise(original_exercise, current_user):
     with transaction.atomic():
         new_exercise = get_exercise_copy(original_exercise, current_user)
         new_exercise.save()
-
-        if original_exercise.organization == current_user.organization:
-            new_exercise.demographics.add(*original_exercise.demographics.all())
-            new_exercise.files.add(*original_exercise.files.all())
-        else:
-            # Copy demographics info
-            # Copy exercise files
-            pass
-
-        # copy emails and email properties (+ their related records)
+        copy_demographics_info(original_exercise, new_exercise)
+        copy_files(original_exercise, new_exercise)
         copy_emails(original_exercise, new_exercise)
         return new_exercise
 
@@ -61,9 +54,9 @@ def add_trial(original_exercise, current_user):
         new_exercise.trial_version = trial_version_count + 1
         new_exercise.save()
 
-        new_exercise.demographics.add(*original_exercise.demographics.all())
-        new_exercise.files.add(*original_exercise.files.all())
-        new_exercise.emails.add(*original_exercise.emails.all())
+        copy_demographics_info(original_exercise, new_exercise)
+        copy_files(original_exercise, new_exercise)
+        copy_emails(original_exercise, new_exercise)
 
         return new_exercise
 
@@ -87,20 +80,52 @@ def get_exercise_copy(original_exercise, current_user):
     return new_exercise
 
 
-def copy_email_attachment(original_file, email):
-    filters = {"file_name": original_file.file_name, "organization": email.organization}
+def copy_demographics_info(original_exercise, new_exercise):
+    demographics = []
+    for original_demographics in original_exercise.demographics.all():
+        filters = {
+            "question": original_demographics.question,
+            "organization": new_exercise.organization,
+        }
+        demo_info = DemographicsInfo.objects.filter(**filters).first()
+        if not demo_info:
+            demo_info = DemographicsInfo.objects.create(
+                question_type=original_demographics.question_type,
+                question=original_demographics.question,
+                required=original_demographics.required,
+                organization=new_exercise.organization,
+            )
+        demographics.append(demo_info)
 
+    new_exercise.demographics.add(*demographics)
+
+
+def copy_file(original_file, obj):
+    """
+    Copies a file to the obj's organization (unless it's already avail there).
+    :param original_file:
+    :param obj: an instance with organization attribute - this will be used to determine the new file's organisation
+    :return: ExerciseFile instance
+    """
+    filters = {"file_name": original_file.file_name, "organization": obj.organization}
     file = ExerciseFile.objects.filter(**filters).first()
-
     if not file:
         file = ExerciseFile.objects.create(
             file_name=original_file.file_name,
             description=original_file.description,
             img_url=original_file.img_url,
-            organization=email.organization,
+            organization=obj.organization,
         )
-
     return file
+
+
+def copy_files(original_exercise, new_exercise):
+    files = []
+    for original_file in original_exercise.files.all():
+        file = copy_file(original_file, new_exercise)
+        files.append(file)
+
+    new_exercise.files.add(*files)
 
 
 def copy_exercise_task_score(original_task_score, reply):
@@ -190,7 +215,7 @@ def copy_email(original_email, new_exercise):
         # Attachments
         attachments = []
         for original_file in original_email.attachments.all():
-            file = copy_email_attachment(original_file, email)
+            file = copy_file(original_file, email)
             attachments.append(file)
 
         email.attachments.add(*attachments)

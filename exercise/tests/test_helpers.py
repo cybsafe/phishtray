@@ -10,6 +10,7 @@ from ..factories import (
     ExerciseFileFactory,
     ExerciseWebPageFactory,
     ExerciseWebPageReleaseCodeFactory,
+    DemographicsInfoFactory,
 )
 from ..models import (
     Exercise,
@@ -20,6 +21,7 @@ from ..models import (
     ExerciseFile,
     ExerciseWebPage,
     ExerciseWebPageReleaseCode,
+    DemographicsInfo,
 )
 from ..helpers import copy_exercise, add_trial
 
@@ -315,6 +317,80 @@ class ExerciseHelperTests(ThreadTestsMixin, TestCase):
             props.release_codes.first().release_code,
             copied_props.release_codes.first().release_code,
         )
+
+    def test_copy_public_exercise_copies_demographics_info(self):
+        """
+        When a public exercise is copied, demographics should be copied to the user's organization.
+        """
+        di = DemographicsInfoFactory()
+        exercise = ExerciseFactory()
+        exercise.demographics.add(di)
+
+        qs = DemographicsInfo.objects.filter_by_org_private(self.user)
+        self.assertEquals(0, qs.count())
+
+        copied_exercise = copy_exercise(exercise, self.user)
+
+        self.assertEquals(1, qs.count())
+        copied_di = copied_exercise.demographics.first()
+        self.assertNotEquals(di.id, copied_di.id)
+        self.assertEquals(di.question, copied_di.question)
+        self.assertEquals(di.question_type, copied_di.question_type)
+
+    def test_copy_exercise_adds_demographics_info(self):
+        """
+        When exercise is copied within an organisation, demographics should not be duplicated.
+        """
+        di = DemographicsInfoFactory(organization=self.organization)
+        exercise = ExerciseFactory(organization=self.organization)
+        exercise.demographics.add(di)
+
+        qs = DemographicsInfo.objects.filter_by_org_private(self.user)
+        self.assertEquals(1, qs.count())
+
+        copied_exercise = copy_exercise(exercise, self.user)
+
+        self.assertEquals(1, qs.count())
+        copied_di = copied_exercise.demographics.first()
+        self.assertEquals(di.id, copied_di.id)
+        self.assertEquals(di.question, copied_di.question)
+        self.assertEquals(di.question_type, copied_di.question_type)
+
+    def test_copy_public_exercise_copies_exercise_files(self):
+        """
+        When a public exercise is copied, files should be copied to the user's organization.
+        """
+        file = ExerciseFileFactory()
+        exercise = ExerciseFactory()
+        exercise.files.add(file)
+
+        qs = ExerciseFile.objects.filter_by_org_private(self.user)
+        self.assertEquals(0, qs.count())
+
+        copied_exercise = copy_exercise(exercise, self.user)
+
+        self.assertEquals(1, qs.count())
+        copied_file = copied_exercise.files.first()
+        self.assertNotEquals(file.id, copied_file.id)
+        self.assertEquals(file.file_name, copied_file.file_name)
+
+    def test_copy_exercise_adds_exercise_files(self):
+        """
+        When exercise is copied within an organisation, files should not be duplicated.
+        """
+        file = ExerciseFileFactory(organization=self.organization)
+        exercise = ExerciseFactory(organization=self.organization)
+        exercise.files.add(file)
+
+        qs = ExerciseFile.objects.filter_by_org_private(self.user)
+        self.assertEquals(1, qs.count())
+
+        copied_exercise = copy_exercise(exercise, self.user)
+
+        self.assertEquals(1, qs.count())
+        copied_file = copied_exercise.files.first()
+        self.assertEquals(file.id, copied_file.id)
+        self.assertEquals(file.file_name, copied_file.file_name)
 
     def test_trial_exercise(self):
         """
