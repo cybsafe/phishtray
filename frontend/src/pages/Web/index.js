@@ -50,10 +50,6 @@ function Web() {
         <WebsiteIcon className={css({ backgroundColor: '#192a56' })} />
         <WebsiteTitle>Bluestar</WebsiteTitle>
       </LinkContainer>
-      <LinkContainer onClick={handleWebsiteClick('blockedPage')}>
-        <WebsiteIcon className={css({ backgroundColor: '#ee6600' })} />
-        <WebsiteTitle>Blocked</WebsiteTitle>
-      </LinkContainer>
     </Container>
   );
 }

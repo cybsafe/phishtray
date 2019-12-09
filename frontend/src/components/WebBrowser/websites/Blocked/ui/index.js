@@ -2,19 +2,17 @@ import styled from 'react-emotion';
 import { TextInput, Button } from 'carbon-components-react';
 
 export const Wrapper = styled('section')`
+  min-height: calc(100vh - 120px);
   background-color: #9c3c34;
-  min-height: 100%;
+  overflow-y: scroll;
   position: relative;
+  padding: 60px 0;
 `;
 
 export const Container = styled('div')`
-  margin-bottom: 100px;
-  margin: 40px auto 90px;
+  max-width: 700px;
+  margin: 0 auto;
   width: 100%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   text-align: center;
 `;
 
