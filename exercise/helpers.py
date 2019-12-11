@@ -181,6 +181,7 @@ def copy_email_reply(original_reply, email):
 def copy_email(original_email, new_exercise):
     filters = {
         "subject": original_email.subject,
+        "sort_order": original_email.sort_order,
         "organization": new_exercise.organization,
     }
 
