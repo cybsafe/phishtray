@@ -4,7 +4,7 @@ python:
 services:
   - mysql
 env:
-  -DJANGO=2.0.5 DB=mysql
+  -DJANGO=2.0.5 DB=mysql SECRET_KEY=supersecretkey
 install:
   - pip install -r requirements.txt
 script:
