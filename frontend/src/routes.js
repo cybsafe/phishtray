@@ -117,7 +117,7 @@ const PrivateRoute = ({
     {...rest}
     render={props => {
       if (isAllowed) {
-        document.title = `${process.env.APP_NAME} ${
+        document.title = `${process.env.REACT_APP_NAME} ${
           getHeaderText(props.match.path)
             ? ' | ' + getHeaderText(props.match.path)
             : ''
