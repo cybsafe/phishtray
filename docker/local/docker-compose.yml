@@ -28,7 +28,7 @@ services:
     - DB_URL=mysql://root:admin@db:3306/phishtray
     - REACT_APP_HOST_BACKEND=http://cybsafe.local:9000
     - REACT_APP_HOST_FRONTEND=http://cybsafe.local:3000
-    - APP_NAME=Emtray
+    - REACT_APP_NAME=Emtray
     volumes:
     - ../../.:/usr/src/app
     networks:
