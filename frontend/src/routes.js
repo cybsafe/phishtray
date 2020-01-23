@@ -117,7 +117,7 @@ const PrivateRoute = ({
     {...rest}
     render={props => {
       if (isAllowed) {
-        document.title = `Phishtray ${
+        document.title = `Emtray ${
           getHeaderText(props.match.path)
             ? ' | ' + getHeaderText(props.match.path)
             : ''
