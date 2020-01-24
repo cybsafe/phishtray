@@ -23,26 +23,23 @@ const AccountList = styled('div')({
 
 const AccountContainer = styled('div')({
   flex: 1,
+  paddingBottom: '80px',
 });
 
 function NoMatch() {
   return (
     <div
       className={css({
-        maxWidth: 880,
-        margin: '0 auto',
-        padding: '90px 90px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        letterSpacing: '1.2px',
+        fontSize: '1.25rem',
+        color: '#333',
       })}
     >
-      <h3
-        className={css({
-          marginTop: 40,
-          color: '#333',
-          letterSpacing: '1.2px',
-        })}
-      >
-        This is your secure credentials vault.
-      </h3>
+      This is your secure credentials vault.
     </div>
   );
 }

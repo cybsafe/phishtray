@@ -24,6 +24,7 @@ const NoActiveMessage = styled('div')`
   height: 100%;
   color: #333;
   letter-spacing: 1.2px;
+  font-size: 1.25rem;
 `;
 
 const EmailList = styled('div')({
