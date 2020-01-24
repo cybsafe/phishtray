@@ -13,7 +13,7 @@ import QuickReply from './QuickReply';
 
 import { logAction, selectWebpageType } from '../../../utils';
 import actionTypes from '../../../config/actionTypes';
-
+import { loadFiles } from '../../../actions/fileManagerActions';
 import { showWebpage } from '../../../actions/uiActions';
 
 type Props = {
@@ -103,7 +103,7 @@ const Icon = styled(FontAwesomeIcon)`
 `;
 
 function EmailAttachments({ props }) {
-  const { email, onReplyParams, addFile, threads, activeThread } = props;
+  const { email, onReplyParams, addFile, threads, activeThread, loadFiles } = props;
   const active = threads.filter(thread => thread.id === activeThread);
 
   const {
@@ -165,6 +165,7 @@ function EmailAttachments({ props }) {
                     },
                   }}
                   onClick={async () => {
+                    await loadFiles();
                     logAction({
                       actionType: actionTypes.emailAttachmentDownload,
                       fileName: attachment.filename,
@@ -434,5 +435,5 @@ export default connect(
     threads: state.exercise.threads,
     exercise: state.exercise,
   }),
-  { showWebpage }
+  { showWebpage, loadFiles }
 )(Email);
