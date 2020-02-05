@@ -220,13 +220,13 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
             csv_row["entered_details"] = recorded(
                 "webpage_login_credentials_entered", related_actions
             )
-            csv_row["entered_details_time"] = get_value(
+            csv_row["entered_details_time"] = get_value_in_seconds(
                 "webpage_login_credentials_entered", "time_delta", related_actions
             )
             csv_row["submitted_details"] = recorded(
                 "webpage_login_credentials_submitted", related_actions
             )
-            csv_row["submitted_details_time"] = get_value(
+            csv_row["submitted_details_time"] = get_value_in_seconds(
                 "webpage_login_credentials_submitted", "time_delta", related_actions
             )
 
