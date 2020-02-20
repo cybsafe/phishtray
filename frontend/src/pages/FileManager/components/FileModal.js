@@ -26,7 +26,7 @@ const ModalContainer = styled('div')`
 `;
 
 const FileImage = styled('img')({
-  maxHeight: '100%',
+  maxHeight: 'inherit',
   maxWidth: '100%',
   paddingBottom: 5,
 });
