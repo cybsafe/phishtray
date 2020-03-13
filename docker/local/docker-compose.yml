@@ -1,18 +1,16 @@
-version: '3'
+version: '3.7'
 
 services:
 
   db:
     image: mysql:5.7
     volumes:
-    - ./db:/var/lib/mysql
+      - ./db:/var/lib/mysql
     ports:
-    - "9306:3306"
-    environment:
-    - MYSQL_ROOT_PASSWORD=admin
-    - MYSQL_DATABASE=phishtray
+      - "9306:3306"
+    env_file: phishtray-local.env
     networks:
-    - webnet
+      - webnet
 
   django:
     build:
@@ -20,21 +18,15 @@ services:
       dockerfile: local.Dockerfile
     command: dockerize -wait tcp://db:3306 -timeout 60s bash -c "python3.6 manage.py makemigrations; python3.6 manage.py migrate; tail -f /dev/null"
     ports:
-    - "9000:9000"
-    - "9022:22"
-    environment:
-    - SECRET_KEY=super-secret-that-needs-changing!
-    - ALLOWED_HOSTS=*
-    - DB_URL=mysql://root:admin@db:3306/phishtray
-    - REACT_APP_HOST_BACKEND=http://cybsafe.local:9000
-    - REACT_APP_HOST_FRONTEND=http://cybsafe.local:3000
-    - REACT_APP_NAME=Emtray
+      - "9000:9000"
+      - "9022:22"
+    env_file: phishtray-local.env
     volumes:
-    - ../../.:/usr/src/app
+      - ../../.:/usr/src/app
     networks:
-    - webnet
+      - webnet
     depends_on:
-    - db
+      - db
 
 networks:
   webnet:
