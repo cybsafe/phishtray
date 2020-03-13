@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.admin.utils import flatten_fieldsets
+
 from .models import Participant, Organization
 from .filters import TrialVersionListFilter, ExerciseListFilter
 from .helpers import ExportCSVMixinHelpers
@@ -35,9 +37,17 @@ class ExportCsvMixin:
 class ParticipantList(admin.ModelAdmin, ExportCsvMixin):
     list_filter = (ExerciseListFilter, TrialVersionListFilter)
     actions = ["download_csv"]
+    readonly_fields = (
+        "exercise",
+        "profile",
+        "organization",
+    )
 
     def get_queryset(self, request):
         return Participant.objects.filter_by_user(user=request.user)
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
     def has_add_permission(self, request):
         if not request.user.is_superuser:
