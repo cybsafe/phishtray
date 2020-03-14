@@ -179,7 +179,14 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
                 if action["action_details"].get("email_id") == email_uuid
             ]
             csv_row = csv_row_master.copy()
-            email = ExerciseEmail.objects.get(pk=email_uuid)
+
+            try:
+                email = ExerciseEmail.objects.get(pk=email_uuid)
+            except ExerciseEmail.DoesNotExist:
+                # Looks like someone has deleted the email
+                # so exclude it from the CSV
+                continue
+
             csv_row["email_subject"] = email.subject
             csv_row["email_id"] = email_uuid
             csv_row["opened"] = recorded("email_opened", related_actions)
