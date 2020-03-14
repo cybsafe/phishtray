@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "inline_actions",
     "exercise.apps.ExerciseConfig",
     "participant",
     "frontend",

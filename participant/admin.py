@@ -1,5 +1,7 @@
 from django.contrib import admin
-from django.contrib.admin.utils import flatten_fieldsets
+from django.shortcuts import redirect
+from django.urls import reverse
+from inline_actions.admin import InlineActionsModelAdminMixin
 
 from .models import Participant, Organization
 from .filters import TrialVersionListFilter, ExerciseListFilter
@@ -33,9 +35,23 @@ class ExportCsvMixin:
     download_csv.short_description = "Download Selected CSV"
 
 
+class EmailCSV:
+    inline_actions = ["email_csv"]
+
+    def email_csv(self, request, obj, parent_obj=None):
+        """Download CSV using the API endpoint"""
+        uri = f"{reverse('api:exercise-report-detail', args=[obj.exercise.pk])}download-csv?participant={obj.pk}"
+        return redirect(uri)
+
+    email_csv.short_description = "⬇ Email Interactions CSV"
+
+
 @admin.register(Participant)
-class ParticipantList(admin.ModelAdmin, ExportCsvMixin):
+class ParticipantList(
+    EmailCSV, InlineActionsModelAdminMixin, admin.ModelAdmin, ExportCsvMixin
+):
     list_filter = (ExerciseListFilter, TrialVersionListFilter)
+    list_display = ("id", "exercise")
     actions = ["download_csv"]
     readonly_fields = (
         "exercise",
@@ -50,10 +66,7 @@ class ParticipantList(admin.ModelAdmin, ExportCsvMixin):
         return False
 
     def has_add_permission(self, request):
-        if not request.user.is_superuser:
-            return False
-
-        return super().has_add_permission(request)
+        return False
 
 
 @admin.register(Organization)

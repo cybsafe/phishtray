@@ -116,6 +116,19 @@ class Participant(PhishtrayBaseModel):
         return participant_behaviour(actions), actions
 
     @property
+    def pid(self):
+        """
+        Returns Prolific ID or None
+        """
+        entry = self.profile.filter(
+            demographics_info__question__icontains="prolific id"
+        ).first()
+        if entry:
+            return entry.answer
+        else:
+            return None
+
+    @property
     def scores(self):
         exercise_replies = ExerciseEmailReply.objects.filter(
             exerciseemail__in=self.exercise.emails.all()
