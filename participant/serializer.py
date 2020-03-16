@@ -169,6 +169,7 @@ class ParticipantActionLogToCSVSerializer(serializers.ModelSerializer):
             "entered_details_time": None,
             "submitted_details": None,
             "submitted_details_time": None,
+            "prolific_id": participant.pid,
         }
         csv_row_dicts = []
 

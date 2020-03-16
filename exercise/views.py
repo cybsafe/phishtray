@@ -42,10 +42,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(TWO_HOURS))
     def init(self, request, *args, **kwargs):
         exercise = self.get_object()
-        participant = Participant(
-            exercise=exercise,
-            organization=exercise.organization
-        )
+        participant = Participant(exercise=exercise, organization=exercise.organization)
         participant.save()
         resp = {
             "participant": str(participant.id),
@@ -122,7 +119,7 @@ class ExerciseReportViewSet(viewsets.ModelViewSet):
         serializer = ParticipantActionLogToCSVSerializer(participant)
         csv_data = serializer.data.get("csv")
 
-        file_name = "participant_{}.csv".format(participant_id)
+        file_name = "participant_{}_PID_{}.csv".format(participant_id, participant.pid)
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
 
