@@ -4,32 +4,13 @@ from django.apps import apps
 from django.db import models
 from django.db.models import QuerySet
 
-from utils.cache import flush_cache
 from django.contrib import admin
 from django.db.models import Manager
 
 
-class CacheBusterMixin(models.Model):
-    """
-    Use this mixin to flush the cache each time the instance is saved/deleted.
-    """
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        flush_cache()
-
-    def delete(self, *args, **kwargs):
-        super().delete(*args, **kwargs)
-        flush_cache()
-
-    class Meta:
-        abstract = True
-
-
 class MultiTenantQuerySet(QuerySet):
-
     def filter_by_org_private(self, user):
-        User = apps.get_model('users', 'User')
+        User = apps.get_model("users", "User")
 
         if not user or not isinstance(user, User):
             return self.none()
