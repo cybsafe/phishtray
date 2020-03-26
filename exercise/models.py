@@ -4,7 +4,7 @@ from random import randrange, random
 from django.conf import settings
 from django.db import models
 
-from phishtray.base import PhishtrayBaseModel, CacheBusterMixin, MultiTenantMixin
+from phishtray.base import PhishtrayBaseModel, MultiTenantMixin
 from .managers import ExerciseManager, ExerciseEmailPropertiesManager
 
 
@@ -19,7 +19,7 @@ EXERCISE_PHISH_TYPES = (
 EXERCISE_REPLY_TYPE = ((0, "reply"), (1, "forward"))
 
 
-class ExerciseTask(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
+class ExerciseTask(MultiTenantMixin, PhishtrayBaseModel):
     """
     Tasks are a way to define a metric for scoring in the psychometric evaluation
     """
@@ -50,7 +50,7 @@ class ExerciseTask(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
         return self.name
 
 
-class ExerciseFile(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
+class ExerciseFile(MultiTenantMixin, PhishtrayBaseModel):
     """
     ExercieseFiles are not actual files but they act like one.
     """
@@ -65,7 +65,7 @@ class ExerciseFile(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
         return self.file_name
 
 
-class ExerciseEmailReply(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
+class ExerciseEmailReply(MultiTenantMixin, PhishtrayBaseModel):
     reply_type = models.IntegerField(choices=EXERCISE_REPLY_TYPE, null=True)
     message = models.TextField(null=True, blank=True)
 
@@ -84,7 +84,7 @@ class ExerciseEmailReply(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel)
         return self.message
 
 
-class EmailReplyTaskScore(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
+class EmailReplyTaskScore(MultiTenantMixin, PhishtrayBaseModel):
     """
     A method to associate scores to email replies.
     """
@@ -103,7 +103,7 @@ class EmailReplyTaskScore(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel
         )
 
 
-class ExerciseEmail(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
+class ExerciseEmail(MultiTenantMixin, PhishtrayBaseModel):
     def __str__(self):
         return self.subject
 
@@ -162,7 +162,7 @@ class ExerciseEmail(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
         return email_properties
 
 
-class DemographicsInfo(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
+class DemographicsInfo(MultiTenantMixin, PhishtrayBaseModel):
     """
     Demographic Questions that can be added to Exercises.
     """
@@ -185,7 +185,7 @@ class DemographicsInfo(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
         return self.question
 
 
-class Exercise(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
+class Exercise(MultiTenantMixin, PhishtrayBaseModel):
     def __str__(self):
         return f"{self.title} - {self.id}"
 
@@ -321,7 +321,7 @@ class Exercise(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
         self.set_email_reveal_times()
 
 
-class ExerciseWebPage(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
+class ExerciseWebPage(MultiTenantMixin, PhishtrayBaseModel):
     PAGE_REGULAR = 0
     PAGE_TYPES = ((PAGE_REGULAR, "regular"),)
 
@@ -337,9 +337,7 @@ class ExerciseWebPage(CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel):
         unique_together = ("url", "organization")
 
 
-class ExerciseWebPageReleaseCode(
-    CacheBusterMixin, MultiTenantMixin, PhishtrayBaseModel
-):
+class ExerciseWebPageReleaseCode(MultiTenantMixin, PhishtrayBaseModel):
     release_code = models.CharField(max_length=250, blank=False, null=False)
 
     def __str__(self):
@@ -349,7 +347,7 @@ class ExerciseWebPageReleaseCode(
         unique_together = ("release_code", "organization")
 
 
-class ExerciseEmailProperties(CacheBusterMixin, PhishtrayBaseModel):
+class ExerciseEmailProperties(PhishtrayBaseModel):
     class Meta:
         unique_together = ("exercise", "email")
         verbose_name_plural = "Exercise email properties"
