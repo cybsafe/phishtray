@@ -1,11 +1,12 @@
 /* global process */
 import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
-
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage/session'; // defaults to sessionStorage
+import * as Sentry from '@sentry/browser';
+import storage from 'redux-persist/lib/storage/session';
 
 import reducer from './reducers';
+import sentryMiddleware from './sentryMiddleware';
 
 const persistConfig = {
   key: 'root',
@@ -36,8 +37,18 @@ const configureStore = initialState => {
     middlewares.push(loggerMiddleware);
   }
 
+  if (process.env.SENTRY_DSN) {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      ignoreErrors: [
+        'Network Error',
+        'Not enough storage is available to complete this operation.',
+      ],
+    });
+    middlewares.push(sentryMiddleware(Sentry));
+  }
+
   const store = createStore(
-    //reducer,
     persistedReducer,
     initialState,
     composeEnhancers(applyMiddleware(...middlewares))
@@ -45,6 +56,6 @@ const configureStore = initialState => {
   return store;
 };
 
-let store = configureStore();
-let persistor = persistStore(store);
+const store = configureStore();
+const persistor = persistStore(store);
 export { store, persistor };
