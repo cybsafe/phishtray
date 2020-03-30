@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import dj_database_url
 from corsheaders.defaults import default_headers
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from django.utils.log import DEFAULT_LOGGING
@@ -166,6 +168,12 @@ REVEAL_TIME_ZERO_THRESHOLD = 0.1
 SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", False)
 
 AUTH_USER_MODEL = "users.User"
+
+SENTRY_DSN = os.environ.get("SENTRY_DSN")
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN, integrations=[DjangoIntegration()],
+    )
 
 DJANGO_LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", default="info").upper()
 LOGGING = {
