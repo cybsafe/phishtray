@@ -15,6 +15,8 @@ import dj_database_url
 from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.utils.log import DEFAULT_LOGGING
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -164,3 +166,31 @@ REVEAL_TIME_ZERO_THRESHOLD = 0.1
 SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", False)
 
 AUTH_USER_MODEL = "users.User"
+
+DJANGO_LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", default="info").upper()
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "console": {
+            # exact format is not important, this is the minimum information
+            "format": "[%(asctime)s] %(name)s %(levelname)5s - %(message)s",
+        },
+        "django.server": DEFAULT_LOGGING["formatters"]["django.server"],
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "console",},
+        "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
+    },
+    "loggers": {
+        # root logger
+        "": {"level": "WARNING", "handlers": ["console"],},
+        "phishtray": {
+            "level": DJANGO_LOG_LEVEL,
+            "handlers": ["console"],
+            # required to avoid double logging with root logger
+            "propagate": False,
+        },
+        "django.server": DEFAULT_LOGGING["loggers"]["django.server"],
+    },
+}
