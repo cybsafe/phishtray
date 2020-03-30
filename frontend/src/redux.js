@@ -37,7 +37,7 @@ const configureStore = initialState => {
     middlewares.push(loggerMiddleware);
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.SENTRY_DSN) {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
       ignoreErrors: [
