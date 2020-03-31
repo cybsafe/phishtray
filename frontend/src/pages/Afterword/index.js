@@ -16,6 +16,7 @@ import { persistor } from '../../redux';
 import { getRange } from '../../utils';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import CustomMarkdown from '../../components/Markdown/CustomMarkdown';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 const Container = styled('div')`
   display: flex;
@@ -137,4 +138,4 @@ const Afterword = ({ match, history }: Props) => {
   );
 };
 
-export default withRouter(Afterword);
+export default withErrorBoundary(withRouter(Afterword));

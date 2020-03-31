@@ -8,6 +8,7 @@ import ContactDetail from './components/ContactDetail';
 import ContactListItem from './components/ContactListItem';
 import actionTypes from '../../config/actionTypes';
 import { logAction } from '../../utils';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 const Container = styled('div')({
   display: 'flex',
@@ -82,4 +83,4 @@ function Contacts({ match }) {
   );
 }
 
-export default Contacts;
+export default withErrorBoundary(Contacts);

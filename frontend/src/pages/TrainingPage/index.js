@@ -11,6 +11,7 @@ import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import { logAction } from '../../utils';
 
 import image from './assets/image13.png';
+import withErrorBoundary from "../../errors/ErrorBoundary";
 
 const Container = styled('div')`
   display: flex;
@@ -105,4 +106,4 @@ export default connect(
     trainingLink: state.debrief.trainingLink,
   }),
   { getDebrief }
-)(withRouter(TrainingPage));
+)(withErrorBoundary(withRouter(TrainingPage)));

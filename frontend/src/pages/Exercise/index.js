@@ -24,6 +24,7 @@ import {
 } from '../../actions/exerciseActions';
 import { postFormData, logAction } from '../../utils';
 import actionTypes from '../../config/actionTypes';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 const Container = styled('div')({
   margin: 'auto',
@@ -250,4 +251,4 @@ function Exercise({ match, history }: Props) {
   );
 }
 
-export default Exercise;
+export default withErrorBoundary(Exercise);

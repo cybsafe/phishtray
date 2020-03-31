@@ -7,9 +7,9 @@ import {
   getThreads,
   getUnreadThreads,
 } from '../../selectors/exerciseSelectors';
-
 import EmailChain from './components/EmailChain';
 import EmailListItem from './components/EmailListItem';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 const Container = styled('div')({
   display: 'flex',
@@ -102,4 +102,4 @@ function Inbox({ match, history }) {
   );
 }
 
-export default Inbox;
+export default withErrorBoundary(Inbox);

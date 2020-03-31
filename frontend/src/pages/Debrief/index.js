@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button as CarbonButton } from 'carbon-components-react';
 import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import WideHeader from '../../components/Header/WideHeader';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 import image from './assets/image_emails.png';
 
@@ -104,4 +105,4 @@ function Debrief({
   );
 }
 
-export default Debrief;
+export default withErrorBoundary(Debrief);

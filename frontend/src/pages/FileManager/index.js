@@ -2,16 +2,13 @@ import React, { useEffect } from 'react';
 import styled, { css } from 'react-emotion';
 import { useSelector, useDispatch } from 'react-redux';
 import { InlineLoading } from 'carbon-components-react';
-
 import FileListItem from './components/FileListItem';
 import FileModal from './components/FileModal';
-
 import {
   getFiles,
   getLastRefreshed,
   getModal,
 } from '../../selectors/fileManagerSelectors';
-
 import {
   loadFiles,
   removeFile,
@@ -19,9 +16,9 @@ import {
   hideFile,
   hideAndDeleteFile,
 } from '../../actions/fileManagerActions';
-
 import { logAction } from '../../utils';
 import actionTypes from '../../config/actionTypes';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 const columns = [
   {
@@ -187,4 +184,4 @@ const FileManager = ({ location }) => {
   );
 };
 
-export default FileManager;
+export default withErrorBoundary(FileManager);
