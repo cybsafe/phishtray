@@ -7,6 +7,7 @@ import AccountDetail from './components/AccountDetail';
 import AccountListItem from './components/AccountListItem';
 import { logAction } from '../../utils';
 import actionTypes from '../../config/actionTypes';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 const Container = styled('div')({
   display: 'flex',
@@ -81,4 +82,4 @@ function Accounts({ match }) {
   );
 }
 
-export default Accounts;
+export default withErrorBoundary(Accounts);

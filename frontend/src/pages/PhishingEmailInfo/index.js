@@ -2,7 +2,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
-import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faThumbsUp,
@@ -11,6 +10,7 @@ import {
   faArrowUp,
 } from '@fortawesome/free-solid-svg-icons';
 
+import { getDebriefData as getDebrief } from '../../actions/debriefActions';
 import {
   Container,
   EmailItemField,
@@ -25,6 +25,7 @@ import {
 } from './ui';
 import WideHeader from '../../components/Header/WideHeader';
 import { negativeMessages, positiveMessages, sanitizeActions } from './utils';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 type Props = {
   history: Object,
@@ -175,4 +176,4 @@ function PhishingEmailInfo({
   );
 }
 
-export default PhishingEmailInfo;
+export default withErrorBoundary(PhishingEmailInfo);

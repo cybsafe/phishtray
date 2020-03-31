@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
 import { useDispatch } from 'react-redux';
-
 import { showWebpage } from '../../actions/uiActions';
+import withErrorBoundary from '../../errors/ErrorBoundary';
 
 const Container = styled('div')({
   display: 'flex',
@@ -54,4 +54,4 @@ function Web() {
   );
 }
 
-export default Web;
+export default withErrorBoundary(Web);
