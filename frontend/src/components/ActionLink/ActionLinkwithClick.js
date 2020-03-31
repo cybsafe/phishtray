@@ -36,6 +36,7 @@ const ActionLink = styled('button')`
   letter-spacing: 1.1px;
   padding: 10px;
   border: 1px solid transparent;
+  cursor: pointer;
 
   &:hover {
     color: ${({ secondary }) => (secondary ? '#eb4934' : '#3d70b2')};
