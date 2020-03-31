@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import styled from 'react-emotion';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logAction, selectWebpageType } from '../../utils';
 
@@ -28,18 +27,22 @@ type Props = {
   showWebpage: () => void,
 };
 
-const ActionLink = styled(Link)`
+const ActionLink = styled('button')`
   display: block;
   text-decoration: none;
   color: #b8b8b8;
+  font-size: 16px;
   font-weight: bold;
   letter-spacing: 1.1px;
-  padding: 10px 10px;
+  padding: 10px;
   border: 1px solid transparent;
 
   &:hover {
     color: ${({ secondary }) => (secondary ? '#eb4934' : '#3d70b2')};
     border: 1px solid ${({ secondary }) => (secondary ? '#eb4934' : '#3d70b2')};
+  }
+  &:focus {
+    outline: none;
   }
   &:active {
     color: ${({ secondary }) => (secondary ? '#eb4934' : '#3d70b2')};
@@ -73,13 +76,6 @@ function ActionLinkwithClick({
   } = active[0].threadProperties;
   return (
     <ActionLink
-      to={
-        remove
-          ? {
-              pathname: '/inbox',
-            }
-          : {}
-      }
       onClick={() => {
         logAction({
           actionType: data.actionType,
