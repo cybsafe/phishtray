@@ -61,25 +61,34 @@ function Contacts({ match }) {
 
   const contacts = getAllContacts();
 
+  const data = null;
+
   return (
-    <Container>
-      <ContactList>
-        {contacts.map(contact => (
-          <ContactListItem
-            key={contact.id}
-            contact={contact}
-            logAction={params => logActionsHandler(params)}
-          />
-        ))}
-      </ContactList>
-      <ContactsContainer>
-        <Switch>
-          <Route path={`${match.url}/:id`} component={ContactDetail} />
-          <Route component={NoMatch} />
-        </Switch>
-      </ContactsContainer>
-    </Container>
+    <div>
+      <h3>Bens Error</h3>
+      <p>{data.error}</p>
+    </div>
   );
+
+  {/*return (*/}
+  {/*  <Container>*/}
+  {/*    <ContactList>*/}
+  {/*      {contacts.map(contact => (*/}
+  {/*        <ContactListItem*/}
+  {/*          key={contact.id}*/}
+  {/*          contact={contact}*/}
+  {/*          logAction={params => logActionsHandler(params)}*/}
+  {/*        />*/}
+  {/*      ))}*/}
+  {/*    </ContactList>*/}
+  {/*    <ContactsContainer>*/}
+  {/*      <Switch>*/}
+  {/*        <Route path={`${match.url}/:id`} component={ContactDetail} />*/}
+  {/*        <Route component={NoMatch} />*/}
+  {/*      </Switch>*/}
+  {/*    </ContactsContainer>*/}
+  {/*  </Container>*/}
+  {/*);*/}
 }
 
 export default Contacts;
