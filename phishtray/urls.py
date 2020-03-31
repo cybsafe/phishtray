@@ -19,6 +19,7 @@ from django.conf.urls import url, include
 from django.views.generic import TemplateView
 
 from phishtray import settings
+from phishtray.views import SentryErrorView
 
 admin.site.site_header = "Phishtray Administration"
 
@@ -28,6 +29,7 @@ urlpatterns = [
     url(r"^api/v1/", include("phishtray.api_urls")),
     url(r"^admin/", admin.site.urls),
     url(r"^api-auth/", include("rest_framework.urls")),
+    url(r"^sentry/", SentryErrorView.as_view(), name="sentry_error"),
 ]
 
 if settings.DEBUG:
