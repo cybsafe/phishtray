@@ -11,6 +11,14 @@ stop:
 
 # DEV COMMANDS
 # ==================================================
+.PHONY: gunicorn-run-debug
+gunicorn-run-debug:
+	docker-compose exec django bash -c "python3.6 /usr/src/app/manage.py collectstatic --noinput; gunicorn --timeout=10 --worker-class=gevent --worker-connections=1000 --workers=3 --bind 0:9000 --access-logfile - --error-logfile - --log-level debug phishtray.wsgi:application"
+
+.PHONY: gunicorn-run
+gunicorn-run:
+	docker-compose exec django bash -c "python3.6 /usr/src/app/manage.py collectstatic --noinput; gunicorn --timeout=10 --worker-class=gevent --worker-connections=1000 --workers=3 --bind 0:9000 --access-logfile - --error-logfile - --log-level info phishtray.wsgi:application"
+
 .PHONY: django-run
 django-run:
 	docker-compose exec django bash -c "python3.6 /usr/src/app/manage.py runserver 0:9000"

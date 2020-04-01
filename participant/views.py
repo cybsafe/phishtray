@@ -7,8 +7,6 @@ from exercise.models import DemographicsInfo
 from .models import ActionLog, Participant, ParticipantAction, ParticipantProfileEntry
 from .serializer import ParticipantSerializer, ParticipantScoreSerializer
 
-from utils.fancy_print import FancyPrint
-
 
 class ParticipantViewSet(viewsets.ModelViewSet):
     """
@@ -90,9 +88,11 @@ class ParticipantViewSet(viewsets.ModelViewSet):
             resp = {"message": "Nothing to log."}
             return Response(data=resp)
 
-        participant = self.get_object()
-        participant_action = ParticipantAction(participant=participant)
-        participant_action.save()
+        participant_action = ParticipantAction.objects.create(
+            participant_id=kwargs["pk"]
+        )
+
+        action_log_items = []
         complex_keys = []
 
         for key, value in request.data.items():
@@ -100,9 +100,12 @@ class ParticipantViewSet(viewsets.ModelViewSet):
             if isinstance(value, dict) or isinstance(value, list):
                 complex_keys.append(key)
                 continue
+            else:
+                action_log_items.append(
+                    ActionLog(action=participant_action, name=key, value=value)
+                )
 
-            log_entry = ActionLog(action=participant_action, name=key, value=value)
-            log_entry.save()
+        ActionLog.objects.bulk_create(action_log_items)
 
         if not complex_keys:
             resp = {"message": "Action has been logged successfully."}
@@ -111,17 +114,6 @@ class ParticipantViewSet(viewsets.ModelViewSet):
                 "message": "Action has been partially logged. Cannot log complex data types.",
                 "skipped": complex_keys,
             }
-
-        # Log some entries to the console until reporting is sorted
-        FancyPrint.echo(
-            "Logged action for participant - ID: {}".format(participant.id), "HEADER"
-        )
-        for log in ActionLog.objects.filter(action=participant_action.id):
-            FancyPrint.echo("\t> {}: {}".format(log.name, log.value), "BOLD")
-        FancyPrint.echo(
-            "---------------------------------------".format(log.name, log.value),
-            "HEADER",
-        )
 
         resp["action_id"] = str(participant_action.id)
         return Response(data=resp)

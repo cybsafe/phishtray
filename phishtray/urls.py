@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls import url, include
+from django.urls import path
 from django.views.generic import TemplateView
 
 from phishtray import settings
@@ -28,6 +29,10 @@ urlpatterns = [
     url(r"^api/v1/", include("phishtray.api_urls")),
     url(r"^admin/", admin.site.urls),
     url(r"^api-auth/", include("rest_framework.urls")),
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
 ]
 
 if settings.DEBUG:
