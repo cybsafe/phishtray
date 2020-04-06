@@ -103,7 +103,7 @@ const DefaultLayout = ({ children, renderProps }) => {
 
 const Welcome = () => (
   <WelcomeContainer>
-    <h1>Welcome to PhishTray</h1>
+    <h1>Welcome to EmTray</h1>
   </WelcomeContainer>
 );
 
