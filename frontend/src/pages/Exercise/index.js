@@ -114,6 +114,7 @@ function Exercise({ match, history }: Props) {
 
   const userInput = event => {
     setItem({
+      ...item,
       [event.target.id]: {
         id: event.target.name,
         value: event.target.value,
