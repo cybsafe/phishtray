@@ -8,6 +8,7 @@ const INITIAL_STATE: ExerciseState = {
   threads: [],
   activeThread: '',
   inlineNotification: null,
+  participant: null,
 };
 
 export default function reducer(
@@ -27,6 +28,13 @@ export default function reducer(
         ...action.payload.exercise,
         participant: action.payload.participant,
         lastRefreshed: new Date(),
+      };
+    }
+
+    case 'exercise/CLEAR_PARTICIPANT_ID': {
+      return {
+        ...state,
+        participant: null,
       };
     }
 

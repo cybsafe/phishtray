@@ -18,6 +18,7 @@ import {
 import type { ExerciseState } from '../../types/exerciseTypes';
 
 import {
+  clearParticipantId,
   getExerciseData,
   startCountdown,
   tickTimer,
@@ -90,9 +91,15 @@ function Exercise({ match, history }: Props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const { exerciseUuid } = match.params;
-    dispatch(getExerciseData(exerciseUuid));
-  }, [dispatch, match.params]);
+    dispatch(clearParticipantId());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!participantId) {
+      const { exerciseUuid } = match.params;
+      dispatch(getExerciseData(exerciseUuid));
+    }
+  }, [dispatch, match.params, participantId]);
 
   useEffect(() => {
     if (item && Object.keys(item).length === 0) {
