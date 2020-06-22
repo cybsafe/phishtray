@@ -30,6 +30,13 @@ export default function reducer(
       };
     }
 
+    case 'exercise/CLEAR_PARTICIPANT_ID': {
+      return {
+        ...state,
+        participant: null,
+      };
+    }
+
     case 'exercise/MARK_THREAD_AS_READ': {
       return produce(state, draft => {
         const { threadId } = action.payload;

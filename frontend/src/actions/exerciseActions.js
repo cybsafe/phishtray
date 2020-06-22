@@ -71,6 +71,12 @@ export const getExerciseData = (exerciseUuid: string) =>
     'exercise/LOAD_DATA'
   );
 
+export function clearParticipantId() {
+  return {
+    type: 'exercise/CLEAR_PARTICIPANT_ID',
+  };
+}
+
 export function setSelectedReply(params: Object) {
   const { threadId, selectedReplyid, emailid } = params;
   return {
