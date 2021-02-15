@@ -2,7 +2,7 @@ FROM centos:7
 
 # Upodate OS (IUP - Inline with Upstream Stable)
 # more info here - https://ius.io/
-RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm \
+RUN yum -y install https://repo.ius.io/ius-release-el7.rpm https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
 &&  yum -y clean all
 
 # Install Python 3 and OS dependencies
