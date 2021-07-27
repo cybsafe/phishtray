@@ -128,7 +128,12 @@ class ExerciseEmail(MultiTenantMixin, PhishtrayBaseModel):
     attachments = models.ManyToManyField(ExerciseFile, blank=True)
     replies = models.ManyToManyField(ExerciseEmailReply, blank=True)
     belongs_to = models.ForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text="Emails need to belong to another email or themselves to count as threads.<br>"
+        "Please note, emails that are not part of a thread will not be shown during the exercise.",
     )
     sort_order = models.IntegerField(default=0)
 
