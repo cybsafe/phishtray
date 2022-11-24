@@ -3,23 +3,25 @@ import { connect } from 'react-redux';
 import styled from 'react-emotion';
 import CustomMarkdown from '../../../Markdown/CustomMarkdown';
 
-const Container = styled('div')`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 100%;
+export const Wrapper = styled('section')`
+  min-height: calc(100vh - 120px);
+  background-color: #ffffff;
+  overflow-y: scroll;
+  position: relative;
+  padding: 60px 0;
 `;
 
-const ContentWrapper = styled('div')`
-  max-width: 648px;
+export const Container = styled('div')`
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
 `;
 
 const Title = styled('h1')`
-  margin-top: 80px;
   margin-bottom: 60px;
-  color: #262939;
   font-size: 48px;
+  color: #262939;
 `;
 
 const Warning = props => {
@@ -28,12 +30,12 @@ const Warning = props => {
   );
   const { webPage } = active[0].threadProperties;
   return (
-    <Container>
-      <ContentWrapper>
+    <Wrapper>
+      <Container>
         <Title>{webPage.title}</Title>
         <CustomMarkdown source={webPage.content} />
-      </ContentWrapper>
-    </Container>
+      </Container>
+    </Wrapper>
   );
 };
 
